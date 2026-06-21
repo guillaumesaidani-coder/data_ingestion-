@@ -1,0 +1,1246 @@
+incident_id,date,time,machine_id,severity,operator_badge,comment,shift,type_surchauffe,type_baisse_pression,type_vibration,type_bruit_mecanique,type_surconsommation,type_blocage_mecanique,type_alarme_capteur,type_arret_urgence,type_defaut_qualite,operator_anon
+INC-000001,2025-06-01,05:42,MACH-06,4,OP1002,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000002,2025-06-01,21:08,MACH-15,3,OP1004,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000003,2025-06-02,05:43,MACH-10,2,OP1002,défaut capteur confirmé,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-000004,2025-06-03,05:43,MACH-10,3,OP1006,signal capteur hors plage,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000005,2025-06-04,01:01,MACH-14,2,OP1001,alerte température haute,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000006,2025-06-04,05:43,MACH-10,4,OP1002,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-000007,2025-06-04,22:24,MACH-01,3,OP1005,surchauffe capteur thermique,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000008,2025-06-05,01:01,MACH-14,3,OP1002,montée thermique progressive,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000009,2025-06-06,01:01,MACH-14,4,OP1002,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000010,2025-06-07,00:56,MACH-13,3,OP1001,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000011,2025-06-08,09:10,MACH-06,3,OP1006,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000012,2025-06-09,03:34,MACH-10,3,OP1003,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-000013,2025-06-10,01:11,MACH-03,3,OP1005,alarme capteur active,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000014,2025-06-11,14:54,MACH-01,3,OP1010,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-000015,2025-06-11,18:38,MACH-01,2,OP1004,vibrations excessives détectées,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000016,2025-06-11,18:43,MACH-01,2,OP1002,vibration anormale roulement,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000017,2025-06-12,04:17,MACH-06,2,OP1006,défaut capteur confirmé,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000018,2025-06-12,04:46,MACH-15,3,OP1001,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000019,2025-06-12,09:25,MACH-13,3,OP1001,circuit hydraulique en défaut,matin,0,1,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000020,2025-06-12,09:48,MACH-13,2,OP1003,baisse pression hydraulique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000021,2025-06-12,10:27,MACH-07,3,OP1003,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-000022,2025-06-12,11:15,MACH-01,2,OP1003,oscillations hors tolérance,matin,0,0,1,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000023,2025-06-12,18:38,MACH-01,3,OP1003,vibration anormale roulement,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000024,2025-06-12,18:45,MACH-01,3,OP1006,oscillations hors tolérance,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000025,2025-06-13,04:17,MACH-06,3,OP1006,défaut capteur confirmé,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000026,2025-06-13,09:48,MACH-13,3,OP1007,pression en dessous seuil critique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000027,2025-06-13,09:49,MACH-13,3,OP1002,micro-fuite détectée — chute pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000028,2025-06-13,11:02,MACH-01,3,OP1003,vibration anormale roulement,matin,0,0,1,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000029,2025-06-13,11:15,MACH-01,3,OP1004,vibration anormale roulement,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000030,2025-06-13,13:44,MACH-12,2,OP1007,balourd rotor confirmé,matin,0,0,1,0,0,0,0,0,0,OP_ANON_70367646
+INC-000031,2025-06-13,18:38,MACH-01,4,OP1010,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000032,2025-06-13,20:54,MACH-06,2,OP1003,pression en dessous seuil critique,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000033,2025-06-14,01:07,MACH-05,2,OP1006,défaut capteur confirmé,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000034,2025-06-14,01:43,MACH-05,2,OP1002,perte intermittente signal mesure,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-000035,2025-06-14,04:17,MACH-06,4,OP1009,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_473D33F3
+INC-000036,2025-06-14,09:48,MACH-13,4,OP1006,baisse pression hydraulique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000037,2025-06-14,11:15,MACH-01,4,OP1009,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000038,2025-06-14,13:44,MACH-12,3,OP1001,vibration anormale roulement,matin,0,0,1,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000039,2025-06-14,20:46,MACH-13,3,OP1004,non-conformité dimensionnelle,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-000040,2025-06-14,20:54,MACH-06,3,OP1001,baisse pression hydraulique,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000041,2025-06-14,21:14,MACH-14,2,OP1005,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000042,2025-06-14,21:27,MACH-04,3,OP1009,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_473D33F3
+INC-000043,2025-06-15,00:07,MACH-01,2,OP1007,alerte température haute,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000044,2025-06-15,01:31,MACH-05,3,OP1006,défaut capteur confirmé,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000045,2025-06-15,01:43,MACH-05,3,OP1008,alarme capteur active,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_96340230
+INC-000046,2025-06-15,13:44,MACH-12,4,OP1001,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000047,2025-06-15,14:35,MACH-15,2,OP1006,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000048,2025-06-15,20:54,MACH-06,4,OP1003,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000049,2025-06-16,00:07,MACH-01,3,OP1005,montée thermique progressive,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000050,2025-06-16,00:50,MACH-01,3,OP1007,surchauffe capteur thermique,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000051,2025-06-16,01:43,MACH-05,4,OP1008,alarme capteur + arrêt ligne,nuit,0,0,0,0,0,0,1,1,0,OP_ANON_F1DE5CA6
+INC-000052,2025-06-16,17:35,MACH-08,3,OP1001,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F9422AFA
+INC-000053,2025-06-16,21:17,MACH-05,3,OP1003,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000054,2025-06-16,21:24,MACH-05,3,OP1005,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-000055,2025-06-17,00:07,MACH-01,4,OP1006,chauffe anormale + arrêt ligne,nuit,1,0,0,0,0,0,0,1,0,OP_ANON_BCCFF1DB
+INC-000056,2025-06-19,13:22,MACH-15,3,OP1009,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_473D33F3
+INC-000057,2025-06-20,06:53,MACH-15,3,OP1007,défaut qualité pièces constaté,matin,0,0,0,0,0,0,0,0,1,OP_ANON_48FCA839
+INC-000058,2025-06-20,23:25,MACH-12,2,OP1003,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-000059,2025-06-21,08:07,MACH-11,3,OP1001,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F9422AFA
+INC-000060,2025-06-21,10:38,MACH-12,2,OP1006,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000061,2025-06-21,20:55,MACH-05,3,OP1004,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000062,2025-06-22,00:14,MACH-06,2,OP1004,circuit hydraulique en défaut,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000063,2025-06-22,04:50,MACH-09,2,OP1005,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-000064,2025-06-22,12:16,MACH-05,3,OP1007,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_48FCA839
+INC-000065,2025-06-22,15:26,MACH-15,2,OP1009,température anormalement élevée,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000066,2025-06-22,19:31,MACH-13,3,OP1010,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000067,2025-06-22,20:15,MACH-08,3,OP1002,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000068,2025-06-23,00:14,MACH-06,3,OP1006,pression en dessous seuil critique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000069,2025-06-23,23:16,MACH-13,3,OP1007,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-000070,2025-06-24,00:14,MACH-06,4,OP1003,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000071,2025-06-24,01:51,MACH-06,2,OP1002,pièces hors tolérance — contrôle qualité,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000072,2025-06-24,09:57,MACH-06,3,OP1001,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000073,2025-06-25,01:51,MACH-06,3,OP1001,pièces hors tolérance — contrôle qualité,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_E60AC808
+INC-000074,2025-06-25,05:43,MACH-03,3,OP1002,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000075,2025-06-25,10:09,MACH-12,2,OP1006,vibration anormale roulement,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000076,2025-06-25,10:21,MACH-03,2,OP1005,surchauffe capteur thermique,matin,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000077,2025-06-25,10:48,MACH-03,3,OP1003,surchauffe capteur thermique,matin,1,0,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000078,2025-06-25,14:47,MACH-15,2,OP1007,perte intermittente signal mesure,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_70367646
+INC-000079,2025-06-25,14:48,MACH-15,2,OP1003,alarme capteur active,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_5DF8E9FC
+INC-000080,2025-06-25,17:55,MACH-09,3,OP1002,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-000081,2025-06-26,00:07,MACH-15,2,OP1008,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-000082,2025-06-26,01:51,MACH-06,4,OP1005,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000083,2025-06-26,10:04,MACH-03,3,OP1004,alerte température haute,matin,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000084,2025-06-26,10:09,MACH-12,3,OP1007,vibrations excessives détectées,matin,0,0,1,0,0,0,0,0,0,OP_ANON_70367646
+INC-000085,2025-06-26,10:21,MACH-03,3,OP1001,température anormalement élevée,matin,1,0,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000086,2025-06-26,14:28,MACH-15,3,OP1001,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_E60AC808
+INC-000087,2025-06-26,14:48,MACH-15,3,OP1006,perte intermittente signal mesure,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000088,2025-06-27,10:09,MACH-12,4,OP1006,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000089,2025-06-27,10:21,MACH-03,5,OP1009,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000090,2025-06-27,13:11,MACH-03,3,OP1007,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_48FCA839
+INC-000091,2025-06-27,14:48,MACH-15,4,OP1003,alarme capteur + arrêt ligne,apres-midi,0,0,0,0,0,0,1,1,0,OP_ANON_A8D0E69E
+INC-000092,2025-06-30,07:53,MACH-10,2,OP1008,micro-fuite détectée — chute pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-000093,2025-07-01,07:19,MACH-09,3,OP1001,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F9422AFA
+INC-000094,2025-07-01,07:53,MACH-10,3,OP1005,circuit hydraulique en défaut,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000095,2025-07-01,16:18,MACH-05,3,OP1008,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_F1DE5CA6
+INC-000096,2025-07-01,20:53,MACH-08,3,OP1008,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_F1DE5CA6
+INC-000097,2025-07-02,06:33,MACH-13,2,OP1001,pic courant anormal moteur,matin,0,0,0,0,1,0,0,0,0,OP_ANON_E60AC808
+INC-000098,2025-07-02,07:53,MACH-10,4,OP1005,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000099,2025-07-02,16:53,MACH-08,2,OP1009,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_473D33F3
+INC-000100,2025-07-02,21:35,MACH-04,2,OP1008,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000101,2025-07-03,06:09,MACH-10,2,OP1001,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000102,2025-07-03,06:10,MACH-13,3,OP1001,surconsommation électrique constatée,matin,0,0,0,0,1,0,0,0,0,OP_ANON_E60AC808
+INC-000103,2025-07-03,06:33,MACH-13,3,OP1008,pic courant anormal moteur,matin,0,0,0,0,1,0,0,0,0,OP_ANON_96340230
+INC-000104,2025-07-03,23:04,MACH-03,2,OP1002,pic courant anormal moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-000105,2025-07-03,23:17,MACH-03,3,OP1002,consommation hors plage nominale,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-000106,2025-07-04,06:33,MACH-13,4,OP1002,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-000107,2025-07-04,14:09,MACH-03,3,OP1007,échauffement bobinage moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_70367646
+INC-000108,2025-07-04,14:10,MACH-03,2,OP1001,surconsommation électrique constatée,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_E60AC808
+INC-000109,2025-07-04,18:26,MACH-09,3,OP1004,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000110,2025-07-04,23:04,MACH-03,3,OP1007,surconsommation électrique constatée,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_70367646
+INC-000111,2025-07-04,23:07,MACH-03,3,OP1008,surconsommation électrique constatée,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_96340230
+INC-000112,2025-07-05,01:31,MACH-11,3,OP1007,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_48FCA839
+INC-000113,2025-07-05,14:02,MACH-03,3,OP1005,consommation hors plage nominale,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-000114,2025-07-05,14:10,MACH-03,3,OP1006,pic courant anormal moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F9B75A1E
+INC-000115,2025-07-05,15:25,MACH-03,2,OP1005,baisse pression hydraulique,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000116,2025-07-05,15:41,MACH-03,3,OP1004,circuit hydraulique en défaut,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000117,2025-07-05,23:04,MACH-03,5,OP1009,pic courant anormal moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_473D33F3
+INC-000118,2025-07-06,11:12,MACH-02,2,OP1006,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_BCCFF1DB
+INC-000119,2025-07-06,14:10,MACH-03,5,OP1005,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-000120,2025-07-06,15:25,MACH-03,3,OP1003,micro-fuite détectée — chute pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000121,2025-07-06,15:48,MACH-03,3,OP1006,pression en dessous seuil critique,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000122,2025-07-06,23:30,MACH-06,2,OP1008,non-conformité dimensionnelle,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_96340230
+INC-000123,2025-07-07,12:04,MACH-05,3,OP1002,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000124,2025-07-07,15:25,MACH-03,5,OP1006,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000125,2025-07-07,23:30,MACH-06,3,OP1004,pièces hors tolérance — contrôle qualité,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-000126,2025-07-08,05:29,MACH-03,2,OP1006,chute taux de production anormale,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F9B75A1E
+INC-000127,2025-07-08,05:34,MACH-03,3,OP1002,pièces hors tolérance — contrôle qualité,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000128,2025-07-08,19:46,MACH-02,2,OP1007,circuit hydraulique en défaut,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000129,2025-07-08,23:30,MACH-06,4,OP1002,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000130,2025-07-09,04:31,MACH-13,2,OP1007,pic courant anormal moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_70367646
+INC-000131,2025-07-09,04:39,MACH-13,3,OP1006,échauffement bobinage moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F9B75A1E
+INC-000132,2025-07-09,05:29,MACH-03,3,OP1002,non-conformité dimensionnelle,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000133,2025-07-09,05:46,MACH-03,3,OP1001,pièces hors tolérance — contrôle qualité,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_E60AC808
+INC-000134,2025-07-09,07:23,MACH-10,2,OP1008,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000135,2025-07-09,09:03,MACH-10,2,OP1004,montée thermique progressive,matin,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000136,2025-07-09,09:48,MACH-10,2,OP1005,surchauffe capteur thermique,matin,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000137,2025-07-09,19:46,MACH-02,3,OP1001,circuit hydraulique en défaut,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000138,2025-07-09,22:19,MACH-05,3,OP1010,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_7250BF59
+INC-000139,2025-07-10,04:31,MACH-13,3,OP1008,pic courant anormal moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_96340230
+INC-000140,2025-07-10,04:57,MACH-13,3,OP1007,surconsommation électrique constatée,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_70367646
+INC-000141,2025-07-10,05:29,MACH-03,5,OP1007,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_48FCA839
+INC-000142,2025-07-10,08:42,MACH-08,3,OP1006,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_BCCFF1DB
+INC-000143,2025-07-10,09:03,MACH-10,3,OP1006,température anormalement élevée,matin,1,0,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000144,2025-07-10,09:50,MACH-10,3,OP1001,température anormalement élevée,matin,1,0,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000145,2025-07-10,19:46,MACH-02,4,OP1003,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000146,2025-07-10,21:49,MACH-12,3,OP1004,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-000147,2025-07-11,04:31,MACH-13,4,OP1010,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_7250BF59
+INC-000148,2025-07-11,09:03,MACH-10,4,OP1008,chauffe anormale + arrêt ligne,matin,1,0,0,0,0,0,0,1,0,OP_ANON_F1DE5CA6
+INC-000149,2025-07-12,03:51,MACH-12,2,OP1007,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_70367646
+INC-000150,2025-07-13,03:51,MACH-12,3,OP1007,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_70367646
+INC-000151,2025-07-13,20:11,MACH-04,3,OP1008,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-000152,2025-07-14,03:51,MACH-12,4,OP1002,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000153,2025-07-15,01:14,MACH-08,3,OP1002,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000154,2025-07-15,02:13,MACH-03,3,OP1004,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000155,2025-07-15,05:15,MACH-13,3,OP1002,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-000156,2025-07-15,09:55,MACH-09,2,OP1007,choc sur transmission,matin,0,0,0,1,0,0,0,0,0,OP_ANON_70367646
+INC-000157,2025-07-15,22:37,MACH-08,2,OP1004,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000158,2025-07-16,09:55,MACH-09,3,OP1007,frottement mécanique cyclique,matin,0,0,0,1,0,0,0,0,0,OP_ANON_70367646
+INC-000159,2025-07-16,16:03,MACH-09,2,OP1001,perte intermittente signal mesure,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_E60AC808
+INC-000160,2025-07-17,08:33,MACH-10,3,OP1010,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000161,2025-07-17,09:55,MACH-09,5,OP1001,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000162,2025-07-17,16:03,MACH-09,3,OP1005,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000163,2025-07-18,06:53,MACH-02,2,OP1003,non-conformité dimensionnelle,matin,0,0,0,0,0,0,0,0,1,OP_ANON_5DF8E9FC
+INC-000164,2025-07-18,10:24,MACH-11,3,OP1006,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_BCCFF1DB
+INC-000165,2025-07-18,14:17,MACH-05,2,OP1004,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000166,2025-07-18,16:03,MACH-09,5,OP1007,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_48FCA839
+INC-000167,2025-07-19,06:53,MACH-02,3,OP1003,chute taux de production anormale,matin,0,0,0,0,0,0,0,0,1,OP_ANON_5DF8E9FC
+INC-000168,2025-07-19,13:06,MACH-13,2,OP1002,surconsommation électrique constatée,matin,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-000169,2025-07-20,06:53,MACH-02,4,OP1005,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000170,2025-07-20,08:30,MACH-03,3,OP1006,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000171,2025-07-20,13:06,MACH-13,3,OP1004,surconsommation électrique constatée,matin,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000172,2025-07-20,13:51,MACH-13,3,OP1006,consommation hors plage nominale,matin,0,0,0,0,1,0,0,0,0,OP_ANON_F9B75A1E
+INC-000173,2025-07-20,18:07,MACH-05,2,OP1001,consommation hors plage nominale,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_E60AC808
+INC-000174,2025-07-20,22:24,MACH-06,2,OP1007,consommation hors plage nominale,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_70367646
+INC-000175,2025-07-21,11:06,MACH-01,3,OP1010,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000176,2025-07-21,13:06,MACH-13,4,OP1001,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_F9422AFA
+INC-000177,2025-07-21,18:07,MACH-05,3,OP1006,pic courant anormal moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F9B75A1E
+INC-000178,2025-07-21,22:24,MACH-06,3,OP1002,échauffement bobinage moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-000179,2025-07-22,12:52,MACH-01,2,OP1003,perte intermittente signal mesure,matin,0,0,0,0,0,0,1,0,0,OP_ANON_5DF8E9FC
+INC-000180,2025-07-22,18:07,MACH-05,5,OP1006,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000181,2025-07-22,20:56,MACH-10,2,OP1002,micro-fuite détectée — chute pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000182,2025-07-22,21:03,MACH-04,3,OP1002,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-000183,2025-07-22,22:24,MACH-06,4,OP1003,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_A8D0E69E
+INC-000184,2025-07-22,23:53,MACH-07,3,OP1002,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000185,2025-07-23,02:19,MACH-13,2,OP1003,alarme capteur active,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_5DF8E9FC
+INC-000186,2025-07-23,02:40,MACH-13,3,OP1001,signal capteur hors plage,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_E60AC808
+INC-000187,2025-07-23,12:06,MACH-01,3,OP1005,défaut capteur confirmé,matin,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000188,2025-07-23,12:52,MACH-01,3,OP1003,perte intermittente signal mesure,matin,0,0,0,0,0,0,1,0,0,OP_ANON_5DF8E9FC
+INC-000189,2025-07-23,20:56,MACH-10,3,OP1007,pression en dessous seuil critique,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000190,2025-07-24,02:19,MACH-13,3,OP1005,signal capteur hors plage,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000191,2025-07-24,02:48,MACH-13,3,OP1008,signal capteur hors plage,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_96340230
+INC-000192,2025-07-24,08:49,MACH-03,3,OP1001,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000193,2025-07-24,11:46,MACH-05,3,OP1007,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_48FCA839
+INC-000194,2025-07-24,12:52,MACH-01,4,OP1004,alarme capteur active,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000195,2025-07-24,13:14,MACH-08,2,OP1002,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000196,2025-07-24,20:56,MACH-10,4,OP1006,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000197,2025-07-25,02:19,MACH-13,4,OP1001,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F9422AFA
+INC-000198,2025-07-25,17:36,MACH-15,2,OP1008,température anormalement élevée,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-000199,2025-07-25,17:46,MACH-15,2,OP1002,surchauffe capteur thermique,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000200,2025-07-26,17:34,MACH-15,3,OP1007,température anormalement élevée,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000201,2025-07-26,17:36,MACH-15,3,OP1005,surchauffe capteur thermique,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000202,2025-07-26,23:08,MACH-09,2,OP1008,pièces hors tolérance — contrôle qualité,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_96340230
+INC-000203,2025-07-26,23:45,MACH-09,2,OP1001,défaut qualité pièces constaté,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_E60AC808
+INC-000204,2025-07-27,12:37,MACH-04,2,OP1010,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000205,2025-07-27,17:36,MACH-15,4,OP1001,chauffe anormale + arrêt ligne,apres-midi,1,0,0,0,0,0,0,1,0,OP_ANON_F9422AFA
+INC-000206,2025-07-27,20:45,MACH-15,3,OP1007,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-000207,2025-07-27,23:08,MACH-09,3,OP1002,défaut qualité pièces constaté,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000208,2025-07-27,23:43,MACH-09,3,OP1006,non-conformité dimensionnelle,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F9B75A1E
+INC-000209,2025-07-28,14:48,MACH-07,2,OP1007,alarme capteur active,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_70367646
+INC-000210,2025-07-28,17:31,MACH-06,2,OP1008,cliquetis roulement axe,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_96340230
+INC-000211,2025-07-28,23:08,MACH-09,4,OP1005,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000212,2025-07-29,14:48,MACH-07,3,OP1007,signal capteur hors plage,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_70367646
+INC-000213,2025-07-29,17:31,MACH-06,3,OP1001,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-000214,2025-07-29,18:48,MACH-06,2,OP1004,balourd rotor confirmé,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000215,2025-07-30,14:48,MACH-07,4,OP1005,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000216,2025-07-30,17:31,MACH-06,4,OP1002,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000217,2025-07-30,18:48,MACH-06,3,OP1003,vibration anormale roulement,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000218,2025-07-31,01:19,MACH-14,2,OP1002,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000219,2025-07-31,04:30,MACH-01,3,OP1002,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-000220,2025-07-31,11:56,MACH-11,3,OP1004,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000221,2025-07-31,17:49,MACH-03,3,OP1007,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_48FCA839
+INC-000222,2025-07-31,18:48,MACH-06,4,OP1006,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000223,2025-08-01,17:37,MACH-09,2,OP1008,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_96340230
+INC-000224,2025-08-02,02:27,MACH-01,3,OP1009,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_473D33F3
+INC-000225,2025-08-02,09:45,MACH-09,2,OP1001,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_F9422AFA
+INC-000226,2025-08-02,12:22,MACH-08,3,OP1007,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-000227,2025-08-02,17:37,MACH-09,3,OP1001,cliquetis roulement axe,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-000228,2025-08-02,22:08,MACH-13,2,OP1001,alerte température haute,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000229,2025-08-02,22:40,MACH-13,3,OP1005,température anormalement élevée,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000230,2025-08-03,07:25,MACH-12,2,OP1005,baisse pression hydraulique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000231,2025-08-03,17:37,MACH-09,5,OP1002,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000232,2025-08-03,22:08,MACH-13,3,OP1005,température anormalement élevée,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000233,2025-08-03,22:15,MACH-13,3,OP1003,montée thermique progressive,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000234,2025-08-04,03:16,MACH-05,3,OP1009,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_473D33F3
+INC-000235,2025-08-04,07:04,MACH-08,3,OP1005,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-000236,2025-08-04,07:25,MACH-12,3,OP1002,baisse pression hydraulique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000237,2025-08-04,22:08,MACH-13,4,OP1006,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000238,2025-08-05,07:25,MACH-12,4,OP1003,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000239,2025-08-05,10:28,MACH-15,2,OP1010,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_7250BF59
+INC-000240,2025-08-05,11:10,MACH-10,3,OP1004,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000241,2025-08-06,01:29,MACH-01,2,OP1007,frottement mécanique cyclique,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_70367646
+INC-000242,2025-08-07,01:29,MACH-01,3,OP1006,cliquetis roulement axe,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000243,2025-08-07,01:35,MACH-01,3,OP1004,choc sur transmission,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000244,2025-08-07,04:14,MACH-07,2,OP1001,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000245,2025-08-07,18:20,MACH-10,3,OP1007,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_48FCA839
+INC-000246,2025-08-08,00:21,MACH-13,3,OP1009,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_473D33F3
+INC-000247,2025-08-08,01:29,MACH-01,4,OP1010,frottement mécanique cyclique,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-000248,2025-08-08,02:21,MACH-08,3,OP1001,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F9422AFA
+INC-000249,2025-08-08,13:43,MACH-09,2,OP1002,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000250,2025-08-09,14:25,MACH-08,3,OP1002,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000251,2025-08-10,12:22,MACH-12,3,OP1005,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000252,2025-08-10,22:11,MACH-14,2,OP1006,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000253,2025-08-11,12:46,MACH-05,2,OP1006,baisse pression hydraulique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000254,2025-08-11,22:40,MACH-08,3,OP1010,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000255,2025-08-11,23:14,MACH-03,3,OP1008,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000256,2025-08-12,12:46,MACH-05,3,OP1008,micro-fuite détectée — chute pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-000257,2025-08-13,08:17,MACH-15,3,OP1003,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_A8D0E69E
+INC-000258,2025-08-13,12:46,MACH-05,5,OP1008,pression en dessous seuil critique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000259,2025-08-14,13:55,MACH-02,3,OP1009,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_473D33F3
+INC-000260,2025-08-14,23:28,MACH-01,2,OP1008,baisse pression hydraulique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-000261,2025-08-15,15:53,MACH-07,3,OP1004,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000262,2025-08-15,23:28,MACH-01,3,OP1001,micro-fuite détectée — chute pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000263,2025-08-15,23:49,MACH-01,3,OP1002,pression en dessous seuil critique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000264,2025-08-16,03:19,MACH-05,2,OP1001,oscillations hors tolérance,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000265,2025-08-16,23:28,MACH-01,4,OP1007,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-000266,2025-08-17,03:19,MACH-05,3,OP1004,oscillations hors tolérance,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000267,2025-08-17,19:44,MACH-12,3,OP1002,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000268,2025-08-18,03:19,MACH-05,5,OP1003,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000269,2025-08-18,10:49,MACH-14,2,OP1004,signal capteur hors plage,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000270,2025-08-19,06:27,MACH-06,3,OP1002,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000271,2025-08-19,10:49,MACH-14,3,OP1006,perte intermittente signal mesure,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000272,2025-08-19,22:32,MACH-09,2,OP1003,surchauffe capteur thermique,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000273,2025-08-20,07:55,MACH-07,3,OP1008,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000274,2025-08-20,10:49,MACH-14,4,OP1008,signal capteur hors plage,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-000275,2025-08-20,14:28,MACH-14,3,OP1007,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_48FCA839
+INC-000276,2025-08-20,20:38,MACH-13,3,OP1004,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000277,2025-08-20,22:12,MACH-09,3,OP1001,alerte température haute,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000278,2025-08-20,22:32,MACH-09,3,OP1008,température anormalement élevée,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-000279,2025-08-21,18:46,MACH-08,2,OP1005,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000280,2025-08-21,22:32,MACH-09,4,OP1010,chauffe anormale + arrêt ligne,nuit,1,0,0,0,0,0,0,1,0,OP_ANON_7250BF59
+INC-000281,2025-08-22,02:31,MACH-03,3,OP1010,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000282,2025-08-22,12:44,MACH-08,3,OP1009,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_473D33F3
+INC-000283,2025-08-23,13:37,MACH-15,3,OP1005,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000284,2025-08-24,23:05,MACH-07,2,OP1004,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000285,2025-08-25,02:17,MACH-10,2,OP1002,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-000286,2025-08-26,11:11,MACH-07,3,OP1009,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000287,2025-08-26,11:40,MACH-06,2,OP1005,température anormalement élevée,matin,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000288,2025-08-26,13:42,MACH-09,2,OP1007,pièce bloquée convoyeur,matin,0,0,0,0,0,1,0,0,0,OP_ANON_48FCA839
+INC-000289,2025-08-26,20:03,MACH-15,3,OP1005,pièces hors tolérance — contrôle qualité,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000290,2025-08-27,09:12,MACH-12,2,OP1009,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_473D33F3
+INC-000291,2025-08-27,10:35,MACH-10,2,OP1004,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000292,2025-08-27,11:40,MACH-06,3,OP1005,alerte température haute,matin,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000293,2025-08-28,11:40,MACH-06,4,OP1004,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000294,2025-08-28,19:29,MACH-08,3,OP1001,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000295,2025-08-28,21:06,MACH-06,2,OP1005,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000296,2025-08-29,00:50,MACH-01,3,OP1002,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-000297,2025-08-29,21:06,MACH-06,3,OP1001,perte intermittente signal mesure,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_E60AC808
+INC-000298,2025-08-30,02:08,MACH-11,2,OP1003,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-000299,2025-08-30,03:55,MACH-15,3,OP1005,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000300,2025-08-30,12:36,MACH-06,3,OP1003,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000301,2025-08-30,12:37,MACH-05,2,OP1010,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_7250BF59
+INC-000302,2025-08-30,21:06,MACH-06,4,OP1002,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-000303,2025-08-30,22:36,MACH-01,3,OP1009,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_473D33F3
+INC-000304,2025-08-31,16:42,MACH-08,2,OP1007,signal capteur hors plage,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_70367646
+INC-000305,2025-08-31,16:54,MACH-08,2,OP1001,signal capteur hors plage,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_E60AC808
+INC-000306,2025-09-01,16:34,MACH-08,3,OP1008,signal capteur hors plage,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_96340230
+INC-000307,2025-09-01,16:54,MACH-08,3,OP1007,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_70367646
+INC-000308,2025-09-01,19:55,MACH-05,2,OP1005,pièces hors tolérance — contrôle qualité,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000309,2025-09-02,01:05,MACH-03,3,OP1004,micro-fuite détectée — chute pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000310,2025-09-02,01:10,MACH-03,2,OP1007,pression en dessous seuil critique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000311,2025-09-02,15:30,MACH-08,3,OP1008,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-000312,2025-09-02,16:54,MACH-08,4,OP1005,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000313,2025-09-02,19:55,MACH-05,3,OP1005,chute taux de production anormale,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000314,2025-09-03,01:08,MACH-03,3,OP1006,baisse pression hydraulique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000315,2025-09-03,01:10,MACH-03,3,OP1006,pression en dessous seuil critique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000316,2025-09-03,12:34,MACH-13,2,OP1002,température anormalement élevée,matin,1,0,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000317,2025-09-03,12:55,MACH-13,3,OP1007,température anormalement élevée,matin,1,0,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000318,2025-09-03,19:55,MACH-05,5,OP1006,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_BCCFF1DB
+INC-000319,2025-09-04,01:10,MACH-03,4,OP1009,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000320,2025-09-04,12:34,MACH-13,3,OP1001,alerte température haute,matin,1,0,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000321,2025-09-04,12:46,MACH-13,3,OP1007,température anormalement élevée,matin,1,0,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000322,2025-09-05,00:24,MACH-14,3,OP1008,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000323,2025-09-05,12:34,MACH-13,4,OP1001,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000324,2025-09-05,21:26,MACH-03,3,OP1007,choc sur transmission,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_70367646
+INC-000325,2025-09-05,21:54,MACH-03,2,OP1004,cliquetis roulement axe,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000326,2025-09-06,14:06,MACH-06,2,OP1006,signal capteur hors plage,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000327,2025-09-06,14:45,MACH-06,2,OP1001,perte intermittente signal mesure,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_E60AC808
+INC-000328,2025-09-06,21:54,MACH-03,3,OP1006,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000329,2025-09-06,21:57,MACH-03,3,OP1007,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_70367646
+INC-000330,2025-09-07,09:46,MACH-03,3,OP1006,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000331,2025-09-07,14:06,MACH-06,3,OP1007,perte intermittente signal mesure,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_70367646
+INC-000332,2025-09-07,14:54,MACH-06,3,OP1005,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000333,2025-09-07,21:54,MACH-03,4,OP1008,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000334,2025-09-08,14:06,MACH-06,4,OP1005,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000335,2025-09-08,19:06,MACH-04,2,OP1003,surconsommation électrique constatée,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000336,2025-09-08,22:30,MACH-01,2,OP1002,vibration anormale roulement,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000337,2025-09-09,19:06,MACH-04,3,OP1001,échauffement bobinage moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_E60AC808
+INC-000338,2025-09-09,22:30,MACH-01,3,OP1001,balourd rotor confirmé,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000339,2025-09-09,22:42,MACH-01,3,OP1003,balourd rotor confirmé,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000340,2025-09-10,15:34,MACH-11,2,OP1006,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_BCCFF1DB
+INC-000341,2025-09-10,16:03,MACH-08,2,OP1002,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000342,2025-09-10,19:06,MACH-04,4,OP1008,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000343,2025-09-10,22:30,MACH-01,4,OP1004,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000344,2025-09-11,19:10,MACH-02,3,OP1005,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000345,2025-09-11,19:36,MACH-14,2,OP1002,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000346,2025-09-12,02:10,MACH-03,3,OP1002,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000347,2025-09-12,02:39,MACH-03,2,OP1006,cliquetis roulement axe,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000348,2025-09-12,14:08,MACH-13,3,OP1007,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_48FCA839
+INC-000349,2025-09-12,22:44,MACH-01,2,OP1004,perte intermittente signal mesure,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000350,2025-09-13,02:01,MACH-03,3,OP1004,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000351,2025-09-13,02:39,MACH-03,3,OP1005,frottement mécanique cyclique,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000352,2025-09-13,08:29,MACH-10,2,OP1006,alarme capteur active,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000353,2025-09-13,12:33,MACH-09,3,OP1005,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000354,2025-09-13,22:28,MACH-01,3,OP1006,signal capteur hors plage,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000355,2025-09-13,22:44,MACH-01,3,OP1002,perte intermittente signal mesure,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-000356,2025-09-14,00:27,MACH-04,3,OP1007,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-000357,2025-09-14,02:39,MACH-03,4,OP1008,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000358,2025-09-14,03:08,MACH-13,2,OP1007,vibrations excessives détectées,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_70367646
+INC-000359,2025-09-14,03:30,MACH-13,3,OP1007,balourd rotor confirmé,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_70367646
+INC-000360,2025-09-14,08:29,MACH-10,3,OP1007,signal capteur hors plage,matin,0,0,0,0,0,0,1,0,0,OP_ANON_70367646
+INC-000361,2025-09-14,14:42,MACH-08,3,OP1001,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000362,2025-09-14,22:44,MACH-01,4,OP1009,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_473D33F3
+INC-000363,2025-09-15,03:08,MACH-13,3,OP1004,oscillations hors tolérance,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000364,2025-09-15,03:53,MACH-13,3,OP1002,vibration anormale roulement,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000365,2025-09-15,08:29,MACH-10,4,OP1002,perte intermittente signal mesure,matin,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-000366,2025-09-15,22:14,MACH-11,3,OP1001,pièces hors tolérance — contrôle qualité,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F9422AFA
+INC-000367,2025-09-16,01:35,MACH-08,3,OP1010,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000368,2025-09-16,03:08,MACH-13,4,OP1006,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000369,2025-09-17,02:54,MACH-10,2,OP1004,signal capteur hors plage,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000370,2025-09-18,02:54,MACH-10,3,OP1006,alarme capteur active,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000371,2025-09-19,02:54,MACH-10,4,OP1005,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000372,2025-09-19,04:28,MACH-15,2,OP1006,alarme capteur active,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000373,2025-09-19,04:49,MACH-15,2,OP1003,perte intermittente signal mesure,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_5DF8E9FC
+INC-000374,2025-09-20,03:07,MACH-01,2,OP1002,perte intermittente signal mesure,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-000375,2025-09-20,03:24,MACH-01,2,OP1007,alarme capteur active,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_70367646
+INC-000376,2025-09-20,04:28,MACH-15,3,OP1004,perte intermittente signal mesure,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000377,2025-09-20,04:45,MACH-15,3,OP1003,perte intermittente signal mesure,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_5DF8E9FC
+INC-000378,2025-09-20,06:45,MACH-14,2,OP1008,frottement mécanique cyclique,matin,0,0,0,1,0,0,0,0,0,OP_ANON_96340230
+INC-000379,2025-09-20,22:07,MACH-01,2,OP1003,défaut qualité pièces constaté,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_5DF8E9FC
+INC-000380,2025-09-20,22:39,MACH-01,2,OP1003,chute taux de production anormale,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_5DF8E9FC
+INC-000381,2025-09-21,03:05,MACH-01,3,OP1007,signal capteur hors plage,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_70367646
+INC-000382,2025-09-21,03:24,MACH-01,3,OP1005,défaut capteur confirmé,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000383,2025-09-21,04:28,MACH-15,4,OP1009,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_473D33F3
+INC-000384,2025-09-21,05:38,MACH-13,3,OP1008,défaut qualité pièces constaté,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_96340230
+INC-000385,2025-09-21,05:42,MACH-13,2,OP1004,pièces hors tolérance — contrôle qualité,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-000386,2025-09-21,06:45,MACH-14,3,OP1001,cliquetis roulement axe,matin,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-000387,2025-09-21,22:39,MACH-01,3,OP1005,défaut qualité pièces constaté,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000388,2025-09-21,22:42,MACH-01,3,OP1005,non-conformité dimensionnelle,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000389,2025-09-22,03:24,MACH-01,4,OP1003,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-000390,2025-09-22,05:42,MACH-13,3,OP1001,non-conformité dimensionnelle,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_E60AC808
+INC-000391,2025-09-22,05:53,MACH-13,3,OP1005,non-conformité dimensionnelle,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000392,2025-09-22,06:45,MACH-14,4,OP1006,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000393,2025-09-22,14:20,MACH-09,2,OP1001,alerte température haute,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000394,2025-09-22,16:12,MACH-04,3,OP1002,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000395,2025-09-22,22:39,MACH-01,4,OP1004,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-000396,2025-09-23,05:42,MACH-13,4,OP1001,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F9422AFA
+INC-000397,2025-09-23,14:20,MACH-09,3,OP1002,température anormalement élevée,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000398,2025-09-24,14:20,MACH-09,5,OP1003,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000399,2025-09-25,06:43,MACH-11,2,OP1008,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000400,2025-09-25,10:16,MACH-03,2,OP1005,cliquetis roulement axe,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000401,2025-09-25,10:52,MACH-03,3,OP1008,choc sur transmission,matin,0,0,0,1,0,0,0,0,0,OP_ANON_96340230
+INC-000402,2025-09-26,10:16,MACH-03,3,OP1006,cliquetis roulement axe,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000403,2025-09-26,10:47,MACH-03,3,OP1002,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000404,2025-09-26,15:44,MACH-05,3,OP1010,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000405,2025-09-26,21:31,MACH-09,2,OP1001,vibration anormale roulement,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000406,2025-09-27,04:37,MACH-08,3,OP1010,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-000407,2025-09-27,10:16,MACH-03,5,OP1009,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_473D33F3
+INC-000408,2025-09-27,12:46,MACH-04,3,OP1003,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000409,2025-09-27,21:31,MACH-09,3,OP1004,balourd rotor confirmé,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000410,2025-09-28,07:21,MACH-06,3,OP1002,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000411,2025-09-28,21:31,MACH-09,5,OP1005,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000412,2025-09-29,13:18,MACH-11,3,OP1001,non-conformité dimensionnelle,matin,0,0,0,0,0,0,0,0,1,OP_ANON_F9422AFA
+INC-000413,2025-09-30,16:18,MACH-03,3,OP1002,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000414,2025-10-01,11:09,MACH-11,2,OP1003,pression en dessous seuil critique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000415,2025-10-01,13:09,MACH-06,3,OP1001,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000416,2025-10-02,07:05,MACH-08,3,OP1010,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000417,2025-10-02,13:54,MACH-11,3,OP1010,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-000418,2025-10-02,19:55,MACH-14,2,OP1003,surchauffe capteur thermique,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000419,2025-10-02,20:54,MACH-12,2,OP1008,non-conformité dimensionnelle,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_96340230
+INC-000420,2025-10-03,03:32,MACH-07,3,OP1004,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000421,2025-10-03,13:25,MACH-11,2,OP1007,température anormalement élevée,matin,1,0,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000422,2025-10-03,13:35,MACH-11,2,OP1007,surchauffe capteur thermique,matin,1,0,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000423,2025-10-03,16:28,MACH-01,2,OP1005,échauffement bobinage moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-000424,2025-10-03,19:55,MACH-14,3,OP1007,surchauffe capteur thermique,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000425,2025-10-03,20:54,MACH-12,3,OP1003,chute taux de production anormale,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_5DF8E9FC
+INC-000426,2025-10-04,07:22,MACH-10,3,OP1003,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000427,2025-10-04,08:08,MACH-03,3,OP1004,frottement mécanique cyclique,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000428,2025-10-04,08:57,MACH-03,2,OP1003,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000429,2025-10-04,13:35,MACH-11,3,OP1005,température anormalement élevée,matin,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000430,2025-10-04,13:42,MACH-11,3,OP1007,surchauffe capteur thermique,matin,1,0,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000431,2025-10-04,15:11,MACH-13,3,OP1005,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000432,2025-10-04,16:28,MACH-01,3,OP1002,échauffement bobinage moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-000433,2025-10-04,16:32,MACH-01,3,OP1001,consommation hors plage nominale,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_E60AC808
+INC-000434,2025-10-04,19:55,MACH-14,4,OP1001,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000435,2025-10-04,20:54,MACH-12,4,OP1004,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-000436,2025-10-05,03:21,MACH-13,3,OP1008,balourd rotor confirmé,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_96340230
+INC-000437,2025-10-05,03:25,MACH-13,2,OP1005,vibrations excessives détectées,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000438,2025-10-05,08:45,MACH-03,3,OP1003,choc sur transmission,matin,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000439,2025-10-05,08:57,MACH-03,3,OP1005,frottement mécanique cyclique,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000440,2025-10-05,13:35,MACH-11,4,OP1004,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000441,2025-10-05,16:28,MACH-01,4,OP1008,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000442,2025-10-05,21:16,MACH-12,2,OP1002,signal capteur hors plage,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-000443,2025-10-06,02:08,MACH-03,3,OP1001,vibration anormale roulement,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000444,2025-10-06,02:49,MACH-03,2,OP1006,balourd rotor confirmé,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000445,2025-10-06,03:22,MACH-13,3,OP1001,oscillations hors tolérance,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000446,2025-10-06,03:25,MACH-13,3,OP1006,balourd rotor confirmé,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000447,2025-10-06,05:38,MACH-11,2,OP1003,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000448,2025-10-06,08:57,MACH-03,5,OP1005,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000449,2025-10-06,10:01,MACH-11,3,OP1009,signal capteur hors plage,matin,0,0,0,0,0,0,1,0,0,OP_ANON_473D33F3
+INC-000450,2025-10-06,11:41,MACH-07,3,OP1003,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000451,2025-10-06,21:16,MACH-12,3,OP1004,perte intermittente signal mesure,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000452,2025-10-07,02:28,MACH-12,2,OP1005,température anormalement élevée,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000453,2025-10-07,02:49,MACH-03,3,OP1008,vibration anormale roulement,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_96340230
+INC-000454,2025-10-07,02:49,MACH-12,2,OP1005,température anormalement élevée,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000455,2025-10-07,02:55,MACH-03,3,OP1005,vibrations excessives détectées,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000456,2025-10-07,03:25,MACH-13,4,OP1003,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000457,2025-10-07,10:02,MACH-06,2,OP1008,vibrations excessives détectées,matin,0,0,1,0,0,0,0,0,0,OP_ANON_96340230
+INC-000458,2025-10-07,13:07,MACH-13,3,OP1007,perte intermittente signal mesure,matin,0,0,0,0,0,0,1,0,0,OP_ANON_70367646
+INC-000459,2025-10-07,13:40,MACH-13,2,OP1004,perte intermittente signal mesure,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000460,2025-10-07,21:16,MACH-12,4,OP1006,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_BCCFF1DB
+INC-000461,2025-10-08,02:28,MACH-12,3,OP1003,alerte température haute,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000462,2025-10-08,02:49,MACH-03,5,OP1003,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000463,2025-10-08,02:51,MACH-12,3,OP1002,température anormalement élevée,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000464,2025-10-08,10:02,MACH-06,3,OP1004,vibrations excessives détectées,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000465,2025-10-08,11:37,MACH-14,2,OP1003,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-000466,2025-10-08,13:07,MACH-13,3,OP1006,signal capteur hors plage,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000467,2025-10-08,13:40,MACH-13,3,OP1003,signal capteur hors plage,matin,0,0,0,0,0,0,1,0,0,OP_ANON_5DF8E9FC
+INC-000468,2025-10-09,01:07,MACH-08,2,OP1001,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F9422AFA
+INC-000469,2025-10-09,02:28,MACH-12,4,OP1008,chauffe anormale + arrêt ligne,nuit,1,0,0,0,0,0,0,1,0,OP_ANON_F1DE5CA6
+INC-000470,2025-10-09,03:34,MACH-01,3,OP1001,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F9422AFA
+INC-000471,2025-10-09,10:02,MACH-06,4,OP1009,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000472,2025-10-09,13:40,MACH-13,4,OP1001,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F9422AFA
+INC-000473,2025-10-10,08:01,MACH-07,3,OP1006,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000474,2025-10-11,16:25,MACH-01,2,OP1005,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000475,2025-10-11,22:56,MACH-14,2,OP1008,surchauffe capteur thermique,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-000476,2025-10-11,23:26,MACH-12,3,OP1010,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_7250BF59
+INC-000477,2025-10-12,16:25,MACH-01,3,OP1001,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_E60AC808
+INC-000478,2025-10-12,16:42,MACH-01,3,OP1008,perte intermittente signal mesure,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_96340230
+INC-000479,2025-10-12,22:48,MACH-01,3,OP1008,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-000480,2025-10-12,22:56,MACH-14,3,OP1004,alerte température haute,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000481,2025-10-13,16:25,MACH-01,4,OP1010,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_7250BF59
+INC-000482,2025-10-13,20:17,MACH-15,2,OP1001,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F9422AFA
+INC-000483,2025-10-13,22:56,MACH-14,4,OP1001,alerte température haute,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000484,2025-10-14,11:27,MACH-11,3,OP1003,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_A8D0E69E
+INC-000485,2025-10-15,00:18,MACH-05,3,OP1008,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000486,2025-10-18,20:01,MACH-12,2,OP1010,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-000487,2025-10-18,20:26,MACH-02,3,OP1003,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000488,2025-10-19,16:18,MACH-07,3,OP1010,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_7250BF59
+INC-000489,2025-10-21,01:30,MACH-15,2,OP1006,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000490,2025-10-21,13:53,MACH-15,3,OP1007,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_48FCA839
+INC-000491,2025-10-22,21:43,MACH-09,3,OP1008,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000492,2025-10-23,16:45,MACH-01,3,OP1009,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000493,2025-10-24,13:32,MACH-09,3,OP1010,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_7250BF59
+INC-000494,2025-10-24,22:07,MACH-08,3,OP1005,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000495,2025-10-25,01:23,MACH-05,3,OP1004,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000496,2025-10-25,09:57,MACH-15,3,OP1005,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000497,2025-10-25,11:03,MACH-08,3,OP1008,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000498,2025-10-25,18:51,MACH-15,2,OP1001,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F9422AFA
+INC-000499,2025-10-25,23:40,MACH-15,2,OP1010,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_7250BF59
+INC-000500,2025-10-26,00:17,MACH-01,3,OP1007,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-000501,2025-10-26,03:45,MACH-15,2,OP1005,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000502,2025-10-27,05:48,MACH-13,3,OP1008,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-000503,2025-10-27,16:03,MACH-14,3,OP1003,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_A8D0E69E
+INC-000504,2025-10-28,00:38,MACH-08,3,OP1002,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-000505,2025-10-30,14:08,MACH-13,2,OP1006,pic courant anormal moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F9B75A1E
+INC-000506,2025-10-30,14:57,MACH-13,3,OP1008,surconsommation électrique constatée,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_96340230
+INC-000507,2025-10-31,06:02,MACH-13,3,OP1006,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_BCCFF1DB
+INC-000508,2025-10-31,14:08,MACH-13,3,OP1003,consommation hors plage nominale,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000509,2025-10-31,14:38,MACH-13,3,OP1001,consommation hors plage nominale,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_E60AC808
+INC-000510,2025-11-01,14:08,MACH-13,4,OP1008,échauffement bobinage moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000511,2025-11-01,22:38,MACH-11,2,OP1007,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_48FCA839
+INC-000512,2025-11-02,05:36,MACH-01,3,OP1009,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000513,2025-11-03,04:06,MACH-07,2,OP1010,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-000514,2025-11-06,09:39,MACH-05,3,OP1002,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000515,2025-11-08,04:52,MACH-05,3,OP1008,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000516,2025-11-08,16:26,MACH-14,2,OP1008,signal capteur hors plage,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_96340230
+INC-000517,2025-11-08,18:09,MACH-14,2,OP1004,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000518,2025-11-08,20:50,MACH-12,3,OP1007,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-000519,2025-11-09,06:45,MACH-10,2,OP1005,signal capteur hors plage,matin,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000520,2025-11-09,16:26,MACH-14,3,OP1008,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_96340230
+INC-000521,2025-11-09,18:09,MACH-14,3,OP1003,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000522,2025-11-09,20:02,MACH-01,3,OP1007,pièces hors tolérance — contrôle qualité,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_48FCA839
+INC-000523,2025-11-09,21:15,MACH-13,3,OP1001,pic courant anormal moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_E60AC808
+INC-000524,2025-11-09,21:38,MACH-13,2,OP1004,échauffement bobinage moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000525,2025-11-09,22:14,MACH-05,3,OP1004,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000526,2025-11-10,06:45,MACH-10,3,OP1008,défaut capteur confirmé,matin,0,0,0,0,0,0,1,0,0,OP_ANON_96340230
+INC-000527,2025-11-10,16:26,MACH-14,4,OP1003,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-000528,2025-11-10,18:09,MACH-14,4,OP1001,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000529,2025-11-10,21:38,MACH-13,3,OP1002,consommation hors plage nominale,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-000530,2025-11-10,21:49,MACH-13,3,OP1004,pic courant anormal moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000531,2025-11-11,06:45,MACH-10,4,OP1006,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_BCCFF1DB
+INC-000532,2025-11-11,10:12,MACH-10,3,OP1002,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-000533,2025-11-11,17:01,MACH-09,3,OP1007,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-000534,2025-11-11,19:52,MACH-11,2,OP1009,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000535,2025-11-11,21:17,MACH-13,3,OP1007,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_48FCA839
+INC-000536,2025-11-11,21:38,MACH-13,4,OP1006,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000537,2025-11-12,10:52,MACH-15,3,OP1004,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000538,2025-11-13,04:03,MACH-15,3,OP1010,échauffement bobinage moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_7250BF59
+INC-000539,2025-11-13,04:56,MACH-04,2,OP1007,vibration anormale roulement,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_70367646
+INC-000540,2025-11-13,15:01,MACH-15,3,OP1004,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-000541,2025-11-14,01:09,MACH-01,2,OP1003,signal capteur hors plage,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_5DF8E9FC
+INC-000542,2025-11-14,01:14,MACH-01,2,OP1002,perte intermittente signal mesure,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-000543,2025-11-14,04:03,MACH-04,3,OP1006,balourd rotor confirmé,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000544,2025-11-14,04:56,MACH-04,3,OP1004,vibration anormale roulement,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000545,2025-11-14,12:47,MACH-11,2,OP1004,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000546,2025-11-15,01:14,MACH-01,3,OP1001,signal capteur hors plage,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_E60AC808
+INC-000547,2025-11-15,01:35,MACH-01,3,OP1008,alarme capteur active,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_96340230
+INC-000548,2025-11-15,04:56,MACH-04,4,OP1007,vibration excessive + arrêt ligne,nuit,0,0,1,0,0,0,0,1,0,OP_ANON_48FCA839
+INC-000549,2025-11-15,07:46,MACH-09,3,OP1005,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000550,2025-11-15,10:55,MACH-09,3,OP1001,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000551,2025-11-15,11:04,MACH-04,2,OP1002,alerte température haute,matin,1,0,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000552,2025-11-16,01:14,MACH-01,4,OP1005,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000553,2025-11-16,11:04,MACH-04,3,OP1005,montée thermique progressive,matin,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000554,2025-11-16,13:17,MACH-08,2,OP1005,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000555,2025-11-16,16:14,MACH-09,3,OP1005,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000556,2025-11-16,16:49,MACH-05,3,OP1006,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000557,2025-11-17,11:04,MACH-04,4,OP1005,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000558,2025-11-19,22:39,MACH-03,3,OP1005,surconsommation électrique constatée,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-000559,2025-11-19,22:49,MACH-03,2,OP1001,pic courant anormal moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_E60AC808
+INC-000560,2025-11-19,23:40,MACH-08,2,OP1006,perte intermittente signal mesure,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000561,2025-11-19,23:46,MACH-08,2,OP1005,défaut capteur confirmé,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000562,2025-11-20,22:49,MACH-03,3,OP1008,surconsommation électrique constatée,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_96340230
+INC-000563,2025-11-20,22:53,MACH-03,3,OP1005,échauffement bobinage moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-000564,2025-11-20,23:07,MACH-09,2,OP1002,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000565,2025-11-20,23:40,MACH-08,3,OP1001,signal capteur hors plage,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_E60AC808
+INC-000566,2025-11-20,23:45,MACH-08,3,OP1001,perte intermittente signal mesure,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_E60AC808
+INC-000567,2025-11-21,22:49,MACH-03,5,OP1008,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000568,2025-11-21,23:40,MACH-08,4,OP1001,alarme capteur + arrêt ligne,nuit,0,0,0,0,0,0,1,1,0,OP_ANON_F9422AFA
+INC-000569,2025-11-22,07:47,MACH-05,3,OP1003,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_A8D0E69E
+INC-000570,2025-11-22,20:48,MACH-01,3,OP1005,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000571,2025-11-23,02:26,MACH-08,2,OP1007,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_48FCA839
+INC-000572,2025-11-23,16:03,MACH-11,3,OP1006,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_BCCFF1DB
+INC-000573,2025-11-24,03:32,MACH-07,2,OP1002,vibration anormale roulement,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000574,2025-11-24,06:27,MACH-13,3,OP1001,pic courant anormal moteur,matin,0,0,0,0,1,0,0,0,0,OP_ANON_E60AC808
+INC-000575,2025-11-24,06:36,MACH-13,2,OP1002,surconsommation électrique constatée,matin,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-000576,2025-11-24,12:12,MACH-15,3,OP1007,perte intermittente signal mesure,matin,0,0,0,0,0,0,1,0,0,OP_ANON_48FCA839
+INC-000577,2025-11-25,02:07,MACH-08,3,OP1003,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-000578,2025-11-25,03:08,MACH-11,2,OP1010,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000579,2025-11-25,03:32,MACH-07,3,OP1008,vibrations excessives détectées,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_96340230
+INC-000580,2025-11-25,06:36,MACH-13,3,OP1002,échauffement bobinage moteur,matin,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-000581,2025-11-25,06:40,MACH-13,3,OP1007,échauffement bobinage moteur,matin,0,0,0,0,1,0,0,0,0,OP_ANON_70367646
+INC-000582,2025-11-25,11:29,MACH-06,2,OP1009,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_473D33F3
+INC-000583,2025-11-25,14:26,MACH-03,2,OP1008,alarme capteur active,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_96340230
+INC-000584,2025-11-25,14:31,MACH-03,3,OP1005,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000585,2025-11-25,17:09,MACH-10,2,OP1005,micro-fuite détectée — chute pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000586,2025-11-26,03:32,MACH-07,4,OP1008,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000587,2025-11-26,06:36,MACH-13,4,OP1004,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000588,2025-11-26,14:05,MACH-03,3,OP1005,perte intermittente signal mesure,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000589,2025-11-26,14:26,MACH-03,3,OP1006,alarme capteur active,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000590,2025-11-26,17:09,MACH-10,3,OP1006,circuit hydraulique en défaut,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000591,2025-11-26,17:49,MACH-10,3,OP1006,pression en dessous seuil critique,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000592,2025-11-27,14:26,MACH-03,5,OP1008,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-000593,2025-11-27,17:09,MACH-10,4,OP1010,micro-fuite / baisse pression + arrêt ligne,apres-midi,0,1,0,0,0,0,0,1,0,OP_ANON_7250BF59
+INC-000594,2025-11-27,21:47,MACH-09,3,OP1004,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000595,2025-11-28,16:42,MACH-12,2,OP1007,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-000596,2025-11-29,17:04,MACH-05,3,OP1004,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000597,2025-11-30,02:12,MACH-08,3,OP1009,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_473D33F3
+INC-000598,2025-11-30,11:01,MACH-03,3,OP1001,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_F9422AFA
+INC-000599,2025-12-01,13:16,MACH-13,3,OP1002,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000600,2025-12-01,13:43,MACH-13,2,OP1002,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000601,2025-12-01,21:06,MACH-09,3,OP1001,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F9422AFA
+INC-000602,2025-12-02,13:30,MACH-13,3,OP1001,choc sur transmission,matin,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-000603,2025-12-02,13:41,MACH-15,3,OP1004,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000604,2025-12-02,13:43,MACH-13,3,OP1005,cliquetis roulement axe,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000605,2025-12-02,21:04,MACH-13,2,OP1008,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_96340230
+INC-000606,2025-12-02,21:56,MACH-13,3,OP1004,signal capteur hors plage,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000607,2025-12-03,13:43,MACH-13,4,OP1003,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000608,2025-12-03,21:04,MACH-13,3,OP1005,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000609,2025-12-03,21:35,MACH-13,3,OP1006,alarme capteur active,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000610,2025-12-04,16:03,MACH-01,2,OP1001,chute taux de production anormale,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_E60AC808
+INC-000611,2025-12-04,21:04,MACH-13,4,OP1010,perte intermittente signal mesure,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_7250BF59
+INC-000612,2025-12-05,05:51,MACH-14,2,OP1008,défaut qualité pièces constaté,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_96340230
+INC-000613,2025-12-05,15:05,MACH-06,2,OP1001,pièce bloquée convoyeur,apres-midi,0,0,0,0,0,1,0,0,0,OP_ANON_F9422AFA
+INC-000614,2025-12-05,16:03,MACH-01,3,OP1001,défaut qualité pièces constaté,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_E60AC808
+INC-000615,2025-12-05,16:36,MACH-01,3,OP1007,chute taux de production anormale,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_70367646
+INC-000616,2025-12-06,05:51,MACH-14,3,OP1004,défaut qualité pièces constaté,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-000617,2025-12-06,10:01,MACH-08,3,OP1003,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000618,2025-12-06,16:03,MACH-01,4,OP1004,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-000619,2025-12-06,19:06,MACH-01,2,OP1005,défaut qualité pièces constaté,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000620,2025-12-07,05:51,MACH-14,4,OP1004,pièces hors tolérance — contrôle qualité,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-000621,2025-12-07,19:06,MACH-01,3,OP1002,chute taux de production anormale,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000622,2025-12-07,19:27,MACH-01,3,OP1001,pièces hors tolérance — contrôle qualité,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_E60AC808
+INC-000623,2025-12-07,19:41,MACH-13,3,OP1002,choc sur transmission,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000624,2025-12-07,19:56,MACH-13,2,OP1008,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_96340230
+INC-000625,2025-12-08,00:24,MACH-05,3,OP1003,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-000626,2025-12-08,02:10,MACH-09,2,OP1010,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-000627,2025-12-08,19:06,MACH-01,4,OP1003,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_A8D0E69E
+INC-000628,2025-12-08,19:22,MACH-13,3,OP1001,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-000629,2025-12-08,19:56,MACH-13,3,OP1005,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000630,2025-12-09,02:44,MACH-10,3,OP1010,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_7250BF59
+INC-000631,2025-12-09,13:11,MACH-02,3,OP1003,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-000632,2025-12-09,16:22,MACH-15,3,OP1009,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000633,2025-12-09,19:56,MACH-13,4,OP1001,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000634,2025-12-10,11:27,MACH-08,3,OP1009,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_473D33F3
+INC-000635,2025-12-10,11:34,MACH-13,3,OP1010,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-000636,2025-12-10,20:31,MACH-01,3,OP1008,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000637,2025-12-11,20:45,MACH-05,3,OP1006,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000638,2025-12-12,01:15,MACH-13,2,OP1008,chute taux de production anormale,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_96340230
+INC-000639,2025-12-12,01:15,MACH-13,3,OP1006,non-conformité dimensionnelle,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F9B75A1E
+INC-000640,2025-12-12,18:37,MACH-15,3,OP1002,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000641,2025-12-12,18:50,MACH-02,3,OP1005,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000642,2025-12-13,01:15,MACH-13,3,OP1007,chute taux de production anormale,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_70367646
+INC-000643,2025-12-13,01:33,MACH-13,3,OP1005,chute taux de production anormale,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000644,2025-12-13,16:26,MACH-10,2,OP1008,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000645,2025-12-13,23:09,MACH-13,3,OP1007,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_48FCA839
+INC-000646,2025-12-14,01:15,MACH-13,4,OP1004,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-000647,2025-12-14,18:33,MACH-01,2,OP1001,défaut qualité pièces constaté,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_E60AC808
+INC-000648,2025-12-14,18:54,MACH-01,2,OP1004,chute taux de production anormale,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-000649,2025-12-15,03:31,MACH-04,2,OP1002,chute taux de production anormale,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000650,2025-12-15,09:40,MACH-05,2,OP1007,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_70367646
+INC-000651,2025-12-15,18:31,MACH-01,3,OP1002,chute taux de production anormale,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000652,2025-12-15,18:33,MACH-01,3,OP1007,pièces hors tolérance — contrôle qualité,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_70367646
+INC-000653,2025-12-16,03:31,MACH-04,3,OP1002,chute taux de production anormale,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000654,2025-12-16,08:18,MACH-15,3,OP1008,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000655,2025-12-16,09:40,MACH-05,3,OP1001,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-000656,2025-12-16,12:10,MACH-02,2,OP1003,circuit hydraulique en défaut,matin,0,1,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000657,2025-12-16,18:33,MACH-01,4,OP1005,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000658,2025-12-17,03:31,MACH-04,4,OP1005,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000659,2025-12-17,09:40,MACH-05,5,OP1009,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_473D33F3
+INC-000660,2025-12-17,12:10,MACH-02,3,OP1002,pression en dessous seuil critique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000661,2025-12-17,12:15,MACH-02,3,OP1007,pression en dessous seuil critique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000662,2025-12-17,17:38,MACH-02,3,OP1004,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000663,2025-12-17,19:26,MACH-03,3,OP1004,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000664,2025-12-17,22:54,MACH-11,2,OP1004,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000665,2025-12-18,07:24,MACH-05,2,OP1008,surchauffe capteur thermique,matin,1,0,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-000666,2025-12-18,11:28,MACH-06,2,OP1003,frottement mécanique cyclique,matin,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000667,2025-12-18,12:10,MACH-02,4,OP1004,micro-fuite / baisse pression + arrêt ligne,matin,0,1,0,0,0,0,0,1,0,OP_ANON_F76C70D0
+INC-000668,2025-12-19,06:09,MACH-05,3,OP1009,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000669,2025-12-19,07:24,MACH-05,3,OP1004,surchauffe capteur thermique,matin,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000670,2025-12-19,07:27,MACH-02,3,OP1007,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_48FCA839
+INC-000671,2025-12-19,11:28,MACH-06,3,OP1005,choc sur transmission,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000672,2025-12-19,18:29,MACH-02,3,OP1009,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_473D33F3
+INC-000673,2025-12-20,00:40,MACH-07,3,OP1005,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000674,2025-12-20,07:24,MACH-05,5,OP1004,surchauffe capteur thermique,matin,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000675,2025-12-20,08:53,MACH-14,2,OP1001,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F9422AFA
+INC-000676,2025-12-20,11:28,MACH-06,4,OP1005,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000677,2025-12-21,18:08,MACH-15,3,OP1004,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000678,2025-12-22,12:07,MACH-15,3,OP1005,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000679,2025-12-23,20:06,MACH-03,2,OP1003,non-conformité dimensionnelle,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_5DF8E9FC
+INC-000680,2025-12-23,20:56,MACH-03,3,OP1007,défaut qualité pièces constaté,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_70367646
+INC-000681,2025-12-24,16:08,MACH-03,3,OP1004,cliquetis roulement axe,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000682,2025-12-24,16:25,MACH-03,2,OP1001,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-000683,2025-12-24,20:06,MACH-03,3,OP1008,pièces hors tolérance — contrôle qualité,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_96340230
+INC-000684,2025-12-24,20:55,MACH-03,3,OP1004,non-conformité dimensionnelle,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-000685,2025-12-25,16:16,MACH-03,3,OP1006,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000686,2025-12-25,16:25,MACH-03,3,OP1003,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000687,2025-12-25,20:06,MACH-03,4,OP1002,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000688,2025-12-25,20:18,MACH-15,2,OP1008,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000689,2025-12-26,00:36,MACH-11,3,OP1005,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000690,2025-12-26,16:25,MACH-03,4,OP1007,bruit mécanique anormal + arrêt ligne,apres-midi,0,0,0,1,0,0,0,1,0,OP_ANON_48FCA839
+INC-000691,2025-12-27,09:45,MACH-08,2,OP1008,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_F1DE5CA6
+INC-000692,2025-12-27,10:24,MACH-13,2,OP1004,balourd rotor confirmé,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000693,2025-12-27,10:35,MACH-13,3,OP1006,vibrations excessives détectées,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000694,2025-12-27,11:23,MACH-13,3,OP1007,baisse pression hydraulique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000695,2025-12-27,11:48,MACH-13,2,OP1006,baisse pression hydraulique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000696,2025-12-27,18:13,MACH-04,2,OP1002,alerte température haute,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000697,2025-12-28,10:24,MACH-13,3,OP1007,vibrations excessives détectées,matin,0,0,1,0,0,0,0,0,0,OP_ANON_70367646
+INC-000698,2025-12-28,10:37,MACH-13,3,OP1004,balourd rotor confirmé,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000699,2025-12-28,11:48,MACH-13,3,OP1006,pression en dessous seuil critique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000700,2025-12-28,11:56,MACH-13,3,OP1005,circuit hydraulique en défaut,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000701,2025-12-28,18:13,MACH-04,3,OP1004,montée thermique progressive,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000702,2025-12-29,02:24,MACH-08,2,OP1008,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F1DE5CA6
+INC-000703,2025-12-29,10:24,MACH-13,4,OP1002,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000704,2025-12-29,11:48,MACH-13,4,OP1001,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000705,2025-12-29,18:13,MACH-04,4,OP1008,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000706,2025-12-29,23:55,MACH-14,3,OP1009,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000707,2025-12-30,02:34,MACH-07,3,OP1003,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000708,2025-12-31,13:09,MACH-13,2,OP1004,circuit hydraulique en défaut,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000709,2025-12-31,13:35,MACH-13,3,OP1008,micro-fuite détectée — chute pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-000710,2026-01-01,11:33,MACH-01,2,OP1001,cliquetis roulement axe,matin,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-000711,2026-01-01,11:53,MACH-02,3,OP1003,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_A8D0E69E
+INC-000712,2026-01-01,13:03,MACH-13,3,OP1001,pression en dessous seuil critique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000713,2026-01-01,13:09,MACH-13,3,OP1006,circuit hydraulique en défaut,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000714,2026-01-02,02:18,MACH-03,3,OP1001,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000715,2026-01-02,11:24,MACH-01,3,OP1005,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000716,2026-01-02,11:28,MACH-11,3,OP1005,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000717,2026-01-02,11:33,MACH-01,3,OP1006,choc sur transmission,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000718,2026-01-02,13:09,MACH-13,4,OP1003,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000719,2026-01-02,13:28,MACH-12,2,OP1009,pic courant anormal moteur,matin,0,0,0,0,1,0,0,0,0,OP_ANON_473D33F3
+INC-000720,2026-01-03,08:13,MACH-03,3,OP1007,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-000721,2026-01-03,11:33,MACH-01,4,OP1003,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000722,2026-01-03,19:20,MACH-02,3,OP1002,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000723,2026-01-03,22:33,MACH-03,3,OP1004,échauffement bobinage moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000724,2026-01-03,22:34,MACH-03,2,OP1007,surconsommation électrique constatée,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_70367646
+INC-000725,2026-01-04,00:34,MACH-11,2,OP1006,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000726,2026-01-04,02:41,MACH-14,3,OP1008,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000727,2026-01-04,18:32,MACH-10,2,OP1008,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000728,2026-01-04,22:34,MACH-03,3,OP1006,surconsommation électrique constatée,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F9B75A1E
+INC-000729,2026-01-04,22:37,MACH-03,3,OP1001,pic courant anormal moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_E60AC808
+INC-000730,2026-01-05,22:34,MACH-03,4,OP1008,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000731,2026-01-08,08:15,MACH-10,2,OP1005,circuit hydraulique en défaut,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000732,2026-01-08,09:38,MACH-15,2,OP1009,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_473D33F3
+INC-000733,2026-01-08,16:20,MACH-10,2,OP1001,alarme capteur active,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_E60AC808
+INC-000734,2026-01-08,18:36,MACH-01,3,OP1003,pièces hors tolérance — contrôle qualité,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_A8D0E69E
+INC-000735,2026-01-09,08:15,MACH-10,3,OP1005,circuit hydraulique en défaut,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000736,2026-01-09,15:19,MACH-08,3,OP1002,pression en dessous seuil critique,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000737,2026-01-09,16:20,MACH-10,3,OP1005,perte intermittente signal mesure,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000738,2026-01-10,08:15,MACH-10,4,OP1009,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000739,2026-01-10,12:25,MACH-03,2,OP1007,balourd rotor confirmé,matin,0,0,1,0,0,0,0,0,0,OP_ANON_70367646
+INC-000740,2026-01-10,12:45,MACH-03,3,OP1001,vibration anormale roulement,matin,0,0,1,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000741,2026-01-10,16:20,MACH-10,4,OP1010,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_7250BF59
+INC-000742,2026-01-11,12:12,MACH-03,3,OP1002,vibrations excessives détectées,matin,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000743,2026-01-11,12:25,MACH-03,3,OP1008,vibration anormale roulement,matin,0,0,1,0,0,0,0,0,0,OP_ANON_96340230
+INC-000744,2026-01-11,12:32,MACH-14,3,OP1003,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-000745,2026-01-12,12:25,MACH-03,5,OP1007,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-000746,2026-01-12,12:31,MACH-11,2,OP1005,surchauffe capteur thermique,matin,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000747,2026-01-12,12:47,MACH-11,2,OP1007,montée thermique progressive,matin,1,0,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000748,2026-01-12,21:36,MACH-01,3,OP1006,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_BCCFF1DB
+INC-000749,2026-01-13,01:42,MACH-09,2,OP1002,oscillations hors tolérance,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000750,2026-01-13,09:31,MACH-09,3,OP1003,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000751,2026-01-13,12:21,MACH-11,3,OP1006,surchauffe capteur thermique,matin,1,0,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000752,2026-01-13,12:47,MACH-11,3,OP1005,surchauffe capteur thermique,matin,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000753,2026-01-13,19:30,MACH-14,3,OP1006,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000754,2026-01-14,01:42,MACH-09,3,OP1008,oscillations hors tolérance,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_96340230
+INC-000755,2026-01-14,12:47,MACH-11,4,OP1003,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000756,2026-01-15,01:42,MACH-09,5,OP1001,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000757,2026-01-15,11:32,MACH-06,3,OP1002,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000758,2026-01-16,14:51,MACH-07,3,OP1002,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000759,2026-01-17,14:08,MACH-05,3,OP1005,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000760,2026-01-17,16:53,MACH-01,3,OP1010,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000761,2026-01-17,17:49,MACH-14,2,OP1006,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000762,2026-01-18,02:29,MACH-05,3,OP1006,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000763,2026-01-18,15:42,MACH-11,3,OP1005,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000764,2026-01-19,23:46,MACH-14,2,OP1002,frottement mécanique cyclique,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000765,2026-01-20,23:46,MACH-14,3,OP1008,choc sur transmission,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_96340230
+INC-000766,2026-01-21,15:29,MACH-01,2,OP1005,cliquetis roulement axe,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000767,2026-01-21,15:30,MACH-01,2,OP1001,choc sur transmission,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-000768,2026-01-21,21:16,MACH-03,3,OP1007,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_48FCA839
+INC-000769,2026-01-21,23:46,MACH-14,4,OP1008,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000770,2026-01-22,10:15,MACH-14,3,OP1001,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000771,2026-01-22,15:18,MACH-01,3,OP1004,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000772,2026-01-22,15:29,MACH-01,3,OP1003,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000773,2026-01-23,11:04,MACH-03,2,OP1005,défaut qualité pièces constaté,matin,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000774,2026-01-23,11:30,MACH-03,3,OP1003,non-conformité dimensionnelle,matin,0,0,0,0,0,0,0,0,1,OP_ANON_5DF8E9FC
+INC-000775,2026-01-23,13:05,MACH-01,2,OP1007,circuit hydraulique en défaut,matin,0,1,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000776,2026-01-23,14:22,MACH-12,2,OP1010,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000777,2026-01-23,15:29,MACH-01,4,OP1003,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000778,2026-01-24,08:20,MACH-13,2,OP1008,vibrations excessives détectées,matin,0,0,1,0,0,0,0,0,0,OP_ANON_96340230
+INC-000779,2026-01-24,11:04,MACH-03,3,OP1008,chute taux de production anormale,matin,0,0,0,0,0,0,0,0,1,OP_ANON_96340230
+INC-000780,2026-01-24,11:07,MACH-03,3,OP1007,non-conformité dimensionnelle,matin,0,0,0,0,0,0,0,0,1,OP_ANON_70367646
+INC-000781,2026-01-24,13:04,MACH-01,3,OP1003,micro-fuite détectée — chute pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000782,2026-01-24,13:05,MACH-01,3,OP1008,baisse pression hydraulique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-000783,2026-01-24,15:05,MACH-15,3,OP1009,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_473D33F3
+INC-000784,2026-01-24,15:50,MACH-09,2,OP1006,défaut qualité pièces constaté,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_BCCFF1DB
+INC-000785,2026-01-25,08:20,MACH-13,3,OP1001,balourd rotor confirmé,matin,0,0,1,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000786,2026-01-25,08:47,MACH-13,3,OP1005,vibrations excessives détectées,matin,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000787,2026-01-25,08:48,MACH-08,2,OP1005,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000788,2026-01-25,11:04,MACH-03,5,OP1004,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-000789,2026-01-25,13:05,MACH-01,4,OP1002,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000790,2026-01-25,13:16,MACH-01,3,OP1006,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000791,2026-01-26,05:33,MACH-07,3,OP1009,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_473D33F3
+INC-000792,2026-01-26,08:20,MACH-13,4,OP1009,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000793,2026-01-26,11:42,MACH-10,2,OP1005,vibrations excessives détectées,matin,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000794,2026-01-27,01:28,MACH-15,3,OP1008,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-000795,2026-01-27,11:42,MACH-10,3,OP1004,vibration anormale roulement,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000796,2026-01-27,18:10,MACH-02,3,OP1003,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_A8D0E69E
+INC-000797,2026-01-28,11:42,MACH-10,4,OP1005,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000798,2026-01-28,19:18,MACH-03,3,OP1005,vibration anormale roulement,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000799,2026-01-28,19:25,MACH-03,2,OP1005,oscillations hors tolérance,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000800,2026-01-29,10:04,MACH-08,3,OP1003,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_A8D0E69E
+INC-000801,2026-01-29,15:41,MACH-03,2,OP1008,choc sur transmission,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_96340230
+INC-000802,2026-01-29,15:43,MACH-03,3,OP1003,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000803,2026-01-29,19:25,MACH-03,3,OP1008,vibrations excessives détectées,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_96340230
+INC-000804,2026-01-29,19:52,MACH-03,3,OP1002,vibration anormale roulement,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000805,2026-01-30,15:01,MACH-03,3,OP1005,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000806,2026-01-30,15:41,MACH-03,3,OP1003,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000807,2026-01-30,19:25,MACH-03,4,OP1009,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000808,2026-01-31,00:48,MACH-07,3,OP1008,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000809,2026-01-31,02:41,MACH-04,3,OP1004,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000810,2026-01-31,02:49,MACH-02,3,OP1007,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_48FCA839
+INC-000811,2026-01-31,08:24,MACH-08,3,OP1009,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000812,2026-01-31,12:22,MACH-13,3,OP1004,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000813,2026-01-31,14:35,MACH-04,2,OP1004,signal capteur hors plage,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000814,2026-01-31,15:41,MACH-03,4,OP1004,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000815,2026-02-01,11:07,MACH-13,2,OP1001,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-000816,2026-02-01,14:35,MACH-04,3,OP1003,alarme capteur active,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_5DF8E9FC
+INC-000817,2026-02-02,11:07,MACH-13,3,OP1003,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000818,2026-02-02,11:14,MACH-13,3,OP1006,frottement mécanique cyclique,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000819,2026-02-02,11:21,MACH-14,2,OP1006,surconsommation électrique constatée,matin,0,0,0,0,1,0,0,0,0,OP_ANON_F9B75A1E
+INC-000820,2026-02-02,14:35,MACH-04,4,OP1007,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_48FCA839
+INC-000821,2026-02-02,17:39,MACH-10,3,OP1005,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000822,2026-02-03,11:07,MACH-13,4,OP1004,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000823,2026-02-03,11:21,MACH-14,3,OP1004,surconsommation électrique constatée,matin,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000824,2026-02-03,12:29,MACH-03,3,OP1009,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_473D33F3
+INC-000825,2026-02-03,15:05,MACH-14,2,OP1007,baisse pression hydraulique,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000826,2026-02-04,11:21,MACH-14,4,OP1009,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_473D33F3
+INC-000827,2026-02-04,15:05,MACH-14,3,OP1001,micro-fuite détectée — chute pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000828,2026-02-04,20:29,MACH-03,3,OP1002,cliquetis roulement axe,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000829,2026-02-04,20:45,MACH-03,2,OP1003,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000830,2026-02-05,06:55,MACH-05,3,OP1009,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000831,2026-02-05,15:05,MACH-14,4,OP1008,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000832,2026-02-05,20:45,MACH-03,3,OP1007,cliquetis roulement axe,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_70367646
+INC-000833,2026-02-05,20:57,MACH-03,3,OP1004,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000834,2026-02-06,11:26,MACH-08,3,OP1005,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000835,2026-02-06,20:45,MACH-03,4,OP1002,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000836,2026-02-06,22:25,MACH-08,2,OP1008,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000837,2026-02-07,11:18,MACH-08,3,OP1010,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-000838,2026-02-10,15:44,MACH-03,3,OP1006,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000839,2026-02-10,15:53,MACH-03,2,OP1007,cliquetis roulement axe,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_70367646
+INC-000840,2026-02-10,22:20,MACH-03,2,OP1006,vibration anormale roulement,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000841,2026-02-10,22:40,MACH-03,3,OP1005,vibrations excessives détectées,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000842,2026-02-11,11:09,MACH-03,3,OP1004,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000843,2026-02-11,15:41,MACH-03,3,OP1008,choc sur transmission,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_96340230
+INC-000844,2026-02-11,15:53,MACH-03,3,OP1008,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_96340230
+INC-000845,2026-02-11,17:12,MACH-13,2,OP1003,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000846,2026-02-11,17:43,MACH-13,3,OP1008,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_96340230
+INC-000847,2026-02-11,22:20,MACH-03,3,OP1007,vibration anormale roulement,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_70367646
+INC-000848,2026-02-11,22:23,MACH-03,3,OP1003,vibration anormale roulement,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000849,2026-02-12,04:30,MACH-12,2,OP1008,surconsommation électrique constatée,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_96340230
+INC-000850,2026-02-12,15:53,MACH-03,4,OP1010,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-000851,2026-02-12,16:48,MACH-10,2,OP1006,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000852,2026-02-12,17:12,MACH-13,3,OP1001,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-000853,2026-02-12,17:37,MACH-13,3,OP1004,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000854,2026-02-12,22:20,MACH-03,5,OP1002,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000855,2026-02-13,04:30,MACH-12,3,OP1004,surconsommation électrique constatée,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000856,2026-02-13,07:01,MACH-01,3,OP1008,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-000857,2026-02-13,09:39,MACH-13,3,OP1004,frottement mécanique cyclique,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000858,2026-02-13,09:53,MACH-13,2,OP1005,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000859,2026-02-13,16:48,MACH-10,3,OP1008,cliquetis roulement axe,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_96340230
+INC-000860,2026-02-13,17:12,MACH-13,4,OP1001,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000861,2026-02-13,20:44,MACH-05,3,OP1004,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000862,2026-02-14,04:10,MACH-03,3,OP1005,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-000863,2026-02-14,04:27,MACH-01,3,OP1001,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F9422AFA
+INC-000864,2026-02-14,04:30,MACH-12,4,OP1005,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-000865,2026-02-14,09:41,MACH-13,3,OP1003,cliquetis roulement axe,matin,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000866,2026-02-14,09:53,MACH-13,3,OP1002,cliquetis roulement axe,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000867,2026-02-14,11:10,MACH-13,3,OP1006,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000868,2026-02-14,16:32,MACH-09,2,OP1008,chute taux de production anormale,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_96340230
+INC-000869,2026-02-14,16:48,MACH-10,4,OP1007,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_48FCA839
+INC-000870,2026-02-15,09:53,MACH-13,4,OP1001,frottement mécanique cyclique,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000871,2026-02-15,11:57,MACH-08,3,OP1004,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000872,2026-02-15,16:32,MACH-09,3,OP1008,défaut qualité pièces constaté,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_96340230
+INC-000873,2026-02-16,11:55,MACH-08,3,OP1007,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_48FCA839
+INC-000874,2026-02-16,16:32,MACH-09,5,OP1008,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_F1DE5CA6
+INC-000875,2026-02-17,06:12,MACH-11,2,OP1002,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000876,2026-02-17,12:46,MACH-09,2,OP1002,vibration anormale roulement,matin,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000877,2026-02-18,02:48,MACH-08,3,OP1007,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-000878,2026-02-18,12:46,MACH-09,3,OP1002,vibrations excessives détectées,matin,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000879,2026-02-19,12:46,MACH-09,5,OP1004,oscillations hors tolérance,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000880,2026-02-19,15:57,MACH-01,3,OP1003,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000881,2026-02-20,09:38,MACH-15,2,OP1006,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000882,2026-02-21,15:09,MACH-03,3,OP1005,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000883,2026-02-21,15:26,MACH-03,2,OP1001,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_E60AC808
+INC-000884,2026-02-22,15:26,MACH-03,3,OP1006,alarme capteur active,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-000885,2026-02-22,15:29,MACH-03,3,OP1001,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_E60AC808
+INC-000886,2026-02-23,06:48,MACH-14,2,OP1007,alerte température haute,matin,1,0,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000887,2026-02-23,15:26,MACH-03,5,OP1004,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000888,2026-02-23,17:49,MACH-04,3,OP1005,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-000889,2026-02-24,02:44,MACH-13,2,OP1004,échauffement bobinage moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000890,2026-02-24,06:48,MACH-14,3,OP1007,alerte température haute,matin,1,0,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000891,2026-02-24,23:19,MACH-14,3,OP1002,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000892,2026-02-25,02:05,MACH-13,3,OP1004,échauffement bobinage moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-000893,2026-02-25,02:44,MACH-13,3,OP1005,échauffement bobinage moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-000894,2026-02-25,06:48,MACH-14,4,OP1001,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000895,2026-02-25,09:03,MACH-10,2,OP1003,pièces hors tolérance — contrôle qualité,matin,0,0,0,0,0,0,0,0,1,OP_ANON_5DF8E9FC
+INC-000896,2026-02-26,02:44,MACH-13,4,OP1007,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_48FCA839
+INC-000897,2026-02-26,09:03,MACH-10,3,OP1006,chute taux de production anormale,matin,0,0,0,0,0,0,0,0,1,OP_ANON_F9B75A1E
+INC-000898,2026-02-27,09:03,MACH-10,4,OP1009,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_473D33F3
+INC-000899,2026-02-27,18:53,MACH-13,2,OP1003,vibration anormale roulement,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000900,2026-02-28,18:28,MACH-13,3,OP1003,balourd rotor confirmé,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000901,2026-02-28,18:53,MACH-13,3,OP1006,vibrations excessives détectées,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000902,2026-03-01,04:27,MACH-08,2,OP1003,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000903,2026-03-01,18:53,MACH-13,4,OP1002,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000904,2026-03-02,03:09,MACH-01,3,OP1003,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000905,2026-03-02,06:18,MACH-11,3,OP1004,défaut capteur confirmé,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000906,2026-03-03,11:11,MACH-08,2,OP1003,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000907,2026-03-03,12:14,MACH-12,3,OP1001,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000908,2026-03-03,16:14,MACH-13,2,OP1007,balourd rotor confirmé,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_70367646
+INC-000909,2026-03-04,15:54,MACH-11,3,OP1009,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000910,2026-03-04,16:03,MACH-13,3,OP1008,vibration anormale roulement,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_96340230
+INC-000911,2026-03-04,16:14,MACH-13,3,OP1005,balourd rotor confirmé,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000912,2026-03-05,16:14,MACH-13,4,OP1005,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000913,2026-03-06,01:11,MACH-01,3,OP1005,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000914,2026-03-06,13:12,MACH-15,3,OP1009,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_473D33F3
+INC-000915,2026-03-06,13:17,MACH-07,3,OP1005,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000916,2026-03-06,16:28,MACH-08,2,OP1006,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000917,2026-03-07,12:34,MACH-13,3,OP1009,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000918,2026-03-07,12:57,MACH-09,3,OP1002,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000919,2026-03-07,14:42,MACH-03,3,OP1004,baisse pression hydraulique,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000920,2026-03-07,14:49,MACH-03,2,OP1008,circuit hydraulique en défaut,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-000921,2026-03-07,15:29,MACH-11,3,OP1004,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000922,2026-03-08,01:01,MACH-14,2,OP1010,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_7250BF59
+INC-000923,2026-03-08,12:05,MACH-03,3,OP1010,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000924,2026-03-08,14:16,MACH-03,3,OP1003,baisse pression hydraulique,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000925,2026-03-08,14:49,MACH-03,3,OP1007,pression en dessous seuil critique,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000926,2026-03-09,07:04,MACH-14,2,OP1007,cliquetis roulement axe,matin,0,0,0,1,0,0,0,0,0,OP_ANON_70367646
+INC-000927,2026-03-09,07:42,MACH-13,2,OP1004,oscillations hors tolérance,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000928,2026-03-09,09:21,MACH-01,2,OP1001,oscillations hors tolérance,matin,0,0,1,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000929,2026-03-09,14:49,MACH-03,5,OP1009,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000930,2026-03-09,19:49,MACH-15,3,OP1003,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-000931,2026-03-09,21:37,MACH-03,3,OP1002,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-000932,2026-03-10,01:32,MACH-03,3,OP1007,circuit hydraulique en défaut,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-000933,2026-03-10,01:38,MACH-04,3,OP1007,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-000934,2026-03-10,01:51,MACH-03,2,OP1003,baisse pression hydraulique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000935,2026-03-10,07:04,MACH-14,3,OP1006,frottement mécanique cyclique,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000936,2026-03-10,07:24,MACH-13,3,OP1008,vibration anormale roulement,matin,0,0,1,0,0,0,0,0,0,OP_ANON_96340230
+INC-000937,2026-03-10,07:42,MACH-13,3,OP1002,vibrations excessives détectées,matin,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000938,2026-03-10,09:21,MACH-01,3,OP1004,oscillations hors tolérance,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000939,2026-03-10,09:39,MACH-01,3,OP1002,balourd rotor confirmé,matin,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000940,2026-03-11,00:46,MACH-15,3,OP1002,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000941,2026-03-11,01:35,MACH-02,3,OP1007,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_48FCA839
+INC-000942,2026-03-11,01:44,MACH-03,3,OP1004,circuit hydraulique en défaut,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000943,2026-03-11,01:51,MACH-03,3,OP1005,pression en dessous seuil critique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000944,2026-03-11,07:04,MACH-14,4,OP1006,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000945,2026-03-11,07:42,MACH-13,4,OP1002,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000946,2026-03-11,09:21,MACH-01,4,OP1004,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000947,2026-03-11,12:43,MACH-14,2,OP1006,chauffe anormale,matin,1,0,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000948,2026-03-11,15:31,MACH-15,2,OP1010,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-000949,2026-03-12,01:51,MACH-03,4,OP1006,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000950,2026-03-12,07:20,MACH-03,3,OP1007,pièce bloquée convoyeur,matin,0,0,0,0,0,1,0,0,0,OP_ANON_48FCA839
+INC-000951,2026-03-13,02:54,MACH-02,3,OP1006,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000952,2026-03-13,20:49,MACH-10,3,OP1005,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000953,2026-03-14,11:19,MACH-11,3,OP1009,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_473D33F3
+INC-000954,2026-03-14,14:28,MACH-10,3,OP1009,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_473D33F3
+INC-000955,2026-03-14,21:31,MACH-01,3,OP1009,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000956,2026-03-15,14:44,MACH-08,2,OP1008,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-000957,2026-03-17,10:49,MACH-01,3,OP1008,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-000958,2026-03-18,05:22,MACH-05,3,OP1004,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000959,2026-03-18,05:29,MACH-10,3,OP1009,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-000960,2026-03-18,07:22,MACH-13,2,OP1003,oscillations hors tolérance,matin,0,0,1,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-000961,2026-03-18,12:20,MACH-03,2,OP1001,cliquetis roulement axe,matin,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-000962,2026-03-18,12:52,MACH-03,3,OP1002,choc sur transmission,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-000963,2026-03-18,15:18,MACH-11,2,OP1007,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_48FCA839
+INC-000964,2026-03-18,21:34,MACH-04,3,OP1003,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000965,2026-03-19,07:07,MACH-13,3,OP1001,oscillations hors tolérance,matin,0,0,1,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-000966,2026-03-19,07:22,MACH-13,3,OP1006,oscillations hors tolérance,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-000967,2026-03-19,12:20,MACH-03,3,OP1004,frottement mécanique cyclique,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000968,2026-03-19,12:49,MACH-03,3,OP1005,frottement mécanique cyclique,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000969,2026-03-20,07:22,MACH-13,4,OP1006,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000970,2026-03-20,12:20,MACH-03,4,OP1005,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-000971,2026-03-20,23:34,MACH-01,3,OP1003,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-000972,2026-03-21,03:29,MACH-11,2,OP1004,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000973,2026-03-22,09:49,MACH-04,2,OP1004,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000974,2026-03-22,12:31,MACH-09,3,OP1004,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F76C70D0
+INC-000975,2026-03-23,04:30,MACH-13,3,OP1001,cliquetis roulement axe,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-000976,2026-03-23,04:57,MACH-13,2,OP1004,cliquetis roulement axe,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-000977,2026-03-24,04:06,MACH-13,3,OP1008,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_96340230
+INC-000978,2026-03-24,04:57,MACH-13,3,OP1007,choc sur transmission,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_70367646
+INC-000979,2026-03-24,17:02,MACH-08,3,OP1010,échauffement bobinage moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_7250BF59
+INC-000980,2026-03-24,18:23,MACH-02,3,OP1005,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-000981,2026-03-25,04:57,MACH-13,4,OP1010,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-000982,2026-03-25,15:11,MACH-13,2,OP1006,pièces hors tolérance — contrôle qualité,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_F9B75A1E
+INC-000983,2026-03-25,15:53,MACH-13,3,OP1006,chute taux de production anormale,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_F9B75A1E
+INC-000984,2026-03-25,21:36,MACH-10,2,OP1006,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-000985,2026-03-26,08:23,MACH-01,3,OP1006,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_BCCFF1DB
+INC-000986,2026-03-26,15:11,MACH-13,3,OP1001,non-conformité dimensionnelle,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_E60AC808
+INC-000987,2026-03-26,15:11,MACH-13,3,OP1007,non-conformité dimensionnelle,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_70367646
+INC-000988,2026-03-26,19:01,MACH-15,3,OP1008,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-000989,2026-03-27,09:20,MACH-01,3,OP1001,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F9422AFA
+INC-000990,2026-03-27,11:19,MACH-15,3,OP1005,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-000991,2026-03-27,15:11,MACH-13,4,OP1006,non-conformité dimensionnelle,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_BCCFF1DB
+INC-000992,2026-03-27,19:15,MACH-13,3,OP1002,pièces hors tolérance — contrôle qualité,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-000993,2026-03-27,19:40,MACH-13,2,OP1007,non-conformité dimensionnelle,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_70367646
+INC-000994,2026-03-28,19:35,MACH-13,3,OP1008,défaut qualité pièces constaté,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_96340230
+INC-000995,2026-03-28,19:40,MACH-13,3,OP1001,chute taux de production anormale,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_E60AC808
+INC-000996,2026-03-29,11:53,MACH-14,3,OP1008,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-000997,2026-03-29,19:40,MACH-13,4,OP1003,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_A8D0E69E
+INC-000998,2026-03-30,00:33,MACH-13,2,OP1008,vibration anormale roulement,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_96340230
+INC-000999,2026-03-30,05:24,MACH-02,2,OP1001,pièce bloquée convoyeur,nuit,0,0,0,0,0,1,0,0,0,OP_ANON_F9422AFA
+INC-001000,2026-03-30,09:24,MACH-01,2,OP1004,circuit hydraulique en défaut,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-001001,2026-03-31,00:09,MACH-13,3,OP1002,vibration anormale roulement,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001002,2026-03-31,00:33,MACH-13,3,OP1001,balourd rotor confirmé,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-001003,2026-03-31,09:24,MACH-01,3,OP1003,micro-fuite détectée — chute pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-001004,2026-03-31,09:35,MACH-01,3,OP1006,baisse pression hydraulique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-001005,2026-04-01,00:33,MACH-13,4,OP1007,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-001006,2026-04-01,08:01,MACH-15,3,OP1007,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-001007,2026-04-01,09:24,MACH-01,4,OP1007,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-001008,2026-04-01,20:16,MACH-01,3,OP1001,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_F9422AFA
+INC-001009,2026-04-02,05:36,MACH-06,2,OP1007,chute taux de production anormale,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_70367646
+INC-001010,2026-04-03,01:10,MACH-13,3,OP1005,chute taux de production anormale,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-001011,2026-04-03,01:28,MACH-13,2,OP1004,chute taux de production anormale,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-001012,2026-04-03,05:36,MACH-06,3,OP1002,non-conformité dimensionnelle,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-001013,2026-04-03,09:30,MACH-08,3,OP1002,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001014,2026-04-03,09:41,MACH-09,3,OP1009,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_473D33F3
+INC-001015,2026-04-03,13:37,MACH-05,3,OP1004,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-001016,2026-04-03,17:41,MACH-03,3,OP1010,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-001017,2026-04-04,01:28,MACH-13,3,OP1002,défaut qualité pièces constaté,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-001018,2026-04-04,01:56,MACH-13,3,OP1006,pièces hors tolérance — contrôle qualité,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F9B75A1E
+INC-001019,2026-04-04,04:46,MACH-15,3,OP1003,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-001020,2026-04-04,05:36,MACH-06,4,OP1006,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_BCCFF1DB
+INC-001021,2026-04-04,15:38,MACH-14,2,OP1003,balourd rotor confirmé,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-001022,2026-04-04,22:51,MACH-05,2,OP1009,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-001023,2026-04-05,01:28,MACH-13,4,OP1010,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_7250BF59
+INC-001024,2026-04-05,03:57,MACH-13,3,OP1003,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-001025,2026-04-05,15:38,MACH-14,3,OP1003,vibration anormale roulement,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-001026,2026-04-06,07:44,MACH-09,2,OP1004,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-001027,2026-04-06,15:38,MACH-14,4,OP1008,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-001028,2026-04-06,15:45,MACH-03,2,OP1008,défaut qualité pièces constaté,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_96340230
+INC-001029,2026-04-06,15:52,MACH-03,3,OP1002,défaut qualité pièces constaté,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-001030,2026-04-07,15:30,MACH-03,3,OP1005,non-conformité dimensionnelle,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-001031,2026-04-07,15:45,MACH-03,3,OP1008,chute taux de production anormale,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_96340230
+INC-001032,2026-04-08,06:17,MACH-03,3,OP1007,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_48FCA839
+INC-001033,2026-04-08,06:42,MACH-14,3,OP1004,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-001034,2026-04-08,08:55,MACH-02,3,OP1003,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_A8D0E69E
+INC-001035,2026-04-08,11:36,MACH-15,2,OP1007,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_48FCA839
+INC-001036,2026-04-08,15:45,MACH-03,5,OP1002,chute taux de production anormale,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-001037,2026-04-09,07:27,MACH-10,2,OP1001,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-001038,2026-04-09,13:50,MACH-11,2,OP1010,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_7250BF59
+INC-001039,2026-04-09,23:05,MACH-04,2,OP1008,alerte température haute,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-001040,2026-04-09,23:32,MACH-04,2,OP1006,température anormalement élevée,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-001041,2026-04-10,04:07,MACH-11,3,OP1002,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001042,2026-04-10,11:29,MACH-08,3,OP1006,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_BCCFF1DB
+INC-001043,2026-04-10,22:42,MACH-05,3,OP1005,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-001044,2026-04-10,23:26,MACH-04,3,OP1005,alerte température haute,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-001045,2026-04-10,23:32,MACH-04,3,OP1003,montée thermique progressive,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-001046,2026-04-10,23:38,MACH-05,2,OP1003,arrêt d'urgence déclenché par opérateur,nuit,0,0,0,0,0,0,0,1,0,OP_ANON_5DF8E9FC
+INC-001047,2026-04-10,23:47,MACH-05,2,OP1001,coupure urgence — surchauffe critique,nuit,0,0,0,0,0,0,0,1,0,OP_ANON_E60AC808
+INC-001048,2026-04-11,06:07,MACH-12,2,OP1006,surconsommation électrique constatée,matin,0,0,0,0,1,0,0,0,0,OP_ANON_F9B75A1E
+INC-001049,2026-04-11,06:57,MACH-04,2,OP1004,choc sur transmission,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-001050,2026-04-11,15:09,MACH-07,2,OP1001,échauffement bobinage moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_E60AC808
+INC-001051,2026-04-11,23:32,MACH-04,5,OP1008,chauffe anormale + arrêt ligne,nuit,1,0,0,0,0,0,0,1,0,OP_ANON_F1DE5CA6
+INC-001052,2026-04-11,23:38,MACH-05,3,OP1001,arrêt d'urgence déclenché par opérateur,nuit,0,0,0,0,0,0,0,1,0,OP_ANON_E60AC808
+INC-001053,2026-04-11,23:38,MACH-05,3,OP1003,arrêt d'urgence — vibration critique,nuit,0,0,0,0,0,0,0,1,0,OP_ANON_5DF8E9FC
+INC-001054,2026-04-12,03:55,MACH-02,3,OP1003,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-001055,2026-04-12,06:07,MACH-12,3,OP1008,échauffement bobinage moteur,matin,0,0,0,0,1,0,0,0,0,OP_ANON_96340230
+INC-001056,2026-04-12,06:57,MACH-04,3,OP1001,frottement mécanique cyclique,matin,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-001057,2026-04-12,15:09,MACH-07,3,OP1008,échauffement bobinage moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_96340230
+INC-001058,2026-04-12,23:38,MACH-05,4,OP1007,défaut qualité pièces + arrêt ligne,nuit,0,0,0,0,0,0,0,1,1,OP_ANON_48FCA839
+INC-001059,2026-04-13,00:24,MACH-11,3,OP1005,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-001060,2026-04-13,00:56,MACH-11,2,OP1008,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_F1DE5CA6
+INC-001061,2026-04-13,06:07,MACH-12,4,OP1004,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-001062,2026-04-13,06:57,MACH-04,4,OP1006,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-001063,2026-04-13,15:09,MACH-07,4,OP1001,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F9422AFA
+INC-001064,2026-04-13,22:17,MACH-11,3,OP1005,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-001065,2026-04-14,11:47,MACH-03,3,OP1005,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-001066,2026-04-14,18:42,MACH-05,2,OP1008,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-001067,2026-04-15,09:56,MACH-01,3,OP1001,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-001068,2026-04-15,13:20,MACH-06,2,OP1008,défaut capteur confirmé,matin,0,0,0,0,0,0,1,0,0,OP_ANON_96340230
+INC-001069,2026-04-16,03:43,MACH-12,3,OP1007,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-001070,2026-04-16,05:01,MACH-06,2,OP1006,perte intermittente signal mesure,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-001071,2026-04-16,13:20,MACH-06,3,OP1002,signal capteur hors plage,matin,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-001072,2026-04-16,16:08,MACH-14,2,OP1003,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-001073,2026-04-17,04:37,MACH-11,3,OP1003,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-001074,2026-04-17,05:01,MACH-06,3,OP1002,alarme capteur active,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-001075,2026-04-17,06:17,MACH-09,2,OP1004,chute taux de production anormale,matin,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-001076,2026-04-17,13:20,MACH-06,4,OP1005,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-001077,2026-04-17,16:08,MACH-14,3,OP1004,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-001078,2026-04-18,05:01,MACH-06,4,OP1008,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-001079,2026-04-18,06:17,MACH-09,3,OP1002,chute taux de production anormale,matin,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-001080,2026-04-18,16:08,MACH-14,4,OP1010,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-001081,2026-04-19,06:17,MACH-09,5,OP1001,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_F9422AFA
+INC-001082,2026-04-20,08:45,MACH-14,2,OP1001,pic courant anormal moteur,matin,0,0,0,0,1,0,0,0,0,OP_ANON_E60AC808
+INC-001083,2026-04-21,04:03,MACH-08,3,OP1004,chauffe anormale,nuit,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-001084,2026-04-21,08:45,MACH-14,3,OP1006,consommation hors plage nominale,matin,0,0,0,0,1,0,0,0,0,OP_ANON_F9B75A1E
+INC-001085,2026-04-22,08:27,MACH-09,2,OP1006,circuit hydraulique en défaut,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-001086,2026-04-22,08:45,MACH-14,4,OP1001,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_F9422AFA
+INC-001087,2026-04-22,13:19,MACH-03,2,OP1003,non-conformité dimensionnelle,matin,0,0,0,0,0,0,0,0,1,OP_ANON_5DF8E9FC
+INC-001088,2026-04-22,13:55,MACH-03,3,OP1005,défaut qualité pièces constaté,matin,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-001089,2026-04-22,14:28,MACH-08,3,OP1007,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-001090,2026-04-22,15:56,MACH-10,2,OP1004,échauffement bobinage moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-001091,2026-04-22,18:50,MACH-08,2,OP1004,surconsommation électrique,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_F76C70D0
+INC-001092,2026-04-23,08:27,MACH-09,3,OP1008,circuit hydraulique en défaut,matin,0,1,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-001093,2026-04-23,08:57,MACH-09,3,OP1004,baisse pression hydraulique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-001094,2026-04-23,10:05,MACH-09,2,OP1007,alarme capteur active,matin,0,0,0,0,0,0,1,0,0,OP_ANON_70367646
+INC-001095,2026-04-23,13:19,MACH-03,3,OP1004,chute taux de production anormale,matin,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-001096,2026-04-23,13:50,MACH-03,3,OP1002,chute taux de production anormale,matin,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-001097,2026-04-23,15:56,MACH-10,3,OP1007,surconsommation électrique constatée,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_70367646
+INC-001098,2026-04-24,08:27,MACH-09,4,OP1002,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001099,2026-04-24,10:05,MACH-09,3,OP1006,alarme capteur active,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-001100,2026-04-24,13:19,MACH-03,5,OP1001,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_F9422AFA
+INC-001101,2026-04-24,15:56,MACH-10,4,OP1005,échauffement bobinage moteur,apres-midi,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-001102,2026-04-25,01:13,MACH-03,2,OP1001,micro-fuite détectée — chute pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-001103,2026-04-25,01:14,MACH-03,3,OP1008,baisse pression hydraulique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-001104,2026-04-25,01:24,MACH-03,3,OP1010,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-001105,2026-04-25,07:31,MACH-05,2,OP1008,vibration anormale roulement,matin,0,0,1,0,0,0,0,0,0,OP_ANON_96340230
+INC-001106,2026-04-25,10:05,MACH-09,5,OP1003,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-001107,2026-04-25,12:46,MACH-08,3,OP1010,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-001108,2026-04-25,17:46,MACH-10,2,OP1006,signal capteur hors plage,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-001109,2026-04-26,01:13,MACH-03,3,OP1006,pression en dessous seuil critique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-001110,2026-04-26,01:38,MACH-03,3,OP1005,micro-fuite détectée — chute pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-001111,2026-04-26,07:31,MACH-05,3,OP1004,balourd rotor confirmé,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-001112,2026-04-26,12:05,MACH-14,3,OP1002,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-001113,2026-04-26,17:46,MACH-10,3,OP1006,défaut capteur confirmé,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F9B75A1E
+INC-001114,2026-04-27,01:13,MACH-03,4,OP1001,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-001115,2026-04-27,07:31,MACH-05,5,OP1008,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-001116,2026-04-27,10:53,MACH-12,2,OP1007,circuit hydraulique en défaut,matin,0,1,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-001117,2026-04-27,17:46,MACH-10,4,OP1002,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-001118,2026-04-28,10:53,MACH-12,3,OP1006,pression en dessous seuil critique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-001119,2026-04-29,05:03,MACH-01,2,OP1007,pic courant anormal moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_70367646
+INC-001120,2026-04-29,09:04,MACH-10,2,OP1005,alarme capteur active,matin,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-001121,2026-04-29,10:53,MACH-12,4,OP1007,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-001122,2026-04-29,18:26,MACH-06,3,OP1008,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-001123,2026-04-30,05:03,MACH-01,3,OP1003,pic courant anormal moteur,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_5DF8E9FC
+INC-001124,2026-04-30,05:47,MACH-01,3,OP1007,consommation hors plage nominale,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_70367646
+INC-001125,2026-04-30,09:04,MACH-10,3,OP1008,alarme capteur active,matin,0,0,0,0,0,0,1,0,0,OP_ANON_96340230
+INC-001126,2026-05-01,05:03,MACH-01,4,OP1006,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_BCCFF1DB
+INC-001127,2026-05-01,05:14,MACH-15,2,OP1005,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-001128,2026-05-01,09:04,MACH-10,4,OP1008,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F1DE5CA6
+INC-001129,2026-05-02,09:22,MACH-08,2,OP1007,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_48FCA839
+INC-001130,2026-05-03,00:55,MACH-13,3,OP1005,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-001131,2026-05-03,20:03,MACH-15,3,OP1010,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-001132,2026-05-04,02:22,MACH-15,3,OP1008,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-001133,2026-05-08,10:07,MACH-09,2,OP1002,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_2C59BBEB
+INC-001134,2026-05-08,14:54,MACH-08,2,OP1005,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-001135,2026-05-08,18:43,MACH-01,2,OP1002,vibration anormale roulement,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001136,2026-05-08,21:44,MACH-06,2,OP1009,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-001137,2026-05-09,03:41,MACH-01,3,OP1010,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-001138,2026-05-09,07:38,MACH-08,3,OP1007,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_48FCA839
+INC-001139,2026-05-09,18:43,MACH-01,3,OP1003,oscillations hors tolérance,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-001140,2026-05-09,18:45,MACH-01,3,OP1007,vibration anormale roulement,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_70367646
+INC-001141,2026-05-09,19:01,MACH-06,3,OP1009,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_473D33F3
+INC-001142,2026-05-10,04:50,MACH-03,3,OP1008,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F1DE5CA6
+INC-001143,2026-05-10,12:43,MACH-08,3,OP1006,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-001144,2026-05-10,16:03,MACH-09,2,OP1006,cliquetis roulement axe,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-001145,2026-05-10,18:43,MACH-01,4,OP1007,vibration excessive,apres-midi,0,0,1,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-001146,2026-05-11,13:23,MACH-09,2,OP1005,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-001147,2026-05-11,16:03,MACH-09,3,OP1004,frottement mécanique cyclique,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-001148,2026-05-11,16:46,MACH-03,3,OP1001,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_F9422AFA
+INC-001149,2026-05-12,15:22,MACH-12,3,OP1003,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-001150,2026-05-12,16:03,MACH-09,5,OP1002,bruit mécanique anormal,apres-midi,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001151,2026-05-12,16:49,MACH-10,2,OP1004,chute taux de production anormale,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-001152,2026-05-12,18:52,MACH-05,3,OP1003,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_A8D0E69E
+INC-001153,2026-05-13,00:14,MACH-03,3,OP1002,micro-fuite détectée — chute pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001154,2026-05-13,00:26,MACH-03,2,OP1005,circuit hydraulique en défaut,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-001155,2026-05-13,16:49,MACH-10,3,OP1008,pièces hors tolérance — contrôle qualité,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_96340230
+INC-001156,2026-05-14,00:06,MACH-03,3,OP1002,micro-fuite détectée — chute pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001157,2026-05-14,00:26,MACH-03,3,OP1003,pression en dessous seuil critique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-001158,2026-05-14,08:36,MACH-08,3,OP1007,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_48FCA839
+INC-001159,2026-05-14,13:14,MACH-09,3,OP1005,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-001160,2026-05-14,16:49,MACH-10,4,OP1007,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_48FCA839
+INC-001161,2026-05-15,00:26,MACH-03,5,OP1008,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-001162,2026-05-15,07:01,MACH-14,2,OP1006,montée thermique progressive,matin,1,0,0,0,0,0,0,0,0,OP_ANON_BCCFF1DB
+INC-001163,2026-05-15,08:31,MACH-06,2,OP1004,cliquetis roulement axe,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F76C70D0
+INC-001164,2026-05-16,00:55,MACH-09,3,OP1007,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_48FCA839
+INC-001165,2026-05-16,02:30,MACH-11,2,OP1007,alarme capteur,nuit,0,0,0,0,0,0,1,0,0,OP_ANON_48FCA839
+INC-001166,2026-05-16,06:15,MACH-02,3,OP1005,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-001167,2026-05-16,08:31,MACH-06,3,OP1006,choc sur transmission,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-001168,2026-05-16,19:39,MACH-12,2,OP1003,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-001169,2026-05-17,08:31,MACH-06,4,OP1001,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F9422AFA
+INC-001170,2026-05-17,16:02,MACH-11,2,OP1006,perte intermittente signal mesure,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_BCCFF1DB
+INC-001171,2026-05-19,08:44,MACH-10,2,OP1010,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-001172,2026-05-20,11:23,MACH-14,2,OP1002,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001173,2026-05-20,15:40,MACH-15,2,OP1010,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_7250BF59
+INC-001174,2026-05-20,18:52,MACH-08,3,OP1003,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-001175,2026-05-21,23:35,MACH-10,3,OP1006,consommation hors plage nominale,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_BCCFF1DB
+INC-001176,2026-05-22,00:39,MACH-13,3,OP1007,baisse pression hydraulique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-001177,2026-05-22,00:52,MACH-13,2,OP1002,micro-fuite détectée — chute pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001178,2026-05-22,03:15,MACH-03,3,OP1003,choc sur transmission,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-001179,2026-05-22,03:18,MACH-03,2,OP1001,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_E60AC808
+INC-001180,2026-05-22,19:14,MACH-14,3,OP1004,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-001181,2026-05-23,00:24,MACH-13,3,OP1001,baisse pression hydraulique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-001182,2026-05-23,00:52,MACH-13,3,OP1007,circuit hydraulique en défaut,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_70367646
+INC-001183,2026-05-23,03:18,MACH-03,3,OP1005,choc sur transmission,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_2C47F811
+INC-001184,2026-05-23,03:49,MACH-03,3,OP1002,cliquetis roulement axe,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001185,2026-05-23,08:30,MACH-08,3,OP1001,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_F9422AFA
+INC-001186,2026-05-23,10:20,MACH-03,3,OP1003,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_A8D0E69E
+INC-001187,2026-05-23,13:45,MACH-14,3,OP1010,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-001188,2026-05-23,13:49,MACH-08,3,OP1007,défaut qualité pièces,matin,0,0,0,0,0,0,0,0,1,OP_ANON_48FCA839
+INC-001189,2026-05-24,00:52,MACH-13,4,OP1008,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-001190,2026-05-24,03:18,MACH-03,4,OP1001,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_F9422AFA
+INC-001191,2026-05-24,16:41,MACH-13,3,OP1009,défaut qualité pièces,apres-midi,0,0,0,0,0,0,0,0,1,OP_ANON_473D33F3
+INC-001192,2026-05-25,01:51,MACH-12,2,OP1008,frottement mécanique cyclique,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_96340230
+INC-001193,2026-05-25,06:34,MACH-08,3,OP1003,vibration excessive,matin,0,0,1,0,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-001194,2026-05-25,14:39,MACH-07,2,OP1001,coincement pièce mobile,apres-midi,0,0,0,0,0,1,0,0,0,OP_ANON_E60AC808
+INC-001195,2026-05-25,22:23,MACH-04,3,OP1004,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-001196,2026-05-26,01:07,MACH-12,2,OP1003,micro-fuite détectée — chute pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-001197,2026-05-26,01:20,MACH-12,2,OP1003,baisse pression hydraulique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-001198,2026-05-26,01:51,MACH-12,3,OP1002,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001199,2026-05-26,14:16,MACH-07,3,OP1004,résistance mécanique anormale,apres-midi,0,0,0,0,0,1,0,0,0,OP_ANON_F76C70D0
+INC-001200,2026-05-26,14:39,MACH-07,3,OP1002,coincement pièce mobile,apres-midi,0,0,0,0,0,1,0,0,0,OP_ANON_2C59BBEB
+INC-001201,2026-05-27,01:20,MACH-12,3,OP1002,pression en dessous seuil critique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001202,2026-05-27,01:32,MACH-12,3,OP1005,circuit hydraulique en défaut,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-001203,2026-05-27,01:51,MACH-12,4,OP1003,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_A8D0E69E
+INC-001204,2026-05-27,04:50,MACH-13,3,OP1005,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-001205,2026-05-27,11:11,MACH-11,3,OP1005,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_2C47F811
+INC-001206,2026-05-27,14:39,MACH-07,4,OP1002,pièce bloquée convoyeur,apres-midi,0,0,0,0,0,1,0,0,0,OP_ANON_2C59BBEB
+INC-001207,2026-05-27,18:05,MACH-09,3,OP1005,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-001208,2026-05-28,00:39,MACH-03,3,OP1010,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-001209,2026-05-28,01:20,MACH-12,4,OP1003,micro-fuite / baisse pression + arrêt ligne,nuit,0,1,0,0,0,0,0,1,0,OP_ANON_A8D0E69E
+INC-001210,2026-05-28,08:26,MACH-14,2,OP1010,montée thermique progressive,matin,1,0,0,0,0,0,0,0,0,OP_ANON_7250BF59
+INC-001211,2026-05-28,19:57,MACH-05,2,OP1006,circuit hydraulique en défaut,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-001212,2026-05-28,20:25,MACH-12,2,OP1002,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001213,2026-05-29,19:47,MACH-05,3,OP1008,circuit hydraulique en défaut,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-001214,2026-05-29,19:57,MACH-05,3,OP1001,pression en dessous seuil critique,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-001215,2026-05-29,23:31,MACH-13,3,OP1010,bruit mécanique anormal,nuit,0,0,0,1,0,0,0,0,0,OP_ANON_7250BF59
+INC-001216,2026-05-30,19:57,MACH-05,5,OP1007,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-001217,2026-05-31,04:08,MACH-07,2,OP1008,pression en dessous seuil critique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_96340230
+INC-001218,2026-05-31,09:17,MACH-09,2,OP1002,alarme capteur,matin,0,0,0,0,0,0,1,0,0,OP_ANON_2C59BBEB
+INC-001219,2026-05-31,09:33,MACH-03,2,OP1002,pression en dessous seuil critique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001220,2026-05-31,09:37,MACH-03,3,OP1001,baisse pression hydraulique,matin,0,1,0,0,0,0,0,0,0,OP_ANON_E60AC808
+INC-001221,2026-05-31,19:45,MACH-05,3,OP1005,chauffe anormale,apres-midi,1,0,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-001222,2026-06-01,04:08,MACH-07,3,OP1005,pression en dessous seuil critique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-001223,2026-06-01,09:24,MACH-03,3,OP1003,micro-fuite détectée — chute pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-001224,2026-06-01,09:33,MACH-03,3,OP1003,circuit hydraulique en défaut,matin,0,1,0,0,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-001225,2026-06-02,00:31,MACH-09,2,OP1008,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_F1DE5CA6
+INC-001226,2026-06-02,04:08,MACH-07,4,OP1005,micro-fuite / baisse pression,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_2C47F811
+INC-001227,2026-06-02,05:07,MACH-05,3,OP1009,surconsommation électrique,nuit,0,0,0,0,1,0,0,0,0,OP_ANON_473D33F3
+INC-001228,2026-06-02,06:04,MACH-06,2,OP1006,choc sur transmission,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F9B75A1E
+INC-001229,2026-06-02,09:33,MACH-03,4,OP1007,micro-fuite / baisse pression,matin,0,1,0,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-001230,2026-06-02,12:57,MACH-02,3,OP1001,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_F9422AFA
+INC-001231,2026-06-03,06:04,MACH-06,3,OP1003,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_5DF8E9FC
+INC-001232,2026-06-03,18:49,MACH-11,3,OP1004,micro-fuite / baisse pression,apres-midi,0,1,0,0,0,0,0,0,0,OP_ANON_F76C70D0
+INC-001233,2026-06-03,20:40,MACH-13,3,OP1005,alarme capteur,apres-midi,0,0,0,0,0,0,1,0,0,OP_ANON_2C47F811
+INC-001234,2026-06-04,00:42,MACH-07,2,OP1007,vibration excessive,nuit,0,0,1,0,0,0,0,0,0,OP_ANON_48FCA839
+INC-001235,2026-06-04,05:34,MACH-03,3,OP1004,chute taux de production anormale,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F76C70D0
+INC-001236,2026-06-04,05:53,MACH-03,2,OP1001,pièces hors tolérance — contrôle qualité,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_E60AC808
+INC-001237,2026-06-04,06:04,MACH-06,4,OP1002,bruit mécanique anormal,matin,0,0,0,1,0,0,0,0,0,OP_ANON_2C59BBEB
+INC-001238,2026-06-04,10:23,MACH-09,3,OP1008,surconsommation électrique,matin,0,0,0,0,1,0,0,0,0,OP_ANON_F1DE5CA6
+INC-001239,2026-06-05,00:13,MACH-10,2,OP1006,non-conformité dimensionnelle,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_F9B75A1E
+INC-001240,2026-06-05,05:29,MACH-03,3,OP1007,défaut qualité pièces constaté,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_70367646
+INC-001241,2026-06-05,05:53,MACH-03,3,OP1002,pièces hors tolérance — contrôle qualité,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C59BBEB
+INC-001242,2026-06-06,00:13,MACH-10,3,OP1007,pièces hors tolérance — contrôle qualité,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_70367646
+INC-001243,2026-06-06,05:53,MACH-03,4,OP1006,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_BCCFF1DB
+INC-001244,2026-06-07,00:13,MACH-10,4,OP1005,défaut qualité pièces,nuit,0,0,0,0,0,0,0,0,1,OP_ANON_2C47F811
+INC-001245,2026-06-08,00:29,MACH-13,3,OP1009,baisse pression hydraulique,nuit,0,1,0,0,0,0,0,0,0,OP_ANON_473D33F3

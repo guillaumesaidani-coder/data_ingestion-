@@ -1,0 +1,1243 @@
+machine_id,date,datetime,time,year,month,day,hour,day_of_week,is_weekend,shift,severity,num_signals,has_comment,type_surchauffe,type_baisse_pression,type_vibration,type_bruit_mecanique,type_surconsommation,type_blocage_mecanique,type_alarme_capteur,type_arret_urgence,type_defaut_qualite,comment
+MACH-01,2025-06-04,2025-06-04 22:24:00,22:24,2025,6,4,22,2,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-01,2025-06-11,2025-06-11 14:54:00,14:54,2025,6,11,14,2,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-01,2025-06-11,2025-06-11 18:38:00,18:38,2025,6,11,18,2,False,apres-midi,2,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-01,2025-06-11,2025-06-11 18:43:00,18:43,2025,6,11,18,2,False,apres-midi,2,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-01,2025-06-12,2025-06-12 11:15:00,11:15,2025,6,12,11,3,False,matin,2,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-01,2025-06-12,2025-06-12 18:38:00,18:38,2025,6,12,18,3,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-01,2025-06-12,2025-06-12 18:45:00,18:45,2025,6,12,18,3,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-01,2025-06-13,2025-06-13 11:02:00,11:02,2025,6,13,11,4,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-01,2025-06-13,2025-06-13 11:15:00,11:15,2025,6,13,11,4,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-01,2025-06-13,2025-06-13 18:38:00,18:38,2025,6,13,18,4,False,apres-midi,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-01,2025-06-14,2025-06-14 11:15:00,11:15,2025,6,14,11,5,True,matin,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-01,2025-06-15,2025-06-15 00:07:00,00:07,2025,6,15,0,6,True,nuit,2,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-01,2025-06-16,2025-06-16 00:07:00,00:07,2025,6,16,0,0,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,montée thermique progressive
+MACH-01,2025-06-16,2025-06-16 00:50:00,00:50,2025,6,16,0,0,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-01,2025-06-17,2025-06-17 00:07:00,00:07,2025,6,17,0,1,False,nuit,4,2,1,1,0,0,0,0,0,0,1,0,chauffe anormale + arrêt ligne
+MACH-01,2025-07-21,2025-07-21 11:06:00,11:06,2025,7,21,11,0,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-01,2025-07-22,2025-07-22 12:52:00,12:52,2025,7,22,12,1,False,matin,2,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-01,2025-07-23,2025-07-23 12:06:00,12:06,2025,7,23,12,2,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-01,2025-07-23,2025-07-23 12:52:00,12:52,2025,7,23,12,2,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-01,2025-07-24,2025-07-24 12:52:00,12:52,2025,7,24,12,3,False,matin,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-01,2025-07-31,2025-07-31 04:30:00,04:30,2025,7,31,4,3,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-01,2025-08-02,2025-08-02 02:27:00,02:27,2025,8,2,2,5,True,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-01,2025-08-06,2025-08-06 01:29:00,01:29,2025,8,6,1,2,False,nuit,2,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-01,2025-08-07,2025-08-07 01:29:00,01:29,2025,8,7,1,3,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-01,2025-08-07,2025-08-07 01:35:00,01:35,2025,8,7,1,3,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-01,2025-08-08,2025-08-08 01:29:00,01:29,2025,8,8,1,4,False,nuit,4,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-01,2025-08-14,2025-08-14 23:28:00,23:28,2025,8,14,23,3,False,nuit,2,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-01,2025-08-15,2025-08-15 23:28:00,23:28,2025,8,15,23,4,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-01,2025-08-15,2025-08-15 23:49:00,23:49,2025,8,15,23,4,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-01,2025-08-16,2025-08-16 23:28:00,23:28,2025,8,16,23,5,True,nuit,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-01,2025-08-29,2025-08-29 00:50:00,00:50,2025,8,29,0,4,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-01,2025-08-30,2025-08-30 22:36:00,22:36,2025,8,30,22,5,True,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-01,2025-09-08,2025-09-08 22:30:00,22:30,2025,9,8,22,0,False,nuit,2,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-01,2025-09-09,2025-09-09 22:30:00,22:30,2025,9,9,22,1,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-01,2025-09-09,2025-09-09 22:42:00,22:42,2025,9,9,22,1,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-01,2025-09-10,2025-09-10 22:30:00,22:30,2025,9,10,22,2,False,nuit,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-01,2025-09-12,2025-09-12 22:44:00,22:44,2025,9,12,22,4,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-01,2025-09-13,2025-09-13 22:28:00,22:28,2025,9,13,22,5,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-01,2025-09-13,2025-09-13 22:44:00,22:44,2025,9,13,22,5,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-01,2025-09-14,2025-09-14 22:44:00,22:44,2025,9,14,22,6,True,nuit,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-01,2025-09-20,2025-09-20 03:07:00,03:07,2025,9,20,3,5,True,nuit,2,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-01,2025-09-20,2025-09-20 03:24:00,03:24,2025,9,20,3,5,True,nuit,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-01,2025-09-20,2025-09-20 22:07:00,22:07,2025,9,20,22,5,True,nuit,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-01,2025-09-20,2025-09-20 22:39:00,22:39,2025,9,20,22,5,True,nuit,2,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-01,2025-09-21,2025-09-21 03:05:00,03:05,2025,9,21,3,6,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-01,2025-09-21,2025-09-21 03:24:00,03:24,2025,9,21,3,6,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-01,2025-09-21,2025-09-21 22:39:00,22:39,2025,9,21,22,6,True,nuit,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-01,2025-09-21,2025-09-21 22:42:00,22:42,2025,9,21,22,6,True,nuit,3,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-01,2025-09-22,2025-09-22 03:24:00,03:24,2025,9,22,3,0,False,nuit,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-01,2025-09-22,2025-09-22 22:39:00,22:39,2025,9,22,22,0,False,nuit,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-01,2025-10-03,2025-10-03 16:28:00,16:28,2025,10,3,16,4,False,apres-midi,2,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-01,2025-10-04,2025-10-04 16:28:00,16:28,2025,10,4,16,5,True,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-01,2025-10-04,2025-10-04 16:32:00,16:32,2025,10,4,16,5,True,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,consommation hors plage nominale
+MACH-01,2025-10-05,2025-10-05 16:28:00,16:28,2025,10,5,16,6,True,apres-midi,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-01,2025-10-09,2025-10-09 03:34:00,03:34,2025,10,9,3,3,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-01,2025-10-11,2025-10-11 16:25:00,16:25,2025,10,11,16,5,True,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-01,2025-10-12,2025-10-12 16:25:00,16:25,2025,10,12,16,6,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-01,2025-10-12,2025-10-12 16:42:00,16:42,2025,10,12,16,6,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-01,2025-10-12,2025-10-12 22:48:00,22:48,2025,10,12,22,6,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-01,2025-10-13,2025-10-13 16:25:00,16:25,2025,10,13,16,0,False,apres-midi,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-01,2025-10-23,2025-10-23 16:45:00,16:45,2025,10,23,16,3,False,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-01,2025-10-26,2025-10-26 00:17:00,00:17,2025,10,26,0,6,True,nuit,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-01,2025-11-02,2025-11-02 05:36:00,05:36,2025,11,2,5,6,True,nuit,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-01,2025-11-09,2025-11-09 20:02:00,20:02,2025,11,9,20,6,True,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-01,2025-11-14,2025-11-14 01:09:00,01:09,2025,11,14,1,4,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-01,2025-11-14,2025-11-14 01:14:00,01:14,2025,11,14,1,4,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-01,2025-11-15,2025-11-15 01:14:00,01:14,2025,11,15,1,5,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-01,2025-11-15,2025-11-15 01:35:00,01:35,2025,11,15,1,5,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-01,2025-11-16,2025-11-16 01:14:00,01:14,2025,11,16,1,6,True,nuit,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-01,2025-11-22,2025-11-22 20:48:00,20:48,2025,11,22,20,5,True,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-01,2025-12-04,2025-12-04 16:03:00,16:03,2025,12,4,16,3,False,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-01,2025-12-05,2025-12-05 16:03:00,16:03,2025,12,5,16,4,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-01,2025-12-05,2025-12-05 16:36:00,16:36,2025,12,5,16,4,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-01,2025-12-06,2025-12-06 16:03:00,16:03,2025,12,6,16,5,True,apres-midi,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-01,2025-12-06,2025-12-06 19:06:00,19:06,2025,12,6,19,5,True,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-01,2025-12-07,2025-12-07 19:06:00,19:06,2025,12,7,19,6,True,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-01,2025-12-07,2025-12-07 19:27:00,19:27,2025,12,7,19,6,True,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-01,2025-12-08,2025-12-08 19:06:00,19:06,2025,12,8,19,0,False,apres-midi,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-01,2025-12-10,2025-12-10 20:31:00,20:31,2025,12,10,20,2,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-01,2025-12-14,2025-12-14 18:33:00,18:33,2025,12,14,18,6,True,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-01,2025-12-14,2025-12-14 18:54:00,18:54,2025,12,14,18,6,True,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-01,2025-12-15,2025-12-15 18:31:00,18:31,2025,12,15,18,0,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-01,2025-12-15,2025-12-15 18:33:00,18:33,2025,12,15,18,0,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-01,2025-12-16,2025-12-16 18:33:00,18:33,2025,12,16,18,1,False,apres-midi,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-01,2026-01-01,2026-01-01 11:33:00,11:33,2026,1,1,11,3,False,matin,2,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-01,2026-01-02,2026-01-02 11:24:00,11:24,2026,1,2,11,4,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-01,2026-01-02,2026-01-02 11:33:00,11:33,2026,1,2,11,4,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-01,2026-01-03,2026-01-03 11:33:00,11:33,2026,1,3,11,5,True,matin,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-01,2026-01-08,2026-01-08 18:36:00,18:36,2026,1,8,18,3,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-01,2026-01-12,2026-01-12 21:36:00,21:36,2026,1,12,21,0,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-01,2026-01-17,2026-01-17 16:53:00,16:53,2026,1,17,16,5,True,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-01,2026-01-21,2026-01-21 15:29:00,15:29,2026,1,21,15,2,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-01,2026-01-21,2026-01-21 15:30:00,15:30,2026,1,21,15,2,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-01,2026-01-22,2026-01-22 15:18:00,15:18,2026,1,22,15,3,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-01,2026-01-22,2026-01-22 15:29:00,15:29,2026,1,22,15,3,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-01,2026-01-23,2026-01-23 13:05:00,13:05,2026,1,23,13,4,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-01,2026-01-23,2026-01-23 15:29:00,15:29,2026,1,23,15,4,False,apres-midi,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-01,2026-01-24,2026-01-24 13:04:00,13:04,2026,1,24,13,5,True,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-01,2026-01-24,2026-01-24 13:05:00,13:05,2026,1,24,13,5,True,matin,3,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-01,2026-01-25,2026-01-25 13:05:00,13:05,2026,1,25,13,6,True,matin,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-01,2026-01-25,2026-01-25 13:16:00,13:16,2026,1,25,13,6,True,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-01,2026-02-13,2026-02-13 07:01:00,07:01,2026,2,13,7,4,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-01,2026-02-14,2026-02-14 04:27:00,04:27,2026,2,14,4,5,True,nuit,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-01,2026-02-19,2026-02-19 15:57:00,15:57,2026,2,19,15,3,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-01,2026-03-02,2026-03-02 03:09:00,03:09,2026,3,2,3,0,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-01,2026-03-06,2026-03-06 01:11:00,01:11,2026,3,6,1,4,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-01,2026-03-09,2026-03-09 09:21:00,09:21,2026,3,9,9,0,False,matin,2,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-01,2026-03-10,2026-03-10 09:21:00,09:21,2026,3,10,9,1,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-01,2026-03-10,2026-03-10 09:39:00,09:39,2026,3,10,9,1,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-01,2026-03-11,2026-03-11 09:21:00,09:21,2026,3,11,9,2,False,matin,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-01,2026-03-14,2026-03-14 21:31:00,21:31,2026,3,14,21,5,True,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-01,2026-03-17,2026-03-17 10:49:00,10:49,2026,3,17,10,1,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-01,2026-03-20,2026-03-20 23:34:00,23:34,2026,3,20,23,4,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-01,2026-03-26,2026-03-26 08:23:00,08:23,2026,3,26,8,3,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-01,2026-03-27,2026-03-27 09:20:00,09:20,2026,3,27,9,4,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-01,2026-03-30,2026-03-30 09:24:00,09:24,2026,3,30,9,0,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-01,2026-03-31,2026-03-31 09:24:00,09:24,2026,3,31,9,1,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-01,2026-03-31,2026-03-31 09:35:00,09:35,2026,3,31,9,1,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-01,2026-04-01,2026-04-01 09:24:00,09:24,2026,4,1,9,2,False,matin,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-01,2026-04-01,2026-04-01 20:16:00,20:16,2026,4,1,20,2,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-01,2026-04-15,2026-04-15 09:56:00,09:56,2026,4,15,9,2,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-01,2026-04-29,2026-04-29 05:03:00,05:03,2026,4,29,5,2,False,nuit,2,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-01,2026-04-30,2026-04-30 05:03:00,05:03,2026,4,30,5,3,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-01,2026-04-30,2026-04-30 05:47:00,05:47,2026,4,30,5,3,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,consommation hors plage nominale
+MACH-01,2026-05-01,2026-05-01 05:03:00,05:03,2026,5,1,5,4,False,nuit,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-01,2026-05-08,2026-05-08 18:43:00,18:43,2026,5,8,18,4,False,apres-midi,2,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-01,2026-05-09,2026-05-09 03:41:00,03:41,2026,5,9,3,5,True,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-01,2026-05-09,2026-05-09 18:43:00,18:43,2026,5,9,18,5,True,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-01,2026-05-09,2026-05-09 18:45:00,18:45,2026,5,9,18,5,True,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-01,2026-05-10,2026-05-10 18:43:00,18:43,2026,5,10,18,6,True,apres-midi,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-02,2025-07-06,2025-07-06 11:12:00,11:12,2025,7,6,11,6,True,matin,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-02,2025-07-08,2025-07-08 19:46:00,19:46,2025,7,8,19,1,False,apres-midi,2,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-02,2025-07-09,2025-07-09 19:46:00,19:46,2025,7,9,19,2,False,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-02,2025-07-10,2025-07-10 19:46:00,19:46,2025,7,10,19,3,False,apres-midi,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-02,2025-07-18,2025-07-18 06:53:00,06:53,2025,7,18,6,4,False,matin,2,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-02,2025-07-19,2025-07-19 06:53:00,06:53,2025,7,19,6,5,True,matin,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-02,2025-07-20,2025-07-20 06:53:00,06:53,2025,7,20,6,6,True,matin,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-02,2025-08-14,2025-08-14 13:55:00,13:55,2025,8,14,13,3,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-02,2025-09-11,2025-09-11 19:10:00,19:10,2025,9,11,19,3,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-02,2025-10-18,2025-10-18 20:26:00,20:26,2025,10,18,20,5,True,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-02,2025-12-09,2025-12-09 13:11:00,13:11,2025,12,9,13,1,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-02,2025-12-12,2025-12-12 18:50:00,18:50,2025,12,12,18,4,False,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-02,2025-12-16,2025-12-16 12:10:00,12:10,2025,12,16,12,1,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-02,2025-12-17,2025-12-17 12:10:00,12:10,2025,12,17,12,2,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-02,2025-12-17,2025-12-17 12:15:00,12:15,2025,12,17,12,2,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-02,2025-12-17,2025-12-17 17:38:00,17:38,2025,12,17,17,2,False,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-02,2025-12-18,2025-12-18 12:10:00,12:10,2025,12,18,12,3,False,matin,4,2,1,0,1,0,0,0,0,0,1,0,micro-fuite / baisse pression + arrêt ligne
+MACH-02,2025-12-19,2025-12-19 07:27:00,07:27,2025,12,19,7,4,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-02,2025-12-19,2025-12-19 18:29:00,18:29,2025,12,19,18,4,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-02,2026-01-01,2026-01-01 11:53:00,11:53,2026,1,1,11,3,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-02,2026-01-03,2026-01-03 19:20:00,19:20,2026,1,3,19,5,True,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-02,2026-01-27,2026-01-27 18:10:00,18:10,2026,1,27,18,1,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-02,2026-01-31,2026-01-31 02:49:00,02:49,2026,1,31,2,5,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-02,2026-03-11,2026-03-11 01:35:00,01:35,2026,3,11,1,2,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-02,2026-03-13,2026-03-13 02:54:00,02:54,2026,3,13,2,4,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-02,2026-03-24,2026-03-24 18:23:00,18:23,2026,3,24,18,1,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-02,2026-03-30,2026-03-30 05:24:00,05:24,2026,3,30,5,0,False,nuit,2,1,1,0,0,0,0,0,1,0,0,0,pièce bloquée convoyeur
+MACH-02,2026-04-08,2026-04-08 08:55:00,08:55,2026,4,8,8,2,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-02,2026-04-12,2026-04-12 03:55:00,03:55,2026,4,12,3,6,True,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-02,2026-05-16,2026-05-16 06:15:00,06:15,2026,5,16,6,5,True,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-02,2026-06-02,2026-06-02 12:57:00,12:57,2026,6,2,12,1,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-06-10,2025-06-10 01:11:00,01:11,2025,6,10,1,1,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-03,2025-06-25,2025-06-25 05:43:00,05:43,2025,6,25,5,2,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-03,2025-06-25,2025-06-25 10:21:00,10:21,2025,6,25,10,2,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-03,2025-06-25,2025-06-25 10:48:00,10:48,2025,6,25,10,2,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-03,2025-06-26,2025-06-26 10:04:00,10:04,2025,6,26,10,3,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-03,2025-06-26,2025-06-26 10:21:00,10:21,2025,6,26,10,3,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-03,2025-06-27,2025-06-27 10:21:00,10:21,2025,6,27,10,4,False,matin,5,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-03,2025-06-27,2025-06-27 13:11:00,13:11,2025,6,27,13,4,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-03,2025-07-03,2025-07-03 23:04:00,23:04,2025,7,3,23,3,False,nuit,2,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-03,2025-07-03,2025-07-03 23:17:00,23:17,2025,7,3,23,3,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,consommation hors plage nominale
+MACH-03,2025-07-04,2025-07-04 14:09:00,14:09,2025,7,4,14,4,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-03,2025-07-04,2025-07-04 14:10:00,14:10,2025,7,4,14,4,False,apres-midi,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-03,2025-07-04,2025-07-04 23:04:00,23:04,2025,7,4,23,4,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-03,2025-07-04,2025-07-04 23:07:00,23:07,2025,7,4,23,4,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-03,2025-07-05,2025-07-05 14:02:00,14:02,2025,7,5,14,5,True,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,consommation hors plage nominale
+MACH-03,2025-07-05,2025-07-05 14:10:00,14:10,2025,7,5,14,5,True,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-03,2025-07-05,2025-07-05 15:25:00,15:25,2025,7,5,15,5,True,apres-midi,2,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-03,2025-07-05,2025-07-05 15:41:00,15:41,2025,7,5,15,5,True,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-03,2025-07-05,2025-07-05 23:04:00,23:04,2025,7,5,23,5,True,nuit,5,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-03,2025-07-06,2025-07-06 14:10:00,14:10,2025,7,6,14,6,True,apres-midi,5,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-03,2025-07-06,2025-07-06 15:25:00,15:25,2025,7,6,15,6,True,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-03,2025-07-06,2025-07-06 15:48:00,15:48,2025,7,6,15,6,True,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-03,2025-07-07,2025-07-07 15:25:00,15:25,2025,7,7,15,0,False,apres-midi,5,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-03,2025-07-08,2025-07-08 05:29:00,05:29,2025,7,8,5,1,False,nuit,2,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-03,2025-07-08,2025-07-08 05:34:00,05:34,2025,7,8,5,1,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-03,2025-07-09,2025-07-09 05:29:00,05:29,2025,7,9,5,2,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-03,2025-07-09,2025-07-09 05:46:00,05:46,2025,7,9,5,2,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-03,2025-07-10,2025-07-10 05:29:00,05:29,2025,7,10,5,3,False,nuit,5,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-03,2025-07-15,2025-07-15 02:13:00,02:13,2025,7,15,2,1,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-03,2025-07-20,2025-07-20 08:30:00,08:30,2025,7,20,8,6,True,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-03,2025-07-24,2025-07-24 08:49:00,08:49,2025,7,24,8,3,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-07-31,2025-07-31 17:49:00,17:49,2025,7,31,17,3,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-03,2025-08-11,2025-08-11 23:14:00,23:14,2025,8,11,23,0,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-08-22,2025-08-22 02:31:00,02:31,2025,8,22,2,4,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-03,2025-09-02,2025-09-02 01:05:00,01:05,2025,9,2,1,1,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-03,2025-09-02,2025-09-02 01:10:00,01:10,2025,9,2,1,1,False,nuit,2,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-03,2025-09-03,2025-09-03 01:08:00,01:08,2025,9,3,1,2,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-03,2025-09-03,2025-09-03 01:10:00,01:10,2025,9,3,1,2,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-03,2025-09-04,2025-09-04 01:10:00,01:10,2025,9,4,1,3,False,nuit,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-03,2025-09-05,2025-09-05 21:26:00,21:26,2025,9,5,21,4,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-03,2025-09-05,2025-09-05 21:54:00,21:54,2025,9,5,21,4,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-03,2025-09-06,2025-09-06 21:54:00,21:54,2025,9,6,21,5,True,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-09-06,2025-09-06 21:57:00,21:57,2025,9,6,21,5,True,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-03,2025-09-07,2025-09-07 09:46:00,09:46,2025,9,7,9,6,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-09-07,2025-09-07 21:54:00,21:54,2025,9,7,21,6,True,apres-midi,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-09-12,2025-09-12 02:10:00,02:10,2025,9,12,2,4,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-09-12,2025-09-12 02:39:00,02:39,2025,9,12,2,4,False,nuit,2,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-03,2025-09-13,2025-09-13 02:01:00,02:01,2025,9,13,2,5,True,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-09-13,2025-09-13 02:39:00,02:39,2025,9,13,2,5,True,nuit,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-03,2025-09-14,2025-09-14 02:39:00,02:39,2025,9,14,2,6,True,nuit,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-09-25,2025-09-25 10:16:00,10:16,2025,9,25,10,3,False,matin,2,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-03,2025-09-25,2025-09-25 10:52:00,10:52,2025,9,25,10,3,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-03,2025-09-26,2025-09-26 10:16:00,10:16,2025,9,26,10,4,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-03,2025-09-26,2025-09-26 10:47:00,10:47,2025,9,26,10,4,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-09-27,2025-09-27 10:16:00,10:16,2025,9,27,10,5,True,matin,5,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-09-30,2025-09-30 16:18:00,16:18,2025,9,30,16,1,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-03,2025-10-04,2025-10-04 08:08:00,08:08,2025,10,4,8,5,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-03,2025-10-04,2025-10-04 08:57:00,08:57,2025,10,4,8,5,True,matin,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-10-05,2025-10-05 08:45:00,08:45,2025,10,5,8,6,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-03,2025-10-05,2025-10-05 08:57:00,08:57,2025,10,5,8,6,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-03,2025-10-06,2025-10-06 02:08:00,02:08,2025,10,6,2,0,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-03,2025-10-06,2025-10-06 02:49:00,02:49,2025,10,6,2,0,False,nuit,2,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-03,2025-10-06,2025-10-06 08:57:00,08:57,2025,10,6,8,0,False,matin,5,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-10-07,2025-10-07 02:49:00,02:49,2025,10,7,2,1,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-03,2025-10-07,2025-10-07 02:55:00,02:55,2025,10,7,2,1,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-03,2025-10-08,2025-10-08 02:49:00,02:49,2025,10,8,2,2,False,nuit,5,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-03,2025-11-19,2025-11-19 22:39:00,22:39,2025,11,19,22,2,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-03,2025-11-19,2025-11-19 22:49:00,22:49,2025,11,19,22,2,False,nuit,2,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-03,2025-11-20,2025-11-20 22:49:00,22:49,2025,11,20,22,3,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-03,2025-11-20,2025-11-20 22:53:00,22:53,2025,11,20,22,3,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-03,2025-11-21,2025-11-21 22:49:00,22:49,2025,11,21,22,4,False,nuit,5,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-03,2025-11-25,2025-11-25 14:26:00,14:26,2025,11,25,14,1,False,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-03,2025-11-25,2025-11-25 14:31:00,14:31,2025,11,25,14,1,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-03,2025-11-26,2025-11-26 14:05:00,14:05,2025,11,26,14,2,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-03,2025-11-26,2025-11-26 14:26:00,14:26,2025,11,26,14,2,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-03,2025-11-27,2025-11-27 14:26:00,14:26,2025,11,27,14,3,False,apres-midi,5,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-03,2025-11-30,2025-11-30 11:01:00,11:01,2025,11,30,11,6,True,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-03,2025-12-17,2025-12-17 19:26:00,19:26,2025,12,17,19,2,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-12-23,2025-12-23 20:06:00,20:06,2025,12,23,20,1,False,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-03,2025-12-23,2025-12-23 20:56:00,20:56,2025,12,23,20,1,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-03,2025-12-24,2025-12-24 16:08:00,16:08,2025,12,24,16,2,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-03,2025-12-24,2025-12-24 16:25:00,16:25,2025,12,24,16,2,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-12-24,2025-12-24 20:06:00,20:06,2025,12,24,20,2,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-03,2025-12-24,2025-12-24 20:55:00,20:55,2025,12,24,20,2,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-03,2025-12-25,2025-12-25 16:16:00,16:16,2025,12,25,16,3,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2025-12-25,2025-12-25 16:25:00,16:25,2025,12,25,16,3,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-03,2025-12-25,2025-12-25 20:06:00,20:06,2025,12,25,20,3,False,apres-midi,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-03,2025-12-26,2025-12-26 16:25:00,16:25,2025,12,26,16,4,False,apres-midi,4,2,1,0,0,0,1,0,0,0,1,0,bruit mécanique anormal + arrêt ligne
+MACH-03,2026-01-02,2026-01-02 02:18:00,02:18,2026,1,2,2,4,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-03,2026-01-03,2026-01-03 08:13:00,08:13,2026,1,3,8,5,True,matin,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-03,2026-01-03,2026-01-03 22:33:00,22:33,2026,1,3,22,5,True,nuit,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-03,2026-01-03,2026-01-03 22:34:00,22:34,2026,1,3,22,5,True,nuit,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-03,2026-01-04,2026-01-04 22:34:00,22:34,2026,1,4,22,6,True,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-03,2026-01-04,2026-01-04 22:37:00,22:37,2026,1,4,22,6,True,nuit,3,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-03,2026-01-05,2026-01-05 22:34:00,22:34,2026,1,5,22,0,False,nuit,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-03,2026-01-10,2026-01-10 12:25:00,12:25,2026,1,10,12,5,True,matin,2,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-03,2026-01-10,2026-01-10 12:45:00,12:45,2026,1,10,12,5,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-03,2026-01-11,2026-01-11 12:12:00,12:12,2026,1,11,12,6,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-03,2026-01-11,2026-01-11 12:25:00,12:25,2026,1,11,12,6,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-03,2026-01-12,2026-01-12 12:25:00,12:25,2026,1,12,12,0,False,matin,5,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-03,2026-01-21,2026-01-21 21:16:00,21:16,2026,1,21,21,2,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-03,2026-01-23,2026-01-23 11:04:00,11:04,2026,1,23,11,4,False,matin,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-03,2026-01-23,2026-01-23 11:30:00,11:30,2026,1,23,11,4,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-03,2026-01-24,2026-01-24 11:04:00,11:04,2026,1,24,11,5,True,matin,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-03,2026-01-24,2026-01-24 11:07:00,11:07,2026,1,24,11,5,True,matin,3,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-03,2026-01-25,2026-01-25 11:04:00,11:04,2026,1,25,11,6,True,matin,5,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-03,2026-01-28,2026-01-28 19:18:00,19:18,2026,1,28,19,2,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-03,2026-01-28,2026-01-28 19:25:00,19:25,2026,1,28,19,2,False,apres-midi,2,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-03,2026-01-29,2026-01-29 15:41:00,15:41,2026,1,29,15,3,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-03,2026-01-29,2026-01-29 15:43:00,15:43,2026,1,29,15,3,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2026-01-29,2026-01-29 19:25:00,19:25,2026,1,29,19,3,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-03,2026-01-29,2026-01-29 19:52:00,19:52,2026,1,29,19,3,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-03,2026-01-30,2026-01-30 15:01:00,15:01,2026,1,30,15,4,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-03,2026-01-30,2026-01-30 15:41:00,15:41,2026,1,30,15,4,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2026-01-30,2026-01-30 19:25:00,19:25,2026,1,30,19,4,False,apres-midi,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-03,2026-01-31,2026-01-31 15:41:00,15:41,2026,1,31,15,5,True,apres-midi,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2026-02-03,2026-02-03 12:29:00,12:29,2026,2,3,12,1,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2026-02-04,2026-02-04 20:29:00,20:29,2026,2,4,20,2,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-03,2026-02-04,2026-02-04 20:45:00,20:45,2026,2,4,20,2,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-03,2026-02-05,2026-02-05 20:45:00,20:45,2026,2,5,20,3,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-03,2026-02-05,2026-02-05 20:57:00,20:57,2026,2,5,20,3,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-03,2026-02-06,2026-02-06 20:45:00,20:45,2026,2,6,20,4,False,apres-midi,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2026-02-10,2026-02-10 15:44:00,15:44,2026,2,10,15,1,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-03,2026-02-10,2026-02-10 15:53:00,15:53,2026,2,10,15,1,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-03,2026-02-10,2026-02-10 22:20:00,22:20,2026,2,10,22,1,False,nuit,2,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-03,2026-02-10,2026-02-10 22:40:00,22:40,2026,2,10,22,1,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-03,2026-02-11,2026-02-11 11:09:00,11:09,2026,2,11,11,2,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-03,2026-02-11,2026-02-11 15:41:00,15:41,2026,2,11,15,2,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-03,2026-02-11,2026-02-11 15:53:00,15:53,2026,2,11,15,2,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-03,2026-02-11,2026-02-11 22:20:00,22:20,2026,2,11,22,2,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-03,2026-02-11,2026-02-11 22:23:00,22:23,2026,2,11,22,2,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-03,2026-02-12,2026-02-12 15:53:00,15:53,2026,2,12,15,3,False,apres-midi,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2026-02-12,2026-02-12 22:20:00,22:20,2026,2,12,22,3,False,nuit,5,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-03,2026-02-14,2026-02-14 04:10:00,04:10,2026,2,14,4,5,True,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-03,2026-02-21,2026-02-21 15:09:00,15:09,2026,2,21,15,5,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-03,2026-02-21,2026-02-21 15:26:00,15:26,2026,2,21,15,5,True,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-03,2026-02-22,2026-02-22 15:26:00,15:26,2026,2,22,15,6,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-03,2026-02-22,2026-02-22 15:29:00,15:29,2026,2,22,15,6,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-03,2026-02-23,2026-02-23 15:26:00,15:26,2026,2,23,15,0,False,apres-midi,5,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-03,2026-03-07,2026-03-07 14:42:00,14:42,2026,3,7,14,5,True,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-03,2026-03-07,2026-03-07 14:49:00,14:49,2026,3,7,14,5,True,apres-midi,2,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-03,2026-03-08,2026-03-08 12:05:00,12:05,2026,3,8,12,6,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-03,2026-03-08,2026-03-08 14:16:00,14:16,2026,3,8,14,6,True,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-03,2026-03-08,2026-03-08 14:49:00,14:49,2026,3,8,14,6,True,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-03,2026-03-09,2026-03-09 14:49:00,14:49,2026,3,9,14,0,False,apres-midi,5,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-03,2026-03-09,2026-03-09 21:37:00,21:37,2026,3,9,21,0,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-03,2026-03-10,2026-03-10 01:32:00,01:32,2026,3,10,1,1,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-03,2026-03-10,2026-03-10 01:51:00,01:51,2026,3,10,1,1,False,nuit,2,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-03,2026-03-11,2026-03-11 01:44:00,01:44,2026,3,11,1,2,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-03,2026-03-11,2026-03-11 01:51:00,01:51,2026,3,11,1,2,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-03,2026-03-12,2026-03-12 01:51:00,01:51,2026,3,12,1,3,False,nuit,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-03,2026-03-12,2026-03-12 07:20:00,07:20,2026,3,12,7,3,False,matin,3,1,1,0,0,0,0,0,1,0,0,0,pièce bloquée convoyeur
+MACH-03,2026-03-18,2026-03-18 12:20:00,12:20,2026,3,18,12,2,False,matin,2,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-03,2026-03-18,2026-03-18 12:52:00,12:52,2026,3,18,12,2,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-03,2026-03-19,2026-03-19 12:20:00,12:20,2026,3,19,12,3,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-03,2026-03-19,2026-03-19 12:49:00,12:49,2026,3,19,12,3,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-03,2026-03-20,2026-03-20 12:20:00,12:20,2026,3,20,12,4,False,matin,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2026-04-03,2026-04-03 17:41:00,17:41,2026,4,3,17,4,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2026-04-06,2026-04-06 15:45:00,15:45,2026,4,6,15,0,False,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-03,2026-04-06,2026-04-06 15:52:00,15:52,2026,4,6,15,0,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-03,2026-04-07,2026-04-07 15:30:00,15:30,2026,4,7,15,1,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-03,2026-04-07,2026-04-07 15:45:00,15:45,2026,4,7,15,1,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-03,2026-04-08,2026-04-08 06:17:00,06:17,2026,4,8,6,2,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-03,2026-04-08,2026-04-08 15:45:00,15:45,2026,4,8,15,2,False,apres-midi,5,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-03,2026-04-14,2026-04-14 11:47:00,11:47,2026,4,14,11,1,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-03,2026-04-22,2026-04-22 13:19:00,13:19,2026,4,22,13,2,False,matin,2,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-03,2026-04-22,2026-04-22 13:55:00,13:55,2026,4,22,13,2,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-03,2026-04-23,2026-04-23 13:19:00,13:19,2026,4,23,13,3,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-03,2026-04-23,2026-04-23 13:50:00,13:50,2026,4,23,13,3,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-03,2026-04-24,2026-04-24 13:19:00,13:19,2026,4,24,13,4,False,matin,5,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-03,2026-04-25,2026-04-25 01:13:00,01:13,2026,4,25,1,5,True,nuit,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-03,2026-04-25,2026-04-25 01:14:00,01:14,2026,4,25,1,5,True,nuit,3,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-03,2026-04-25,2026-04-25 01:24:00,01:24,2026,4,25,1,5,True,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-03,2026-04-26,2026-04-26 01:13:00,01:13,2026,4,26,1,6,True,nuit,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-03,2026-04-26,2026-04-26 01:38:00,01:38,2026,4,26,1,6,True,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-03,2026-04-27,2026-04-27 01:13:00,01:13,2026,4,27,1,0,False,nuit,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-03,2026-05-10,2026-05-10 04:50:00,04:50,2026,5,10,4,6,True,nuit,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-03,2026-05-11,2026-05-11 16:46:00,16:46,2026,5,11,16,0,False,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-03,2026-05-13,2026-05-13 00:14:00,00:14,2026,5,13,0,2,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-03,2026-05-13,2026-05-13 00:26:00,00:26,2026,5,13,0,2,False,nuit,2,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-03,2026-05-14,2026-05-14 00:06:00,00:06,2026,5,14,0,3,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-03,2026-05-14,2026-05-14 00:26:00,00:26,2026,5,14,0,3,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-03,2026-05-15,2026-05-15 00:26:00,00:26,2026,5,15,0,4,False,nuit,5,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-03,2026-05-22,2026-05-22 03:15:00,03:15,2026,5,22,3,4,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-03,2026-05-22,2026-05-22 03:18:00,03:18,2026,5,22,3,4,False,nuit,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2026-05-23,2026-05-23 03:18:00,03:18,2026,5,23,3,5,True,nuit,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-03,2026-05-23,2026-05-23 03:49:00,03:49,2026,5,23,3,5,True,nuit,3,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-03,2026-05-23,2026-05-23 10:20:00,10:20,2026,5,23,10,5,True,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-03,2026-05-24,2026-05-24 03:18:00,03:18,2026,5,24,3,6,True,nuit,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-03,2026-05-28,2026-05-28 00:39:00,00:39,2026,5,28,0,3,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-03,2026-05-31,2026-05-31 09:33:00,09:33,2026,5,31,9,6,True,matin,2,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-03,2026-05-31,2026-05-31 09:37:00,09:37,2026,5,31,9,6,True,matin,3,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-03,2026-06-01,2026-06-01 09:24:00,09:24,2026,6,1,9,0,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-03,2026-06-01,2026-06-01 09:33:00,09:33,2026,6,1,9,0,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-03,2026-06-02,2026-06-02 09:33:00,09:33,2026,6,2,9,1,False,matin,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-03,2026-06-04,2026-06-04 05:34:00,05:34,2026,6,4,5,3,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-03,2026-06-04,2026-06-04 05:53:00,05:53,2026,6,4,5,3,False,nuit,2,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-03,2026-06-05,2026-06-05 05:29:00,05:29,2026,6,5,5,4,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-03,2026-06-05,2026-06-05 05:53:00,05:53,2026,6,5,5,4,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-03,2026-06-06,2026-06-06 05:53:00,05:53,2026,6,6,5,5,True,nuit,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-04,2025-06-14,2025-06-14 21:27:00,21:27,2025,6,14,21,5,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-04,2025-07-02,2025-07-02 21:35:00,21:35,2025,7,2,21,2,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-04,2025-07-13,2025-07-13 20:11:00,20:11,2025,7,13,20,6,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-04,2025-07-22,2025-07-22 21:03:00,21:03,2025,7,22,21,1,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-04,2025-07-27,2025-07-27 12:37:00,12:37,2025,7,27,12,6,True,matin,2,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-04,2025-09-08,2025-09-08 19:06:00,19:06,2025,9,8,19,0,False,apres-midi,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-04,2025-09-09,2025-09-09 19:06:00,19:06,2025,9,9,19,1,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-04,2025-09-10,2025-09-10 19:06:00,19:06,2025,9,10,19,2,False,apres-midi,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-04,2025-09-14,2025-09-14 00:27:00,00:27,2025,9,14,0,6,True,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-04,2025-09-22,2025-09-22 16:12:00,16:12,2025,9,22,16,0,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-04,2025-09-27,2025-09-27 12:46:00,12:46,2025,9,27,12,5,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-04,2025-11-13,2025-11-13 04:56:00,04:56,2025,11,13,4,3,False,nuit,2,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-04,2025-11-14,2025-11-14 04:03:00,04:03,2025,11,14,4,4,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-04,2025-11-14,2025-11-14 04:56:00,04:56,2025,11,14,4,4,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-04,2025-11-15,2025-11-15 04:56:00,04:56,2025,11,15,4,5,True,nuit,4,2,1,0,0,1,0,0,0,0,1,0,vibration excessive + arrêt ligne
+MACH-04,2025-11-15,2025-11-15 11:04:00,11:04,2025,11,15,11,5,True,matin,2,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-04,2025-11-16,2025-11-16 11:04:00,11:04,2025,11,16,11,6,True,matin,3,1,1,1,0,0,0,0,0,0,0,0,montée thermique progressive
+MACH-04,2025-11-17,2025-11-17 11:04:00,11:04,2025,11,17,11,0,False,matin,4,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-04,2025-12-15,2025-12-15 03:31:00,03:31,2025,12,15,3,0,False,nuit,2,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-04,2025-12-16,2025-12-16 03:31:00,03:31,2025,12,16,3,1,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-04,2025-12-17,2025-12-17 03:31:00,03:31,2025,12,17,3,2,False,nuit,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-04,2025-12-27,2025-12-27 18:13:00,18:13,2025,12,27,18,5,True,apres-midi,2,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-04,2025-12-28,2025-12-28 18:13:00,18:13,2025,12,28,18,6,True,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,montée thermique progressive
+MACH-04,2025-12-29,2025-12-29 18:13:00,18:13,2025,12,29,18,0,False,apres-midi,4,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-04,2026-01-31,2026-01-31 02:41:00,02:41,2026,1,31,2,5,True,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-04,2026-01-31,2026-01-31 14:35:00,14:35,2026,1,31,14,5,True,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-04,2026-02-01,2026-02-01 14:35:00,14:35,2026,2,1,14,6,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-04,2026-02-02,2026-02-02 14:35:00,14:35,2026,2,2,14,0,False,apres-midi,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-04,2026-02-23,2026-02-23 17:49:00,17:49,2026,2,23,17,0,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-04,2026-03-10,2026-03-10 01:38:00,01:38,2026,3,10,1,1,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-04,2026-03-18,2026-03-18 21:34:00,21:34,2026,3,18,21,2,False,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-04,2026-03-22,2026-03-22 09:49:00,09:49,2026,3,22,9,6,True,matin,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-04,2026-04-09,2026-04-09 23:05:00,23:05,2026,4,9,23,3,False,nuit,2,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-04,2026-04-09,2026-04-09 23:32:00,23:32,2026,4,9,23,3,False,nuit,2,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-04,2026-04-10,2026-04-10 23:26:00,23:26,2026,4,10,23,4,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-04,2026-04-10,2026-04-10 23:32:00,23:32,2026,4,10,23,4,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,montée thermique progressive
+MACH-04,2026-04-11,2026-04-11 06:57:00,06:57,2026,4,11,6,5,True,matin,2,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-04,2026-04-11,2026-04-11 23:32:00,23:32,2026,4,11,23,5,True,nuit,5,2,1,1,0,0,0,0,0,0,1,0,chauffe anormale + arrêt ligne
+MACH-04,2026-04-12,2026-04-12 06:57:00,06:57,2026,4,12,6,6,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-04,2026-04-13,2026-04-13 06:57:00,06:57,2026,4,13,6,0,False,matin,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-04,2026-05-25,2026-05-25 22:23:00,22:23,2026,5,25,22,0,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-05,2025-06-14,2025-06-14 01:07:00,01:07,2025,6,14,1,5,True,nuit,2,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-05,2025-06-14,2025-06-14 01:43:00,01:43,2025,6,14,1,5,True,nuit,2,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-05,2025-06-15,2025-06-15 01:31:00,01:31,2025,6,15,1,6,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-05,2025-06-15,2025-06-15 01:43:00,01:43,2025,6,15,1,6,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-05,2025-06-16,2025-06-16 01:43:00,01:43,2025,6,16,1,0,False,nuit,4,2,1,0,0,0,0,0,0,1,1,0,alarme capteur + arrêt ligne
+MACH-05,2025-06-16,2025-06-16 21:17:00,21:17,2025,6,16,21,0,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-05,2025-06-16,2025-06-16 21:24:00,21:24,2025,6,16,21,0,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-05,2025-06-21,2025-06-21 20:55:00,20:55,2025,6,21,20,5,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-05,2025-06-22,2025-06-22 12:16:00,12:16,2025,6,22,12,6,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-05,2025-07-01,2025-07-01 16:18:00,16:18,2025,7,1,16,1,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-05,2025-07-07,2025-07-07 12:04:00,12:04,2025,7,7,12,0,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-05,2025-07-09,2025-07-09 22:19:00,22:19,2025,7,9,22,2,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-05,2025-07-18,2025-07-18 14:17:00,14:17,2025,7,18,14,4,False,apres-midi,2,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-05,2025-07-20,2025-07-20 18:07:00,18:07,2025,7,20,18,6,True,apres-midi,2,1,1,0,0,0,0,1,0,0,0,0,consommation hors plage nominale
+MACH-05,2025-07-21,2025-07-21 18:07:00,18:07,2025,7,21,18,0,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-05,2025-07-22,2025-07-22 18:07:00,18:07,2025,7,22,18,1,False,apres-midi,5,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-05,2025-07-24,2025-07-24 11:46:00,11:46,2025,7,24,11,3,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-05,2025-08-04,2025-08-04 03:16:00,03:16,2025,8,4,3,0,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-05,2025-08-11,2025-08-11 12:46:00,12:46,2025,8,11,12,0,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-05,2025-08-12,2025-08-12 12:46:00,12:46,2025,8,12,12,1,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-05,2025-08-13,2025-08-13 12:46:00,12:46,2025,8,13,12,2,False,matin,5,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-05,2025-08-16,2025-08-16 03:19:00,03:19,2025,8,16,3,5,True,nuit,2,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-05,2025-08-17,2025-08-17 03:19:00,03:19,2025,8,17,3,6,True,nuit,3,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-05,2025-08-18,2025-08-18 03:19:00,03:19,2025,8,18,3,0,False,nuit,5,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-05,2025-08-30,2025-08-30 12:37:00,12:37,2025,8,30,12,5,True,matin,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-05,2025-09-01,2025-09-01 19:55:00,19:55,2025,9,1,19,0,False,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-05,2025-09-02,2025-09-02 19:55:00,19:55,2025,9,2,19,1,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-05,2025-09-03,2025-09-03 19:55:00,19:55,2025,9,3,19,2,False,apres-midi,5,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-05,2025-09-26,2025-09-26 15:44:00,15:44,2025,9,26,15,4,False,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-05,2025-10-15,2025-10-15 00:18:00,00:18,2025,10,15,0,2,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-05,2025-10-25,2025-10-25 01:23:00,01:23,2025,10,25,1,5,True,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-05,2025-11-06,2025-11-06 09:39:00,09:39,2025,11,6,9,3,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-05,2025-11-08,2025-11-08 04:52:00,04:52,2025,11,8,4,5,True,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-05,2025-11-09,2025-11-09 22:14:00,22:14,2025,11,9,22,6,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-05,2025-11-16,2025-11-16 16:49:00,16:49,2025,11,16,16,6,True,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-05,2025-11-22,2025-11-22 07:47:00,07:47,2025,11,22,7,5,True,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-05,2025-11-29,2025-11-29 17:04:00,17:04,2025,11,29,17,5,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-05,2025-12-08,2025-12-08 00:24:00,00:24,2025,12,8,0,0,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-05,2025-12-11,2025-12-11 20:45:00,20:45,2025,12,11,20,3,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-05,2025-12-15,2025-12-15 09:40:00,09:40,2025,12,15,9,0,False,matin,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-05,2025-12-16,2025-12-16 09:40:00,09:40,2025,12,16,9,1,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-05,2025-12-17,2025-12-17 09:40:00,09:40,2025,12,17,9,2,False,matin,5,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-05,2025-12-18,2025-12-18 07:24:00,07:24,2025,12,18,7,3,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-05,2025-12-19,2025-12-19 06:09:00,06:09,2025,12,19,6,4,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-05,2025-12-19,2025-12-19 07:24:00,07:24,2025,12,19,7,4,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-05,2025-12-20,2025-12-20 07:24:00,07:24,2025,12,20,7,5,True,matin,5,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-05,2026-01-17,2026-01-17 14:08:00,14:08,2026,1,17,14,5,True,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-05,2026-01-18,2026-01-18 02:29:00,02:29,2026,1,18,2,6,True,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-05,2026-02-05,2026-02-05 06:55:00,06:55,2026,2,5,6,3,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-05,2026-02-13,2026-02-13 20:44:00,20:44,2026,2,13,20,4,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-05,2026-03-18,2026-03-18 05:22:00,05:22,2026,3,18,5,2,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-05,2026-04-03,2026-04-03 13:37:00,13:37,2026,4,3,13,4,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-05,2026-04-04,2026-04-04 22:51:00,22:51,2026,4,4,22,5,True,nuit,2,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-05,2026-04-10,2026-04-10 22:42:00,22:42,2026,4,10,22,4,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-05,2026-04-10,2026-04-10 23:38:00,23:38,2026,4,10,23,4,False,nuit,2,1,1,0,0,0,0,0,0,0,1,0,arrêt d'urgence déclenché par opérateur
+MACH-05,2026-04-10,2026-04-10 23:47:00,23:47,2026,4,10,23,4,False,nuit,2,1,1,0,0,0,0,0,0,0,1,0,coupure urgence — surchauffe critique
+MACH-05,2026-04-11,2026-04-11 23:38:00,23:38,2026,4,11,23,5,True,nuit,3,1,1,0,0,0,0,0,0,0,1,0,arrêt d'urgence déclenché par opérateur
+MACH-05,2026-04-12,2026-04-12 23:38:00,23:38,2026,4,12,23,6,True,nuit,4,2,1,0,0,0,0,0,0,0,1,1,défaut qualité pièces + arrêt ligne
+MACH-05,2026-04-14,2026-04-14 18:42:00,18:42,2026,4,14,18,1,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-05,2026-04-25,2026-04-25 07:31:00,07:31,2026,4,25,7,5,True,matin,2,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-05,2026-04-26,2026-04-26 07:31:00,07:31,2026,4,26,7,6,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-05,2026-04-27,2026-04-27 07:31:00,07:31,2026,4,27,7,0,False,matin,5,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-05,2026-05-12,2026-05-12 18:52:00,18:52,2026,5,12,18,1,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-05,2026-05-28,2026-05-28 19:57:00,19:57,2026,5,28,19,3,False,apres-midi,2,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-05,2026-05-29,2026-05-29 19:47:00,19:47,2026,5,29,19,4,False,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-05,2026-05-29,2026-05-29 19:57:00,19:57,2026,5,29,19,4,False,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-05,2026-05-30,2026-05-30 19:57:00,19:57,2026,5,30,19,5,True,apres-midi,5,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-05,2026-05-31,2026-05-31 19:45:00,19:45,2026,5,31,19,6,True,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-05,2026-06-02,2026-06-02 05:07:00,05:07,2026,6,2,5,1,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-06,2025-06-01,2025-06-01 05:42:00,05:42,2025,6,1,5,6,True,nuit,4,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-06,2025-06-08,2025-06-08 09:10:00,09:10,2025,6,8,9,6,True,matin,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-06,2025-06-12,2025-06-12 04:17:00,04:17,2025,6,12,4,3,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-06,2025-06-13,2025-06-13 04:17:00,04:17,2025,6,13,4,4,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-06,2025-06-13,2025-06-13 20:54:00,20:54,2025,6,13,20,4,False,apres-midi,2,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-06,2025-06-14,2025-06-14 04:17:00,04:17,2025,6,14,4,5,True,nuit,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-06,2025-06-14,2025-06-14 20:54:00,20:54,2025,6,14,20,5,True,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-06,2025-06-15,2025-06-15 20:54:00,20:54,2025,6,15,20,6,True,apres-midi,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-06,2025-06-22,2025-06-22 00:14:00,00:14,2025,6,22,0,6,True,nuit,2,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-06,2025-06-23,2025-06-23 00:14:00,00:14,2025,6,23,0,0,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-06,2025-06-24,2025-06-24 00:14:00,00:14,2025,6,24,0,1,False,nuit,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-06,2025-06-24,2025-06-24 01:51:00,01:51,2025,6,24,1,1,False,nuit,2,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-06,2025-06-24,2025-06-24 09:57:00,09:57,2025,6,24,9,1,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-06,2025-06-25,2025-06-25 01:51:00,01:51,2025,6,25,1,2,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-06,2025-06-26,2025-06-26 01:51:00,01:51,2025,6,26,1,3,False,nuit,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-06,2025-07-06,2025-07-06 23:30:00,23:30,2025,7,6,23,6,True,nuit,2,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-06,2025-07-07,2025-07-07 23:30:00,23:30,2025,7,7,23,0,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-06,2025-07-08,2025-07-08 23:30:00,23:30,2025,7,8,23,1,False,nuit,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-06,2025-07-20,2025-07-20 22:24:00,22:24,2025,7,20,22,6,True,nuit,2,1,1,0,0,0,0,1,0,0,0,0,consommation hors plage nominale
+MACH-06,2025-07-21,2025-07-21 22:24:00,22:24,2025,7,21,22,0,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-06,2025-07-22,2025-07-22 22:24:00,22:24,2025,7,22,22,1,False,nuit,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-06,2025-07-28,2025-07-28 17:31:00,17:31,2025,7,28,17,0,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-06,2025-07-29,2025-07-29 17:31:00,17:31,2025,7,29,17,1,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-06,2025-07-29,2025-07-29 18:48:00,18:48,2025,7,29,18,1,False,apres-midi,2,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-06,2025-07-30,2025-07-30 17:31:00,17:31,2025,7,30,17,2,False,apres-midi,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-06,2025-07-30,2025-07-30 18:48:00,18:48,2025,7,30,18,2,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-06,2025-07-31,2025-07-31 18:48:00,18:48,2025,7,31,18,3,False,apres-midi,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-06,2025-08-19,2025-08-19 06:27:00,06:27,2025,8,19,6,1,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-06,2025-08-26,2025-08-26 11:40:00,11:40,2025,8,26,11,1,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-06,2025-08-27,2025-08-27 11:40:00,11:40,2025,8,27,11,2,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-06,2025-08-28,2025-08-28 11:40:00,11:40,2025,8,28,11,3,False,matin,4,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-06,2025-08-28,2025-08-28 21:06:00,21:06,2025,8,28,21,3,False,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-06,2025-08-29,2025-08-29 21:06:00,21:06,2025,8,29,21,4,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-06,2025-08-30,2025-08-30 12:36:00,12:36,2025,8,30,12,5,True,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-06,2025-08-30,2025-08-30 21:06:00,21:06,2025,8,30,21,5,True,apres-midi,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-06,2025-09-06,2025-09-06 14:06:00,14:06,2025,9,6,14,5,True,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-06,2025-09-06,2025-09-06 14:45:00,14:45,2025,9,6,14,5,True,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-06,2025-09-07,2025-09-07 14:06:00,14:06,2025,9,7,14,6,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-06,2025-09-07,2025-09-07 14:54:00,14:54,2025,9,7,14,6,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-06,2025-09-08,2025-09-08 14:06:00,14:06,2025,9,8,14,0,False,apres-midi,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-06,2025-09-28,2025-09-28 07:21:00,07:21,2025,9,28,7,6,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-06,2025-10-01,2025-10-01 13:09:00,13:09,2025,10,1,13,2,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-06,2025-10-07,2025-10-07 10:02:00,10:02,2025,10,7,10,1,False,matin,2,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-06,2025-10-08,2025-10-08 10:02:00,10:02,2025,10,8,10,2,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-06,2025-10-09,2025-10-09 10:02:00,10:02,2025,10,9,10,3,False,matin,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-06,2025-11-25,2025-11-25 11:29:00,11:29,2025,11,25,11,1,False,matin,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-06,2025-12-05,2025-12-05 15:05:00,15:05,2025,12,5,15,4,False,apres-midi,2,1,1,0,0,0,0,0,1,0,0,0,pièce bloquée convoyeur
+MACH-06,2025-12-18,2025-12-18 11:28:00,11:28,2025,12,18,11,3,False,matin,2,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-06,2025-12-19,2025-12-19 11:28:00,11:28,2025,12,19,11,4,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-06,2025-12-20,2025-12-20 11:28:00,11:28,2025,12,20,11,5,True,matin,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-06,2026-01-15,2026-01-15 11:32:00,11:32,2026,1,15,11,3,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-06,2026-04-02,2026-04-02 05:36:00,05:36,2026,4,2,5,3,False,nuit,2,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-06,2026-04-03,2026-04-03 05:36:00,05:36,2026,4,3,5,4,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-06,2026-04-04,2026-04-04 05:36:00,05:36,2026,4,4,5,5,True,nuit,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-06,2026-04-15,2026-04-15 13:20:00,13:20,2026,4,15,13,2,False,matin,2,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-06,2026-04-16,2026-04-16 05:01:00,05:01,2026,4,16,5,3,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-06,2026-04-16,2026-04-16 13:20:00,13:20,2026,4,16,13,3,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-06,2026-04-17,2026-04-17 05:01:00,05:01,2026,4,17,5,4,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-06,2026-04-17,2026-04-17 13:20:00,13:20,2026,4,17,13,4,False,matin,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-06,2026-04-18,2026-04-18 05:01:00,05:01,2026,4,18,5,5,True,nuit,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-06,2026-04-29,2026-04-29 18:26:00,18:26,2026,4,29,18,2,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-06,2026-05-08,2026-05-08 21:44:00,21:44,2026,5,8,21,4,False,apres-midi,2,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-06,2026-05-09,2026-05-09 19:01:00,19:01,2026,5,9,19,5,True,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-06,2026-05-15,2026-05-15 08:31:00,08:31,2026,5,15,8,4,False,matin,2,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-06,2026-05-16,2026-05-16 08:31:00,08:31,2026,5,16,8,5,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-06,2026-05-17,2026-05-17 08:31:00,08:31,2026,5,17,8,6,True,matin,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-06,2026-06-02,2026-06-02 06:04:00,06:04,2026,6,2,6,1,False,matin,2,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-06,2026-06-03,2026-06-03 06:04:00,06:04,2026,6,3,6,2,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-06,2026-06-04,2026-06-04 06:04:00,06:04,2026,6,4,6,3,False,matin,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-07,2025-06-12,2025-06-12 10:27:00,10:27,2025,6,12,10,3,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-07,2025-07-22,2025-07-22 23:53:00,23:53,2025,7,22,23,1,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-07,2025-07-28,2025-07-28 14:48:00,14:48,2025,7,28,14,0,False,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-07,2025-07-29,2025-07-29 14:48:00,14:48,2025,7,29,14,1,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-07,2025-07-30,2025-07-30 14:48:00,14:48,2025,7,30,14,2,False,apres-midi,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-07,2025-08-07,2025-08-07 04:14:00,04:14,2025,8,7,4,3,False,nuit,2,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-07,2025-08-15,2025-08-15 15:53:00,15:53,2025,8,15,15,4,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-07,2025-08-20,2025-08-20 07:55:00,07:55,2025,8,20,7,2,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-07,2025-08-24,2025-08-24 23:05:00,23:05,2025,8,24,23,6,True,nuit,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-07,2025-08-26,2025-08-26 11:11:00,11:11,2025,8,26,11,1,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-07,2025-10-03,2025-10-03 03:32:00,03:32,2025,10,3,3,4,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-07,2025-10-06,2025-10-06 11:41:00,11:41,2025,10,6,11,0,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-07,2025-10-10,2025-10-10 08:01:00,08:01,2025,10,10,8,4,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-07,2025-10-19,2025-10-19 16:18:00,16:18,2025,10,19,16,6,True,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-07,2025-11-03,2025-11-03 04:06:00,04:06,2025,11,3,4,0,False,nuit,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-07,2025-11-24,2025-11-24 03:32:00,03:32,2025,11,24,3,0,False,nuit,2,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-07,2025-11-25,2025-11-25 03:32:00,03:32,2025,11,25,3,1,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-07,2025-11-26,2025-11-26 03:32:00,03:32,2025,11,26,3,2,False,nuit,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-07,2025-12-20,2025-12-20 00:40:00,00:40,2025,12,20,0,5,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-07,2025-12-30,2025-12-30 02:34:00,02:34,2025,12,30,2,1,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-07,2026-01-16,2026-01-16 14:51:00,14:51,2026,1,16,14,4,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-07,2026-01-26,2026-01-26 05:33:00,05:33,2026,1,26,5,0,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-07,2026-01-31,2026-01-31 00:48:00,00:48,2026,1,31,0,5,True,nuit,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-07,2026-03-06,2026-03-06 13:17:00,13:17,2026,3,6,13,4,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-07,2026-04-11,2026-04-11 15:09:00,15:09,2026,4,11,15,5,True,apres-midi,2,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-07,2026-04-12,2026-04-12 15:09:00,15:09,2026,4,12,15,6,True,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-07,2026-04-13,2026-04-13 15:09:00,15:09,2026,4,13,15,0,False,apres-midi,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-07,2026-05-25,2026-05-25 14:39:00,14:39,2026,5,25,14,0,False,apres-midi,2,1,1,0,0,0,0,0,1,0,0,0,coincement pièce mobile
+MACH-07,2026-05-26,2026-05-26 14:16:00,14:16,2026,5,26,14,1,False,apres-midi,3,1,1,0,0,0,0,0,1,0,0,0,résistance mécanique anormale
+MACH-07,2026-05-26,2026-05-26 14:39:00,14:39,2026,5,26,14,1,False,apres-midi,3,1,1,0,0,0,0,0,1,0,0,0,coincement pièce mobile
+MACH-07,2026-05-27,2026-05-27 14:39:00,14:39,2026,5,27,14,2,False,apres-midi,4,1,1,0,0,0,0,0,1,0,0,0,pièce bloquée convoyeur
+MACH-07,2026-05-31,2026-05-31 04:08:00,04:08,2026,5,31,4,6,True,nuit,2,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-07,2026-06-01,2026-06-01 04:08:00,04:08,2026,6,1,4,0,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-07,2026-06-02,2026-06-02 04:08:00,04:08,2026,6,2,4,1,False,nuit,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-07,2026-06-04,2026-06-04 00:42:00,00:42,2026,6,4,0,3,False,nuit,2,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-08,2025-06-16,2025-06-16 17:35:00,17:35,2025,6,16,17,0,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-08,2025-06-22,2025-06-22 20:15:00,20:15,2025,6,22,20,6,True,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-08,2025-07-01,2025-07-01 20:53:00,20:53,2025,7,1,20,1,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-08,2025-07-02,2025-07-02 16:53:00,16:53,2025,7,2,16,2,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-08,2025-07-10,2025-07-10 08:42:00,08:42,2025,7,10,8,3,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-08,2025-07-15,2025-07-15 01:14:00,01:14,2025,7,15,1,1,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-08,2025-07-15,2025-07-15 22:37:00,22:37,2025,7,15,22,1,False,nuit,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-08,2025-07-24,2025-07-24 13:14:00,13:14,2025,7,24,13,3,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-08,2025-08-02,2025-08-02 12:22:00,12:22,2025,8,2,12,5,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-08,2025-08-04,2025-08-04 07:04:00,07:04,2025,8,4,7,0,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-08,2025-08-08,2025-08-08 02:21:00,02:21,2025,8,8,2,4,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-08,2025-08-09,2025-08-09 14:25:00,14:25,2025,8,9,14,5,True,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-08,2025-08-11,2025-08-11 22:40:00,22:40,2025,8,11,22,0,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-08,2025-08-21,2025-08-21 18:46:00,18:46,2025,8,21,18,3,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-08,2025-08-22,2025-08-22 12:44:00,12:44,2025,8,22,12,4,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-08,2025-08-28,2025-08-28 19:29:00,19:29,2025,8,28,19,3,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-08,2025-08-31,2025-08-31 16:42:00,16:42,2025,8,31,16,6,True,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-08,2025-08-31,2025-08-31 16:54:00,16:54,2025,8,31,16,6,True,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-08,2025-09-01,2025-09-01 16:34:00,16:34,2025,9,1,16,0,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-08,2025-09-01,2025-09-01 16:54:00,16:54,2025,9,1,16,0,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-08,2025-09-02,2025-09-02 15:30:00,15:30,2025,9,2,15,1,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-08,2025-09-02,2025-09-02 16:54:00,16:54,2025,9,2,16,1,False,apres-midi,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-08,2025-09-10,2025-09-10 16:03:00,16:03,2025,9,10,16,2,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-08,2025-09-14,2025-09-14 14:42:00,14:42,2025,9,14,14,6,True,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-08,2025-09-16,2025-09-16 01:35:00,01:35,2025,9,16,1,1,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-08,2025-09-27,2025-09-27 04:37:00,04:37,2025,9,27,4,5,True,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-08,2025-10-02,2025-10-02 07:05:00,07:05,2025,10,2,7,3,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-08,2025-10-09,2025-10-09 01:07:00,01:07,2025,10,9,1,3,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-08,2025-10-24,2025-10-24 22:07:00,22:07,2025,10,24,22,4,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-08,2025-10-25,2025-10-25 11:03:00,11:03,2025,10,25,11,5,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-08,2025-10-28,2025-10-28 00:38:00,00:38,2025,10,28,0,1,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-08,2025-11-16,2025-11-16 13:17:00,13:17,2025,11,16,13,6,True,matin,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-08,2025-11-19,2025-11-19 23:40:00,23:40,2025,11,19,23,2,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-08,2025-11-19,2025-11-19 23:46:00,23:46,2025,11,19,23,2,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-08,2025-11-20,2025-11-20 23:40:00,23:40,2025,11,20,23,3,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-08,2025-11-20,2025-11-20 23:45:00,23:45,2025,11,20,23,3,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-08,2025-11-21,2025-11-21 23:40:00,23:40,2025,11,21,23,4,False,nuit,4,2,1,0,0,0,0,0,0,1,1,0,alarme capteur + arrêt ligne
+MACH-08,2025-11-23,2025-11-23 02:26:00,02:26,2025,11,23,2,6,True,nuit,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-08,2025-11-25,2025-11-25 02:07:00,02:07,2025,11,25,2,1,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-08,2025-11-30,2025-11-30 02:12:00,02:12,2025,11,30,2,6,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-08,2025-12-06,2025-12-06 10:01:00,10:01,2025,12,6,10,5,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-08,2025-12-10,2025-12-10 11:27:00,11:27,2025,12,10,11,2,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-08,2025-12-27,2025-12-27 09:45:00,09:45,2025,12,27,9,5,True,matin,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-08,2025-12-29,2025-12-29 02:24:00,02:24,2025,12,29,2,0,False,nuit,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-08,2026-01-09,2026-01-09 15:19:00,15:19,2026,1,9,15,4,False,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-08,2026-01-25,2026-01-25 08:48:00,08:48,2026,1,25,8,6,True,matin,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-08,2026-01-29,2026-01-29 10:04:00,10:04,2026,1,29,10,3,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-08,2026-01-31,2026-01-31 08:24:00,08:24,2026,1,31,8,5,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-08,2026-02-06,2026-02-06 11:26:00,11:26,2026,2,6,11,4,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-08,2026-02-06,2026-02-06 22:25:00,22:25,2026,2,6,22,4,False,nuit,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-08,2026-02-07,2026-02-07 11:18:00,11:18,2026,2,7,11,5,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-08,2026-02-15,2026-02-15 11:57:00,11:57,2026,2,15,11,6,True,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-08,2026-02-16,2026-02-16 11:55:00,11:55,2026,2,16,11,0,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-08,2026-02-18,2026-02-18 02:48:00,02:48,2026,2,18,2,2,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-08,2026-03-01,2026-03-01 04:27:00,04:27,2026,3,1,4,6,True,nuit,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-08,2026-03-03,2026-03-03 11:11:00,11:11,2026,3,3,11,1,False,matin,2,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-08,2026-03-06,2026-03-06 16:28:00,16:28,2026,3,6,16,4,False,apres-midi,2,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-08,2026-03-15,2026-03-15 14:44:00,14:44,2026,3,15,14,6,True,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-08,2026-03-24,2026-03-24 17:02:00,17:02,2026,3,24,17,1,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-08,2026-04-03,2026-04-03 09:30:00,09:30,2026,4,3,9,4,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-08,2026-04-10,2026-04-10 11:29:00,11:29,2026,4,10,11,4,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-08,2026-04-21,2026-04-21 04:03:00,04:03,2026,4,21,4,1,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-08,2026-04-22,2026-04-22 14:28:00,14:28,2026,4,22,14,2,False,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-08,2026-04-22,2026-04-22 18:50:00,18:50,2026,4,22,18,2,False,apres-midi,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-08,2026-04-25,2026-04-25 12:46:00,12:46,2026,4,25,12,5,True,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-08,2026-05-02,2026-05-02 09:22:00,09:22,2026,5,2,9,5,True,matin,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-08,2026-05-08,2026-05-08 14:54:00,14:54,2026,5,8,14,4,False,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-08,2026-05-09,2026-05-09 07:38:00,07:38,2026,5,9,7,5,True,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-08,2026-05-10,2026-05-10 12:43:00,12:43,2026,5,10,12,6,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-08,2026-05-14,2026-05-14 08:36:00,08:36,2026,5,14,8,3,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-08,2026-05-20,2026-05-20 18:52:00,18:52,2026,5,20,18,2,False,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-08,2026-05-23,2026-05-23 08:30:00,08:30,2026,5,23,8,5,True,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-08,2026-05-23,2026-05-23 13:49:00,13:49,2026,5,23,13,5,True,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-08,2026-05-25,2026-05-25 06:34:00,06:34,2026,5,25,6,0,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-09,2025-06-22,2025-06-22 04:50:00,04:50,2025,6,22,4,6,True,nuit,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-09,2025-06-25,2025-06-25 17:55:00,17:55,2025,6,25,17,2,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-09,2025-07-01,2025-07-01 07:19:00,07:19,2025,7,1,7,1,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-09,2025-07-04,2025-07-04 18:26:00,18:26,2025,7,4,18,4,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-09,2025-07-15,2025-07-15 09:55:00,09:55,2025,7,15,9,1,False,matin,2,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-09,2025-07-16,2025-07-16 09:55:00,09:55,2025,7,16,9,2,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-09,2025-07-16,2025-07-16 16:03:00,16:03,2025,7,16,16,2,False,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-09,2025-07-17,2025-07-17 09:55:00,09:55,2025,7,17,9,3,False,matin,5,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-09,2025-07-17,2025-07-17 16:03:00,16:03,2025,7,17,16,3,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-09,2025-07-18,2025-07-18 16:03:00,16:03,2025,7,18,16,4,False,apres-midi,5,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-09,2025-07-26,2025-07-26 23:08:00,23:08,2025,7,26,23,5,True,nuit,2,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-09,2025-07-26,2025-07-26 23:45:00,23:45,2025,7,26,23,5,True,nuit,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-09,2025-07-27,2025-07-27 23:08:00,23:08,2025,7,27,23,6,True,nuit,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-09,2025-07-27,2025-07-27 23:43:00,23:43,2025,7,27,23,6,True,nuit,3,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-09,2025-07-28,2025-07-28 23:08:00,23:08,2025,7,28,23,0,False,nuit,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-09,2025-08-01,2025-08-01 17:37:00,17:37,2025,8,1,17,4,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-09,2025-08-02,2025-08-02 09:45:00,09:45,2025,8,2,9,5,True,matin,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-09,2025-08-02,2025-08-02 17:37:00,17:37,2025,8,2,17,5,True,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-09,2025-08-03,2025-08-03 17:37:00,17:37,2025,8,3,17,6,True,apres-midi,5,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-09,2025-08-08,2025-08-08 13:43:00,13:43,2025,8,8,13,4,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-09,2025-08-19,2025-08-19 22:32:00,22:32,2025,8,19,22,1,False,nuit,2,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-09,2025-08-20,2025-08-20 22:12:00,22:12,2025,8,20,22,2,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-09,2025-08-20,2025-08-20 22:32:00,22:32,2025,8,20,22,2,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-09,2025-08-21,2025-08-21 22:32:00,22:32,2025,8,21,22,3,False,nuit,4,2,1,1,0,0,0,0,0,0,1,0,chauffe anormale + arrêt ligne
+MACH-09,2025-08-26,2025-08-26 13:42:00,13:42,2025,8,26,13,1,False,matin,2,1,1,0,0,0,0,0,1,0,0,0,pièce bloquée convoyeur
+MACH-09,2025-09-13,2025-09-13 12:33:00,12:33,2025,9,13,12,5,True,matin,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-09,2025-09-22,2025-09-22 14:20:00,14:20,2025,9,22,14,0,False,apres-midi,2,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-09,2025-09-23,2025-09-23 14:20:00,14:20,2025,9,23,14,1,False,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-09,2025-09-24,2025-09-24 14:20:00,14:20,2025,9,24,14,2,False,apres-midi,5,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-09,2025-09-26,2025-09-26 21:31:00,21:31,2025,9,26,21,4,False,apres-midi,2,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-09,2025-09-27,2025-09-27 21:31:00,21:31,2025,9,27,21,5,True,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-09,2025-09-28,2025-09-28 21:31:00,21:31,2025,9,28,21,6,True,apres-midi,5,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-09,2025-10-22,2025-10-22 21:43:00,21:43,2025,10,22,21,2,False,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-09,2025-10-24,2025-10-24 13:32:00,13:32,2025,10,24,13,4,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-09,2025-11-11,2025-11-11 17:01:00,17:01,2025,11,11,17,1,False,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-09,2025-11-15,2025-11-15 07:46:00,07:46,2025,11,15,7,5,True,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-09,2025-11-15,2025-11-15 10:55:00,10:55,2025,11,15,10,5,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-09,2025-11-16,2025-11-16 16:14:00,16:14,2025,11,16,16,6,True,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-09,2025-11-20,2025-11-20 23:07:00,23:07,2025,11,20,23,3,False,nuit,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-09,2025-11-27,2025-11-27 21:47:00,21:47,2025,11,27,21,3,False,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-09,2025-12-01,2025-12-01 21:06:00,21:06,2025,12,1,21,0,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-09,2025-12-08,2025-12-08 02:10:00,02:10,2025,12,8,2,0,False,nuit,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-09,2026-01-13,2026-01-13 01:42:00,01:42,2026,1,13,1,1,False,nuit,2,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-09,2026-01-13,2026-01-13 09:31:00,09:31,2026,1,13,9,1,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-09,2026-01-14,2026-01-14 01:42:00,01:42,2026,1,14,1,2,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-09,2026-01-15,2026-01-15 01:42:00,01:42,2026,1,15,1,3,False,nuit,5,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-09,2026-01-24,2026-01-24 15:50:00,15:50,2026,1,24,15,5,True,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-09,2026-02-14,2026-02-14 16:32:00,16:32,2026,2,14,16,5,True,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-09,2026-02-15,2026-02-15 16:32:00,16:32,2026,2,15,16,6,True,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-09,2026-02-16,2026-02-16 16:32:00,16:32,2026,2,16,16,0,False,apres-midi,5,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-09,2026-02-17,2026-02-17 12:46:00,12:46,2026,2,17,12,1,False,matin,2,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-09,2026-02-18,2026-02-18 12:46:00,12:46,2026,2,18,12,2,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-09,2026-02-19,2026-02-19 12:46:00,12:46,2026,2,19,12,3,False,matin,5,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-09,2026-03-07,2026-03-07 12:57:00,12:57,2026,3,7,12,5,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-09,2026-03-22,2026-03-22 12:31:00,12:31,2026,3,22,12,6,True,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-09,2026-04-03,2026-04-03 09:41:00,09:41,2026,4,3,9,4,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-09,2026-04-06,2026-04-06 07:44:00,07:44,2026,4,6,7,0,False,matin,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-09,2026-04-17,2026-04-17 06:17:00,06:17,2026,4,17,6,4,False,matin,2,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-09,2026-04-18,2026-04-18 06:17:00,06:17,2026,4,18,6,5,True,matin,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-09,2026-04-19,2026-04-19 06:17:00,06:17,2026,4,19,6,6,True,matin,5,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-09,2026-04-22,2026-04-22 08:27:00,08:27,2026,4,22,8,2,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-09,2026-04-23,2026-04-23 08:27:00,08:27,2026,4,23,8,3,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-09,2026-04-23,2026-04-23 08:57:00,08:57,2026,4,23,8,3,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-09,2026-04-23,2026-04-23 10:05:00,10:05,2026,4,23,10,3,False,matin,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-09,2026-04-24,2026-04-24 08:27:00,08:27,2026,4,24,8,4,False,matin,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-09,2026-04-24,2026-04-24 10:05:00,10:05,2026,4,24,10,4,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-09,2026-04-25,2026-04-25 10:05:00,10:05,2026,4,25,10,5,True,matin,5,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-09,2026-05-08,2026-05-08 10:07:00,10:07,2026,5,8,10,4,False,matin,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-09,2026-05-10,2026-05-10 16:03:00,16:03,2026,5,10,16,6,True,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-09,2026-05-11,2026-05-11 13:23:00,13:23,2026,5,11,13,0,False,matin,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-09,2026-05-11,2026-05-11 16:03:00,16:03,2026,5,11,16,0,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-09,2026-05-12,2026-05-12 16:03:00,16:03,2026,5,12,16,1,False,apres-midi,5,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-09,2026-05-14,2026-05-14 13:14:00,13:14,2026,5,14,13,3,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-09,2026-05-16,2026-05-16 00:55:00,00:55,2026,5,16,0,5,True,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-09,2026-05-27,2026-05-27 18:05:00,18:05,2026,5,27,18,2,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-09,2026-05-31,2026-05-31 09:17:00,09:17,2026,5,31,9,6,True,matin,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-09,2026-06-02,2026-06-02 00:31:00,00:31,2026,6,2,0,1,False,nuit,2,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-09,2026-06-04,2026-06-04 10:23:00,10:23,2026,6,4,10,3,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-10,2025-06-02,2025-06-02 05:43:00,05:43,2025,6,2,5,0,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-10,2025-06-03,2025-06-03 05:43:00,05:43,2025,6,3,5,1,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-10,2025-06-04,2025-06-04 05:43:00,05:43,2025,6,4,5,2,False,nuit,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-10,2025-06-09,2025-06-09 03:34:00,03:34,2025,6,9,3,0,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-10,2025-06-30,2025-06-30 07:53:00,07:53,2025,6,30,7,0,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-10,2025-07-01,2025-07-01 07:53:00,07:53,2025,7,1,7,1,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-10,2025-07-02,2025-07-02 07:53:00,07:53,2025,7,2,7,2,False,matin,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-10,2025-07-03,2025-07-03 06:09:00,06:09,2025,7,3,6,3,False,matin,2,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-10,2025-07-09,2025-07-09 07:23:00,07:23,2025,7,9,7,2,False,matin,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-10,2025-07-09,2025-07-09 09:03:00,09:03,2025,7,9,9,2,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,montée thermique progressive
+MACH-10,2025-07-09,2025-07-09 09:48:00,09:48,2025,7,9,9,2,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-10,2025-07-10,2025-07-10 09:03:00,09:03,2025,7,10,9,3,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-10,2025-07-10,2025-07-10 09:50:00,09:50,2025,7,10,9,3,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-10,2025-07-11,2025-07-11 09:03:00,09:03,2025,7,11,9,4,False,matin,4,2,1,1,0,0,0,0,0,0,1,0,chauffe anormale + arrêt ligne
+MACH-10,2025-07-17,2025-07-17 08:33:00,08:33,2025,7,17,8,3,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-10,2025-07-22,2025-07-22 20:56:00,20:56,2025,7,22,20,1,False,apres-midi,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-10,2025-07-23,2025-07-23 20:56:00,20:56,2025,7,23,20,2,False,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-10,2025-07-24,2025-07-24 20:56:00,20:56,2025,7,24,20,3,False,apres-midi,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-10,2025-08-05,2025-08-05 11:10:00,11:10,2025,8,5,11,1,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-10,2025-08-07,2025-08-07 18:20:00,18:20,2025,8,7,18,3,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-10,2025-08-25,2025-08-25 02:17:00,02:17,2025,8,25,2,0,False,nuit,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-10,2025-08-27,2025-08-27 10:35:00,10:35,2025,8,27,10,2,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-10,2025-09-13,2025-09-13 08:29:00,08:29,2025,9,13,8,5,True,matin,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-10,2025-09-14,2025-09-14 08:29:00,08:29,2025,9,14,8,6,True,matin,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-10,2025-09-15,2025-09-15 08:29:00,08:29,2025,9,15,8,0,False,matin,4,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-10,2025-09-17,2025-09-17 02:54:00,02:54,2025,9,17,2,2,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-10,2025-09-18,2025-09-18 02:54:00,02:54,2025,9,18,2,3,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-10,2025-09-19,2025-09-19 02:54:00,02:54,2025,9,19,2,4,False,nuit,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-10,2025-10-04,2025-10-04 07:22:00,07:22,2025,10,4,7,5,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-10,2025-11-09,2025-11-09 06:45:00,06:45,2025,11,9,6,6,True,matin,2,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-10,2025-11-10,2025-11-10 06:45:00,06:45,2025,11,10,6,0,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-10,2025-11-11,2025-11-11 06:45:00,06:45,2025,11,11,6,1,False,matin,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-10,2025-11-11,2025-11-11 10:12:00,10:12,2025,11,11,10,1,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-10,2025-11-25,2025-11-25 17:09:00,17:09,2025,11,25,17,1,False,apres-midi,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-10,2025-11-26,2025-11-26 17:09:00,17:09,2025,11,26,17,2,False,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-10,2025-11-26,2025-11-26 17:49:00,17:49,2025,11,26,17,2,False,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-10,2025-11-27,2025-11-27 17:09:00,17:09,2025,11,27,17,3,False,apres-midi,4,2,1,0,1,0,0,0,0,0,1,0,micro-fuite / baisse pression + arrêt ligne
+MACH-10,2025-12-09,2025-12-09 02:44:00,02:44,2025,12,9,2,1,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-10,2025-12-13,2025-12-13 16:26:00,16:26,2025,12,13,16,5,True,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-10,2026-01-04,2026-01-04 18:32:00,18:32,2026,1,4,18,6,True,apres-midi,2,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-10,2026-01-08,2026-01-08 08:15:00,08:15,2026,1,8,8,3,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-10,2026-01-08,2026-01-08 16:20:00,16:20,2026,1,8,16,3,False,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-10,2026-01-09,2026-01-09 08:15:00,08:15,2026,1,9,8,4,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-10,2026-01-09,2026-01-09 16:20:00,16:20,2026,1,9,16,4,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-10,2026-01-10,2026-01-10 08:15:00,08:15,2026,1,10,8,5,True,matin,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-10,2026-01-10,2026-01-10 16:20:00,16:20,2026,1,10,16,5,True,apres-midi,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-10,2026-01-26,2026-01-26 11:42:00,11:42,2026,1,26,11,0,False,matin,2,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-10,2026-01-27,2026-01-27 11:42:00,11:42,2026,1,27,11,1,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-10,2026-01-28,2026-01-28 11:42:00,11:42,2026,1,28,11,2,False,matin,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-10,2026-02-02,2026-02-02 17:39:00,17:39,2026,2,2,17,0,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-10,2026-02-12,2026-02-12 16:48:00,16:48,2026,2,12,16,3,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-10,2026-02-13,2026-02-13 16:48:00,16:48,2026,2,13,16,4,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-10,2026-02-14,2026-02-14 16:48:00,16:48,2026,2,14,16,5,True,apres-midi,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-10,2026-02-25,2026-02-25 09:03:00,09:03,2026,2,25,9,2,False,matin,2,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-10,2026-02-26,2026-02-26 09:03:00,09:03,2026,2,26,9,3,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-10,2026-02-27,2026-02-27 09:03:00,09:03,2026,2,27,9,4,False,matin,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-10,2026-03-13,2026-03-13 20:49:00,20:49,2026,3,13,20,4,False,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-10,2026-03-14,2026-03-14 14:28:00,14:28,2026,3,14,14,5,True,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-10,2026-03-18,2026-03-18 05:29:00,05:29,2026,3,18,5,2,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-10,2026-03-25,2026-03-25 21:36:00,21:36,2026,3,25,21,2,False,apres-midi,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-10,2026-04-09,2026-04-09 07:27:00,07:27,2026,4,9,7,3,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-10,2026-04-22,2026-04-22 15:56:00,15:56,2026,4,22,15,2,False,apres-midi,2,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-10,2026-04-23,2026-04-23 15:56:00,15:56,2026,4,23,15,3,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-10,2026-04-24,2026-04-24 15:56:00,15:56,2026,4,24,15,4,False,apres-midi,4,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-10,2026-04-25,2026-04-25 17:46:00,17:46,2026,4,25,17,5,True,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-10,2026-04-26,2026-04-26 17:46:00,17:46,2026,4,26,17,6,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-10,2026-04-27,2026-04-27 17:46:00,17:46,2026,4,27,17,0,False,apres-midi,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-10,2026-04-29,2026-04-29 09:04:00,09:04,2026,4,29,9,2,False,matin,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-10,2026-04-30,2026-04-30 09:04:00,09:04,2026,4,30,9,3,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-10,2026-05-01,2026-05-01 09:04:00,09:04,2026,5,1,9,4,False,matin,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-10,2026-05-12,2026-05-12 16:49:00,16:49,2026,5,12,16,1,False,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-10,2026-05-13,2026-05-13 16:49:00,16:49,2026,5,13,16,2,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-10,2026-05-14,2026-05-14 16:49:00,16:49,2026,5,14,16,3,False,apres-midi,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-10,2026-05-19,2026-05-19 08:44:00,08:44,2026,5,19,8,1,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-10,2026-05-21,2026-05-21 23:35:00,23:35,2026,5,21,23,3,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,consommation hors plage nominale
+MACH-10,2026-06-05,2026-06-05 00:13:00,00:13,2026,6,5,0,4,False,nuit,2,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-10,2026-06-06,2026-06-06 00:13:00,00:13,2026,6,6,0,5,True,nuit,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-10,2026-06-07,2026-06-07 00:13:00,00:13,2026,6,7,0,6,True,nuit,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-11,2025-06-21,2025-06-21 08:07:00,08:07,2025,6,21,8,5,True,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-11,2025-07-05,2025-07-05 01:31:00,01:31,2025,7,5,1,5,True,nuit,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-11,2025-07-18,2025-07-18 10:24:00,10:24,2025,7,18,10,4,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-11,2025-07-31,2025-07-31 11:56:00,11:56,2025,7,31,11,3,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-11,2025-08-30,2025-08-30 02:08:00,02:08,2025,8,30,2,5,True,nuit,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-11,2025-09-10,2025-09-10 15:34:00,15:34,2025,9,10,15,2,False,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-11,2025-09-15,2025-09-15 22:14:00,22:14,2025,9,15,22,0,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-11,2025-09-25,2025-09-25 06:43:00,06:43,2025,9,25,6,3,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-11,2025-09-29,2025-09-29 13:18:00,13:18,2025,9,29,13,0,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-11,2025-10-01,2025-10-01 11:09:00,11:09,2025,10,1,11,2,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-11,2025-10-02,2025-10-02 13:54:00,13:54,2025,10,2,13,3,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-11,2025-10-03,2025-10-03 13:25:00,13:25,2025,10,3,13,4,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-11,2025-10-03,2025-10-03 13:35:00,13:35,2025,10,3,13,4,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-11,2025-10-04,2025-10-04 13:35:00,13:35,2025,10,4,13,5,True,matin,3,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-11,2025-10-04,2025-10-04 13:42:00,13:42,2025,10,4,13,5,True,matin,3,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-11,2025-10-05,2025-10-05 13:35:00,13:35,2025,10,5,13,6,True,matin,4,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-11,2025-10-06,2025-10-06 05:38:00,05:38,2025,10,6,5,0,False,nuit,2,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-11,2025-10-06,2025-10-06 10:01:00,10:01,2025,10,6,10,0,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-11,2025-10-14,2025-10-14 11:27:00,11:27,2025,10,14,11,1,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-11,2025-11-01,2025-11-01 22:38:00,22:38,2025,11,1,22,5,True,nuit,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-11,2025-11-11,2025-11-11 19:52:00,19:52,2025,11,11,19,1,False,apres-midi,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-11,2025-11-14,2025-11-14 12:47:00,12:47,2025,11,14,12,4,False,matin,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-11,2025-11-23,2025-11-23 16:03:00,16:03,2025,11,23,16,6,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-11,2025-11-25,2025-11-25 03:08:00,03:08,2025,11,25,3,1,False,nuit,2,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-11,2025-12-17,2025-12-17 22:54:00,22:54,2025,12,17,22,2,False,nuit,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-11,2025-12-26,2025-12-26 00:36:00,00:36,2025,12,26,0,4,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-11,2026-01-02,2026-01-02 11:28:00,11:28,2026,1,2,11,4,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-11,2026-01-04,2026-01-04 00:34:00,00:34,2026,1,4,0,6,True,nuit,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-11,2026-01-12,2026-01-12 12:31:00,12:31,2026,1,12,12,0,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-11,2026-01-12,2026-01-12 12:47:00,12:47,2026,1,12,12,0,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,montée thermique progressive
+MACH-11,2026-01-13,2026-01-13 12:21:00,12:21,2026,1,13,12,1,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-11,2026-01-13,2026-01-13 12:47:00,12:47,2026,1,13,12,1,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-11,2026-01-14,2026-01-14 12:47:00,12:47,2026,1,14,12,2,False,matin,4,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-11,2026-01-18,2026-01-18 15:42:00,15:42,2026,1,18,15,6,True,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-11,2026-02-17,2026-02-17 06:12:00,06:12,2026,2,17,6,1,False,matin,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-11,2026-03-02,2026-03-02 06:18:00,06:18,2026,3,2,6,0,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-11,2026-03-04,2026-03-04 15:54:00,15:54,2026,3,4,15,2,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-11,2026-03-07,2026-03-07 15:29:00,15:29,2026,3,7,15,5,True,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-11,2026-03-14,2026-03-14 11:19:00,11:19,2026,3,14,11,5,True,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-11,2026-03-18,2026-03-18 15:18:00,15:18,2026,3,18,15,2,False,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-11,2026-03-21,2026-03-21 03:29:00,03:29,2026,3,21,3,5,True,nuit,2,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-11,2026-04-09,2026-04-09 13:50:00,13:50,2026,4,9,13,3,False,matin,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-11,2026-04-10,2026-04-10 04:07:00,04:07,2026,4,10,4,4,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-11,2026-04-13,2026-04-13 00:24:00,00:24,2026,4,13,0,0,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-11,2026-04-13,2026-04-13 00:56:00,00:56,2026,4,13,0,0,False,nuit,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-11,2026-04-13,2026-04-13 22:17:00,22:17,2026,4,13,22,0,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-11,2026-04-17,2026-04-17 04:37:00,04:37,2026,4,17,4,4,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-11,2026-05-16,2026-05-16 02:30:00,02:30,2026,5,16,2,5,True,nuit,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-11,2026-05-17,2026-05-17 16:02:00,16:02,2026,5,17,16,6,True,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-11,2026-05-27,2026-05-27 11:11:00,11:11,2026,5,27,11,2,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-11,2026-06-03,2026-06-03 18:49:00,18:49,2026,6,3,18,2,False,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-12,2025-06-13,2025-06-13 13:44:00,13:44,2025,6,13,13,4,False,matin,2,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-12,2025-06-14,2025-06-14 13:44:00,13:44,2025,6,14,13,5,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-12,2025-06-15,2025-06-15 13:44:00,13:44,2025,6,15,13,6,True,matin,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-12,2025-06-20,2025-06-20 23:25:00,23:25,2025,6,20,23,4,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-12,2025-06-21,2025-06-21 10:38:00,10:38,2025,6,21,10,5,True,matin,2,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-12,2025-06-25,2025-06-25 10:09:00,10:09,2025,6,25,10,2,False,matin,2,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-12,2025-06-26,2025-06-26 10:09:00,10:09,2025,6,26,10,3,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-12,2025-06-27,2025-06-27 10:09:00,10:09,2025,6,27,10,4,False,matin,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-12,2025-07-10,2025-07-10 21:49:00,21:49,2025,7,10,21,3,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-12,2025-07-12,2025-07-12 03:51:00,03:51,2025,7,12,3,5,True,nuit,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-12,2025-07-13,2025-07-13 03:51:00,03:51,2025,7,13,3,6,True,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-12,2025-07-14,2025-07-14 03:51:00,03:51,2025,7,14,3,0,False,nuit,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-12,2025-08-03,2025-08-03 07:25:00,07:25,2025,8,3,7,6,True,matin,2,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-12,2025-08-04,2025-08-04 07:25:00,07:25,2025,8,4,7,0,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-12,2025-08-05,2025-08-05 07:25:00,07:25,2025,8,5,7,1,False,matin,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-12,2025-08-10,2025-08-10 12:22:00,12:22,2025,8,10,12,6,True,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-12,2025-08-17,2025-08-17 19:44:00,19:44,2025,8,17,19,6,True,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-12,2025-08-27,2025-08-27 09:12:00,09:12,2025,8,27,9,2,False,matin,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-12,2025-10-02,2025-10-02 20:54:00,20:54,2025,10,2,20,3,False,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-12,2025-10-03,2025-10-03 20:54:00,20:54,2025,10,3,20,4,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-12,2025-10-04,2025-10-04 20:54:00,20:54,2025,10,4,20,5,True,apres-midi,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-12,2025-10-05,2025-10-05 21:16:00,21:16,2025,10,5,21,6,True,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-12,2025-10-06,2025-10-06 21:16:00,21:16,2025,10,6,21,0,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-12,2025-10-07,2025-10-07 02:28:00,02:28,2025,10,7,2,1,False,nuit,2,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-12,2025-10-07,2025-10-07 02:49:00,02:49,2025,10,7,2,1,False,nuit,2,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-12,2025-10-07,2025-10-07 21:16:00,21:16,2025,10,7,21,1,False,apres-midi,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-12,2025-10-08,2025-10-08 02:28:00,02:28,2025,10,8,2,2,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-12,2025-10-08,2025-10-08 02:51:00,02:51,2025,10,8,2,2,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-12,2025-10-09,2025-10-09 02:28:00,02:28,2025,10,9,2,3,False,nuit,4,2,1,1,0,0,0,0,0,0,1,0,chauffe anormale + arrêt ligne
+MACH-12,2025-10-11,2025-10-11 23:26:00,23:26,2025,10,11,23,5,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-12,2025-10-18,2025-10-18 20:01:00,20:01,2025,10,18,20,5,True,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-12,2025-11-08,2025-11-08 20:50:00,20:50,2025,11,8,20,5,True,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-12,2025-11-28,2025-11-28 16:42:00,16:42,2025,11,28,16,4,False,apres-midi,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-12,2026-01-02,2026-01-02 13:28:00,13:28,2026,1,2,13,4,False,matin,2,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-12,2026-01-23,2026-01-23 14:22:00,14:22,2026,1,23,14,4,False,apres-midi,2,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-12,2026-02-12,2026-02-12 04:30:00,04:30,2026,2,12,4,3,False,nuit,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-12,2026-02-13,2026-02-13 04:30:00,04:30,2026,2,13,4,4,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-12,2026-02-14,2026-02-14 04:30:00,04:30,2026,2,14,4,5,True,nuit,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-12,2026-03-03,2026-03-03 12:14:00,12:14,2026,3,3,12,1,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-12,2026-04-11,2026-04-11 06:07:00,06:07,2026,4,11,6,5,True,matin,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-12,2026-04-12,2026-04-12 06:07:00,06:07,2026,4,12,6,6,True,matin,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-12,2026-04-13,2026-04-13 06:07:00,06:07,2026,4,13,6,0,False,matin,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-12,2026-04-16,2026-04-16 03:43:00,03:43,2026,4,16,3,3,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-12,2026-04-27,2026-04-27 10:53:00,10:53,2026,4,27,10,0,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-12,2026-04-28,2026-04-28 10:53:00,10:53,2026,4,28,10,1,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-12,2026-04-29,2026-04-29 10:53:00,10:53,2026,4,29,10,2,False,matin,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-12,2026-05-12,2026-05-12 15:22:00,15:22,2026,5,12,15,1,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-12,2026-05-16,2026-05-16 19:39:00,19:39,2026,5,16,19,5,True,apres-midi,2,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-12,2026-05-25,2026-05-25 01:51:00,01:51,2026,5,25,1,0,False,nuit,2,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-12,2026-05-26,2026-05-26 01:07:00,01:07,2026,5,26,1,1,False,nuit,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-12,2026-05-26,2026-05-26 01:20:00,01:20,2026,5,26,1,1,False,nuit,2,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-12,2026-05-26,2026-05-26 01:51:00,01:51,2026,5,26,1,1,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-12,2026-05-27,2026-05-27 01:20:00,01:20,2026,5,27,1,2,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-12,2026-05-27,2026-05-27 01:32:00,01:32,2026,5,27,1,2,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-12,2026-05-27,2026-05-27 01:51:00,01:51,2026,5,27,1,2,False,nuit,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-12,2026-05-28,2026-05-28 01:20:00,01:20,2026,5,28,1,3,False,nuit,4,2,1,0,1,0,0,0,0,0,1,0,micro-fuite / baisse pression + arrêt ligne
+MACH-12,2026-05-28,2026-05-28 20:25:00,20:25,2026,5,28,20,3,False,apres-midi,2,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-13,2025-06-07,2025-06-07 00:56:00,00:56,2025,6,7,0,5,True,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2025-06-12,2025-06-12 09:25:00,09:25,2025,6,12,9,3,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-13,2025-06-12,2025-06-12 09:48:00,09:48,2025,6,12,9,3,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-13,2025-06-13,2025-06-13 09:48:00,09:48,2025,6,13,9,4,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-13,2025-06-13,2025-06-13 09:49:00,09:49,2025,6,13,9,4,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-13,2025-06-14,2025-06-14 09:48:00,09:48,2025,6,14,9,5,True,matin,4,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-13,2025-06-14,2025-06-14 20:46:00,20:46,2025,6,14,20,5,True,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-13,2025-06-22,2025-06-22 19:31:00,19:31,2025,6,22,19,6,True,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-13,2025-06-23,2025-06-23 23:16:00,23:16,2025,6,23,23,0,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-13,2025-07-02,2025-07-02 06:33:00,06:33,2025,7,2,6,2,False,matin,2,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-13,2025-07-03,2025-07-03 06:10:00,06:10,2025,7,3,6,3,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-13,2025-07-03,2025-07-03 06:33:00,06:33,2025,7,3,6,3,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-13,2025-07-04,2025-07-04 06:33:00,06:33,2025,7,4,6,4,False,matin,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-13,2025-07-09,2025-07-09 04:31:00,04:31,2025,7,9,4,2,False,nuit,2,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-13,2025-07-09,2025-07-09 04:39:00,04:39,2025,7,9,4,2,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-13,2025-07-10,2025-07-10 04:31:00,04:31,2025,7,10,4,3,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-13,2025-07-10,2025-07-10 04:57:00,04:57,2025,7,10,4,3,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-13,2025-07-11,2025-07-11 04:31:00,04:31,2025,7,11,4,4,False,nuit,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-13,2025-07-15,2025-07-15 05:15:00,05:15,2025,7,15,5,1,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-13,2025-07-19,2025-07-19 13:06:00,13:06,2025,7,19,13,5,True,matin,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-13,2025-07-20,2025-07-20 13:06:00,13:06,2025,7,20,13,6,True,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-13,2025-07-20,2025-07-20 13:51:00,13:51,2025,7,20,13,6,True,matin,3,1,1,0,0,0,0,1,0,0,0,0,consommation hors plage nominale
+MACH-13,2025-07-21,2025-07-21 13:06:00,13:06,2025,7,21,13,0,False,matin,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-13,2025-07-23,2025-07-23 02:19:00,02:19,2025,7,23,2,2,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-13,2025-07-23,2025-07-23 02:40:00,02:40,2025,7,23,2,2,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-13,2025-07-24,2025-07-24 02:19:00,02:19,2025,7,24,2,3,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-13,2025-07-24,2025-07-24 02:48:00,02:48,2025,7,24,2,3,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-13,2025-07-25,2025-07-25 02:19:00,02:19,2025,7,25,2,4,False,nuit,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-13,2025-08-02,2025-08-02 22:08:00,22:08,2025,8,2,22,5,True,nuit,2,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-13,2025-08-02,2025-08-02 22:40:00,22:40,2025,8,2,22,5,True,nuit,3,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-13,2025-08-03,2025-08-03 22:08:00,22:08,2025,8,3,22,6,True,nuit,3,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-13,2025-08-03,2025-08-03 22:15:00,22:15,2025,8,3,22,6,True,nuit,3,1,1,1,0,0,0,0,0,0,0,0,montée thermique progressive
+MACH-13,2025-08-04,2025-08-04 22:08:00,22:08,2025,8,4,22,0,False,nuit,4,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-13,2025-08-08,2025-08-08 00:21:00,00:21,2025,8,8,0,4,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2025-08-20,2025-08-20 20:38:00,20:38,2025,8,20,20,2,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-13,2025-09-03,2025-09-03 12:34:00,12:34,2025,9,3,12,2,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-13,2025-09-03,2025-09-03 12:55:00,12:55,2025,9,3,12,2,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-13,2025-09-04,2025-09-04 12:34:00,12:34,2025,9,4,12,3,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-13,2025-09-04,2025-09-04 12:46:00,12:46,2025,9,4,12,3,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-13,2025-09-05,2025-09-05 12:34:00,12:34,2025,9,5,12,4,False,matin,4,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-13,2025-09-12,2025-09-12 14:08:00,14:08,2025,9,12,14,4,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-13,2025-09-14,2025-09-14 03:08:00,03:08,2025,9,14,3,6,True,nuit,2,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-13,2025-09-14,2025-09-14 03:30:00,03:30,2025,9,14,3,6,True,nuit,3,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-13,2025-09-15,2025-09-15 03:08:00,03:08,2025,9,15,3,0,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-13,2025-09-15,2025-09-15 03:53:00,03:53,2025,9,15,3,0,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-13,2025-09-16,2025-09-16 03:08:00,03:08,2025,9,16,3,1,False,nuit,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-13,2025-09-21,2025-09-21 05:38:00,05:38,2025,9,21,5,6,True,nuit,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-13,2025-09-21,2025-09-21 05:42:00,05:42,2025,9,21,5,6,True,nuit,2,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-13,2025-09-22,2025-09-22 05:42:00,05:42,2025,9,22,5,0,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-13,2025-09-22,2025-09-22 05:53:00,05:53,2025,9,22,5,0,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-13,2025-09-23,2025-09-23 05:42:00,05:42,2025,9,23,5,1,False,nuit,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-13,2025-10-04,2025-10-04 15:11:00,15:11,2025,10,4,15,5,True,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-13,2025-10-05,2025-10-05 03:21:00,03:21,2025,10,5,3,6,True,nuit,3,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-13,2025-10-05,2025-10-05 03:25:00,03:25,2025,10,5,3,6,True,nuit,2,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-13,2025-10-06,2025-10-06 03:22:00,03:22,2025,10,6,3,0,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-13,2025-10-06,2025-10-06 03:25:00,03:25,2025,10,6,3,0,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-13,2025-10-07,2025-10-07 03:25:00,03:25,2025,10,7,3,1,False,nuit,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-13,2025-10-07,2025-10-07 13:07:00,13:07,2025,10,7,13,1,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-13,2025-10-07,2025-10-07 13:40:00,13:40,2025,10,7,13,1,False,matin,2,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-13,2025-10-08,2025-10-08 13:07:00,13:07,2025,10,8,13,2,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-13,2025-10-08,2025-10-08 13:40:00,13:40,2025,10,8,13,2,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-13,2025-10-09,2025-10-09 13:40:00,13:40,2025,10,9,13,3,False,matin,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-13,2025-10-27,2025-10-27 05:48:00,05:48,2025,10,27,5,0,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-13,2025-10-30,2025-10-30 14:08:00,14:08,2025,10,30,14,3,False,apres-midi,2,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-13,2025-10-30,2025-10-30 14:57:00,14:57,2025,10,30,14,3,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-13,2025-10-31,2025-10-31 06:02:00,06:02,2025,10,31,6,4,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-13,2025-10-31,2025-10-31 14:08:00,14:08,2025,10,31,14,4,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,consommation hors plage nominale
+MACH-13,2025-10-31,2025-10-31 14:38:00,14:38,2025,10,31,14,4,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,consommation hors plage nominale
+MACH-13,2025-11-01,2025-11-01 14:08:00,14:08,2025,11,1,14,5,True,apres-midi,4,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-13,2025-11-09,2025-11-09 21:15:00,21:15,2025,11,9,21,6,True,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-13,2025-11-09,2025-11-09 21:38:00,21:38,2025,11,9,21,6,True,apres-midi,2,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-13,2025-11-10,2025-11-10 21:38:00,21:38,2025,11,10,21,0,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,consommation hors plage nominale
+MACH-13,2025-11-10,2025-11-10 21:49:00,21:49,2025,11,10,21,0,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-13,2025-11-11,2025-11-11 21:17:00,21:17,2025,11,11,21,1,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-13,2025-11-11,2025-11-11 21:38:00,21:38,2025,11,11,21,1,False,apres-midi,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-13,2025-11-24,2025-11-24 06:27:00,06:27,2025,11,24,6,0,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-13,2025-11-24,2025-11-24 06:36:00,06:36,2025,11,24,6,0,False,matin,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-13,2025-11-25,2025-11-25 06:36:00,06:36,2025,11,25,6,1,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-13,2025-11-25,2025-11-25 06:40:00,06:40,2025,11,25,6,1,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-13,2025-11-26,2025-11-26 06:36:00,06:36,2025,11,26,6,2,False,matin,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-13,2025-12-01,2025-12-01 13:16:00,13:16,2025,12,1,13,0,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2025-12-01,2025-12-01 13:43:00,13:43,2025,12,1,13,0,False,matin,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2025-12-02,2025-12-02 13:30:00,13:30,2025,12,2,13,1,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-13,2025-12-02,2025-12-02 13:43:00,13:43,2025,12,2,13,1,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-13,2025-12-02,2025-12-02 21:04:00,21:04,2025,12,2,21,1,False,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-13,2025-12-02,2025-12-02 21:56:00,21:56,2025,12,2,21,1,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-13,2025-12-03,2025-12-03 13:43:00,13:43,2025,12,3,13,2,False,matin,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2025-12-03,2025-12-03 21:04:00,21:04,2025,12,3,21,2,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-13,2025-12-03,2025-12-03 21:35:00,21:35,2025,12,3,21,2,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-13,2025-12-04,2025-12-04 21:04:00,21:04,2025,12,4,21,3,False,apres-midi,4,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-13,2025-12-07,2025-12-07 19:41:00,19:41,2025,12,7,19,6,True,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-13,2025-12-07,2025-12-07 19:56:00,19:56,2025,12,7,19,6,True,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2025-12-08,2025-12-08 19:22:00,19:22,2025,12,8,19,0,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-13,2025-12-08,2025-12-08 19:56:00,19:56,2025,12,8,19,0,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-13,2025-12-09,2025-12-09 19:56:00,19:56,2025,12,9,19,1,False,apres-midi,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2025-12-10,2025-12-10 11:34:00,11:34,2025,12,10,11,2,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2025-12-12,2025-12-12 01:15:00,01:15,2025,12,12,1,4,False,nuit,2,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-13,2025-12-13,2025-12-13 01:15:00,01:15,2025,12,13,1,5,True,nuit,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-13,2025-12-13,2025-12-13 01:33:00,01:33,2025,12,13,1,5,True,nuit,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-13,2025-12-13,2025-12-13 23:09:00,23:09,2025,12,13,23,5,True,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-13,2025-12-14,2025-12-14 01:15:00,01:15,2025,12,14,1,6,True,nuit,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-13,2025-12-27,2025-12-27 10:24:00,10:24,2025,12,27,10,5,True,matin,2,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-13,2025-12-27,2025-12-27 10:35:00,10:35,2025,12,27,10,5,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-13,2025-12-27,2025-12-27 11:23:00,11:23,2025,12,27,11,5,True,matin,3,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-13,2025-12-27,2025-12-27 11:48:00,11:48,2025,12,27,11,5,True,matin,2,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-13,2025-12-28,2025-12-28 10:24:00,10:24,2025,12,28,10,6,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-13,2025-12-28,2025-12-28 10:37:00,10:37,2025,12,28,10,6,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-13,2025-12-28,2025-12-28 11:48:00,11:48,2025,12,28,11,6,True,matin,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-13,2025-12-28,2025-12-28 11:56:00,11:56,2025,12,28,11,6,True,matin,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-13,2025-12-29,2025-12-29 10:24:00,10:24,2025,12,29,10,0,False,matin,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-13,2025-12-29,2025-12-29 11:48:00,11:48,2025,12,29,11,0,False,matin,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-13,2025-12-31,2025-12-31 13:09:00,13:09,2025,12,31,13,2,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-13,2025-12-31,2025-12-31 13:35:00,13:35,2025,12,31,13,2,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-13,2026-01-01,2026-01-01 13:03:00,13:03,2026,1,1,13,3,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,pression en dessous seuil critique
+MACH-13,2026-01-01,2026-01-01 13:09:00,13:09,2026,1,1,13,3,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-13,2026-01-02,2026-01-02 13:09:00,13:09,2026,1,2,13,4,False,matin,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-13,2026-01-24,2026-01-24 08:20:00,08:20,2026,1,24,8,5,True,matin,2,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-13,2026-01-25,2026-01-25 08:20:00,08:20,2026,1,25,8,6,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-13,2026-01-25,2026-01-25 08:47:00,08:47,2026,1,25,8,6,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-13,2026-01-26,2026-01-26 08:20:00,08:20,2026,1,26,8,0,False,matin,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-13,2026-01-31,2026-01-31 12:22:00,12:22,2026,1,31,12,5,True,matin,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-13,2026-02-01,2026-02-01 11:07:00,11:07,2026,2,1,11,6,True,matin,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2026-02-02,2026-02-02 11:07:00,11:07,2026,2,2,11,0,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2026-02-02,2026-02-02 11:14:00,11:14,2026,2,2,11,0,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-13,2026-02-03,2026-02-03 11:07:00,11:07,2026,2,3,11,1,False,matin,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2026-02-11,2026-02-11 17:12:00,17:12,2026,2,11,17,2,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2026-02-11,2026-02-11 17:43:00,17:43,2026,2,11,17,2,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2026-02-12,2026-02-12 17:12:00,17:12,2026,2,12,17,3,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2026-02-12,2026-02-12 17:37:00,17:37,2026,2,12,17,3,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2026-02-13,2026-02-13 09:39:00,09:39,2026,2,13,9,4,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-13,2026-02-13,2026-02-13 09:53:00,09:53,2026,2,13,9,4,False,matin,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2026-02-13,2026-02-13 17:12:00,17:12,2026,2,13,17,4,False,apres-midi,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2026-02-14,2026-02-14 09:41:00,09:41,2026,2,14,9,5,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-13,2026-02-14,2026-02-14 09:53:00,09:53,2026,2,14,9,5,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-13,2026-02-14,2026-02-14 11:10:00,11:10,2026,2,14,11,5,True,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-13,2026-02-15,2026-02-15 09:53:00,09:53,2026,2,15,9,6,True,matin,4,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-13,2026-02-24,2026-02-24 02:44:00,02:44,2026,2,24,2,1,False,nuit,2,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-13,2026-02-25,2026-02-25 02:05:00,02:05,2026,2,25,2,2,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-13,2026-02-25,2026-02-25 02:44:00,02:44,2026,2,25,2,2,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-13,2026-02-26,2026-02-26 02:44:00,02:44,2026,2,26,2,3,False,nuit,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-13,2026-02-27,2026-02-27 18:53:00,18:53,2026,2,27,18,4,False,apres-midi,2,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-13,2026-02-28,2026-02-28 18:28:00,18:28,2026,2,28,18,5,True,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-13,2026-02-28,2026-02-28 18:53:00,18:53,2026,2,28,18,5,True,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-13,2026-03-01,2026-03-01 18:53:00,18:53,2026,3,1,18,6,True,apres-midi,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-13,2026-03-03,2026-03-03 16:14:00,16:14,2026,3,3,16,1,False,apres-midi,2,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-13,2026-03-04,2026-03-04 16:03:00,16:03,2026,3,4,16,2,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-13,2026-03-04,2026-03-04 16:14:00,16:14,2026,3,4,16,2,False,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-13,2026-03-05,2026-03-05 16:14:00,16:14,2026,3,5,16,3,False,apres-midi,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-13,2026-03-07,2026-03-07 12:34:00,12:34,2026,3,7,12,5,True,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-13,2026-03-09,2026-03-09 07:42:00,07:42,2026,3,9,7,0,False,matin,2,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-13,2026-03-10,2026-03-10 07:24:00,07:24,2026,3,10,7,1,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-13,2026-03-10,2026-03-10 07:42:00,07:42,2026,3,10,7,1,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibrations excessives détectées
+MACH-13,2026-03-11,2026-03-11 07:42:00,07:42,2026,3,11,7,2,False,matin,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-13,2026-03-18,2026-03-18 07:22:00,07:22,2026,3,18,7,2,False,matin,2,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-13,2026-03-19,2026-03-19 07:07:00,07:07,2026,3,19,7,3,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-13,2026-03-19,2026-03-19 07:22:00,07:22,2026,3,19,7,3,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,oscillations hors tolérance
+MACH-13,2026-03-20,2026-03-20 07:22:00,07:22,2026,3,20,7,4,False,matin,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-13,2026-03-23,2026-03-23 04:30:00,04:30,2026,3,23,4,0,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-13,2026-03-23,2026-03-23 04:57:00,04:57,2026,3,23,4,0,False,nuit,2,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-13,2026-03-24,2026-03-24 04:06:00,04:06,2026,3,24,4,1,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2026-03-24,2026-03-24 04:57:00,04:57,2026,3,24,4,1,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-13,2026-03-25,2026-03-25 04:57:00,04:57,2026,3,25,4,2,False,nuit,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2026-03-25,2026-03-25 15:11:00,15:11,2026,3,25,15,2,False,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-13,2026-03-25,2026-03-25 15:53:00,15:53,2026,3,25,15,2,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-13,2026-03-26,2026-03-26 15:11:00,15:11,2026,3,26,15,3,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-13,2026-03-27,2026-03-27 15:11:00,15:11,2026,3,27,15,4,False,apres-midi,4,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-13,2026-03-27,2026-03-27 19:15:00,19:15,2026,3,27,19,4,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-13,2026-03-27,2026-03-27 19:40:00,19:40,2026,3,27,19,4,False,apres-midi,2,1,1,0,0,0,0,0,0,0,0,1,non-conformité dimensionnelle
+MACH-13,2026-03-28,2026-03-28 19:35:00,19:35,2026,3,28,19,5,True,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-13,2026-03-28,2026-03-28 19:40:00,19:40,2026,3,28,19,5,True,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-13,2026-03-29,2026-03-29 19:40:00,19:40,2026,3,29,19,6,True,apres-midi,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-13,2026-03-30,2026-03-30 00:33:00,00:33,2026,3,30,0,0,False,nuit,2,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-13,2026-03-31,2026-03-31 00:09:00,00:09,2026,3,31,0,1,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-13,2026-03-31,2026-03-31 00:33:00,00:33,2026,3,31,0,1,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-13,2026-04-01,2026-04-01 00:33:00,00:33,2026,4,1,0,2,False,nuit,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-13,2026-04-03,2026-04-03 01:10:00,01:10,2026,4,3,1,4,False,nuit,3,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-13,2026-04-03,2026-04-03 01:28:00,01:28,2026,4,3,1,4,False,nuit,2,1,1,0,0,0,0,0,0,0,0,1,chute taux de production anormale
+MACH-13,2026-04-04,2026-04-04 01:28:00,01:28,2026,4,4,1,5,True,nuit,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-13,2026-04-04,2026-04-04 01:56:00,01:56,2026,4,4,1,5,True,nuit,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-13,2026-04-05,2026-04-05 01:28:00,01:28,2026,4,5,1,6,True,nuit,4,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-13,2026-04-05,2026-04-05 03:57:00,03:57,2026,4,5,3,6,True,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2026-05-03,2026-05-03 00:55:00,00:55,2026,5,3,0,6,True,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-13,2026-05-22,2026-05-22 00:39:00,00:39,2026,5,22,0,4,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-13,2026-05-22,2026-05-22 00:52:00,00:52,2026,5,22,0,4,False,nuit,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-13,2026-05-23,2026-05-23 00:24:00,00:24,2026,5,23,0,5,True,nuit,3,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-13,2026-05-23,2026-05-23 00:52:00,00:52,2026,5,23,0,5,True,nuit,3,1,1,0,1,0,0,0,0,0,0,0,circuit hydraulique en défaut
+MACH-13,2026-05-24,2026-05-24 00:52:00,00:52,2026,5,24,0,6,True,nuit,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-13,2026-05-24,2026-05-24 16:41:00,16:41,2026,5,24,16,6,True,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-13,2026-05-27,2026-05-27 04:50:00,04:50,2026,5,27,4,2,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-13,2026-05-29,2026-05-29 23:31:00,23:31,2026,5,29,23,4,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-13,2026-06-03,2026-06-03 20:40:00,20:40,2026,6,3,20,2,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-13,2026-06-08,2026-06-08 00:29:00,00:29,2026,6,8,0,0,False,nuit,3,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-14,2025-06-04,2025-06-04 01:01:00,01:01,2025,6,4,1,2,False,nuit,2,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-14,2025-06-05,2025-06-05 01:01:00,01:01,2025,6,5,1,3,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,montée thermique progressive
+MACH-14,2025-06-06,2025-06-06 01:01:00,01:01,2025,6,6,1,4,False,nuit,4,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-14,2025-06-14,2025-06-14 21:14:00,21:14,2025,6,14,21,5,True,apres-midi,2,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-14,2025-07-31,2025-07-31 01:19:00,01:19,2025,7,31,1,3,False,nuit,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2025-08-10,2025-08-10 22:11:00,22:11,2025,8,10,22,6,True,nuit,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2025-08-18,2025-08-18 10:49:00,10:49,2025,8,18,10,0,False,matin,2,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-14,2025-08-19,2025-08-19 10:49:00,10:49,2025,8,19,10,1,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-14,2025-08-20,2025-08-20 10:49:00,10:49,2025,8,20,10,2,False,matin,4,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-14,2025-08-20,2025-08-20 14:28:00,14:28,2025,8,20,14,2,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-14,2025-09-05,2025-09-05 00:24:00,00:24,2025,9,5,0,4,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-14,2025-09-11,2025-09-11 19:36:00,19:36,2025,9,11,19,3,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2025-09-20,2025-09-20 06:45:00,06:45,2025,9,20,6,5,True,matin,2,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-14,2025-09-21,2025-09-21 06:45:00,06:45,2025,9,21,6,6,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-14,2025-09-22,2025-09-22 06:45:00,06:45,2025,9,22,6,0,False,matin,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2025-10-02,2025-10-02 19:55:00,19:55,2025,10,2,19,3,False,apres-midi,2,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-14,2025-10-03,2025-10-03 19:55:00,19:55,2025,10,3,19,4,False,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-14,2025-10-04,2025-10-04 19:55:00,19:55,2025,10,4,19,5,True,apres-midi,4,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-14,2025-10-08,2025-10-08 11:37:00,11:37,2025,10,8,11,2,False,matin,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-14,2025-10-11,2025-10-11 22:56:00,22:56,2025,10,11,22,5,True,nuit,2,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-14,2025-10-12,2025-10-12 22:56:00,22:56,2025,10,12,22,6,True,nuit,3,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-14,2025-10-13,2025-10-13 22:56:00,22:56,2025,10,13,22,0,False,nuit,4,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-14,2025-10-27,2025-10-27 16:03:00,16:03,2025,10,27,16,0,False,apres-midi,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-14,2025-11-08,2025-11-08 16:26:00,16:26,2025,11,8,16,5,True,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,signal capteur hors plage
+MACH-14,2025-11-08,2025-11-08 18:09:00,18:09,2025,11,8,18,5,True,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2025-11-09,2025-11-09 16:26:00,16:26,2025,11,9,16,6,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-14,2025-11-09,2025-11-09 18:09:00,18:09,2025,11,9,18,6,True,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2025-11-10,2025-11-10 16:26:00,16:26,2025,11,10,16,0,False,apres-midi,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-14,2025-11-10,2025-11-10 18:09:00,18:09,2025,11,10,18,0,False,apres-midi,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2025-12-05,2025-12-05 05:51:00,05:51,2025,12,5,5,4,False,nuit,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-14,2025-12-06,2025-12-06 05:51:00,05:51,2025,12,6,5,5,True,nuit,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-14,2025-12-07,2025-12-07 05:51:00,05:51,2025,12,7,5,6,True,nuit,4,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-14,2025-12-20,2025-12-20 08:53:00,08:53,2025,12,20,8,5,True,matin,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-14,2025-12-29,2025-12-29 23:55:00,23:55,2025,12,29,23,0,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-14,2026-01-04,2026-01-04 02:41:00,02:41,2026,1,4,2,6,True,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-14,2026-01-11,2026-01-11 12:32:00,12:32,2026,1,11,12,6,True,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-14,2026-01-13,2026-01-13 19:30:00,19:30,2026,1,13,19,1,False,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-14,2026-01-17,2026-01-17 17:49:00,17:49,2026,1,17,17,5,True,apres-midi,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-14,2026-01-19,2026-01-19 23:46:00,23:46,2026,1,19,23,0,False,nuit,2,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-14,2026-01-20,2026-01-20 23:46:00,23:46,2026,1,20,23,1,False,nuit,3,1,1,0,0,0,1,0,0,0,0,0,choc sur transmission
+MACH-14,2026-01-21,2026-01-21 23:46:00,23:46,2026,1,21,23,2,False,nuit,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2026-01-22,2026-01-22 10:15:00,10:15,2026,1,22,10,3,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2026-02-02,2026-02-02 11:21:00,11:21,2026,2,2,11,0,False,matin,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-14,2026-02-03,2026-02-03 11:21:00,11:21,2026,2,3,11,1,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique constatée
+MACH-14,2026-02-03,2026-02-03 15:05:00,15:05,2026,2,3,15,1,False,apres-midi,2,1,1,0,1,0,0,0,0,0,0,0,baisse pression hydraulique
+MACH-14,2026-02-04,2026-02-04 11:21:00,11:21,2026,2,4,11,2,False,matin,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-14,2026-02-04,2026-02-04 15:05:00,15:05,2026,2,4,15,2,False,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite détectée — chute pression
+MACH-14,2026-02-05,2026-02-05 15:05:00,15:05,2026,2,5,15,3,False,apres-midi,4,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-14,2026-02-23,2026-02-23 06:48:00,06:48,2026,2,23,6,0,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-14,2026-02-24,2026-02-24 06:48:00,06:48,2026,2,24,6,1,False,matin,3,1,1,1,0,0,0,0,0,0,0,0,alerte température haute
+MACH-14,2026-02-24,2026-02-24 23:19:00,23:19,2026,2,24,23,1,False,nuit,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-14,2026-02-25,2026-02-25 06:48:00,06:48,2026,2,25,6,2,False,matin,4,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-14,2026-03-08,2026-03-08 01:01:00,01:01,2026,3,8,1,6,True,nuit,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-14,2026-03-09,2026-03-09 07:04:00,07:04,2026,3,9,7,0,False,matin,2,1,1,0,0,0,1,0,0,0,0,0,cliquetis roulement axe
+MACH-14,2026-03-10,2026-03-10 07:04:00,07:04,2026,3,10,7,1,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-14,2026-03-11,2026-03-11 07:04:00,07:04,2026,3,11,7,2,False,matin,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2026-03-11,2026-03-11 12:43:00,12:43,2026,3,11,12,2,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-14,2026-03-29,2026-03-29 11:53:00,11:53,2026,3,29,11,6,True,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-14,2026-04-04,2026-04-04 15:38:00,15:38,2026,4,4,15,5,True,apres-midi,2,1,1,0,0,1,0,0,0,0,0,0,balourd rotor confirmé
+MACH-14,2026-04-05,2026-04-05 15:38:00,15:38,2026,4,5,15,6,True,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration anormale roulement
+MACH-14,2026-04-06,2026-04-06 15:38:00,15:38,2026,4,6,15,0,False,apres-midi,4,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-14,2026-04-08,2026-04-08 06:42:00,06:42,2026,4,8,6,2,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2026-04-16,2026-04-16 16:08:00,16:08,2026,4,16,16,3,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,frottement mécanique cyclique
+MACH-14,2026-04-17,2026-04-17 16:08:00,16:08,2026,4,17,16,4,False,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2026-04-18,2026-04-18 16:08:00,16:08,2026,4,18,16,5,True,apres-midi,4,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2026-04-20,2026-04-20 08:45:00,08:45,2026,4,20,8,0,False,matin,2,1,1,0,0,0,0,1,0,0,0,0,pic courant anormal moteur
+MACH-14,2026-04-21,2026-04-21 08:45:00,08:45,2026,4,21,8,1,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,consommation hors plage nominale
+MACH-14,2026-04-22,2026-04-22 08:45:00,08:45,2026,4,22,8,2,False,matin,4,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-14,2026-04-26,2026-04-26 12:05:00,12:05,2026,4,26,12,6,True,matin,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-14,2026-05-15,2026-05-15 07:01:00,07:01,2026,5,15,7,4,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,montée thermique progressive
+MACH-14,2026-05-20,2026-05-20 11:23:00,11:23,2026,5,20,11,2,False,matin,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2026-05-22,2026-05-22 19:14:00,19:14,2026,5,22,19,4,False,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-14,2026-05-23,2026-05-23 13:45:00,13:45,2026,5,23,13,5,True,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-14,2026-05-28,2026-05-28 08:26:00,08:26,2026,5,28,8,3,False,matin,2,1,1,1,0,0,0,0,0,0,0,0,montée thermique progressive
+MACH-15,2025-06-01,2025-06-01 21:08:00,21:08,2025,6,1,21,6,True,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-15,2025-06-12,2025-06-12 04:46:00,04:46,2025,6,12,4,3,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-15,2025-06-15,2025-06-15 14:35:00,14:35,2025,6,15,14,6,True,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-15,2025-06-19,2025-06-19 13:22:00,13:22,2025,6,19,13,3,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-15,2025-06-20,2025-06-20 06:53:00,06:53,2025,6,20,6,4,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces constaté
+MACH-15,2025-06-22,2025-06-22 15:26:00,15:26,2025,6,22,15,6,True,apres-midi,2,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-15,2025-06-25,2025-06-25 14:47:00,14:47,2025,6,25,14,2,False,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-15,2025-06-25,2025-06-25 14:48:00,14:48,2025,6,25,14,2,False,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-15,2025-06-26,2025-06-26 00:07:00,00:07,2025,6,26,0,3,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-15,2025-06-26,2025-06-26 14:28:00,14:28,2025,6,26,14,3,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,défaut capteur confirmé
+MACH-15,2025-06-26,2025-06-26 14:48:00,14:48,2025,6,26,14,3,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-15,2025-06-27,2025-06-27 14:48:00,14:48,2025,6,27,14,4,False,apres-midi,4,2,1,0,0,0,0,0,0,1,1,0,alarme capteur + arrêt ligne
+MACH-15,2025-07-25,2025-07-25 17:36:00,17:36,2025,7,25,17,4,False,apres-midi,2,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-15,2025-07-25,2025-07-25 17:46:00,17:46,2025,7,25,17,4,False,apres-midi,2,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-15,2025-07-26,2025-07-26 17:34:00,17:34,2025,7,26,17,5,True,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,température anormalement élevée
+MACH-15,2025-07-26,2025-07-26 17:36:00,17:36,2025,7,26,17,5,True,apres-midi,3,1,1,1,0,0,0,0,0,0,0,0,surchauffe capteur thermique
+MACH-15,2025-07-27,2025-07-27 17:36:00,17:36,2025,7,27,17,6,True,apres-midi,4,2,1,1,0,0,0,0,0,0,1,0,chauffe anormale + arrêt ligne
+MACH-15,2025-07-27,2025-07-27 20:45:00,20:45,2025,7,27,20,6,True,apres-midi,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-15,2025-08-05,2025-08-05 10:28:00,10:28,2025,8,5,10,1,False,matin,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-15,2025-08-13,2025-08-13 08:17:00,08:17,2025,8,13,8,2,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-15,2025-08-23,2025-08-23 13:37:00,13:37,2025,8,23,13,5,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-15,2025-08-26,2025-08-26 20:03:00,20:03,2025,8,26,20,1,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,pièces hors tolérance — contrôle qualité
+MACH-15,2025-08-30,2025-08-30 03:55:00,03:55,2025,8,30,3,5,True,nuit,3,1,1,1,0,0,0,0,0,0,0,0,chauffe anormale
+MACH-15,2025-09-19,2025-09-19 04:28:00,04:28,2025,9,19,4,4,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur active
+MACH-15,2025-09-19,2025-09-19 04:49:00,04:49,2025,9,19,4,4,False,nuit,2,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-15,2025-09-20,2025-09-20 04:28:00,04:28,2025,9,20,4,5,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-15,2025-09-20,2025-09-20 04:45:00,04:45,2025,9,20,4,5,True,nuit,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-15,2025-09-21,2025-09-21 04:28:00,04:28,2025,9,21,4,6,True,nuit,4,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-15,2025-10-13,2025-10-13 20:17:00,20:17,2025,10,13,20,0,False,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-15,2025-10-21,2025-10-21 01:30:00,01:30,2025,10,21,1,1,False,nuit,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-15,2025-10-21,2025-10-21 13:53:00,13:53,2025,10,21,13,1,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-15,2025-10-25,2025-10-25 09:57:00,09:57,2025,10,25,9,5,True,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-15,2025-10-25,2025-10-25 18:51:00,18:51,2025,10,25,18,5,True,apres-midi,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-15,2025-10-25,2025-10-25 23:40:00,23:40,2025,10,25,23,5,True,nuit,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-15,2025-10-26,2025-10-26 03:45:00,03:45,2025,10,26,3,6,True,nuit,2,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-15,2025-11-12,2025-11-12 10:52:00,10:52,2025,11,12,10,2,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-15,2025-11-13,2025-11-13 04:03:00,04:03,2025,11,13,4,3,False,nuit,3,1,1,0,0,0,0,1,0,0,0,0,échauffement bobinage moteur
+MACH-15,2025-11-13,2025-11-13 15:01:00,15:01,2025,11,13,15,3,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-15,2025-11-24,2025-11-24 12:12:00,12:12,2025,11,24,12,0,False,matin,3,1,1,0,0,0,0,0,0,1,0,0,perte intermittente signal mesure
+MACH-15,2025-12-02,2025-12-02 13:41:00,13:41,2025,12,2,13,1,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-15,2025-12-09,2025-12-09 16:22:00,16:22,2025,12,9,16,1,False,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-15,2025-12-12,2025-12-12 18:37:00,18:37,2025,12,12,18,4,False,apres-midi,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-15,2025-12-16,2025-12-16 08:18:00,08:18,2025,12,16,8,1,False,matin,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-15,2025-12-21,2025-12-21 18:08:00,18:08,2025,12,21,18,6,True,apres-midi,3,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-15,2025-12-22,2025-12-22 12:07:00,12:07,2025,12,22,12,0,False,matin,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-15,2025-12-25,2025-12-25 20:18:00,20:18,2025,12,25,20,3,False,apres-midi,2,1,1,0,0,0,1,0,0,0,0,0,bruit mécanique anormal
+MACH-15,2026-01-08,2026-01-08 09:38:00,09:38,2026,1,8,9,3,False,matin,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-15,2026-01-24,2026-01-24 15:05:00,15:05,2026,1,24,15,5,True,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-15,2026-01-27,2026-01-27 01:28:00,01:28,2026,1,27,1,1,False,nuit,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-15,2026-02-20,2026-02-20 09:38:00,09:38,2026,2,20,9,4,False,matin,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-15,2026-03-06,2026-03-06 13:12:00,13:12,2026,3,6,13,4,False,matin,3,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-15,2026-03-09,2026-03-09 19:49:00,19:49,2026,3,9,19,0,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-15,2026-03-11,2026-03-11 00:46:00,00:46,2026,3,11,0,2,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-15,2026-03-11,2026-03-11 15:31:00,15:31,2026,3,11,15,2,False,apres-midi,2,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-15,2026-03-26,2026-03-26 19:01:00,19:01,2026,3,26,19,3,False,apres-midi,3,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
+MACH-15,2026-03-27,2026-03-27 11:19:00,11:19,2026,3,27,11,4,False,matin,3,1,1,0,0,0,0,0,0,0,0,1,défaut qualité pièces
+MACH-15,2026-04-01,2026-04-01 08:01:00,08:01,2026,4,1,8,2,False,matin,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-15,2026-04-04,2026-04-04 04:46:00,04:46,2026,4,4,4,5,True,nuit,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-15,2026-04-08,2026-04-08 11:36:00,11:36,2026,4,8,11,2,False,matin,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-15,2026-05-01,2026-05-01 05:14:00,05:14,2026,5,1,5,4,False,nuit,2,1,1,0,0,0,0,1,0,0,0,0,surconsommation électrique
+MACH-15,2026-05-03,2026-05-03 20:03:00,20:03,2026,5,3,20,6,True,apres-midi,3,1,1,0,1,0,0,0,0,0,0,0,micro-fuite / baisse pression
+MACH-15,2026-05-04,2026-05-04 02:22:00,02:22,2026,5,4,2,0,False,nuit,3,1,1,0,0,1,0,0,0,0,0,0,vibration excessive
+MACH-15,2026-05-20,2026-05-20 15:40:00,15:40,2026,5,20,15,2,False,apres-midi,2,1,1,0,0,0,0,0,0,1,0,0,alarme capteur
