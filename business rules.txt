@@ -1,0 +1,29 @@
+il doit y avoir qu'un seul relevé par heure dans le fichier télémétry.csv
+
+dans le cas contraire créer un flag de cohérence en 2 colonnes :
+- colonne 1:
+	- parse ok "false"
+	- par défaut "true"
+- colonne 2:
+	- description de la raison
+
+dans le fichier relevé_incidents.csv
+
+règle1: la sévérité ne doit pas être supérieur 5 et inférieur à 1
+dans le cas contraire créer un flag de cohérence en 2 colonnes :
+- colonne 1:
+	- parse ok "false"
+	- par défaut "true"
+- colonne 2:
+	- description de la raison
+
+
+
+règle2:les 9 colonnes type_* sont des flags 0 ou 1
+
+dans le cas contraire créer un flag de cohérence en 2 colonnes :
+- colonne 1:
+	- parse ok "false"
+	- par défaut "true"
+- colonne 2:
+	- description de la raison
