@@ -21,9 +21,14 @@ target_metadata = Base.metadata
 
 # Limiter l'autogenerate aux tables gérées par le pipeline (bronze_*, silver_*, gold_*)
 MANAGED_PREFIXES = ("bronze_", "silver_", "gold_")
+MANAGED_EXACT   = {"ingestion_batch", "operator", "data_quality_issue"}
 
 def include_object(object, name, type_, reflected, compare_to):
-    if type_ == "table" and not any(name.startswith(p) for p in MANAGED_PREFIXES):
+    if type_ == "table":
+        if name in MANAGED_EXACT:
+            return True
+        if any(name.startswith(p) for p in MANAGED_PREFIXES):
+            return True
         return False
     return True
 
