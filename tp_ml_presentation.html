@@ -1,0 +1,683 @@
+<title>Algorithmes ML — Prédiction de pannes InduSense</title>
+<style>
+:root {
+  --ground:  #0D0F18;
+  --surface: #161926;
+  --surf2:   #1E2235;
+  --text:    #E6E9F4;
+  --muted:   #505575;
+  --accent:  #00C5A5;
+  --alert:   #FF6240;
+  --border:  #252840;
+  --mono: "Consolas", "Courier New", monospace;
+  --sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--sans);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Slide deck ─────────────────────────────── */
+.deck { width: 100%; height: 100vh; position: relative; }
+
+.slide {
+  position: absolute; inset: 0;
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.slide.active { opacity: 1; pointer-events: all; }
+
+/* ── Nav dots ───────────────────────────────── */
+.nav-dots {
+  position: fixed; right: 22px; top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 10px;
+  z-index: 100;
+}
+.dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--muted); cursor: pointer;
+  transition: background .25s, transform .25s;
+}
+.dot.active { background: var(--accent); transform: scale(1.5); }
+
+/* ── Arrow buttons ──────────────────────────── */
+.arrow {
+  position: fixed; bottom: 22px;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  width: 34px; height: 34px; border-radius: 4px;
+  cursor: pointer; font-size: 15px;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color .2s, color .2s;
+  z-index: 100;
+}
+.arrow:hover { border-color: var(--accent); color: var(--accent); }
+.arrow.prev { left: calc(50% - 46px); }
+.arrow.next { left: calc(50% + 12px); }
+
+.counter {
+  position: fixed; bottom: 26px; right: 28px;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--muted); letter-spacing: .12em;
+}
+
+/* ── Shared text atoms ──────────────────────── */
+.eyebrow {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: .22em; color: var(--accent);
+  text-transform: uppercase; margin-bottom: 20px;
+}
+.algo-tag {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: .2em; color: var(--accent);
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.algo-title {
+  font-size: clamp(26px, 3.8vw, 48px);
+  font-weight: 700; letter-spacing: -.025em;
+  line-height: 1.08; color: var(--text);
+  margin-bottom: 22px;
+}
+.slide-num {
+  position: absolute; top: 22px; left: 22px;
+  font-family: var(--mono); font-size: 10px;
+  color: var(--muted); letter-spacing: .14em;
+}
+.col-head {
+  font-family: var(--mono); font-size: 10px;
+  letter-spacing: .14em; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.col-head.pro { color: var(--accent); }
+.col-head.con { color: var(--alert); }
+.item-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.item-list li {
+  font-size: 13px; color: var(--text); line-height: 1.5;
+  padding-left: 14px; position: relative;
+}
+.item-list li::before {
+  content: ''; position: absolute; left: 0; top: 8px;
+  width: 5px; height: 5px; border-radius: 50%;
+}
+.pro-list li::before { background: var(--accent); }
+.con-list li::before { background: var(--alert); }
+
+/* ═══════════════════════════════════════════════
+   SLIDE 1 — HERO
+═══════════════════════════════════════════════ */
+.slide-hero {
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; overflow: hidden;
+  position: relative;
+}
+#waveCanvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+}
+.hero-content {
+  position: relative; z-index: 2;
+  max-width: 640px; padding: 0 32px;
+}
+.hero-title {
+  font-size: clamp(38px, 6.5vw, 78px);
+  font-weight: 700; letter-spacing: -.03em;
+  line-height: 1.03; color: var(--text);
+  margin-bottom: 18px;
+}
+.hero-title em { font-style: normal; color: var(--accent); }
+.hero-sub {
+  font-size: 15px; color: var(--muted);
+  line-height: 1.65; margin-bottom: 40px;
+}
+.stat-row { display: flex; gap: 36px; justify-content: center; flex-wrap: wrap; }
+.stat-num { font-family: var(--mono); font-size: 30px; font-weight: 700; color: var(--text); }
+.stat-lbl {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: .16em; color: var(--muted);
+  text-transform: uppercase; margin-top: 3px;
+}
+
+/* ═══════════════════════════════════════════════
+   ALGO SLIDES (2–4)
+═══════════════════════════════════════════════ */
+.slide-algo { flex-direction: row; }
+.algo-visual {
+  width: 38%; min-width: 280px; flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.algo-visual canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.algo-content {
+  flex: 1; padding: 52px 44px;
+  display: flex; flex-direction: column; justify-content: center;
+  overflow-y: auto;
+}
+.algo-principle {
+  font-size: 14px; color: var(--muted); line-height: 1.75;
+  border-left: 2px solid var(--accent);
+  padding-left: 14px; margin-bottom: 28px;
+}
+.pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+/* ═══════════════════════════════════════════════
+   SLIDE 5 — RECOMMANDATION
+═══════════════════════════════════════════════ */
+.slide-reco {
+  flex-direction: column;
+  padding: 44px 56px; justify-content: center;
+  gap: 28px;
+}
+.reco-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+.reco-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px; padding: 22px;
+  position: relative;
+}
+.reco-card.winner { border-color: var(--accent); }
+.reco-card.winner::after {
+  content: 'RECOMMANDÉ';
+  position: absolute; top: -10px; right: 14px;
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: .2em; background: var(--accent);
+  color: var(--ground); padding: 2px 8px;
+  border-radius: 2px; font-weight: 700;
+}
+.card-role { font-family: var(--mono); font-size: 9px; letter-spacing: .16em; color: var(--muted); margin-bottom: 6px; }
+.card-name { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.metrics-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.metric-pill {
+  background: var(--surf2);
+  border: 1px solid var(--border);
+  border-radius: 4px; padding: 9px 16px;
+  font-family: var(--mono); font-size: 12px;
+  color: var(--text);
+}
+.metric-pill span { color: var(--accent); font-weight: 700; }
+</style>
+
+<div class="deck" id="deck">
+
+<!-- ── SLIDE 1: HERO ────────────────────────── -->
+<div class="slide slide-hero active" id="s0">
+  <canvas id="waveCanvas"></canvas>
+  <div class="hero-content">
+    <p class="eyebrow">InduSense 4.0 · Maintenance prédictive</p>
+    <h1 class="hero-title">Lire le signal<br>avant la <em>rupture</em></h1>
+    <p class="hero-sub">132 940 relevés · 70+ features · split temporel anti-leakage<br>Quel algorithme pour prédire une panne à horizon 24h ?</p>
+    <div class="stat-row">
+      <div class="stat"><div class="stat-num">15</div><div class="stat-lbl">machines</div></div>
+      <div class="stat"><div class="stat-num">205</div><div class="stat-lbl">pannes critiques</div></div>
+      <div class="stat"><div class="stat-num">70+</div><div class="stat-lbl">features Gold</div></div>
+      <div class="stat"><div class="stat-num">4</div><div class="stat-lbl">horizons label</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 2: LOGISTIQUE ──────────────────── -->
+<div class="slide slide-algo" id="s1">
+  <div class="algo-visual">
+    <span class="slide-num">01 / 04</span>
+    <canvas id="cSig"></canvas>
+  </div>
+  <div class="algo-content">
+    <p class="algo-tag">Baseline · Interprétabilité maximale</p>
+    <h2 class="algo-title">Régression<br>Logistique</h2>
+    <p class="algo-principle">Modélise P(panne) comme une sigmoïde d'une combinaison linéaire des features. Chaque coefficient indique directement le poids d'un signal (ex : +0.4 pour temp_zscore_machine). Premier modèle à entraîner — obligatoirement.</p>
+    <div class="pros-cons">
+      <div>
+        <p class="col-head pro">Avantages</p>
+        <ul class="item-list pro-list">
+          <li>Entraînement instantané</li>
+          <li>Probabilités calibrées</li>
+          <li>Coefficients lisibles par un technicien</li>
+          <li>Référence de comparaison incontournable</li>
+        </ul>
+      </div>
+      <div>
+        <p class="col-head con">Limites</p>
+        <ul class="item-list con-list">
+          <li>Frontière de décision linéaire</li>
+          <li>Interactions entre features ignorées</li>
+          <li>Sensible à la normalisation des features</li>
+          <li>Insuffisante seule sur données complexes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 3: RANDOM FOREST ───────────────── -->
+<div class="slide slide-algo" id="s2">
+  <div class="algo-visual">
+    <span class="slide-num">02 / 04</span>
+    <canvas id="cForest"></canvas>
+  </div>
+  <div class="algo-content">
+    <p class="algo-tag">Ensemble · Robustesse</p>
+    <h2 class="algo-title">Random<br>Forest</h2>
+    <p class="algo-principle">N arbres de décision entraînés sur des sous-ensembles bootstrap des données et des features. Le vote majoritaire réduit la variance sans augmenter le biais — et produit une feature importance naturelle.</p>
+    <div class="pros-cons">
+      <div>
+        <p class="col-head pro">Avantages</p>
+        <ul class="item-list pro-list">
+          <li>Robuste aux outliers et valeurs manquantes</li>
+          <li>Feature importance (impureté de Gini)</li>
+          <li>Peu sensible aux hyperparamètres</li>
+          <li>Parallélisable — entraînement rapide</li>
+        </ul>
+      </div>
+      <div>
+        <p class="col-head con">Limites</p>
+        <ul class="item-list con-list">
+          <li>Moins précis que le gradient boosting</li>
+          <li>Modèle lourd (N arbres complets en RAM)</li>
+          <li>Inférence plus lente qu'un modèle unique</li>
+          <li>Extrapolation hors domaine impossible</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 4: LIGHTGBM ─────────────────────── -->
+<div class="slide slide-algo" id="s3">
+  <div class="algo-visual">
+    <span class="slide-num">03 / 04</span>
+    <canvas id="cBoost"></canvas>
+  </div>
+  <div class="algo-content">
+    <p class="algo-tag">Boosting · État de l'art tabulaire</p>
+    <h2 class="algo-title">LightGBM<br><span style="font-size:.58em;color:var(--muted)">& XGBoost</span></h2>
+    <p class="algo-principle">Arbres construits séquentiellement, chacun ciblant les résidus du précédent par descente de gradient. LightGBM utilise une croissance leaf-wise et le GOSS : 10× plus rapide qu'XGBoost sur 130k lignes tout en maintenant la même précision.</p>
+    <div class="pros-cons">
+      <div>
+        <p class="col-head pro">Avantages</p>
+        <ul class="item-list pro-list">
+          <li>SOTA sur données tabulaires</li>
+          <li>Gère nativement les NaN</li>
+          <li>SHAP values pour l'explicabilité</li>
+          <li>class_weight pour l'imbalance 205/132k</li>
+        </ul>
+      </div>
+      <div>
+        <p class="col-head con">Limites</p>
+        <ul class="item-list con-list">
+          <li>Hyperparamètres nombreux à tuner</li>
+          <li>Overfitting si n_estimators trop élevé</li>
+          <li>Moins intuitif qu'un arbre unique</li>
+          <li>Sensible à l'ordre des données en streaming</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SLIDE 5: RECOMMANDATION ──────────────── -->
+<div class="slide slide-reco" id="s4">
+  <div>
+    <p class="eyebrow" style="text-align:left">04 / 04 · Stratégie d'entraînement</p>
+    <h2 class="algo-title" style="margin-bottom:0">Recommandation<br>& métriques cibles</h2>
+  </div>
+  <div class="reco-grid">
+    <div class="reco-card">
+      <p class="card-role">ÉTAPE 1 · BASELINE</p>
+      <p class="card-name">Régression Logistique</p>
+      <p class="card-desc">Référence minimale obligatoire. Si LightGBM ne dépasse pas la logistique de +5 pts d'AUC, le feature engineering est à revoir avant tout tuning.</p>
+    </div>
+    <div class="reco-card">
+      <p class="card-role">ÉTAPE 2 · CHALLENGER</p>
+      <p class="card-name">Random Forest</p>
+      <p class="card-desc">Valide les features importantes avant le boosting. L'importance par impureté révèle rapidement les variables redondantes dans les 70 colonnes Gold.</p>
+    </div>
+    <div class="reco-card winner">
+      <p class="card-role">ÉTAPE 3 · MODÈLE FINAL</p>
+      <p class="card-name">LightGBM</p>
+      <p class="card-desc">Performance maximale attendue. Paramétrer <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">scale_pos_weight≈647</code> pour l'imbalance 205 pannes / 132k relevés.</p>
+    </div>
+  </div>
+  <div>
+    <p class="col-head pro" style="margin-bottom:12px">Métriques de validation — dans cet ordre d'importance</p>
+    <div class="metrics-row">
+      <div class="metric-pill"><span>Recall@P=80%</span> — minimiser les faux négatifs (panne non détectée = arrêt machine)</div>
+      <div class="metric-pill"><span>AUC-ROC</span> — discrimination globale</div>
+      <div class="metric-pill"><span>F1-score</span> — équilibre précision / rappel</div>
+      <div class="metric-pill"><span>Time-Series CV</span> — jamais de split aléatoire</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<div class="nav-dots" id="navDots"></div>
+<div class="counter" id="counter">1 / 5</div>
+<button class="arrow prev" id="btnPrev" aria-label="Précédent">&#8592;</button>
+<button class="arrow next" id="btnNext" aria-label="Suivant">&#8594;</button>
+
+<script>
+const ACCENT = '#00C5A5', ALERT = '#FF6240', MUTED = '#505575';
+const TEXT = '#E6E9F4', BG = '#0D0F18', SURF = '#161926';
+
+/* ── Slide system ─────────────────────────── */
+const slides = [...document.querySelectorAll('.slide')];
+const dotsEl = document.getElementById('navDots');
+let cur = 0;
+const canvasInited = new Set();
+
+slides.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+});
+
+function goTo(n) {
+  slides[cur].classList.remove('active');
+  dotsEl.children[cur].classList.remove('active');
+  cur = Math.max(0, Math.min(n, slides.length - 1));
+  slides[cur].classList.add('active');
+  dotsEl.children[cur].classList.add('active');
+  document.getElementById('counter').textContent = `${cur + 1} / ${slides.length}`;
+  initSlideCanvas(cur);
+}
+
+document.getElementById('btnPrev').onclick = () => goTo(cur - 1);
+document.getElementById('btnNext').onclick = () => goTo(cur + 1);
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(cur + 1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(cur - 1);
+});
+
+/* ── Canvas init dispatch ─────────────────── */
+function initSlideCanvas(idx) {
+  if (canvasInited.has(idx)) return;
+  canvasInited.add(idx);
+  if (idx === 1) initSigmoid();
+  if (idx === 2) initForest();
+  if (idx === 3) initBoost();
+}
+
+/* ── CANVAS: Hero waveform ────────────────── */
+(function() {
+  const cv = document.getElementById('waveCanvas');
+  const ctx = cv.getContext('2d');
+  let t = 0;
+
+  function resize() { cv.width = cv.offsetWidth; cv.height = cv.offsetHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function draw() {
+    const W = cv.width, H = cv.height;
+    ctx.fillStyle = BG;
+    ctx.fillRect(0, 0, W, H);
+
+    const cy = H / 2;
+    const aStart = W * 0.54, aEnd = W * 0.70;
+
+    /* faint background waves */
+    for (let l = 0; l < 3; l++) {
+      ctx.beginPath();
+      ctx.strokeStyle = `rgba(0,197,165,${0.035 + l * 0.02})`;
+      ctx.lineWidth = 1;
+      for (let x = 0; x < W; x++) {
+        const y = cy + Math.sin(x * (0.016 + l * 0.004) + t * 0.3 + l * 1.4) * (24 + l * 10)
+                     + Math.sin(x * 0.065 + t * 0.5 + l) * 5;
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+
+    /* anomaly fill */
+    ctx.fillStyle = 'rgba(255,98,64,0.10)';
+    ctx.fillRect(aStart, 0, aEnd - aStart, H);
+
+    /* main signal */
+    let started = false;
+    ctx.lineWidth = 2.2;
+    for (let x = 0; x < W; x++) {
+      const inA = x >= aStart && x <= aEnd;
+      const spike = inA
+        ? Math.sin((x - aStart) / (aEnd - aStart) * Math.PI) * 52 : 0;
+      const y = cy + Math.sin(x * 0.018 + t * 0.3) * 26
+               + Math.sin(x * 0.065 + t * 0.5) * 5 + spike;
+
+      if (x === 0) {
+        ctx.beginPath(); ctx.strokeStyle = ACCENT; started = true; ctx.moveTo(x, y);
+      } else if (x === Math.round(aStart)) {
+        ctx.stroke(); ctx.beginPath(); ctx.strokeStyle = ALERT; ctx.moveTo(x - 1, y);
+      } else if (x === Math.round(aEnd) + 1) {
+        ctx.stroke(); ctx.beginPath(); ctx.strokeStyle = ACCENT; ctx.moveTo(x - 1, y);
+      }
+      ctx.lineTo(x, y);
+    }
+    if (started) ctx.stroke();
+
+    /* anomaly label */
+    ctx.fillStyle = ALERT;
+    ctx.font = '9px Consolas, monospace';
+    ctx.letterSpacing = '0.1em';
+    const lx = aStart + (aEnd - aStart) / 2;
+    ctx.textAlign = 'center';
+    ctx.fillText('ANOMALIE DÉTECTÉE', lx, cy - 68);
+    ctx.textAlign = 'left';
+
+    /* grid */
+    ctx.strokeStyle = 'rgba(80,85,117,0.18)';
+    ctx.lineWidth = 1;
+    [0.25, 0.5, 0.75].forEach(f => {
+      ctx.beginPath();
+      ctx.moveTo(0, H * f); ctx.lineTo(W, H * f);
+      ctx.stroke();
+    });
+
+    t++;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── CANVAS: Sigmoid ──────────────────────── */
+function initSigmoid() {
+  const cv = document.getElementById('cSig');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  function resize() { cv.width = cv.offsetWidth; cv.height = cv.offsetHeight; draw(); }
+  function draw() {
+    const W = cv.width, H = cv.height;
+    if (!W || !H) return;
+    ctx.fillStyle = SURF; ctx.fillRect(0, 0, W, H);
+    const pad = 48, xRange = W - pad * 1.4, yRange = H - pad * 2;
+    const ox = pad * 0.7, oy = H - pad;
+
+    /* axes */
+    ctx.strokeStyle = 'rgba(80,85,117,0.5)'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(ox, pad * 0.6); ctx.lineTo(ox, oy);
+    ctx.moveTo(ox, oy); ctx.lineTo(ox + xRange + 10, oy);
+    ctx.stroke();
+
+    /* labels */
+    ctx.fillStyle = MUTED; ctx.font = '10px Consolas, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('score combiné des features', ox + xRange / 2, H - 6);
+    ctx.save(); ctx.translate(12, H / 2); ctx.rotate(-Math.PI / 2);
+    ctx.fillText('P(panne)', 0, 0); ctx.restore();
+
+    /* threshold */
+    const thresh_y = oy - yRange * 0.5;
+    ctx.strokeStyle = 'rgba(255,98,64,0.45)'; ctx.setLineDash([5, 4]); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(ox, thresh_y); ctx.lineTo(ox + xRange, thresh_y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = ALERT; ctx.textAlign = 'right';
+    ctx.fillText('seuil 0.5', ox + xRange - 4, thresh_y - 6);
+
+    /* sigmoid */
+    ctx.beginPath(); ctx.strokeStyle = ACCENT; ctx.lineWidth = 2.5;
+    for (let px = 0; px <= xRange; px++) {
+      const t2 = (px / xRange) * 12 - 6;
+      const sig = 1 / (1 + Math.exp(-t2));
+      const sx = ox + px, sy = oy - sig * yRange;
+      px === 0 ? ctx.moveTo(sx, sy) : ctx.lineTo(sx, sy);
+    }
+    ctx.stroke();
+
+    /* sample points */
+    [[0.15, 0.08],[0.35, 0.22],[0.58, 0.65],[0.75, 0.84],[0.9, 0.94]].forEach(([fx, fy]) => {
+      ctx.beginPath();
+      ctx.arc(ox + fx * xRange, oy - fy * yRange, 5, 0, Math.PI * 2);
+      ctx.fillStyle = fy > 0.5 ? ALERT : ACCENT;
+      ctx.fill();
+    });
+
+    ctx.textAlign = 'left'; ctx.fillStyle = ACCENT; ctx.font = '11px Consolas, monospace';
+    ctx.fillText('σ(z) = 1/(1+e⁻ᶻ)', ox + 8, pad * 0.6 + 14);
+  }
+  resize();
+  new ResizeObserver(() => { cv.width = cv.offsetWidth; cv.height = cv.offsetHeight; draw(); }).observe(cv);
+}
+
+/* ── CANVAS: Forest ───────────────────────── */
+function initForest() {
+  const cv = document.getElementById('cForest');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+
+  function branch(x, y, angle, depth) {
+    if (depth === 0) return;
+    const len = depth * 13;
+    const ex = x + Math.cos(angle) * len;
+    const ey = y + Math.sin(angle) * len;
+    ctx.beginPath();
+    ctx.strokeStyle = `rgba(0,197,165,${depth * 0.16 + 0.04})`;
+    ctx.lineWidth = depth * 0.65;
+    ctx.moveTo(x, y); ctx.lineTo(ex, ey); ctx.stroke();
+    branch(ex, ey, angle - 0.48, depth - 1);
+    branch(ex, ey, angle + 0.48, depth - 1);
+  }
+
+  function draw() {
+    const W = cv.width, H = cv.height;
+    if (!W || !H) return;
+    ctx.fillStyle = SURF; ctx.fillRect(0, 0, W, H);
+    const trees = [W * 0.2, W * 0.5, W * 0.8];
+    trees.forEach(tx => branch(tx, H - 28, -Math.PI / 2, 5));
+
+    /* vote aggregation */
+    ctx.strokeStyle = 'rgba(255,98,64,0.55)';
+    ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]);
+    trees.forEach(tx => {
+      ctx.beginPath(); ctx.moveTo(tx, H * 0.26); ctx.lineTo(W * 0.5, H * 0.09); ctx.stroke();
+    });
+    ctx.setLineDash([]);
+
+    ctx.beginPath();
+    ctx.arc(W * 0.5, H * 0.09, 13, 0, Math.PI * 2);
+    ctx.fillStyle = ALERT; ctx.fill();
+    ctx.fillStyle = BG; ctx.font = 'bold 11px Consolas, monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('VOTE', W * 0.5, H * 0.09);
+
+    ctx.fillStyle = MUTED; ctx.font = '10px Consolas, monospace';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('N arbres → vote majoritaire', W * 0.5, H - 10);
+    ctx.textAlign = 'left';
+  }
+
+  function resize() { cv.width = cv.offsetWidth; cv.height = cv.offsetHeight; draw(); }
+  resize();
+  new ResizeObserver(resize).observe(cv);
+}
+
+/* ── CANVAS: Boosting ─────────────────────── */
+function initBoost() {
+  const cv = document.getElementById('cBoost');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+
+  function draw() {
+    const W = cv.width, H = cv.height;
+    if (!W || !H) return;
+    ctx.fillStyle = SURF; ctx.fillRect(0, 0, W, H);
+
+    const steps = [
+      { label: 'Prédiction init.', err: 1.00, color: ALERT },
+      { label: 'Arbre 1',          err: 0.60, color: ACCENT },
+      { label: 'Arbre 2',          err: 0.34, color: ACCENT },
+      { label: 'Arbre 3',          err: 0.17, color: ACCENT },
+      { label: 'Arbre 4',          err: 0.07, color: ACCENT },
+    ];
+
+    const pad = 16, labelW = 92, maxBar = W - labelW - pad * 2 - 32;
+    const slotH = (H - pad * 2 - 24) / steps.length;
+
+    steps.forEach((s, i) => {
+      const y = pad + i * slotH + slotH * 0.5;
+      const bw = s.err * maxBar;
+      const bx = labelW + pad;
+
+      /* track */
+      ctx.fillStyle = 'rgba(255,255,255,0.04)';
+      ctx.fillRect(bx, y - 11, maxBar, 22);
+
+      /* bar */
+      const g = ctx.createLinearGradient(bx, 0, bx + bw, 0);
+      g.addColorStop(0, s.color);
+      g.addColorStop(1, s.color + '44');
+      ctx.fillStyle = g;
+      ctx.fillRect(bx, y - 11, bw, 22);
+
+      /* label */
+      ctx.fillStyle = i === 0 ? ALERT : TEXT;
+      ctx.font = `${i === 0 ? 'bold' : 'normal'} 11px Consolas, monospace`;
+      ctx.textAlign = 'right';
+      ctx.fillText(s.label, bx - 6, y + 4);
+
+      /* error pct */
+      ctx.fillStyle = MUTED;
+      ctx.font = '10px Consolas, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText((s.err * 100).toFixed(0) + '% erreur', bx + bw + 6, y + 4);
+
+      /* arrow */
+      if (i < steps.length - 1) {
+        const ay = y + slotH * 0.5 - 4;
+        ctx.strokeStyle = 'rgba(80,85,117,0.4)';
+        ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(bx + bw * 0.5, ay - 2);
+        ctx.lineTo(bx + bw * 0.5 * steps[i+1].err / s.err, ay + slotH * 0.5);
+        ctx.stroke(); ctx.setLineDash([]);
+      }
+    });
+
+    ctx.textAlign = 'center'; ctx.fillStyle = MUTED;
+    ctx.font = '10px Consolas, monospace';
+    ctx.fillText('chaque arbre corrige les résidus du précédent', W / 2, H - 6);
+    ctx.textAlign = 'left';
+  }
+
+  function resize() { cv.width = cv.offsetWidth; cv.height = cv.offsetHeight; draw(); }
+  resize();
+  new ResizeObserver(resize).observe(cv);
+}
+
+/* prefers-reduced-motion */
+if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  document.querySelectorAll('.slide').forEach(s => s.style.transition = 'none');
+}
+</script>
