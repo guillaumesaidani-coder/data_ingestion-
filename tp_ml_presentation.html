@@ -177,14 +177,14 @@ html, body {
 ═══════════════════════════════════════════════ */
 .slide-reco {
   flex-direction: column;
-  padding: 44px 56px; justify-content: center;
-  gap: 28px;
+  padding: 32px 52px; justify-content: center;
+  gap: 20px; overflow-y: auto;
 }
-.reco-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 18px; }
+.reco-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
 .reco-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 6px; padding: 22px;
+  border-radius: 6px; padding: 18px;
   position: relative;
 }
 .reco-card.winner { border-color: var(--accent); }
@@ -196,18 +196,47 @@ html, body {
   color: var(--ground); padding: 2px 8px;
   border-radius: 2px; font-weight: 700;
 }
-.card-role { font-family: var(--mono); font-size: 9px; letter-spacing: .16em; color: var(--muted); margin-bottom: 6px; }
-.card-name { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
-.card-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
-.metrics-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.card-role { font-family: var(--mono); font-size: 9px; letter-spacing: .16em; color: var(--muted); margin-bottom: 5px; }
+.card-name { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.card-desc { font-size: 12px; color: var(--muted); line-height: 1.55; }
+.metrics-row { display: flex; gap: 10px; flex-wrap: wrap; }
 .metric-pill {
   background: var(--surf2);
   border: 1px solid var(--border);
-  border-radius: 4px; padding: 9px 16px;
-  font-family: var(--mono); font-size: 12px;
+  border-radius: 4px; padding: 7px 13px;
+  font-family: var(--mono); font-size: 11px;
   color: var(--text);
 }
 .metric-pill span { color: var(--accent); font-weight: 700; }
+
+/* perspectives section */
+.divider {
+  border: none; border-top: 1px solid var(--border);
+  margin: 0;
+}
+.prospects-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.prospect-card {
+  background: var(--surf2);
+  border: 1px solid var(--border);
+  border-radius: 6px; padding: 14px 16px;
+}
+.prospect-horizon {
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: .18em; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.h-court  { color: var(--accent); }
+.h-moyen  { color: #F5A623; }
+.h-long   { color: var(--muted); }
+.prospect-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+.prospect-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.prospect-tag {
+  display: inline-block; margin-top: 7px;
+  font-family: var(--mono); font-size: 9px;
+  letter-spacing: .1em; padding: 2px 7px;
+  border-radius: 2px; border: 1px solid var(--border);
+  color: var(--muted);
+}
 </style>
 
 <div class="deck" id="deck">
@@ -331,32 +360,66 @@ html, body {
 <div class="slide slide-reco" id="s4">
   <div>
     <p class="eyebrow" style="text-align:left">04 / 04 · Stratégie d'entraînement</p>
-    <h2 class="algo-title" style="margin-bottom:0">Recommandation<br>& métriques cibles</h2>
+    <h2 class="algo-title" style="margin-bottom:0;font-size:clamp(20px,2.8vw,36px)">Recommandation & métriques cibles</h2>
   </div>
+
   <div class="reco-grid">
     <div class="reco-card">
       <p class="card-role">ÉTAPE 1 · BASELINE</p>
       <p class="card-name">Régression Logistique</p>
-      <p class="card-desc">Référence minimale obligatoire. Si LightGBM ne dépasse pas la logistique de +5 pts d'AUC, le feature engineering est à revoir avant tout tuning.</p>
+      <p class="card-desc">Référence minimale. Si LightGBM ne dépasse pas la logistique de +5 pts d'AUC, le feature engineering est à revoir avant tout tuning.</p>
     </div>
     <div class="reco-card">
       <p class="card-role">ÉTAPE 2 · CHALLENGER</p>
       <p class="card-name">Random Forest</p>
-      <p class="card-desc">Valide les features importantes avant le boosting. L'importance par impureté révèle rapidement les variables redondantes dans les 70 colonnes Gold.</p>
+      <p class="card-desc">Feature importance par impureté — révèle les variables redondantes dans les 70 colonnes Gold avant de passer au boosting.</p>
     </div>
     <div class="reco-card winner">
       <p class="card-role">ÉTAPE 3 · MODÈLE FINAL</p>
       <p class="card-name">LightGBM</p>
-      <p class="card-desc">Performance maximale attendue. Paramétrer <code style="font-family:var(--mono);font-size:12px;color:var(--accent)">scale_pos_weight≈647</code> pour l'imbalance 205 pannes / 132k relevés.</p>
+      <p class="card-desc">Performance maximale sur ce dataset. Paramétrer <code style="font-family:var(--mono);font-size:11px;color:var(--accent)">scale_pos_weight≈647</code> pour l'imbalance 205/132k.</p>
     </div>
   </div>
+
   <div>
-    <p class="col-head pro" style="margin-bottom:12px">Métriques de validation — dans cet ordre d'importance</p>
+    <p class="col-head pro" style="margin-bottom:10px">Métriques de validation</p>
     <div class="metrics-row">
-      <div class="metric-pill"><span>Recall@P=80%</span> — minimiser les faux négatifs (panne non détectée = arrêt machine)</div>
+      <div class="metric-pill"><span>Recall@P=80%</span> — faux négatifs = panne non détectée</div>
       <div class="metric-pill"><span>AUC-ROC</span> — discrimination globale</div>
-      <div class="metric-pill"><span>F1-score</span> — équilibre précision / rappel</div>
+      <div class="metric-pill"><span>F1-score</span> — précision / rappel</div>
       <div class="metric-pill"><span>Time-Series CV</span> — jamais de split aléatoire</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div>
+    <p class="col-head" style="color:var(--muted);margin-bottom:10px;letter-spacing:.18em">PERSPECTIVES PROMETTEUSES</p>
+    <div class="prospects-grid">
+      <div class="prospect-card">
+        <p class="prospect-horizon h-court">Court terme · demain</p>
+        <p class="prospect-name">Stacking Ensemble</p>
+        <p class="prospect-desc">Combine LR + RF + LightGBM via un méta-modèle logistique. Gain marginal mais robustesse accrue sur les cas limites.</p>
+        <span class="prospect-tag">sklearn StackingClassifier</span>
+      </div>
+      <div class="prospect-card">
+        <p class="prospect-horizon h-court">Court terme · demain</p>
+        <p class="prospect-name">CatBoost</p>
+        <p class="prospect-desc">Boosting alternatif, gère nativement les catégorielles et l'imbalance. Moins de tuning que LGBM, bonne baseline de comparaison.</p>
+        <span class="prospect-tag">catboost · auto class_weights</span>
+      </div>
+      <div class="prospect-card">
+        <p class="prospect-horizon h-moyen">Moyen terme</p>
+        <p class="prospect-name">Isolation Forest</p>
+        <p class="prospect-desc">Reformule la détection de panne comme anomalie non supervisée. Utile si les labels deviennent rares ou bruités en production.</p>
+        <span class="prospect-tag">sklearn · contamination=0.0015</span>
+      </div>
+      <div class="prospect-card">
+        <p class="prospect-horizon h-long">Long terme</p>
+        <p class="prospect-name">LSTM / GRU</p>
+        <p class="prospect-desc">Exploite la dépendance temporelle réelle de la séquence de capteurs. Nécessite reformatage en fenêtres glissantes — hors scope TP immédiat.</p>
+        <span class="prospect-tag">PyTorch · séquences 24 pas</span>
+      </div>
     </div>
   </div>
 </div>
