@@ -125,18 +125,102 @@ class SilverIncident(Base):
 class GoldMachineHourlyFeature(Base):
     __tablename__ = "gold_machine_hourly_feature"
 
-    feature_row_id                 = Column(Integer, primary_key=True, autoincrement=True)
-    ingestion_batch_id             = Column(UUID(as_uuid=True),
-                                            ForeignKey("ingestion_batch.ingestion_batch_id"))
-    machine_id                     = Column(String)
-    window_start                   = Column(DateTime(timezone=True))
-    window_end                     = Column(DateTime(timezone=True))
-    temp_mean_24h                  = Column(Float)
-    temp_max_24h                   = Column(Float)
-    temp_std_24h                   = Column(Float)
-    pressure_mean_24h              = Column(Float)
-    pressure_std_24h               = Column(Float)
+    feature_row_id     = Column(Integer, primary_key=True, autoincrement=True)
+    ingestion_batch_id = Column(UUID(as_uuid=True), ForeignKey("ingestion_batch.ingestion_batch_id"))
+    machine_id         = Column(String)
+    window_start       = Column(DateTime(timezone=True))
+    window_end         = Column(DateTime(timezone=True))
+    split_set          = Column(String)   # train | validation | test
+
+    # --- Agrégats 1h (valeurs brutes de la fenêtre courante) ---
+    temp_mean_1h          = Column(Float)
+    temp_max_1h           = Column(Float)
+    temp_std_1h           = Column(Float)
+    pressure_mean_1h      = Column(Float)
+    pressure_max_1h       = Column(Float)
+    pressure_std_1h       = Column(Float)
+    voltage_mean_1h       = Column(Float)
+    rotation_mean_1h      = Column(Float)
+    pieces_produced_sum_1h = Column(Integer)
+
+    # --- Rolling 6h ---
+    temp_mean_6h      = Column(Float)
+    temp_max_6h       = Column(Float)
+    temp_std_6h       = Column(Float)
+    pressure_mean_6h  = Column(Float)
+    pressure_max_6h   = Column(Float)
+    pressure_std_6h   = Column(Float)
+    voltage_mean_6h   = Column(Float)
+    voltage_std_6h    = Column(Float)
+    rotation_mean_6h  = Column(Float)
+    rotation_std_6h   = Column(Float)
+
+    # --- Rolling 12h ---
+    temp_mean_12h     = Column(Float)
+    temp_max_12h      = Column(Float)
+    temp_std_12h      = Column(Float)
+    pressure_mean_12h = Column(Float)
+    pressure_max_12h  = Column(Float)
+    pressure_std_12h  = Column(Float)
+    voltage_mean_12h  = Column(Float)
+    voltage_std_12h   = Column(Float)
+    rotation_mean_12h = Column(Float)
+    rotation_std_12h  = Column(Float)
+
+    # --- Rolling 24h ---
+    temp_mean_24h     = Column(Float)
+    temp_max_24h      = Column(Float)
+    temp_std_24h      = Column(Float)
+    pressure_mean_24h = Column(Float)
+    pressure_max_24h  = Column(Float)
+    pressure_std_24h  = Column(Float)
+    voltage_mean_24h  = Column(Float)
+    voltage_std_24h   = Column(Float)
+    rotation_mean_24h = Column(Float)
+    rotation_std_24h  = Column(Float)
+
+    # --- Tendances (delta et trend) ---
+    temp_delta_1h      = Column(Float)
+    temp_delta_3h      = Column(Float)
+    temp_trend_6h      = Column(Float)
+    pressure_delta_1h  = Column(Float)
+    pressure_delta_3h  = Column(Float)
+    pressure_trend_6h  = Column(Float)
+    voltage_delta_1h   = Column(Float)
+    voltage_delta_3h   = Column(Float)
+    voltage_trend_6h   = Column(Float)
+    rotation_delta_1h  = Column(Float)
+    rotation_delta_3h  = Column(Float)
+    rotation_trend_6h  = Column(Float)
+
+    # --- Z-scores ---
+    temp_zscore_24h        = Column(Float)
+    pressure_zscore_24h    = Column(Float)
+    temp_zscore_machine    = Column(Float)
+    pressure_zscore_machine = Column(Float)
+
+    # --- Production ---
+    pieces_produced_sum_24h = Column(Integer)
+
+    # --- Incidents lookback ---
     incident_count_prev_24h        = Column(Integer)
     incident_max_severity_prev_24h = Column(Integer)
-    label_failure_next_24h         = Column(Boolean)
-    split_set                      = Column(String)  # train | validation | test
+    incident_count_prev_7d         = Column(Integer)
+    hours_since_last_incident      = Column(Float)
+
+    # --- Types d'incidents (count sur 24h) ---
+    type_surchauffe_count_prev_24h        = Column(Integer)
+    type_baisse_pression_count_prev_24h   = Column(Integer)
+    type_vibration_count_prev_24h         = Column(Integer)
+    type_bruit_mecanique_count_prev_24h   = Column(Integer)
+    type_surconsommation_count_prev_24h   = Column(Integer)
+    type_blocage_mecanique_count_prev_24h = Column(Integer)
+    type_alarme_capteur_count_prev_24h    = Column(Integer)
+    type_arret_urgence_count_prev_24h     = Column(Integer)
+    type_defaut_qualite_count_prev_24h    = Column(Integer)
+
+    # --- Labels multi-horizons ---
+    label_failure_next_6h  = Column(Boolean)
+    label_failure_next_12h = Column(Boolean)
+    label_failure_next_24h = Column(Boolean)
+    label_failure_next_48h = Column(Boolean)
