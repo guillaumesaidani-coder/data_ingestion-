@@ -1,0 +1,1150 @@
+<title>TP7 — Maintenance Prédictive · ML tabulaire</title>
+<style>
+:root {
+  --ground: #EDF0F7;
+  --surface: #FFFFFF;
+  --text: #1B2A3E;
+  --muted: #5E7191;
+  --border: #C9D3E3;
+  --accent: #D97706;
+  --accent-bg: #FEF3C7;
+  --accent-dark: #92400E;
+  --ok: #0F7A58;
+  --ok-bg: #D1FAE5;
+  --danger: #B91C1C;
+  --danger-bg: #FEE2E2;
+  --blue: #2563EB;
+  --blue-bg: #DBEAFE;
+  --shadow: 0 2px 16px rgba(27,42,62,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+  background: var(--ground);
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* ── HERO ──────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  height: 440px;
+  background: #0F1B2D;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+}
+
+#signal-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(15,27,45,0.92) 0%, rgba(15,27,45,0.3) 60%, transparent 100%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px 52px;
+  width: 100%;
+}
+
+.hero-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.hero-title {
+  font-size: clamp(30px, 5vw, 54px);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: #FFFFFF;
+  line-height: 1.05;
+  margin-bottom: 16px;
+}
+
+.hero-sub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.01em;
+}
+
+.hero-pills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.hero-pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.7);
+}
+
+/* ── LAYOUT ─────────────────────────────────────────────────────── */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.section { padding: 64px 0; }
+
+.divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  max-width: 1100px;
+  margin: 0 auto 0;
+  padding: 0 40px;
+}
+
+.section-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-size: clamp(20px, 3vw, 28px);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin-bottom: 32px;
+  line-height: 1.2;
+}
+
+/* ── PROBLEM CARDS ─────────────────────────────────────────────── */
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+
+.card-icon { font-size: 26px; margin-bottom: 14px; }
+
+.card h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.card p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 100px;
+  margin-top: 14px;
+}
+.tag-danger  { background: var(--danger-bg);  color: var(--danger); }
+.tag-ok      { background: var(--ok-bg);      color: var(--ok); }
+.tag-accent  { background: var(--accent-bg);  color: var(--accent-dark); }
+.tag-blue    { background: var(--blue-bg);    color: var(--blue); }
+
+/* ── PIPELINE ───────────────────────────────────────────────────── */
+.pipeline-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 36px 32px;
+  overflow-x: auto;
+  box-shadow: var(--shadow);
+}
+
+.pipeline-flow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  min-width: 780px;
+}
+
+.pipe-step { flex: 1; text-align: center; }
+
+.pipe-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.pipe-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  background: var(--ground);
+  border: 1.5px solid var(--border);
+}
+
+.pipe-icon.hi { background: var(--accent); border-color: var(--accent); }
+
+.pipe-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.pipe-detail {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.35;
+  max-width: 90px;
+}
+
+.pipe-arrow {
+  flex: 0 0 28px;
+  text-align: center;
+  color: var(--border);
+  font-size: 20px;
+  padding-top: 14px;
+}
+
+/* ── MODEL CARDS ────────────────────────────────────────────────── */
+.model-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+}
+
+.model-top {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.model-num {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.model-name {
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 2px;
+}
+
+.model-kind {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.model-body { padding: 20px 24px; flex: 1; }
+
+.model-desc {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 18px;
+}
+
+.params { display: flex; flex-direction: column; gap: 7px; }
+
+.param {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.pkey {
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.pval {
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--ground);
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.model-stripe-blue   { border-top: 3px solid var(--blue); }
+.model-stripe-green  { border-top: 3px solid var(--ok); }
+.model-stripe-amber  { border-top: 3px solid var(--accent); }
+
+/* ── METRICS TABLE ──────────────────────────────────────────────── */
+.metrics-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.metrics-head {
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.metrics-head h3 { font-size: 15px; font-weight: 700; }
+
+.primary-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 100px;
+  background: var(--accent-bg);
+  color: var(--accent-dark);
+}
+
+.metrics-table { width: 100%; border-collapse: collapse; }
+
+.metrics-table th {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 12px 28px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  background: var(--ground);
+}
+
+.metrics-table td {
+  padding: 16px 28px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(201,211,227,0.5);
+  vertical-align: middle;
+}
+
+.metrics-table tr:last-child td { border-bottom: none; }
+
+.mval {
+  font-family: "Courier New", monospace;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.bar-wrap { display: flex; align-items: center; gap: 10px; }
+
+.bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--ok);
+  min-width: 4px;
+}
+.bar-blue { background: var(--blue); }
+.bar-amber { background: var(--accent); }
+
+.best-row td { background: rgba(15,122,88,0.04); }
+
+.winner-tag {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  background: var(--ok-bg);
+  color: var(--ok);
+  border-radius: 100px;
+  margin-left: 8px;
+}
+
+/* ── CONFUSION MATRIX ───────────────────────────────────────────── */
+.cm-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 32px;
+}
+
+.cm-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.cm-card h4 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.cm-matrix {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.cm-cell {
+  border-radius: 8px;
+  padding: 18px 12px;
+  text-align: center;
+}
+
+.cm-cell .cv {
+  font-family: "Courier New", monospace;
+  font-size: 26px;
+  font-weight: 700;
+  display: block;
+  line-height: 1;
+}
+
+.cm-cell .cl {
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 6px;
+  display: block;
+  opacity: 0.9;
+}
+
+.cm-cell .cd {
+  font-size: 10px;
+  margin-top: 3px;
+  display: block;
+  opacity: 0.7;
+}
+
+.c-tn { background: var(--ok-bg);     color: var(--ok); }
+.c-fp { background: var(--accent-bg); color: var(--accent-dark); }
+.c-fn { background: var(--danger-bg); color: var(--danger); }
+.c-tp { background: var(--ok-bg);     color: var(--ok); }
+
+.cm-axis-pred {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.cm-points { display: flex; flex-direction: column; gap: 0; }
+
+.cm-point {
+  display: flex;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+
+.cm-point:last-child { border-bottom: none; }
+
+.cm-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.cm-point-text h5 {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.cm-point-text p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* ── MLFLOW ─────────────────────────────────────────────────────── */
+.mlflow-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 36px;
+  display: flex;
+  gap: 36px;
+  align-items: flex-start;
+  box-shadow: var(--shadow);
+}
+
+.mlflow-icon { font-size: 44px; flex-shrink: 0; }
+
+.mlflow-body h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.mlflow-body p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+
+.mlflow-items {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.mlflow-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--ground);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.code-cmd {
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  background: #0F1B2D;
+  color: #10B981;
+  padding: 12px 18px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+/* ── CONCLUSION ─────────────────────────────────────────────────── */
+.conclusion {
+  background: var(--text);
+  border-radius: 16px;
+  padding: 48px;
+  color: white;
+}
+
+.conclusion h2 {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: white;
+  margin-bottom: 12px;
+}
+
+.conclusion > p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 32px;
+  max-width: 560px;
+}
+
+.concl-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.concl-item {
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+
+.concl-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.concl-item p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.5;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────── */
+@media (max-width: 720px) {
+  .grid-3, .cm-layout, .concl-grid { grid-template-columns: 1fr; }
+  .mlflow-card { flex-direction: column; }
+  .container { padding: 0 20px; }
+  .hero-content { padding: 0 20px 40px; }
+  .conclusion { padding: 32px 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #signal-canvas { display: none; }
+}
+</style>
+
+<!-- ── HERO ────────────────────────────────────────────────────── -->
+<div class="hero">
+  <canvas id="signal-canvas" aria-hidden="true"></canvas>
+  <div class="hero-gradient"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Module B5 · TP7</p>
+    <h1 class="hero-title">Détecter la panne<br>avant qu'elle survienne</h1>
+    <div class="hero-pills">
+      <span class="hero-pill">Classification binaire</span>
+      <span class="hero-pill">78 features</span>
+      <span class="hero-pill">3 modèles</span>
+      <span class="hero-pill">MLflow</span>
+      <span class="hero-pill">132 940 observations</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── PROBLÈME ─────────────────────────────────────────────────── -->
+<div class="section container">
+  <p class="section-eyebrow">Le problème</p>
+  <h2 class="section-title">Classification binaire sous contraintes industrielles</h2>
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-icon">⚙️</div>
+      <h3>Cible binaire</h3>
+      <p>Pour chaque machine et chaque heure, le modèle prédit si une panne critique (sévérité ≥ 4) surviendra dans les <strong>24 prochaines heures</strong>.</p>
+      <span class="tag tag-blue">label_failure_next_24h</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚖️</div>
+      <h3>Déséquilibre de classes</h3>
+      <p>Les pannes sont rares : seulement <strong>~3,6 %</strong> d'observations positives. L'accuracy est inutile — un modèle prédisant toujours 0 afficherait 96,4 %.</p>
+      <span class="tag tag-danger">Utiliser PR-AUC</span>
+    </div>
+    <div class="card">
+      <div class="card-icon">⏱️</div>
+      <h3>Fuite temporelle</h3>
+      <p>Un split aléatoire laisserait des données futures dans le train. On impose un <strong>split temporel strict</strong> : train &lt; validation &lt; test.</p>
+      <span class="tag tag-accent">Split 70 / 15 / 15</span>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ── PIPELINE ─────────────────────────────────────────────────── -->
+<div class="section container">
+  <p class="section-eyebrow">Méthodologie</p>
+  <h2 class="section-title">Pipeline de modélisation</h2>
+  <div class="pipeline-wrap">
+    <div class="pipeline-flow">
+      <div class="pipe-step">
+        <div class="pipe-node">
+          <div class="pipe-icon">🗄️</div>
+          <div class="pipe-name">Gold dataset</div>
+          <div class="pipe-detail">PostgreSQL<br>132 940 lignes</div>
+        </div>
+      </div>
+      <div class="pipe-arrow">›</div>
+      <div class="pipe-step">
+        <div class="pipe-node">
+          <div class="pipe-icon">🚫</div>
+          <div class="pipe-name">Exclusion fuites</div>
+          <div class="pipe-detail">IDs, timestamps,<br>labels alternatifs</div>
+        </div>
+      </div>
+      <div class="pipe-arrow">›</div>
+      <div class="pipe-step">
+        <div class="pipe-node">
+          <div class="pipe-icon">✂️</div>
+          <div class="pipe-name">Split temporel</div>
+          <div class="pipe-detail">via split_set<br>train / val / test</div>
+        </div>
+      </div>
+      <div class="pipe-arrow">›</div>
+      <div class="pipe-step">
+        <div class="pipe-node">
+          <div class="pipe-icon hi">⚖️</div>
+          <div class="pipe-name">Équilibrage</div>
+          <div class="pipe-detail">class_weight<br>scale_pos_weight</div>
+        </div>
+      </div>
+      <div class="pipe-arrow">›</div>
+      <div class="pipe-step">
+        <div class="pipe-node">
+          <div class="pipe-icon">🤖</div>
+          <div class="pipe-name">Entraînement</div>
+          <div class="pipe-detail">LR · RF<br>XGBoost</div>
+        </div>
+      </div>
+      <div class="pipe-arrow">›</div>
+      <div class="pipe-step">
+        <div class="pipe-node">
+          <div class="pipe-icon">📈</div>
+          <div class="pipe-name">Évaluation</div>
+          <div class="pipe-detail">PR-AUC<br>ROC-AUC · F1</div>
+        </div>
+      </div>
+      <div class="pipe-arrow">›</div>
+      <div class="pipe-step">
+        <div class="pipe-node">
+          <div class="pipe-icon">📋</div>
+          <div class="pipe-name">MLflow</div>
+          <div class="pipe-detail">Params<br>Métriques</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ── MODÈLES ──────────────────────────────────────────────────── -->
+<div class="section container">
+  <p class="section-eyebrow">Entraînement</p>
+  <h2 class="section-title">Trois modèles, du plus simple au plus expressif</h2>
+  <div class="grid-3">
+
+    <div class="model-card model-stripe-blue">
+      <div class="model-top">
+        <div class="model-num">Modèle 01</div>
+        <div class="model-name">Régression Logistique</div>
+        <div class="model-kind">Linéaire · Baseline</div>
+      </div>
+      <div class="model-body">
+        <p class="model-desc">Combine linéairement les 78 features via une fonction sigmoïde. Nécessite une standardisation. Rapide, interprétable, révèle si le problème est linéairement séparable.</p>
+        <div class="params">
+          <div class="param"><span class="pkey">class_weight</span><span class="pval">"balanced"</span></div>
+          <div class="param"><span class="pkey">max_iter</span><span class="pval">1000</span></div>
+          <div class="param"><span class="pkey">solver</span><span class="pval">"lbfgs"</span></div>
+          <div class="param"><span class="pkey">Pipeline</span><span class="pval">Imputer → Scaler → LR</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="model-card model-stripe-green">
+      <div class="model-top">
+        <div class="model-num">Modèle 02</div>
+        <div class="model-name">Random Forest</div>
+        <div class="model-kind">Ensemble · Non linéaire</div>
+      </div>
+      <div class="model-body">
+        <p class="model-desc">Vote de 200 arbres entraînés sur sous-échantillons aléatoires. Capture les interactions non linéaires. Robuste aux outliers — pas besoin de standardisation.</p>
+        <div class="params">
+          <div class="param"><span class="pkey">n_estimators</span><span class="pval">200</span></div>
+          <div class="param"><span class="pkey">max_depth</span><span class="pval">10</span></div>
+          <div class="param"><span class="pkey">class_weight</span><span class="pval">"balanced"</span></div>
+          <div class="param"><span class="pkey">n_jobs</span><span class="pval">-1</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="model-card model-stripe-amber">
+      <div class="model-top">
+        <div class="model-num">Modèle 03</div>
+        <div class="model-name">XGBoost</div>
+        <div class="model-kind">Gradient Boosting · Candidat principal</div>
+      </div>
+      <div class="model-body">
+        <p class="model-desc">Arbres construits séquentiellement : chaque arbre corrige les erreurs du précédent. Régularisation intégrée, gestion native des NaN, meilleur sur données tabulaires.</p>
+        <div class="params">
+          <div class="param"><span class="pkey">n_estimators</span><span class="pval">300</span></div>
+          <div class="param"><span class="pkey">max_depth</span><span class="pval">6</span></div>
+          <div class="param"><span class="pkey">learning_rate</span><span class="pval">0.1</span></div>
+          <div class="param"><span class="pkey">scale_pos_weight</span><span class="pval">neg / pos</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ── MÉTRIQUES ────────────────────────────────────────────────── -->
+<div class="section container">
+  <p class="section-eyebrow">Évaluation</p>
+  <h2 class="section-title">Comparaison des modèles sur la validation</h2>
+
+  <div class="metrics-block">
+    <div class="metrics-head">
+      <h3>Résultats comparatifs — triés par PR-AUC validation</h3>
+      <span class="primary-badge">Métrique principale : PR-AUC</span>
+    </div>
+    <table class="metrics-table">
+      <thead>
+        <tr>
+          <th>Modèle</th>
+          <th>PR-AUC train</th>
+          <th>PR-AUC val</th>
+          <th>ROC-AUC val</th>
+          <th>F1 val</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="best-row">
+          <td><strong>XGBoost</strong><span class="winner-tag">Retenu B7</span></td>
+          <td><span class="mval" style="color:var(--danger)">1.0000 ⚠️</span></td>
+          <td>
+            <div class="bar-wrap">
+              <span class="mval">0.8174</span>
+              <div class="bar bar-amber" style="width:163px"></div>
+            </div>
+          </td>
+          <td><span class="mval">0.9923</span></td>
+          <td><span class="mval">0.7351</span></td>
+        </tr>
+        <tr>
+          <td>Random Forest</td>
+          <td><span class="mval" style="color:var(--danger)">0.9891 ⚠️</span></td>
+          <td>
+            <div class="bar-wrap">
+              <span class="mval">0.7682</span>
+              <div class="bar" style="width:154px"></div>
+            </div>
+          </td>
+          <td><span class="mval">0.9902</span></td>
+          <td><span class="mval">0.5676</span></td>
+        </tr>
+        <tr>
+          <td>Régression Logistique</td>
+          <td><span class="mval">0.5312</span></td>
+          <td>
+            <div class="bar-wrap">
+              <span class="mval">0.3569</span>
+              <div class="bar bar-blue" style="width:71px"></div>
+            </div>
+          </td>
+          <td><span class="mval">0.9250</span></td>
+          <td><span class="mval">0.4174</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cm-layout">
+    <div class="cm-card">
+      <h4>Matrice de confusion — XGBoost (test set, seuil = 0.5)</h4>
+      <p class="cm-axis-pred">Prédit →</p>
+      <div class="cm-matrix">
+        <div class="cm-cell c-tn">
+          <span class="cv">18 851</span>
+          <span class="cl">Vrai Négatif</span>
+          <span class="cd">OK détecté ✅</span>
+        </div>
+        <div class="cm-cell c-fp">
+          <span class="cv">366</span>
+          <span class="cl">Faux Positif</span>
+          <span class="cd">Fausse alerte ⚠️</span>
+        </div>
+        <div class="cm-cell c-fn">
+          <span class="cv">88</span>
+          <span class="cl">Faux Négatif</span>
+          <span class="cd">Panne manquée ❌</span>
+        </div>
+        <div class="cm-cell c-tp">
+          <span class="cv">639</span>
+          <span class="cl">Vrai Positif</span>
+          <span class="cd">Panne détectée ✅</span>
+        </div>
+      </div>
+      <div style="margin-top:16px; display:flex; gap:16px; font-size:13px;">
+        <div style="background:var(--ok-bg);color:var(--ok);padding:8px 14px;border-radius:8px;font-weight:700;">
+          Recall 87.9% — 639/727 pannes détectées
+        </div>
+        <div style="background:var(--accent-bg);color:var(--accent-dark);padding:8px 14px;border-radius:8px;font-weight:700;">
+          Précision 63.6% — 366 fausses alertes
+        </div>
+      </div>
+    </div>
+    <div class="cm-card">
+      <h4>Lecture et arbitrage métier</h4>
+      <div class="cm-points">
+        <div class="cm-point">
+          <div class="cm-dot" style="background:var(--ok)"></div>
+          <div class="cm-point-text">
+            <h5>Vrai Positif — la bonne alerte</h5>
+            <p>La machine allait tomber en panne, le modèle l'a prédit. L'équipe peut intervenir en avance.</p>
+          </div>
+        </div>
+        <div class="cm-point">
+          <div class="cm-dot" style="background:var(--danger)"></div>
+          <div class="cm-point-text">
+            <h5>Faux Négatif — la panne manquée ❌ Coûteux</h5>
+            <p>Le modèle prédit "tout va bien" alors qu'une panne survient. Coût élevé : arrêt non anticipé, production perdue.</p>
+          </div>
+        </div>
+        <div class="cm-point">
+          <div class="cm-dot" style="background:var(--accent)"></div>
+          <div class="cm-point-text">
+            <h5>Faux Positif — la fausse alerte</h5>
+            <p>Intervention préventive inutile, mais sans danger. En contexte industriel, on tolère plus de fausses alertes que de pannes manquées.</p>
+          </div>
+        </div>
+        <div class="cm-point">
+          <div class="cm-dot" style="background:var(--muted)"></div>
+          <div class="cm-point-text">
+            <h5>Seuil de décision — levier d'action</h5>
+            <p>Baisser le seuil (0.3) augmente le Recall (moins de pannes manquées) au prix de plus de fausses alertes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ── MLFLOW ────────────────────────────────────────────────────── -->
+<div class="section container">
+  <p class="section-eyebrow">Traçabilité</p>
+  <h2 class="section-title">Suivi des expériences avec MLflow</h2>
+  <div class="mlflow-card">
+    <div class="mlflow-icon">📊</div>
+    <div class="mlflow-body">
+      <h3>Journaliser chaque run pour ne rien perdre</h3>
+      <p>Chaque entraînement enregistre automatiquement ses paramètres et ses métriques dans une base SQLite locale. Indispensable quand on teste plusieurs modèles et configurations.</p>
+      <div class="mlflow-items">
+        <div class="mlflow-item">⚙️ Paramètres</div>
+        <div class="mlflow-item">📈 PR-AUC · ROC-AUC · F1</div>
+        <div class="mlflow-item">🎯 Cible · n_features</div>
+        <div class="mlflow-item">🔢 Seuil de décision</div>
+      </div>
+      <div class="code-cmd">mlflow ui --backend-store-uri sqlite:///mlflow_tp7.db</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ── CONCLUSION ───────────────────────────────────────────────── -->
+<div class="section container">
+  <div class="conclusion">
+    <h2>Récapitulatif et passage en B7</h2>
+    <p>XGBoost retenu avec PR-AUC val = <strong style="color:#FEF3C7">0.8174</strong> vs Random Forest 0.7682 vs Régression Logistique 0.3569. Les hyperparamètres restent sobres — l'optimisation complète est réservée au module B7.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px;margin-bottom:8px;">
+      <div style="border:1px solid rgba(255,255,255,0.12);border-top:3px solid #3B82F6;border-radius:10px;padding:18px 20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#93C5FD;margin-bottom:10px;">Régression Logistique</div>
+        <div style="font-family:'Courier New',monospace;font-size:11px;color:rgba(255,255,255,0.65);line-height:2;">
+          solver = "lbfgs"<br>
+          max_iter = 1000<br>
+          class_weight = "balanced"<br>
+          + Imputer(median) + Scaler
+        </div>
+      </div>
+      <div style="border:1px solid rgba(255,255,255,0.12);border-top:3px solid #0F7A58;border-radius:10px;padding:18px 20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#6EE7B7;margin-bottom:10px;">Random Forest</div>
+        <div style="font-family:'Courier New',monospace;font-size:11px;color:rgba(255,255,255,0.65);line-height:2;">
+          n_estimators = 200<br>
+          max_depth = 10<br>
+          min_samples_leaf = 5<br>
+          class_weight = "balanced"
+        </div>
+      </div>
+      <div style="border:1px solid rgba(255,255,255,0.12);border-top:3px solid #D97706;border-radius:10px;padding:18px 20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#FCD34D;margin-bottom:10px;">XGBoost ★ Retenu</div>
+        <div style="font-family:'Courier New',monospace;font-size:11px;color:rgba(255,255,255,0.65);line-height:2;">
+          n_estimators = 300<br>
+          max_depth = 6<br>
+          learning_rate = 0.1<br>
+          subsample = 0.8<br>
+          colsample_bytree = 0.8<br>
+          scale_pos_weight = neg/pos
+        </div>
+      </div>
+    </div>
+    <div class="concl-grid">
+      <div class="concl-item">
+        <div class="concl-label">Métrique principale</div>
+        <p>PR-AUC plutôt qu'accuracy — les classes sont déséquilibrées (3,6 % positifs).</p>
+      </div>
+      <div class="concl-item">
+        <div class="concl-label">Split</div>
+        <p>Temporel strict (70/15/15) via split_set — jamais aléatoire pour éviter la fuite temporelle.</p>
+      </div>
+      <div class="concl-item">
+        <div class="concl-label">Déséquilibre</div>
+        <p>class_weight="balanced" (LR/RF) et scale_pos_weight = neg/pos (XGBoost).</p>
+      </div>
+      <div class="concl-item">
+        <div class="concl-label">Prochaine étape — B7</div>
+        <p>Optimisation hyperparamètres · Feature selection · Ajustement du seuil métier · Validation finale sur test set.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const canvas = document.getElementById("signal-canvas");
+  const ctx = canvas.getContext("2d");
+
+  // Deterministic noise
+  function noise(x) {
+    const s = Math.sin(x * 127.1 + 311.7) * 43758.5453;
+    return s - Math.floor(s);
+  }
+
+  // Pre-generate a long signal
+  const SIG_LEN = 800;
+  const sig = new Float32Array(SIG_LEN);
+  const ANOMALIES = [160, 360, 580, 740];
+
+  for (let i = 0; i < SIG_LEN; i++) {
+    let v = Math.sin(i * 0.06) * 0.38
+           + Math.sin(i * 0.19) * 0.14
+           + Math.sin(i * 0.41) * 0.07
+           + (noise(i * 1.73) - 0.5) * 0.08;
+    for (const a of ANOMALIES) {
+      const d = i - a;
+      if (d >= 0 && d < 28) {
+        v += Math.exp(-d * 0.22) * 1.6;
+      }
+    }
+    sig[i] = v;
+  }
+
+  let offset = 0;
+  let raf;
+
+  function resize() {
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+
+  function draw() {
+    const W = canvas.width, H = canvas.height;
+    if (!W || !H) { raf = requestAnimationFrame(draw); return; }
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Grid
+    ctx.strokeStyle = "rgba(255,255,255,0.05)";
+    ctx.lineWidth = 1;
+    for (let x = 0; x < W; x += 48) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    }
+    for (let y = 0; y < H; y += 40) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+
+    const midY = H * 0.58;
+    const scaleY = H * 0.13;
+    const NUM_PTS = Math.min(W, 600);
+
+    // Normal band
+    ctx.fillStyle = "rgba(15,122,88,0.07)";
+    ctx.fillRect(0, midY - scaleY * 1.3, W, scaleY * 2.6);
+
+    // Threshold line
+    ctx.setLineDash([6, 6]);
+    ctx.strokeStyle = "rgba(217,119,6,0.5)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, midY - scaleY * 1.3);
+    ctx.lineTo(W, midY - scaleY * 1.3);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Prediction warning zones (24 pts before anomaly)
+    for (const a of ANOMALIES) {
+      const warnStart = a - 24;
+      const x0 = ((warnStart - offset) / NUM_PTS) * W;
+      const x1 = ((a - offset) / NUM_PTS) * W;
+      if (x1 > 0 && x0 < W) {
+        ctx.fillStyle = "rgba(217,119,6,0.12)";
+        ctx.fillRect(Math.max(0, x0), 0, Math.min(x1, W) - Math.max(0, x0), H);
+        // Warning label
+        if (x0 > 10 && x0 < W - 60) {
+          ctx.font = "700 10px -apple-system, system-ui, sans-serif";
+          ctx.fillStyle = "rgba(217,119,6,0.9)";
+          ctx.fillText("⚠ Alerte −24h", x0 + 4, 22);
+        }
+      }
+    }
+
+    // Signal line
+    ctx.beginPath();
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = "#10B981";
+    ctx.strokeStyle = "#34D399";
+    ctx.lineWidth = 2;
+
+    let started = false;
+    for (let i = 0; i < NUM_PTS; i++) {
+      const idx = (offset + i) % SIG_LEN;
+      const x = (i / NUM_PTS) * W;
+      const y = midY - sig[idx] * scaleY;
+      if (!started) { ctx.moveTo(x, y); started = true; }
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Anomaly spike markers
+    for (const a of ANOMALIES) {
+      const i = a - offset;
+      if (i >= 0 && i < NUM_PTS) {
+        const x = (i / NUM_PTS) * W;
+        const y = midY - sig[a % SIG_LEN] * scaleY;
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = "#EF4444";
+        ctx.fill();
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = "#EF4444";
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.font = "700 10px -apple-system, system-ui, sans-serif";
+        ctx.fillStyle = "#F87171";
+        ctx.fillText("PANNE", x + 8, y - 4);
+      }
+    }
+
+    // Labels
+    ctx.font = "600 11px -apple-system, system-ui, sans-serif";
+    ctx.fillStyle = "rgba(255,255,255,0.35)";
+    ctx.fillText("TEMPÉRATURE CAPTEUR (°C) — simulation temps réel", 16, H - 14);
+
+    offset = (offset + 0.4) % SIG_LEN;
+    raf = requestAnimationFrame(draw);
+  }
+
+  window.addEventListener("resize", () => { resize(); });
+  resize();
+  draw();
+})();
+</script>

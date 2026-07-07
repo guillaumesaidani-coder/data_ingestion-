@@ -16,5 +16,12 @@ wheels/
 releves_incidents.csv
 
 # Fichiers générés
-*.html
 artifacts/
+
+# HTML : exclure par défaut sauf les pages de synthèse TP
+*.html
+!tp7_synthese.html
+!tp7bis_synthese.html
+!tp8_synthese.html
+!TP7_décision_classification.html
+!tp_ml_presentation.html

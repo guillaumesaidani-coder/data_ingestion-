@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classification ML — Référentiel pédagogique</title>
+<style>
+/* ── TOKENS ── */
+:root {
+  --ground:    #1B2034;
+  --surface:   #232B44;
+  --surf-hi:   #2D3759;
+  --text:      #DDE4F0;
+  --muted:     #6B7A99;
+  --border:    rgba(100,120,170,0.14);
+  --accent:    #E8832A;
+  --ok:        #5ECFA8;
+  --danger:    #D9534F;
+  --fn-glow:   rgba(217,83,79,0.22);
+  --mono:      'Courier New', Courier, monospace;
+  --body:      system-ui, -apple-system, sans-serif;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 16px;
+  line-height: 1.65;
+}
+a:focus-visible { outline: 2px solid var(--ok); outline-offset: 3px; }
+
+/* ── HEADER ── */
+.hd {
+  padding: 2.5rem 4rem 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.hd-eye {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hd-title {
+  font-size: clamp(1.7rem, 4vw, 2.9rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+}
+.hd-title em { font-style: normal; color: var(--ok); }
+.hd-sub {
+  font-size: 0.9rem;
+  color: var(--muted);
+  max-width: 560px;
+}
+.comp-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+.comp-tag {
+  font-family: var(--mono);
+  font-size: 0.67rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: border-color 0.18s, color 0.18s;
+}
+.comp-tag:hover { border-color: var(--ok); color: var(--ok); }
+
+/* ── SECTIONS ── */
+.sec {
+  padding: 4rem;
+  border-bottom: 1px solid var(--border);
+}
+.sec-eye {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+}
+.sec-h {
+  font-size: clamp(1.1rem, 2.5vw, 1.65rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  margin-bottom: 0.6rem;
+}
+.sec-intro {
+  font-size: 0.88rem;
+  color: var(--muted);
+  max-width: 640px;
+  margin-bottom: 2.5rem;
+}
+
+/* ── HERO: CONFUSION MATRIX ── */
+.hero {
+  padding: 4rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+.hero-intro { text-align: center; max-width: 560px; }
+.hero-intro .sec-h { margin-bottom: 0.4rem; }
+.hero-intro p { font-size: 0.85rem; color: var(--muted); }
+
+.cm-outer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 560px;
+}
+
+.cm-pred-label {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cm-main-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.cm-real-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.cm-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+}
+
+.cm-col-heads {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  margin-bottom: 4px;
+  padding-left: 0;
+}
+.cm-col-head {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: center;
+  padding: 0.2rem 0;
+}
+
+.cm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 4px;
+  aspect-ratio: 2/1;
+}
+
+/* Row labels alongside the grid */
+.cm-rows-wrap {
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+}
+.cm-row-pair {
+  display: flex;
+  gap: 4px;
+}
+.cm-row-head {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+}
+
+/* The grid using full rows */
+.cm-grid-full {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  width: 100%;
+}
+
+.cm-cell {
+  border-radius: 3px;
+  padding: 1.2rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  cursor: default;
+  transition: transform 0.2s ease, opacity 0.25s ease;
+  position: relative;
+}
+.cm-cell .tag {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.65;
+}
+.cm-cell .count {
+  font-family: var(--mono);
+  font-size: clamp(1.6rem, 4.5vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1;
+}
+.cm-cell .pct {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  opacity: 0.5;
+}
+
+.cm-cell.tp {
+  background: rgba(94, 207, 168, 0.10);
+  border: 1px solid rgba(94, 207, 168, 0.22);
+}
+.cm-cell.tp .count { color: var(--ok); }
+
+.cm-cell.fn {
+  background: rgba(217, 83, 79, 0.12);
+  border: 1px solid rgba(217, 83, 79, 0.3);
+  animation: fn-pulse 3s ease-in-out infinite;
+}
+.cm-cell.fn .count { color: var(--danger); }
+
+@keyframes fn-pulse {
+  0%, 100% { border-color: rgba(217,83,79,0.30); box-shadow: none; }
+  50%       { border-color: rgba(217,83,79,0.65); box-shadow: 0 0 16px var(--fn-glow); }
+}
+
+.cm-cell.fp {
+  background: rgba(232, 131, 42, 0.09);
+  border: 1px solid rgba(232, 131, 42, 0.22);
+}
+.cm-cell.fp .count { color: var(--accent); }
+
+.cm-cell.tn {
+  background: rgba(94, 207, 168, 0.05);
+  border: 1px solid rgba(94, 207, 168, 0.11);
+}
+.cm-cell.tn .count { color: rgba(94, 207, 168, 0.6); }
+
+.cm-cell.dimmed { opacity: 0.3; transform: scale(0.98); }
+.cm-cell.focused { transform: scale(1.04); z-index: 2; }
+
+.cm-tip {
+  min-height: 4rem;
+  max-width: 520px;
+  text-align: center;
+  padding: 0.75rem 1rem;
+  border-radius: 3px;
+  transition: opacity 0.2s;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+.cm-tip strong { color: var(--text); }
+.cm-tip em { font-style: normal; color: var(--accent); }
+.cm-tip .ok-word { color: var(--ok); }
+
+/* ── ALGO CARDS ── */
+.algo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.25rem;
+}
+
+.algo-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.algo-card.champion {
+  border-color: rgba(94, 207, 168, 0.3);
+  background: linear-gradient(145deg, rgba(94,207,168,0.06) 0%, var(--surface) 60%);
+}
+
+.algo-rank {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.algo-rank .crown {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  background: rgba(94,207,168,0.15);
+  color: var(--ok);
+  border-radius: 2px;
+  letter-spacing: 0.1em;
+}
+
+.algo-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+}
+.algo-short {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--ok);
+  opacity: 0.8;
+  margin-top: 0.1rem;
+}
+
+.algo-desc {
+  font-size: 0.83rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.algo-why {
+  padding: 0.75rem 0.9rem;
+  background: rgba(255,255,255,0.03);
+  border-left: 2px solid var(--accent);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+.algo-why .why-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.perf-chips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.chip {
+  font-family: var(--mono);
+  font-size: 0.69rem;
+  padding: 0.18rem 0.55rem;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+}
+.chip.good  { color: var(--ok);     border-color: rgba(94,207,168,0.25); background: rgba(94,207,168,0.08); }
+.chip.warn  { color: var(--accent); border-color: rgba(232,131,42,0.25); background: rgba(232,131,42,0.08); }
+.chip.bad   { color: var(--danger); border-color: rgba(217,83,79,0.25);  background: rgba(217,83,79,0.08);  }
+
+/* ── METRICS ── */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.m-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.4rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.m-card.primary-metric {
+  border-color: rgba(94,207,168,0.3);
+  background: linear-gradient(160deg, rgba(94,207,168,0.07), var(--surface) 55%);
+}
+
+.m-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+.m-formula {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  color: var(--text);
+  line-height: 1.7;
+  padding: 0.4rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.m-val {
+  font-family: var(--mono);
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: var(--ok);
+  line-height: 1;
+}
+.m-val.warn { color: var(--accent); }
+.m-val.note { font-size: 1.1rem; }
+
+.m-interp {
+  font-size: 0.79rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.metrics-note {
+  padding: 1rem 1.25rem;
+  border-left: 2px solid var(--ok);
+  background: rgba(94,207,168,0.05);
+  border-radius: 0 3px 3px 0;
+  font-size: 0.84rem;
+  line-height: 1.55;
+}
+.metrics-note strong { color: var(--ok); }
+
+/* ── COST SECTION ── */
+.cost-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.cost-card {
+  background: var(--surface);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cost-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.cost-badge {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 2px;
+}
+.cost-badge.fn-b { background: rgba(217,83,79,0.18); color: var(--danger); }
+.cost-badge.fp-b { background: rgba(232,131,42,0.14); color: var(--accent); }
+
+.cost-label { font-size: 0.95rem; font-weight: 600; }
+
+.cost-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.cost-list li {
+  font-size: 0.83rem;
+  color: var(--muted);
+  padding-left: 1.1rem;
+  position: relative;
+  line-height: 1.45;
+}
+.cost-list li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--muted);
+  opacity: 0.45;
+}
+
+.cost-sev {
+  font-family: var(--mono);
+  font-size: 0.67rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.7rem;
+  border-radius: 2px;
+  align-self: flex-start;
+}
+.cost-sev.crit { background: rgba(217,83,79,0.13); color: var(--danger); border: 1px solid rgba(217,83,79,0.28); }
+.cost-sev.mod  { background: rgba(232,131,42,0.1);  color: var(--accent); border: 1px solid rgba(232,131,42,0.25); }
+
+.cost-count {
+  font-family: var(--mono);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.cost-count.fn-c { color: var(--danger); }
+.cost-count.fp-c { color: var(--accent); }
+.cost-count-sub {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  margin-top: 0.15rem;
+}
+
+.cost-verdict {
+  padding: 1.25rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--ok);
+  border-radius: 0 4px 4px 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+.cost-verdict strong {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ok);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+/* ── PLAN SECTION ── */
+.plan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 2.5rem;
+}
+
+.plan-step {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: start;
+}
+.plan-step:last-child { border-bottom: none; }
+
+.ps-num {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.1;
+  padding-top: 0.1rem;
+}
+
+.ps-body { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.ps-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.ps-detail {
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.ps-code {
+  font-family: var(--mono);
+  font-size: 0.73rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.45rem 0.75rem;
+  color: var(--ok);
+  overflow-x: auto;
+  white-space: pre;
+  margin-top: 0.2rem;
+  max-width: 100%;
+}
+
+/* Arbitrage note */
+.arb {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2rem;
+}
+
+.arb-head {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.25rem;
+}
+
+.arb-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.arb-row {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: 1rem;
+  font-size: 0.84rem;
+  align-items: start;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--border);
+}
+.arb-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+.arb-key {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--muted);
+  padding-top: 0.1rem;
+  line-height: 1.5;
+}
+
+.arb-val { color: var(--text); line-height: 1.55; }
+
+.arb-val code {
+  font-family: var(--mono);
+  font-size: 0.73rem;
+  background: rgba(255,255,255,0.07);
+  padding: 0.1rem 0.35rem;
+  border-radius: 2px;
+  color: var(--ok);
+}
+
+/* ── FOOTER ── */
+footer {
+  padding: 1.5rem 4rem;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  text-transform: uppercase;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 720px) {
+  .hd, .sec, .hero, footer { padding: 2rem 1.5rem; }
+  .cost-grid { grid-template-columns: 1fr; }
+  .arb-row   { grid-template-columns: 1fr; gap: 0.2rem; }
+  .plan-step { grid-template-columns: 2.5rem 1fr; gap: 1rem; }
+  .ps-code   { font-size: 0.65rem; }
+}
+
+/* ── MOTION ── */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ HEADER ══════════ -->
+<header class="hd">
+  <span class="hd-eye">Maintenance prédictive — Classification tabulaire binaire</span>
+  <h1 class="hd-title">Modèles, métriques<br>et <em>décisions</em></h1>
+  <p class="hd-sub">Référentiel pédagogique — de la matrice de confusion au choix du modèle en production.</p>
+  <nav class="comp-row" aria-label="Compétences">
+    <a class="comp-tag" href="#algos">C1 · Choisir les algorithmes</a>
+    <a class="comp-tag" href="#metriques">C2 · Calculer les métriques</a>
+    <a class="comp-tag" href="#cout">C3 · Coût métier</a>
+    <a class="comp-tag" href="#plan">C4 · Plan d'expérience</a>
+  </nav>
+</header>
+
+<!-- ══════════ HERO: CONFUSION MATRIX ══════════ -->
+<section class="hero" aria-label="Matrice de confusion interactive">
+  <div class="hero-intro">
+    <p class="sec-eye" style="text-align:center;">Point de départ</p>
+    <h2 class="sec-h" style="text-align:center;">Les 4 cas de prédiction</h2>
+    <p>Résultats XGBoost TP7 — 19&nbsp;944 observations, seuil = 0.5. Survolez chaque cellule.</p>
+  </div>
+
+  <div class="cm-outer">
+    <!-- Prediction axis label -->
+    <span class="cm-pred-label" aria-hidden="true">Prédiction du modèle</span>
+
+    <div class="cm-main-row">
+      <!-- Reality axis label -->
+      <span class="cm-real-label" aria-hidden="true">Réalité terrain</span>
+
+      <div class="cm-right">
+        <!-- Column headers -->
+        <div class="cm-col-heads" aria-hidden="true">
+          <div class="cm-col-head">Panne préd.</div>
+          <div class="cm-col-head">OK préd.</div>
+        </div>
+
+        <!-- Row 1: Panne réelle -->
+        <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:4px;">
+          <span class="cm-row-head" aria-hidden="true">Panne réelle</span>
+          <div class="cm-grid-full">
+            <div class="cm-cell tp" data-cell="tp" role="button" tabindex="0"
+                 aria-label="Vrai Positif: 639 pannes correctement prédites">
+              <span class="tag">TP</span>
+              <span class="count" data-target="639">0</span>
+              <span class="pct">3.2 %</span>
+            </div>
+            <div class="cm-cell fn" data-cell="fn" role="button" tabindex="0"
+                 aria-label="Faux Négatif: 88 pannes manquées — coût maximum">
+              <span class="tag">FN</span>
+              <span class="count" data-target="88">0</span>
+              <span class="pct">0.4 %</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: OK réel -->
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <span class="cm-row-head" aria-hidden="true">OK réel</span>
+          <div class="cm-grid-full">
+            <div class="cm-cell fp" data-cell="fp" role="button" tabindex="0"
+                 aria-label="Faux Positif: 366 fausses alarmes">
+              <span class="tag">FP</span>
+              <span class="count" data-target="366">0</span>
+              <span class="pct">1.8 %</span>
+            </div>
+            <div class="cm-cell tn" data-cell="tn" role="button" tabindex="0"
+                 aria-label="Vrai Négatif: 18851 machines OK correctement identifiées">
+              <span class="tag">TN</span>
+              <span class="count" data-target="18851">0</span>
+              <span class="pct">94.5 %</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.cm-right -->
+    </div><!-- /.cm-main-row -->
+
+    <!-- Tooltip -->
+    <div class="cm-tip" id="cm-tip" role="status" aria-live="polite">
+      Survolez une cellule pour comprendre son impact métier.
+    </div>
+  </div><!-- /.cm-outer -->
+</section>
+
+<!-- ══════════ C1: ALGORITHMES ══════════ -->
+<section class="sec" id="algos">
+  <p class="sec-eye">Compétence 1</p>
+  <h2 class="sec-h">Choisir et justifier 3 algorithmes baseline</h2>
+  <p class="sec-intro">
+    En classification tabulaire, on ne choisit pas arbitrairement — chaque algorithme apporte
+    une hypothèse différente sur la structure des données. On compare du plus simple au plus expressif.
+  </p>
+
+  <div class="algo-grid">
+    <!-- LR -->
+    <article class="algo-card">
+      <div class="algo-rank">Baseline linéaire</div>
+      <div>
+        <div class="algo-name">Régression Logistique</div>
+        <div class="algo-short">LogisticRegression</div>
+      </div>
+      <p class="algo-desc">
+        Modèle linéaire qui estime la probabilité P(panne) via une combinaison pondérée des features.
+        Suppose que la frontière de décision est linéaire dans l'espace des features.
+      </p>
+      <div class="algo-why">
+        <span class="why-label">Pourquoi le choisir</span>
+        Référence minimale incontournable. Si LR performe bien, la relation feature→cible
+        est suffisamment linéaire — et le modèle reste interprétable directement via ses coefficients.
+        Si LR échoue, cela justifie les modèles non-linéaires suivants.
+      </div>
+      <div class="perf-chips">
+        <span class="chip bad">PR-AUC val = 0.357</span>
+        <span class="chip warn">Relation non-linéaire</span>
+        <span class="chip good">Interprétable</span>
+      </div>
+    </article>
+
+    <!-- RF -->
+    <article class="algo-card">
+      <div class="algo-rank">Ensemble — bagging</div>
+      <div>
+        <div class="algo-name">Random Forest</div>
+        <div class="algo-short">RandomForestClassifier</div>
+      </div>
+      <p class="algo-desc">
+        Agrège des centaines d'arbres de décision entraînés sur des sous-échantillons aléatoires.
+        Chaque arbre vote, la majorité l'emporte. Robuste aux valeurs aberrantes et aux features redondantes.
+      </p>
+      <div class="algo-why">
+        <span class="why-label">Pourquoi le choisir</span>
+        Capture les non-linéarités et interactions entre features sans paramétrage fin.
+        Référence solide pour données tabulaires hétérogènes — souvent plus difficile à battre qu'on ne le pense.
+      </div>
+      <div class="perf-chips">
+        <span class="chip good">PR-AUC val = 0.768</span>
+        <span class="chip good">Robuste overfitting</span>
+        <span class="chip warn">Peu sensible aux déséquilibres</span>
+      </div>
+    </article>
+
+    <!-- XGB -->
+    <article class="algo-card champion">
+      <div class="algo-rank">
+        Ensemble — boosting
+        <span class="crown">Champion TP7</span>
+      </div>
+      <div>
+        <div class="algo-name">XGBoost</div>
+        <div class="algo-short">XGBClassifier</div>
+      </div>
+      <p class="algo-desc">
+        Construit des arbres séquentiellement — chaque arbre corrige les erreurs du précédent.
+        Le paramètre <code style="font-family:var(--mono);font-size:0.8rem;color:var(--ok);">scale_pos_weight</code>
+        compense nativement le déséquilibre de classes (~28×).
+      </p>
+      <div class="algo-why">
+        <span class="why-label">Pourquoi le choisir</span>
+        État de l'art sur données tabulaires. Gère le déséquilibre de classes, les valeurs manquantes,
+        et offre un espace d'optimisation étendu (L1/L2, max_depth, early stopping).
+      </div>
+      <div class="perf-chips">
+        <span class="chip good">PR-AUC val = 0.817</span>
+        <span class="chip good">Déséquilibre natif</span>
+        <span class="chip warn">Risque overfitting</span>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ══════════ C2: MÉTRIQUES ══════════ -->
+<section class="sec" id="metriques">
+  <p class="sec-eye">Compétence 2</p>
+  <h2 class="sec-h">Calculer et interpréter les métriques</h2>
+  <p class="sec-intro">
+    Valeurs calculées sur les résultats XGBoost TP7 : TP = 639, FP = 366, FN = 88, TN = 18&nbsp;851.
+    Total = 19&nbsp;944 observations.
+  </p>
+
+  <div class="metrics-grid">
+    <div class="m-card">
+      <div class="m-name">Accuracy</div>
+      <div class="m-formula">(TP + TN) / N<br>= (639 + 18851) / 19944</div>
+      <div class="m-val">97.7 %</div>
+      <p class="m-interp">
+        Trompeuse ici : prédire «OK» en permanence donnerait ~96.4 %. L'accuracy ignore le déséquilibre.
+      </p>
+    </div>
+
+    <div class="m-card">
+      <div class="m-name">Precision</div>
+      <div class="m-formula">TP / (TP + FP)<br>= 639 / (639 + 366)</div>
+      <div class="m-val warn">63.6 %</div>
+      <p class="m-interp">
+        Sur 1&nbsp;005 alertes émises, 639 étaient de vraies pannes. 36 % sont des fausses alarmes.
+      </p>
+    </div>
+
+    <div class="m-card">
+      <div class="m-name">Recall</div>
+      <div class="m-formula">TP / (TP + FN)<br>= 639 / (639 + 88)</div>
+      <div class="m-val">87.9 %</div>
+      <p class="m-interp">
+        Sur 727 vraies pannes, 639 ont été détectées. 88 ont été manquées — priorité à minimiser.
+      </p>
+    </div>
+
+    <div class="m-card">
+      <div class="m-name">F1-score</div>
+      <div class="m-formula">2 × (P × R) / (P + R)<br>= 2 × 0.636 × 0.879 / 1.515</div>
+      <div class="m-val warn">73.5 %</div>
+      <p class="m-interp">
+        Moyenne harmonique de Precision et Recall. Pénalise fortement les déséquilibres entre les deux.
+      </p>
+    </div>
+
+    <div class="m-card primary-metric">
+      <div class="m-name">PR-AUC ★ métrique pivot</div>
+      <div class="m-formula">Aire sous la courbe<br>Precision — Recall</div>
+      <div class="m-val note">XGBoost : 0.8174</div>
+      <p class="m-interp">
+        Résume la performance sur tous les seuils. Non biaisée par le déséquilibre — c'est la métrique
+        de référence pour ce projet (remplace ROC-AUC et Accuracy).
+      </p>
+    </div>
+  </div>
+
+  <div class="metrics-note">
+    <strong>Pourquoi PR-AUC plutôt qu'Accuracy ?</strong>
+    Avec 3.6 % de positifs, un modèle qui prédit «OK» systématiquement obtient 96.4 % d'Accuracy
+    et un PR-AUC de 0.036. PR-AUC punit exactement ce cas — c'est pour cela qu'il est la métrique pivot.
+  </div>
+</section>
+
+<!-- ══════════ C3: COÛT MÉTIER ══════════ -->
+<section class="sec" id="cout">
+  <p class="sec-eye">Compétence 3</p>
+  <h2 class="sec-h">Relier les métriques au coût métier</h2>
+  <p class="sec-intro">
+    Les chiffres de la matrice de confusion ne sont pas symétriques — une erreur ne coûte pas
+    la même chose selon sa nature. Cette asymétrie guide le choix de la métrique principale
+    et du seuil de décision.
+  </p>
+
+  <div class="cost-grid">
+    <!-- FN -->
+    <div class="cost-card">
+      <div class="cost-head">
+        <span class="cost-badge fn-b">FN</span>
+        <span class="cost-label">Panne manquée</span>
+      </div>
+      <div>
+        <div class="cost-count fn-c">88</div>
+        <div class="cost-count-sub">pannes non détectées · TP7</div>
+      </div>
+      <ul class="cost-list">
+        <li>Arrêt non planifié de la machine</li>
+        <li>Coût de production perdu (heures, matières)</li>
+        <li>Dégradation en cascade possible</li>
+        <li>Risque sécurité si équipement critique</li>
+        <li>Délai d'intervention d'urgence (stock pièces)</li>
+      </ul>
+      <span class="cost-sev crit">Coût critique</span>
+    </div>
+
+    <!-- FP -->
+    <div class="cost-card">
+      <div class="cost-head">
+        <span class="cost-badge fp-b">FP</span>
+        <span class="cost-label">Fausse alarme</span>
+      </div>
+      <div>
+        <div class="cost-count fp-c">366</div>
+        <div class="cost-count-sub">fausses alertes · TP7</div>
+      </div>
+      <ul class="cost-list">
+        <li>Déplacement d'un technicien à tort</li>
+        <li>Immobilisation préventive inutile</li>
+        <li>Perte de confiance dans le système</li>
+        <li>Coût de main-d'œuvre non productif</li>
+      </ul>
+      <span class="cost-sev mod">Coût modéré</span>
+    </div>
+  </div>
+
+  <div class="cost-verdict">
+    <strong>Conséquence directe sur la modélisation</strong>
+    FN &gt;&gt; FP en coût. On optimise donc le <strong>Recall</strong> (minimiser les pannes manquées)
+    plutôt que la Precision ou l'Accuracy. En pratique : choisir un <strong>seuil de décision bas</strong>
+    (ex. 0.25–0.35 au lieu de 0.5) pour détecter plus de vraies pannes, quitte à générer davantage
+    de fausses alarmes. La courbe Precision-Recall permet de choisir ce seuil explicitement
+    selon le ratio de coût FN/FP défini avec l'équipe métier.
+  </div>
+</section>
+
+<!-- ══════════ C4: PLAN D'EXPÉRIENCE ══════════ -->
+<section class="sec" id="plan">
+  <p class="sec-eye">Compétence 4</p>
+  <h2 class="sec-h">Plan d'expérience et note d'arbitrage</h2>
+  <p class="sec-intro">
+    Un plan d'expérience reproductible garantit que les comparaisons entre modèles sont équitables
+    et que les résultats ne dépendent pas de la chance ou d'un choix implicite de split.
+  </p>
+
+  <div class="plan-list">
+    <div class="plan-step">
+      <div class="ps-num">01</div>
+      <div class="ps-body">
+        <div class="ps-title">Figer la métrique pivot avant tout entraînement</div>
+        <p class="ps-detail">
+          Choisir PR-AUC comme métrique de référence, en accord avec le coût métier.
+          Ne pas changer de métrique après avoir vu les résultats — cela reviendrait à sélectionner
+          la métrique qui flatte le modèle déjà entraîné.
+        </p>
+        <code class="ps-code">metric_pivot = "PR-AUC"   # fixé ici, non négociable</code>
+      </div>
+    </div>
+
+    <div class="plan-step">
+      <div class="ps-num">02</div>
+      <div class="ps-body">
+        <div class="ps-title">Définir le split temporel (pas aléatoire)</div>
+        <p class="ps-detail">
+          Les données de télémétrie sont des séries temporelles. Un split aléatoire crée une fuite
+          temporelle : le modèle apprend sur des données "futures" par rapport à son jeu de validation.
+          Utiliser le découpage 70/15/15 déjà défini dans la colonne <code style="font-family:var(--mono);color:var(--ok);font-size:0.8rem;">split_set</code>.
+        </p>
+        <code class="ps-code">df_train = df[df['split_set'] == 'train']     # 70 %
+df_val   = df[df['split_set'] == 'validation'] # 15 %
+df_test  = df[df['split_set'] == 'test']       # 15 % — ne pas toucher avant la fin</code>
+      </div>
+    </div>
+
+    <div class="plan-step">
+      <div class="ps-num">03</div>
+      <div class="ps-body">
+        <div class="ps-title">Entraîner les 3 modèles dans des conditions identiques</div>
+        <p class="ps-detail">
+          Même pipeline preprocessing (SimpleImputer médian), même split, même random_state.
+          Toute différence de performance doit venir de l'algorithme, pas des conditions expérimentales.
+        </p>
+        <code class="ps-code">pipeline = Pipeline([
+    ('imputer', SimpleImputer(strategy='median')),
+    ('model',   XGBClassifier(random_state=42, ...))
+])</code>
+      </div>
+    </div>
+
+    <div class="plan-step">
+      <div class="ps-num">04</div>
+      <div class="ps-body">
+        <div class="ps-title">Comparer sur le jeu de validation, pas le test</div>
+        <p class="ps-detail">
+          Toute sélection de modèle et tout réglage d'hyperparamètre se font sur la validation.
+          Le test reste verrouillé jusqu'à la fin — c'est lui qui valide la performance réelle.
+          Évaluer sur le test plusieurs fois revient à optimiser pour lui.
+        </p>
+      </div>
+    </div>
+
+    <div class="plan-step">
+      <div class="ps-num">05</div>
+      <div class="ps-body">
+        <div class="ps-title">Diagnostiquer l'overfitting pour chaque modèle</div>
+        <p class="ps-detail">
+          Calculer l'écart PR-AUC train — PR-AUC val. Un écart &gt; 0.10 signale un overfitting
+          significatif. Analyser les importances pour détecter une sur-dépendance à une feature unique
+          (ex. <code style="font-family:var(--mono);color:var(--ok);font-size:0.8rem;">incident_max_severity_prev_24h</code> = 63 % du signal XGBoost TP7).
+        </p>
+        <code class="ps-code">delta_overfit = pr_auc_train - pr_auc_val   # &gt; 0.10 = signal d'alarme</code>
+      </div>
+    </div>
+
+    <div class="plan-step">
+      <div class="ps-num">06</div>
+      <div class="ps-body">
+        <div class="ps-title">Journaliser tous les runs dans MLflow</div>
+        <p class="ps-detail">
+          Chaque run enregistre : paramètres, métriques, artefacts (modèle). Cela permet de comparer
+          plusieurs expériences, de reproduire n'importe quel résultat, et de tracer l'historique
+          pour la note d'arbitrage.
+        </p>
+        <code class="ps-code">mlflow.set_experiment("maintenance_predictive")
+with mlflow.start_run(run_name="XGBoost_baseline"):
+    mlflow.log_params(params)
+    mlflow.log_metrics({'pr_auc_val': 0.8174})</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- Arbitrage note -->
+  <div class="arb">
+    <div class="arb-head">Note d'arbitrage — structure type</div>
+    <div class="arb-table">
+      <div class="arb-row">
+        <span class="arb-key">Problème</span>
+        <span class="arb-val">Classification binaire — prédiction de panne (sévérité ≥ 4) dans les 24h suivantes.</span>
+      </div>
+      <div class="arb-row">
+        <span class="arb-key">Métrique pivot</span>
+        <span class="arb-val"><code>PR-AUC</code> — non biaisée par le déséquilibre de classes (3.6 % positifs).</span>
+      </div>
+      <div class="arb-row">
+        <span class="arb-key">Modèles comparés</span>
+        <span class="arb-val">
+          Régression Logistique (<code>PR-AUC = 0.357</code>),
+          Random Forest (<code>PR-AUC = 0.768</code>),
+          XGBoost (<code>PR-AUC = 0.817</code>).
+        </span>
+      </div>
+      <div class="arb-row">
+        <span class="arb-key">Modèle retenu</span>
+        <span class="arb-val">XGBoost — meilleure performance absolue, gestion native du déséquilibre via <code>scale_pos_weight</code>.</span>
+      </div>
+      <div class="arb-row">
+        <span class="arb-key">Point de vigilance</span>
+        <span class="arb-val">Overfitting : Δ PR-AUC train–val = 0.183. Feature <code>incident_max_severity_prev_24h</code> concentre 63 % du signal → optimisation nécessaire (B7).</span>
+      </div>
+      <div class="arb-row">
+        <span class="arb-key">Seuil de décision</span>
+        <span class="arb-val">0.5 (défaut). À affiner en B7 selon le ratio de coût FN/FP défini avec l'équipe métier — probable abaissement à 0.25–0.35 pour maximiser le Recall.</span>
+      </div>
+      <div class="arb-row">
+        <span class="arb-key">Prochaine étape</span>
+        <span class="arb-val">B7 — Optimisation Optuna (60 trials TPE), régularisation L1/L2, réduction de <code>max_depth</code>, ajustement du seuil, empreinte carbone CodeCarbon.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <span>Classification ML — Référentiel pédagogique</span>
+  <span>TP7 · XGBoost · 19 944 obs. · PR-AUC = 0.8174</span>
+</footer>
+
+<!-- ══════════ JS ══════════ -->
+<script>
+(function() {
+  // Count-up animation
+  function animateCount(el, target) {
+    var start = null;
+    var duration = 1100 + Math.random() * 200;
+    function step(ts) {
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(eased * target).toLocaleString('fr-FR');
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // Run count-up when cells enter viewport
+  var counts = document.querySelectorAll('.cm-cell .count[data-target]');
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        var el = e.target;
+        animateCount(el, parseInt(el.dataset.target, 10));
+        observer.unobserve(el);
+      }
+    });
+  }, { threshold: 0.4 });
+  counts.forEach(function(c) { observer.observe(c); });
+
+  // Confusion matrix interaction
+  var cells    = document.querySelectorAll('.cm-cell');
+  var tipEl    = document.getElementById('cm-tip');
+
+  var tips = {
+    tp: '<strong>Vrai Positif (639)</strong> — La machine allait tomber en panne et le modèle l\'a <span class="ok-word">correctement prédit</span>. Maintenance planifiée à temps, panne évitée.',
+    fn: '<strong>Faux Négatif (88)</strong> — La machine est tombée en panne mais le modèle a dit «OK». <em>Le coût le plus élevé</em> : arrêt non planifié, risque sécurité, production perdue.',
+    fp: '<strong>Faux Positif (366)</strong> — Le modèle a prédit une panne, mais la machine fonctionnait correctement. <em>Fausse alarme</em> : déplacement inutile du technicien, coût modéré.',
+    tn: '<strong>Vrai Négatif (18 851)</strong> — La machine était OK et le modèle a dit <span class="ok-word">«OK»</span>. Aucune intervention, aucun coût — le cas le plus fréquent (94.5 %).'
+  };
+
+  var defaultTip = 'Survolez une cellule pour comprendre son impact métier.';
+
+  cells.forEach(function(cell) {
+    function onEnter() {
+      var key = cell.dataset.cell;
+      tipEl.innerHTML = tips[key] || defaultTip;
+      cells.forEach(function(c) {
+        c.classList.remove('dimmed', 'focused');
+        if (c !== cell) c.classList.add('dimmed');
+      });
+      cell.classList.add('focused');
+    }
+    function onLeave() {
+      tipEl.innerHTML = defaultTip;
+      cells.forEach(function(c) { c.classList.remove('dimmed', 'focused'); });
+    }
+    cell.addEventListener('mouseenter', onEnter);
+    cell.addEventListener('focus',      onEnter);
+    cell.addEventListener('mouseleave', onLeave);
+    cell.addEventListener('blur',       onLeave);
+  });
+})();
+</script>
+</body>
+</html>

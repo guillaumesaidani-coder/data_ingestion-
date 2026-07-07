@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TP7bis — Matrices de confusion & Coût métier</title>
+<style>
+:root {
+  --ground:  #181E2F;
+  --surf:    #222B44;
+  --surf2:   #2A3558;
+  --text:    #DDE4F2;
+  --muted:   #697A9B;
+  --border:  rgba(100,120,170,0.13);
+  --accent:  #E8832A;
+  --ok:      #5ECFA8;
+  --danger:  #D9534F;
+  --fn-col:  #D9534F;
+  --fp-col:  #E8832A;
+  --tp-col:  #5ECFA8;
+  --tn-col:  rgba(94,207,168,0.45);
+  --mono:    'Courier New', Courier, monospace;
+  --body:    system-ui, -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--ground); color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.65; }
+
+/* ── HEADER ── */
+.hd {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: start;
+  padding: 2.5rem 4rem 2rem;
+  border-bottom: 1px solid var(--border);
+}
+.hd-left {}
+.hd-eye { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+.hd-title { font-size: clamp(1.6rem,3.5vw,2.6rem); font-weight: 800; letter-spacing: -0.025em; line-height: 1.08; }
+.hd-title em { font-style: normal; color: var(--ok); }
+.hd-sub { font-size: 0.87rem; color: var(--muted); margin-top: 0.5rem; max-width: 520px; }
+.hd-badge-stack { display: flex; flex-direction: column; gap: 0.4rem; padding-top: 0.3rem; }
+.hd-badge {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.3rem 0.75rem; border-radius: 2px; text-align: right; white-space: nowrap;
+}
+.hd-badge.lr  { background: rgba(217,83,79,0.12);  color: var(--danger); border: 1px solid rgba(217,83,79,0.25); }
+.hd-badge.rf  { background: rgba(232,131,42,0.10); color: var(--accent); border: 1px solid rgba(232,131,42,0.2); }
+.hd-badge.xgb { background: rgba(94,207,168,0.10); color: var(--ok);     border: 1px solid rgba(94,207,168,0.25); }
+
+/* ── SECTION SHELL ── */
+.sec { padding: 3.5rem 4rem; border-bottom: 1px solid var(--border); }
+.sec-eye { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.55rem; }
+.sec-h { font-size: clamp(1.1rem,2.5vw,1.6rem); font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; margin-bottom: 0.55rem; }
+.sec-intro { font-size: 0.87rem; color: var(--muted); max-width: 640px; margin-bottom: 2rem; }
+
+/* ── BIG CONFUSION MATRIX HERO ── */
+.cm-hero { padding: 3.5rem 4rem; border-bottom: 1px solid var(--border); }
+.cm-hero-head { display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-bottom: 2.5rem; }
+.cm-hero-title { }
+.cm-score-row { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.cm-score {
+  font-family: var(--mono); font-size: 0.72rem; padding: 0.25rem 0.7rem; border-radius: 2px;
+  border: 1px solid var(--border);
+}
+.cm-score.val { color: var(--ok); border-color: rgba(94,207,168,0.3); background: rgba(94,207,168,0.07); }
+.cm-score.thresh { color: var(--muted); }
+
+.cm-wrap {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  gap: 6px;
+  max-width: 620px;
+}
+.cm-top-label { grid-column: 2; text-align: center; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); padding-bottom: 4px; }
+.cm-left-label { grid-row: 2; display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; transform: rotate(180deg); font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); padding-right: 4px; }
+.cm-inner { grid-column: 2; grid-row: 2; }
+.cm-col-heads { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 4px; }
+.cm-col-head { font-family: var(--mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); text-align: center; }
+.cm-rows { display: flex; flex-direction: column; gap: 4px; }
+.cm-row-pair { display: flex; gap: 4px; align-items: stretch; }
+.cm-row-head { font-family: var(--mono); font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; display: flex; align-items: center; justify-content: center; padding-right: 4px; width: 14px; flex-shrink: 0; }
+.cm-cells-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; flex: 1; }
+
+/* individual cells */
+.cm-c {
+  border-radius: 3px;
+  padding: 1.2rem 0.75rem;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 0.25rem;
+  cursor: default;
+  transition: transform 0.18s ease, opacity 0.2s ease;
+}
+.cm-c .c-tag { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.6; }
+.cm-c .c-num { font-family: var(--mono); font-size: clamp(1.5rem,4vw,2.4rem); font-weight: 700; line-height: 1; }
+.cm-c .c-pct { font-family: var(--mono); font-size: 0.68rem; opacity: 0.45; }
+.cm-c .c-label { font-size: 0.72rem; text-align: center; line-height: 1.3; opacity: 0.55; margin-top: 0.1rem; }
+
+.cm-c.tp { background: rgba(94,207,168,0.11); border: 1px solid rgba(94,207,168,0.25); }
+.cm-c.tp .c-num { color: var(--ok); }
+.cm-c.fn { background: rgba(217,83,79,0.13); border: 1px solid rgba(217,83,79,0.3); animation: fn-pulse 2.8s ease-in-out infinite; }
+.cm-c.fn .c-num { color: var(--danger); }
+.cm-c.fp { background: rgba(232,131,42,0.09); border: 1px solid rgba(232,131,42,0.22); }
+.cm-c.fp .c-num { color: var(--accent); }
+.cm-c.tn { background: rgba(94,207,168,0.04); border: 1px solid rgba(94,207,168,0.1); }
+.cm-c.tn .c-num { color: rgba(94,207,168,0.55); }
+
+@keyframes fn-pulse {
+  0%,100% { border-color: rgba(217,83,79,.30); box-shadow: none; }
+  50%      { border-color: rgba(217,83,79,.65); box-shadow: 0 0 14px rgba(217,83,79,.2); }
+}
+.cm-c.dimmed { opacity: 0.25; transform: scale(0.97); }
+.cm-c.focused { transform: scale(1.04); z-index: 2; }
+
+.cm-tip {
+  margin-top: 1.25rem;
+  min-height: 3.5rem;
+  max-width: 620px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  transition: opacity 0.18s;
+  line-height: 1.55;
+}
+.cm-tip strong { color: var(--text); }
+.cm-tip .ok-w { color: var(--ok); }
+.cm-tip .warn-w { color: var(--accent); }
+.cm-tip .danger-w { color: var(--danger); font-weight: 600; }
+
+/* ── COST SECTION ── */
+.cost-twin {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.cost-panel { background: var(--surf); padding: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+.cost-top { display: flex; align-items: center; gap: 0.75rem; }
+.cost-tag {
+  font-family: var(--mono); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+  padding: 0.18rem 0.5rem; border-radius: 2px;
+}
+.cost-tag.fn { background: rgba(217,83,79,0.18); color: var(--danger); }
+.cost-tag.fp { background: rgba(232,131,42,0.14); color: var(--accent); }
+.cost-label { font-size: 1rem; font-weight: 600; }
+.cost-big { font-family: var(--mono); font-size: 2.2rem; font-weight: 700; line-height: 1; }
+.cost-big.fn { color: var(--danger); }
+.cost-big.fp { color: var(--accent); }
+.cost-unit { font-family: var(--mono); font-size: 0.67rem; color: var(--muted); letter-spacing: 0.1em; margin-top: 0.15rem; }
+.cost-items { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+.cost-items li { font-size: 0.82rem; color: var(--muted); padding-left: 1rem; position: relative; line-height: 1.45; }
+.cost-items li::before { content: "→"; position: absolute; left: 0; opacity: 0.4; }
+.cost-sev {
+  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase;
+  padding: 0.32rem 0.65rem; border-radius: 2px; align-self: flex-start;
+}
+.cost-sev.crit { background: rgba(217,83,79,0.12); color: var(--danger); border: 1px solid rgba(217,83,79,0.28); }
+.cost-sev.mod  { background: rgba(232,131,42,0.1);  color: var(--accent); border: 1px solid rgba(232,131,42,0.22); }
+
+.cost-bar-wrap { margin-top: 0.5rem; }
+.cost-bar-label { font-family: var(--mono); font-size: 0.62rem; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 0.3rem; }
+.cost-bar { height: 6px; border-radius: 3px; background: var(--surf2); overflow: hidden; }
+.cost-bar-fill { height: 100%; border-radius: 3px; transition: width 1s ease; }
+
+.ratio-box {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--ok);
+  border-radius: 0 4px 4px 0;
+  padding: 1.2rem 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+.ratio-box strong { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ok); display: block; margin-bottom: 0.4rem; }
+
+/* ── 3-MODEL COMPARE ── */
+.model-compare { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.2rem; }
+.model-card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.5rem;
+  display: flex; flex-direction: column; gap: 0.9rem;
+}
+.model-card.champion { border-color: rgba(94,207,168,0.32); background: linear-gradient(150deg, rgba(94,207,168,0.07), var(--surf) 55%); }
+.model-card.poor { opacity: 0.75; }
+
+.model-rank { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; }
+.model-rank .crown { font-size: 0.68rem; padding: 0.08rem 0.4rem; background: rgba(94,207,168,0.14); color: var(--ok); border-radius: 2px; }
+.model-rank .poor-tag { font-size: 0.68rem; padding: 0.08rem 0.4rem; background: rgba(217,83,79,0.12); color: var(--danger); border-radius: 2px; }
+
+.model-name { font-size: 1.05rem; font-weight: 700; }
+.model-prauc { font-family: var(--mono); font-size: 0.8rem; color: var(--ok); opacity: 0.85; }
+
+.model-cm-mini {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  font-family: var(--mono);
+}
+.mini-cell {
+  border-radius: 2px;
+  padding: 0.45rem 0.3rem;
+  text-align: center;
+  display: flex; flex-direction: column; gap: 0.1rem;
+}
+.mini-cell .m-tag { font-size: 0.55rem; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.55; }
+.mini-cell .m-val { font-size: 0.95rem; font-weight: 700; }
+.mini-cell.tp { background: rgba(94,207,168,0.1);  } .mini-cell.tp .m-val { color: var(--ok); }
+.mini-cell.fn { background: rgba(217,83,79,0.12);  } .mini-cell.fn .m-val { color: var(--danger); }
+.mini-cell.fp { background: rgba(232,131,42,0.09); } .mini-cell.fp .m-val { color: var(--accent); }
+.mini-cell.tn { background: rgba(94,207,168,0.04); } .mini-cell.tn .m-val { color: rgba(94,207,168,0.55); font-size: 0.8rem; }
+
+.model-metrics { display: flex; flex-direction: column; gap: 0.45rem; }
+.mm-row { display: flex; justify-content: space-between; font-size: 0.8rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--border); }
+.mm-row:last-child { border-bottom: none; }
+.mm-key { color: var(--muted); }
+.mm-val { font-family: var(--mono); font-weight: 600; }
+.mm-val.good { color: var(--ok); }
+.mm-val.warn { color: var(--accent); }
+.mm-val.bad  { color: var(--danger); }
+
+.model-verdict {
+  font-size: 0.78rem;
+  padding: 0.65rem 0.75rem;
+  border-left: 2px solid var(--accent);
+  background: rgba(255,255,255,0.03);
+  line-height: 1.5;
+  color: var(--text);
+}
+.model-verdict .v-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 0.25rem; }
+
+/* ── THRESHOLD SECTION ── */
+.thresh-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+.thresh-card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.25rem;
+  display: flex; flex-direction: column; gap: 0.75rem;
+}
+.thresh-card.highlight { border-color: rgba(94,207,168,0.35); }
+.thresh-val { font-family: var(--mono); font-size: 1.5rem; font-weight: 700; color: var(--ok); }
+.thresh-val.default { color: var(--muted); }
+.thresh-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.thresh-mini {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  font-family: var(--mono);
+}
+.tm { border-radius: 2px; padding: 0.3rem; text-align: center; }
+.tm-l { font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; }
+.tm-v { font-size: 0.88rem; font-weight: 700; }
+.tm.tp { background: rgba(94,207,168,0.1); }  .tm.tp .tm-v { color: var(--ok); }
+.tm.fn { background: rgba(217,83,79,0.12); }  .tm.fn .tm-v { color: var(--danger); }
+.tm.fp { background: rgba(232,131,42,0.09); } .tm.fp .tm-v { color: var(--accent); }
+.tm.tn { background: rgba(94,207,168,0.04); } .tm.tn .tm-v { color: rgba(94,207,168,0.5); font-size: 0.72rem; }
+.thresh-stats { display: flex; flex-direction: column; gap: 0.3rem; }
+.ts-row { display: flex; justify-content: space-between; font-size: 0.75rem; }
+.ts-key { color: var(--muted); }
+.ts-val { font-family: var(--mono); font-weight: 600; }
+.ts-val.r { color: var(--danger); }
+.ts-val.p { color: var(--accent); }
+.ts-val.f { color: var(--ok); }
+.ts-val.c { color: var(--muted); }
+.thresh-note { font-size: 0.75rem; color: var(--muted); line-height: 1.4; }
+
+.thresh-rule {
+  padding: 1rem 1.25rem;
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 4px 4px 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.thresh-rule strong { color: var(--accent); font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; display: block; margin-bottom: 0.35rem; }
+
+/* ── VERDICT TABLE ── */
+.verd-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+.verd-table th { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); font-weight: 500; }
+.verd-table td { padding: 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); }
+.verd-table tr:last-child td { border-bottom: none; }
+.verd-table tr:hover td { background: rgba(255,255,255,0.02); }
+td.good { color: var(--ok);     font-family: var(--mono); font-size: 0.8rem; font-weight: 600; }
+td.warn { color: var(--accent); font-family: var(--mono); font-size: 0.8rem; font-weight: 600; }
+td.bad  { color: var(--danger); font-family: var(--mono); font-size: 0.8rem; font-weight: 600; }
+td.mono { font-family: var(--mono); font-size: 0.8rem; }
+
+/* ── HORIZON GRID ── */
+.hz-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+.hz-card {
+  background: var(--surf); border: 1px solid var(--border); border-radius: 4px;
+  padding: 1.25rem; display: flex; flex-direction: column; gap: 0.6rem;
+}
+.hz-card.best { border-color: rgba(94,207,168,0.38); background: linear-gradient(150deg, rgba(94,207,168,0.07), var(--surf) 55%); }
+.hz-card.dim  { opacity: 0.72; }
+.hz-card-eye  { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.hz-name      { font-family: var(--mono); font-size: 0.9rem; font-weight: 700; }
+.hz-name.poor { color: var(--danger); }
+.hz-name.mod  { color: var(--accent); }
+.hz-name.best { color: var(--ok); }
+.hz-name.ok   { color: rgba(94,207,168,0.65); }
+.hz-pos-rate  { display: flex; flex-direction: column; gap: 0.2rem; }
+.hz-pos-lbl   { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.hz-pos-bar   { height: 3px; background: var(--surf2); border-radius: 2px; overflow: hidden; }
+.hz-pos-fill  { height: 100%; border-radius: 2px; }
+.hz-pos-val   { font-family: var(--mono); font-size: 0.72rem; font-weight: 600; }
+.hz-pts       { list-style: none; display: flex; flex-direction: column; gap: 0.28rem; }
+.hz-pts li    { font-size: 0.78rem; color: var(--muted); padding-left: 0.85rem; position: relative; line-height: 1.4; }
+.hz-pts li::before { content: "·"; position: absolute; left: 0.2rem; }
+.hz-badge {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.2rem 0.5rem; border-radius: 2px; align-self: flex-start;
+}
+.hz-badge.poor { background: rgba(217,83,79,0.12);  color: var(--danger); border: 1px solid rgba(217,83,79,0.25); }
+.hz-badge.mod  { background: rgba(232,131,42,0.1);  color: var(--accent); border: 1px solid rgba(232,131,42,0.22); }
+.hz-badge.best { background: rgba(94,207,168,0.12); color: var(--ok);     border: 1px solid rgba(94,207,168,0.3);  }
+.hz-badge.ok   { background: rgba(94,207,168,0.06); color: rgba(94,207,168,0.65); border: 1px solid rgba(94,207,168,0.18); }
+
+/* Score matrix */
+.hz-matrix { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-bottom: 1.5rem; }
+.hz-matrix th {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted); text-align: left; padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--border); font-weight: 500;
+}
+.hz-matrix th.hzcol { text-align: center; }
+.hz-matrix th.hzcol.poor { color: var(--danger); }
+.hz-matrix th.hzcol.mod  { color: var(--accent); }
+.hz-matrix th.hzcol.best { color: var(--ok);     }
+.hz-matrix th.hzcol.ok   { color: rgba(94,207,168,0.65); }
+.hz-matrix td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.hz-matrix tr:last-child td { border-bottom: none; }
+.hz-matrix tr:hover td { background: rgba(255,255,255,0.02); }
+td.hz-crit { font-size: 0.82rem; }
+td.hz-crit span { font-family: var(--mono); font-size: 0.6rem; color: var(--muted); display: block; }
+td.hz-score { text-align: center; font-family: var(--mono); font-weight: 700; font-size: 0.88rem; }
+tr.hz-total td { font-weight: 700; border-top: 2px solid var(--border); padding-top: 0.8rem; }
+td.hz-total-score { text-align: center; font-family: var(--mono); font-size: 1.15rem; font-weight: 800; }
+td.hz-total-score.winner { color: var(--ok); }
+
+.hz-reco {
+  background: var(--surf); border: 1px solid rgba(94,207,168,0.3); border-left: 4px solid var(--ok);
+  border-radius: 0 4px 4px 0; padding: 1.4rem 1.6rem; display: flex; flex-direction: column; gap: 0.5rem;
+}
+.hz-reco-eye   { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ok); }
+.hz-reco-title { font-size: 1rem; font-weight: 700; }
+.hz-reco-desc  { font-size: 0.84rem; color: var(--muted); line-height: 1.6; max-width: 680px; }
+
+/* ── FOOTER ── */
+footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 720px) {
+  .hd, .sec, .cm-hero, footer { padding: 2rem 1.5rem; }
+  .hd { grid-template-columns: 1fr; }
+  .hd-badge-stack { flex-direction: row; flex-wrap: wrap; }
+  .cost-twin { grid-template-columns: 1fr; }
+  .thresh-grid { grid-template-columns: 1fr 1fr; }
+  .hz-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) { .hz-grid { grid-template-columns: 1fr; } }
+@media (max-width: 480px) { .thresh-grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="hd">
+  <div class="hd-left">
+    <div class="hd-eye">TP7bis — Maintenance prédictive · Classification binaire</div>
+    <h1 class="hd-title">Matrices de confusion<br><em>lecture, coût & seuil</em></h1>
+    <p class="hd-sub">Chaque cellule de la matrice a un prix. Ce document traduit les chiffres en décisions terrain pour les 3 algorithmes comparés.</p>
+  </div>
+  <div class="hd-badge-stack">
+    <span class="hd-badge lr">LR · PR-AUC = 0.357</span>
+    <span class="hd-badge rf">RF · PR-AUC = 0.768</span>
+    <span class="hd-badge xgb">XGB · PR-AUC = 0.817 ★</span>
+  </div>
+</header>
+
+<!-- ══ HERO: CONFUSION MATRIX XGBoost ══ -->
+<section class="cm-hero">
+  <div class="cm-hero-head">
+    <div class="cm-hero-title">
+      <div class="sec-eye">XGBoost — seuil 0.5 · Validation</div>
+      <h2 class="sec-h">Les 4 cas de prédiction</h2>
+    </div>
+    <div class="cm-score-row">
+      <span class="cm-score val">PR-AUC = 0.8174</span>
+      <span class="cm-score val">Recall = 87.9 %</span>
+      <span class="cm-score thresh">Seuil = 0.5 (défaut)</span>
+    </div>
+  </div>
+
+  <div class="cm-wrap">
+    <div class="cm-top-label" style="grid-column:2;">Prédiction du modèle</div>
+    <div class="cm-left-label">Réalité terrain</div>
+    <div class="cm-inner">
+      <div class="cm-col-heads">
+        <div class="cm-col-head">Panne prédite</div>
+        <div class="cm-col-head">OK prédit</div>
+      </div>
+      <div class="cm-rows">
+        <div class="cm-row-pair">
+          <div class="cm-row-head">Panne réelle</div>
+          <div class="cm-cells-pair">
+            <div class="cm-c tp" data-key="tp" tabindex="0" role="button" aria-label="Vrai Positif 639">
+              <span class="c-tag">TP</span>
+              <span class="c-num" data-target="639">0</span>
+              <span class="c-pct">3.2 %</span>
+              <span class="c-label">Pannes<br>détectées</span>
+            </div>
+            <div class="cm-c fn" data-key="fn" tabindex="0" role="button" aria-label="Faux Négatif 88">
+              <span class="c-tag">FN</span>
+              <span class="c-num" data-target="88">0</span>
+              <span class="c-pct">0.4 %</span>
+              <span class="c-label">Pannes<br>manquées</span>
+            </div>
+          </div>
+        </div>
+        <div class="cm-row-pair">
+          <div class="cm-row-head">OK réel</div>
+          <div class="cm-cells-pair">
+            <div class="cm-c fp" data-key="fp" tabindex="0" role="button" aria-label="Faux Positif 366">
+              <span class="c-tag">FP</span>
+              <span class="c-num" data-target="366">0</span>
+              <span class="c-pct">1.8 %</span>
+              <span class="c-label">Fausses<br>alarmes</span>
+            </div>
+            <div class="cm-c tn" data-key="tn" tabindex="0" role="button" aria-label="Vrai Négatif 18851">
+              <span class="c-tag">TN</span>
+              <span class="c-num" data-target="18851">0</span>
+              <span class="c-pct">94.5 %</span>
+              <span class="c-label">OK<br>confirmés</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cm-tip" id="cm-tip" role="status" aria-live="polite">
+    Survolez ou cliquez une cellule pour comprendre son impact sur le terrain.
+  </div>
+</section>
+
+<!-- ══ PRÉALABLE: CHOIX DE L'HORIZON ══ -->
+<section class="sec" id="horizon">
+  <div class="sec-eye">Préalable — Cible prédictive</div>
+  <h2 class="sec-h">Pourquoi <code style="font-family:var(--mono);color:var(--ok);font-size:0.9em;">label_failure_next_24h</code> ?</h2>
+  <p class="sec-intro">
+    Le gold dataset expose 4 labels binaires — panne dans les 6h, 12h, 24h ou 48h suivantes. Ils sont <strong style="color:var(--text);">imbriqués</strong> : une panne à 6h déclenche aussi les 3 autres. Choisir le bon horizon conditionne la qualité d'apprentissage <em>et</em> l'actionnabilité terrain.
+  </p>
+
+  <div class="hz-grid">
+    <div class="hz-card dim">
+      <div class="hz-card-eye">Horizon 1</div>
+      <div class="hz-name poor">next_6h</div>
+      <div class="hz-pos-rate">
+        <div class="hz-pos-lbl">Taux positifs estimé</div>
+        <div class="hz-pos-bar"><div class="hz-pos-fill" style="width:18%;background:var(--danger);"></div></div>
+        <div class="hz-pos-val" style="color:var(--danger);">~1.2 %</div>
+      </div>
+      <ul class="hz-pts">
+        <li>Déséquilibre extrême → PR-AUC très difficile</li>
+        <li>Pas le temps de commander les pièces</li>
+        <li>Signal fort mais fenêtre d'action trop courte</li>
+      </ul>
+      <span class="hz-badge poor">Non retenu</span>
+    </div>
+
+    <div class="hz-card">
+      <div class="hz-card-eye">Horizon 2</div>
+      <div class="hz-name mod">next_12h</div>
+      <div class="hz-pos-rate">
+        <div class="hz-pos-lbl">Taux positifs estimé</div>
+        <div class="hz-pos-bar"><div class="hz-pos-fill" style="width:35%;background:var(--accent);"></div></div>
+        <div class="hz-pos-val" style="color:var(--accent);">~2.3 %</div>
+      </div>
+      <ul class="hz-pts">
+        <li>Déséquilibre fort — scale_pos_weight élevé</li>
+        <li>Intervention possible si équipe de garde</li>
+        <li>Pertinent uniquement pour maintenance 24h/24</li>
+      </ul>
+      <span class="hz-badge mod">Contexte spécifique</span>
+    </div>
+
+    <div class="hz-card best">
+      <div class="hz-card-eye">Horizon 3 ★</div>
+      <div class="hz-name best">next_24h</div>
+      <div class="hz-pos-rate">
+        <div class="hz-pos-lbl">Taux positifs confirmé</div>
+        <div class="hz-pos-bar"><div class="hz-pos-fill" style="width:55%;background:var(--ok);"></div></div>
+        <div class="hz-pos-val" style="color:var(--ok);">3.6 % ✓</div>
+      </div>
+      <ul class="hz-pts">
+        <li>Déséquilibre gérable → scale_pos_weight ≈ 28</li>
+        <li>1 journée pour planifier l'intervention</li>
+        <li>Features _prev_24h alignées sur cet horizon</li>
+      </ul>
+      <span class="hz-badge best">Retenu — score 7.5/10</span>
+    </div>
+
+    <div class="hz-card">
+      <div class="hz-card-eye">Horizon 4</div>
+      <div class="hz-name ok">next_48h</div>
+      <div class="hz-pos-rate">
+        <div class="hz-pos-lbl">Taux positifs estimé</div>
+        <div class="hz-pos-bar"><div class="hz-pos-fill" style="width:70%;background:rgba(94,207,168,0.4);"></div></div>
+        <div class="hz-pos-val" style="color:rgba(94,207,168,0.65);">~6.5 %</div>
+      </div>
+      <ul class="hz-pts">
+        <li>Apprentissage plus facile (plus de positifs)</li>
+        <li>Signal plus faible — futur à 48h incertain</li>
+        <li>Plus de FP → perte de confiance terrain</li>
+      </ul>
+      <span class="hz-badge ok">Alternatif long terme</span>
+    </div>
+  </div>
+
+  <div style="overflow-x:auto;margin-bottom:1.5rem;">
+    <table class="hz-matrix" id="hz-matrix">
+      <thead>
+        <tr>
+          <th>Critère</th>
+          <th class="hzcol poor">next_6h</th>
+          <th class="hzcol mod">next_12h</th>
+          <th class="hzcol best">next_24h ★</th>
+          <th class="hzcol ok">next_48h</th>
+        </tr>
+      </thead>
+      <tbody id="hz-tbody">
+        <!-- injected by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <div class="hz-reco">
+    <div class="hz-reco-eye">Décision</div>
+    <div class="hz-reco-title">label_failure_next_24h — score pondéré 7.5 / 10</div>
+    <div class="hz-reco-desc">
+      Équilibre optimal : les features <code style="font-family:var(--mono);color:var(--ok);font-size:0.82rem;">_prev_24h</code> et <code style="font-family:var(--mono);color:var(--ok);font-size:0.82rem;">_rolling_24h</code> du gold dataset sont construites sur la même fenêtre, ce qui aligne le signal télémetrique sur la cible.
+      Un taux de positifs de 3.6 % (<code style="font-family:var(--mono);color:var(--ok);font-size:0.82rem;">scale_pos_weight ≈ 28</code>) est assez rare pour être prédictif, assez fréquent pour entraîner le modèle.
+      Avec 24h de marge, l'équipe maintenance peut planifier l'intervention dans le quart de travail suivant — ce qui n'est pas possible à 6h ou 12h en organisation standard.
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION 1: COÛT MÉTIER ══ -->
+<section class="sec" id="cout">
+  <div class="sec-eye">Section 1 — Asymétrie des erreurs</div>
+  <h2 class="sec-h">Coût métier — FN vs FP</h2>
+  <p class="sec-intro">Les deux types d'erreur n'ont pas le même coût. Quantifier cet écart oriente directement le choix de la métrique et du seuil.</p>
+
+  <div class="cost-twin">
+    <div class="cost-panel">
+      <div class="cost-top">
+        <span class="cost-tag fn">FN</span>
+        <span class="cost-label">Panne manquée</span>
+      </div>
+      <div>
+        <div class="cost-big fn">88</div>
+        <div class="cost-unit">occurrences · XGBoost · seuil 0.5</div>
+      </div>
+      <ul class="cost-items">
+        <li>Arrêt non planifié de la machine</li>
+        <li>Production perdue (heures × cadence)</li>
+        <li>Intervention d'urgence — surcoût pièces et main-d'œuvre</li>
+        <li>Dégradation possible d'équipements adjacents</li>
+        <li>Risque sécurité si équipement critique</li>
+      </ul>
+      <div>
+        <div class="cost-bar-label">Coût unitaire estimé : 5 000 €/FN</div>
+        <div class="cost-bar"><div class="cost-bar-fill" style="width:100%;background:var(--danger);"></div></div>
+      </div>
+      <div class="cost-big fn" style="font-size:1.5rem;">440 000 € <span style="font-size:0.8rem;color:var(--muted);">coût total FN</span></div>
+      <span class="cost-sev crit">Coût critique</span>
+    </div>
+
+    <div class="cost-panel">
+      <div class="cost-top">
+        <span class="cost-tag fp">FP</span>
+        <span class="cost-label">Fausse alarme</span>
+      </div>
+      <div>
+        <div class="cost-big fp">366</div>
+        <div class="cost-unit">occurrences · XGBoost · seuil 0.5</div>
+      </div>
+      <ul class="cost-items">
+        <li>Déplacement d'un technicien à tort</li>
+        <li>Immobilisation préventive inutile (1–2 h)</li>
+        <li>Perte de confiance progressive dans le système</li>
+        <li>Coût de main-d'œuvre non productif</li>
+      </ul>
+      <div>
+        <div class="cost-bar-label">Coût unitaire estimé : 150 €/FP</div>
+        <div class="cost-bar"><div class="cost-bar-fill" style="width:3%;background:var(--accent);"></div></div>
+      </div>
+      <div class="cost-big fp" style="font-size:1.5rem;">54 900 € <span style="font-size:0.8rem;color:var(--muted);">coût total FP</span></div>
+      <span class="cost-sev mod">Coût modéré</span>
+    </div>
+  </div>
+
+  <div class="ratio-box">
+    <strong>Conséquence directe sur la modélisation</strong>
+    Ratio de coût <strong style="color:var(--danger);">FN / FP ≈ 33×</strong>.
+    Un FN coûte autant que 33 FP. On doit donc optimiser le <strong style="color:var(--ok);">Recall</strong>
+    (minimiser les pannes manquées) plutôt que la Precision ou l'Accuracy.
+    La métrique pivot est le <strong style="color:var(--ok);">PR-AUC</strong> — non biaisée par le déséquilibre de classes (3.6 % positifs).
+    En production, le seuil de décision sera abaissé bien en dessous de 0.5.
+  </div>
+</section>
+
+<!-- ══ SECTION 2: COMPARAISON 3 MODÈLES ══ -->
+<section class="sec" id="compare">
+  <div class="sec-eye">Section 2 — 3 algorithmes</div>
+  <h2 class="sec-h">Lecture comparée des matrices de confusion</h2>
+  <p class="sec-intro">Seuil 0.5 appliqué aux 3 modèles. La matrice révèle le profil d'erreur de chaque algorithme — pas seulement sa performance globale.</p>
+
+  <div class="model-compare">
+    <!-- LR -->
+    <div class="model-card poor">
+      <div class="model-rank">Baseline linéaire <span class="poor-tag">Insuffisant</span></div>
+      <div>
+        <div class="model-name">Régression Logistique</div>
+        <div class="model-prauc">PR-AUC val = 0.3569</div>
+      </div>
+      <div class="model-cm-mini">
+        <div class="mini-cell tp"><div class="m-tag">TP</div><div class="m-val" style="color:var(--ok);">~low</div></div>
+        <div class="mini-cell fn"><div class="m-tag">FN</div><div class="m-val" style="color:var(--danger);">~high</div></div>
+        <div class="mini-cell fp"><div class="m-tag">FP</div><div class="m-val" style="color:var(--accent);">~mod</div></div>
+        <div class="mini-cell tn"><div class="m-tag">TN</div><div class="m-val">~18k</div></div>
+      </div>
+      <div class="model-metrics">
+        <div class="mm-row"><span class="mm-key">PR-AUC</span><span class="mm-val bad">0.3569</span></div>
+        <div class="mm-row"><span class="mm-key">Recall</span><span class="mm-val warn">~55–65 %</span></div>
+        <div class="mm-row"><span class="mm-key">Hypothèse</span><span class="mm-val bad">Relation linéaire</span></div>
+        <div class="mm-row"><span class="mm-key">Pannes manquées</span><span class="mm-val bad">Élevé</span></div>
+      </div>
+      <div class="model-verdict">
+        <span class="v-label">Verdict</span>
+        La relation feature → panne est non-linéaire. LR rate trop de pannes. Rôle : référence minimale pour confirmer que des modèles plus complexes sont justifiés.
+      </div>
+    </div>
+
+    <!-- RF -->
+    <div class="model-card">
+      <div class="model-rank">Ensemble — bagging</div>
+      <div>
+        <div class="model-name">Random Forest</div>
+        <div class="model-prauc">PR-AUC val = 0.7682</div>
+      </div>
+      <div class="model-cm-mini">
+        <div class="mini-cell tp"><div class="m-tag">TP</div><div class="m-val" style="color:var(--ok);">~550+</div></div>
+        <div class="mini-cell fn"><div class="m-tag">FN</div><div class="m-val" style="color:var(--accent);">~170</div></div>
+        <div class="mini-cell fp"><div class="m-tag">FP</div><div class="m-val" style="color:var(--accent);">~300</div></div>
+        <div class="mini-cell tn"><div class="m-tag">TN</div><div class="m-val">~18k</div></div>
+      </div>
+      <div class="model-metrics">
+        <div class="mm-row"><span class="mm-key">PR-AUC</span><span class="mm-val warn">0.7682</span></div>
+        <div class="mm-row"><span class="mm-key">Recall</span><span class="mm-val warn">~75–80 %</span></div>
+        <div class="mm-row"><span class="mm-key">Hypothèse</span><span class="mm-val warn">Non-linéaire</span></div>
+        <div class="mm-row"><span class="mm-key">Pannes manquées</span><span class="mm-val warn">Modéré</span></div>
+      </div>
+      <div class="model-verdict">
+        <span class="v-label">Verdict</span>
+        Bon candidat de transition. Le Recall est améliorable avec un seuil plus bas. Reste en dessous de XGBoost car le boosting est mieux adapté au déséquilibre de classes.
+      </div>
+    </div>
+
+    <!-- XGBoost -->
+    <div class="model-card champion">
+      <div class="model-rank">Ensemble — boosting <span class="crown">Champion</span></div>
+      <div>
+        <div class="model-name">XGBoost</div>
+        <div class="model-prauc">PR-AUC val = 0.8174</div>
+      </div>
+      <div class="model-cm-mini">
+        <div class="mini-cell tp"><div class="m-tag">TP</div><div class="m-val" style="color:var(--ok);">639</div></div>
+        <div class="mini-cell fn"><div class="m-tag">FN</div><div class="m-val" style="color:var(--danger);">88</div></div>
+        <div class="mini-cell fp"><div class="m-tag">FP</div><div class="m-val" style="color:var(--accent);">366</div></div>
+        <div class="mini-cell tn"><div class="m-tag">TN</div><div class="m-val">18 851</div></div>
+      </div>
+      <div class="model-metrics">
+        <div class="mm-row"><span class="mm-key">PR-AUC</span><span class="mm-val good">0.8174</span></div>
+        <div class="mm-row"><span class="mm-key">Recall</span><span class="mm-val good">87.9 %</span></div>
+        <div class="mm-row"><span class="mm-key">Precision</span><span class="mm-val warn">63.6 %</span></div>
+        <div class="mm-row"><span class="mm-key">Pannes manquées</span><span class="mm-val good">88 / 727</span></div>
+      </div>
+      <div class="model-verdict">
+        <span class="v-label">Verdict</span>
+        <code style="font-family:var(--mono);font-size:0.75rem;color:var(--ok);">scale_pos_weight=28</code> compense nativement le déséquilibre. FN le plus bas des 3. Modèle retenu pour la production — optimisation en B7 (Optuna).
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION 3: EFFET DU SEUIL ══ -->
+<section class="sec" id="seuil">
+  <div class="sec-eye">Section 3 — Seuil de décision</div>
+  <h2 class="sec-h">Comment le seuil modifie la matrice XGBoost</h2>
+  <p class="sec-intro">Baisser le seuil → plus d'alertes → plus de TP <em>et</em> plus de FP. Monter le seuil → inverse. On cherche le point d'équilibre selon le coût métier.</p>
+
+  <div class="thresh-grid">
+    <div class="thresh-card">
+      <div class="thresh-label">Seuil très bas</div>
+      <div class="thresh-val">0.10</div>
+      <div class="thresh-mini">
+        <div class="tm tp"><div class="tm-l">TP</div><div class="tm-v" style="color:var(--ok);">≈ 720</div></div>
+        <div class="tm fn"><div class="tm-l">FN</div><div class="tm-v" style="color:var(--ok);">≈ 7</div></div>
+        <div class="tm fp"><div class="tm-l">FP</div><div class="tm-v" style="color:var(--danger);">&gt;2 000</div></div>
+        <div class="tm tn"><div class="tm-l">TN</div><div class="tm-v">~16k</div></div>
+      </div>
+      <div class="thresh-stats">
+        <div class="ts-row"><span class="ts-key">Recall</span><span class="ts-val r">~99 %</span></div>
+        <div class="ts-row"><span class="ts-key">Precision</span><span class="ts-val p">~26 %</span></div>
+      </div>
+      <p class="thresh-note">Quasi-zéro panne manquée. Mais techniciens submergés par les fausses alarmes.</p>
+    </div>
+
+    <div class="thresh-card">
+      <div class="thresh-label">Seuil optimal Recall ≥ 90%</div>
+      <div class="thresh-val">≈ 0.25–0.35</div>
+      <div class="thresh-mini">
+        <div class="tm tp"><div class="tm-l">TP</div><div class="tm-v" style="color:var(--ok);">≈ 660</div></div>
+        <div class="tm fn"><div class="tm-l">FN</div><div class="tm-v" style="color:var(--ok);">≈ 67</div></div>
+        <div class="tm fp"><div class="tm-l">FP</div><div class="tm-v" style="color:var(--accent);">≈ 550</div></div>
+        <div class="tm tn"><div class="tm-l">TN</div><div class="tm-v">~18k</div></div>
+      </div>
+      <div class="thresh-stats">
+        <div class="ts-row"><span class="ts-key">Recall</span><span class="ts-val r">≥ 90 %</span></div>
+        <div class="ts-row"><span class="ts-key">Precision</span><span class="ts-val p">~55 %</span></div>
+      </div>
+      <p class="thresh-note">Point d'équilibre recommandé. Le coût FN réduit compense les FP supplémentaires (ratio 33×).</p>
+    </div>
+
+    <div class="thresh-card">
+      <div class="thresh-label">Seuil par défaut</div>
+      <div class="thresh-val default">0.50</div>
+      <div class="thresh-mini">
+        <div class="tm tp"><div class="tm-l">TP</div><div class="tm-v" style="color:var(--ok);">639</div></div>
+        <div class="tm fn"><div class="tm-l">FN</div><div class="tm-v" style="color:var(--accent);">88</div></div>
+        <div class="tm fp"><div class="tm-l">FP</div><div class="tm-v" style="color:var(--accent);">366</div></div>
+        <div class="tm tn"><div class="tm-l">TN</div><div class="tm-v">18 851</div></div>
+      </div>
+      <div class="thresh-stats">
+        <div class="ts-row"><span class="ts-key">Recall</span><span class="ts-val warn">87.9 %</span></div>
+        <div class="ts-row"><span class="ts-key">Precision</span><span class="ts-val warn">63.6 %</span></div>
+      </div>
+      <p class="thresh-note">Résultats TP7. Bon Recall mais 88 pannes manquées. Seuil sous-optimal pour ce contexte.</p>
+    </div>
+
+    <div class="thresh-card">
+      <div class="thresh-label">Seuil élevé</div>
+      <div class="thresh-val">0.70</div>
+      <div class="thresh-mini">
+        <div class="tm tp"><div class="tm-l">TP</div><div class="tm-v" style="color:var(--accent);">≈ 480</div></div>
+        <div class="tm fn"><div class="tm-l">FN</div><div class="tm-v" style="color:var(--danger);">≈ 247</div></div>
+        <div class="tm fp"><div class="tm-l">FP</div><div class="tm-v" style="color:var(--ok);">≈ 120</div></div>
+        <div class="tm tn"><div class="tm-l">TN</div><div class="tm-v">~19k</div></div>
+      </div>
+      <div class="thresh-stats">
+        <div class="ts-row"><span class="ts-key">Recall</span><span class="ts-val bad">~66 %</span></div>
+        <div class="ts-row"><span class="ts-key">Precision</span><span class="ts-val f">~80 %</span></div>
+      </div>
+      <p class="thresh-note">Peu de fausses alarmes, mais 247 pannes manquées. Inacceptable pour ce contexte (FN >> FP en coût).</p>
+    </div>
+  </div>
+
+  <div class="thresh-rule">
+    <strong>Règle de choix du seuil</strong>
+    En maintenance industrielle, descendre le seuil jusqu'au point où <strong style="color:var(--ok);">Recall ≥ 90 %</strong>.
+    Chaque panne manquée supplémentaire coûte ~33 fois plus qu'une fausse alarme de plus.
+    Ce seuil sera calculé précisément en TP8 (Optuna) via la courbe Precision-Recall
+    et l'objectif <code style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);">maximize PR-AUC</code>.
+  </div>
+</section>
+
+<!-- ══ SECTION 4: TABLEAU DE VERDICT ══ -->
+<section class="sec" id="verdict">
+  <div class="sec-eye">Section 4 — Décision</div>
+  <h2 class="sec-h">Tableau de verdict — 3 modèles</h2>
+  <p class="sec-intro">Synthèse des critères de sélection. Le modèle retenu n'est pas forcément celui avec la meilleure Accuracy — c'est celui qui minimise le coût métier total.</p>
+
+  <div style="overflow-x:auto;">
+    <table class="verd-table">
+      <thead>
+        <tr>
+          <th>Critère</th>
+          <th>Logistic Regression</th>
+          <th>Random Forest</th>
+          <th>XGBoost</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>PR-AUC validation</td>
+          <td class="bad">0.3569</td>
+          <td class="warn">0.7682</td>
+          <td class="good">0.8174</td>
+        </tr>
+        <tr>
+          <td>Recall (seuil 0.5)</td>
+          <td class="bad">~55–65 %</td>
+          <td class="warn">~75–80 %</td>
+          <td class="good">87.9 %</td>
+        </tr>
+        <tr>
+          <td>FN (pannes manquées)</td>
+          <td class="bad">Élevé</td>
+          <td class="warn">Modéré (~170)</td>
+          <td class="good">88</td>
+        </tr>
+        <tr>
+          <td>Coût FN estimé</td>
+          <td class="bad">&gt; 1 M €</td>
+          <td class="warn">~850 k €</td>
+          <td class="good">440 k €</td>
+        </tr>
+        <tr>
+          <td>Gestion déséquilibre</td>
+          <td class="mono">class_weight=balanced</td>
+          <td class="mono">class_weight=balanced</td>
+          <td class="good">scale_pos_weight=28</td>
+        </tr>
+        <tr>
+          <td>Overfitting (Δ PR-AUC)</td>
+          <td class="good">Faible</td>
+          <td class="warn">Modéré</td>
+          <td class="bad">0.183 (fort)</td>
+        </tr>
+        <tr>
+          <td>Seuil recommandé</td>
+          <td class="bad">Non retenu</td>
+          <td class="warn">0.25–0.35</td>
+          <td class="good">0.25–0.35</td>
+        </tr>
+        <tr>
+          <td>Décision production</td>
+          <td class="bad">Refusé</td>
+          <td class="warn">Backup</td>
+          <td class="good">Retenu — optimiser B7</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <span>TP7bis · Matrices de confusion &amp; Coût métier</span>
+  <span>XGBoost · 19 944 obs · FN=5 000 € · FP=150 €</span>
+</footer>
+
+<script>
+(function () {
+  /* ── HORIZON DECISION MATRIX ── */
+  var HZ_CRIT = [
+    { name: "Actionnabilité",             sub: "30 %",  w: 0.30, scores: [2, 5, 9, 8] },
+    { name: "Qualité du signal",          sub: "25 %",  w: 0.25, scores: [9, 7, 6, 4] },
+    { name: "Apprentissage (% positifs)", sub: "20 %",  w: 0.20, scores: [3, 5, 7, 9] },
+    { name: "Valeur métier",              sub: "15 %",  w: 0.15, scores: [5, 7, 8, 9] },
+    { name: "Risque faux positifs",       sub: "10 %",  w: 0.10, scores: [8, 7, 6, 4] },
+  ];
+
+  function scoreColor(s) {
+    if (s >= 7) return "var(--ok)";
+    if (s >= 5) return "var(--accent)";
+    return "var(--danger)";
+  }
+  function scoreBg(s) {
+    if (s >= 7) return "rgba(94,207,168,0.10)";
+    if (s >= 5) return "rgba(232,131,42,0.09)";
+    return "rgba(217,83,79,0.10)";
+  }
+
+  var totals = [0, 0, 0, 0];
+  HZ_CRIT.forEach(function (c) {
+    c.scores.forEach(function (s, i) { totals[i] += s * c.w; });
+  });
+  totals = totals.map(function (t) { return Math.round(t * 10) / 10; });
+  var maxTot = Math.max.apply(null, totals);
+
+  var tbody = document.getElementById("hz-tbody");
+  if (tbody) {
+    HZ_CRIT.forEach(function (c) {
+      var tr = document.createElement("tr");
+      var td0 = document.createElement("td");
+      td0.className = "hz-crit";
+      td0.innerHTML = c.name + "<span>" + c.sub + "</span>";
+      tr.appendChild(td0);
+      c.scores.forEach(function (s) {
+        var td = document.createElement("td");
+        td.className = "hz-score";
+        td.style.background = scoreBg(s);
+        td.style.color = scoreColor(s);
+        td.textContent = s;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+
+    var trTot = document.createElement("tr");
+    trTot.className = "hz-total";
+    var tdL = document.createElement("td");
+    tdL.className = "hz-crit";
+    tdL.innerHTML = "<strong>Score pondéré</strong><span>/ 10</span>";
+    trTot.appendChild(tdL);
+    totals.forEach(function (t) {
+      var td = document.createElement("td");
+      td.className = "hz-total-score" + (t === maxTot ? " winner" : "");
+      if (t !== maxTot) td.style.color = t >= 6.5 ? "var(--accent)" : "var(--danger)";
+      td.textContent = t.toFixed(1);
+      trTot.appendChild(td);
+    });
+    tbody.appendChild(trTot);
+  }
+}());
+
+(function () {
+  /* count-up */
+  function animCount(el, target) {
+    var t0 = null, d = 900 + Math.random() * 200;
+    function step(ts) {
+      if (!t0) t0 = ts;
+      var p = Math.min((ts - t0) / d, 1);
+      var e = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(e * target).toLocaleString('fr-FR');
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        var el = e.target;
+        animCount(el, parseInt(el.dataset.target, 10));
+        obs.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.c-num[data-target]').forEach(function (el) { obs.observe(el); });
+
+  /* cell interaction */
+  var cells = document.querySelectorAll('.cm-c[data-key]');
+  var tip   = document.getElementById('cm-tip');
+  var deft  = 'Survolez ou cliquez une cellule pour comprendre son impact sur le terrain.';
+
+  var tips = {
+    tp: '<strong>Vrai Positif — 639</strong> · La machine allait tomber en panne et le modèle l\'a <span class="ok-w">correctement détecté</span>. Maintenance planifiée à temps, panne évitée. Aucun arrêt non planifié pour ces 639 cas.',
+    fn: '<span class="danger-w">Faux Négatif — 88 · LE CAS LE PLUS COÛTEUX</span> · La machine allait tomber en panne mais le modèle a dit «OK». Résultat : arrêt non planifié, intervention d\'urgence, production perdue. Avec 5 000 €/FN cela représente <span class="warn-w">440 000 €</span> de coût caché.',
+    fp: '<span class="warn-w">Faux Positif — 366</span> · Le modèle a déclenché une alerte alors que la machine fonctionnait correctement. Résultat : déplacement inutile d\'un technicien, ~150 €/cas → <span class="warn-w">54 900 €</span> au total. Coût modéré mais dégradant la confiance des équipes.',
+    tn: '<span class="ok-w">Vrai Négatif — 18 851</span> · La machine était OK et le modèle l\'a <span class="ok-w">confirmé silencieusement</span>. 94.5 % des observations. Aucune intervention, aucun coût. Le cas dominant — ce qui rend l\'Accuracy trompeuse ici.'
+  };
+
+  cells.forEach(function (cell) {
+    function on() {
+      var k = cell.dataset.key;
+      tip.innerHTML = tips[k] || deft;
+      cells.forEach(function (c) {
+        c.classList.remove('dimmed', 'focused');
+        if (c !== cell) c.classList.add('dimmed');
+      });
+      cell.classList.add('focused');
+    }
+    function off() {
+      tip.innerHTML = deft;
+      cells.forEach(function (c) { c.classList.remove('dimmed', 'focused'); });
+    }
+    cell.addEventListener('mouseenter', on);
+    cell.addEventListener('focus',      on);
+    cell.addEventListener('mouseleave', off);
+    cell.addEventListener('blur',       off);
+  });
+})();
+</script>
+</body>
+</html>

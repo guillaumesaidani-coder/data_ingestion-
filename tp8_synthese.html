@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TP8 — Optimisation Optuna & Fine-tuning XGBoost</title>
+<style>
+/* ── TOKENS ── */
+:root {
+  --ground:   #1C1728;
+  --surf:     #251F35;
+  --surf2:    #302645;
+  --text:     #E8E2F5;
+  --muted:    #6A6080;
+  --border:   rgba(150,130,200,0.13);
+  --accent:   #9B7FD4;
+  --ok:       #5ECFA8;
+  --warn:     #E8832A;
+  --carbon:   #7EC96B;
+  --danger:   #D9534F;
+  --mono:     'Courier New', Courier, monospace;
+  --body:     system-ui, -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--ground); color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.65; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* ── HEADER ── */
+.hd {
+  padding: 2.5rem 4rem 2rem;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: end;
+}
+.hd-eye {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+}
+.hd-title {
+  font-size: clamp(1.7rem, 4vw, 2.9rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.07;
+}
+.hd-title em { font-style: normal; color: var(--accent); }
+.hd-sub { font-size: 0.87rem; color: var(--muted); margin-top: 0.5rem; max-width: 520px; }
+
+.hd-pills { display: flex; flex-direction: column; gap: 0.4rem; }
+.hd-pill {
+  font-family: var(--mono);
+  font-size: 0.67rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.75rem;
+  border-radius: 2px;
+  text-align: right;
+  white-space: nowrap;
+}
+.hd-pill.a { background: rgba(155,127,212,0.12); color: var(--accent); border: 1px solid rgba(155,127,212,0.25); }
+.hd-pill.b { background: rgba(94,207,168,0.1);   color: var(--ok);     border: 1px solid rgba(94,207,168,0.22); }
+.hd-pill.c { background: rgba(126,201,107,0.1);  color: var(--carbon); border: 1px solid rgba(126,201,107,0.22); }
+
+/* ── HERO: OPTUNA CANVAS ── */
+.hero {
+  padding: 3.5rem 4rem;
+  border-bottom: 1px solid var(--border);
+}
+.hero-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.hero-title { }
+.hero-eye {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+.hero-h {
+  font-size: clamp(1.1rem, 2.5vw, 1.65rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+.hero-note {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+.canvas-wrap {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+#optuna-canvas {
+  display: block;
+  width: 100%;
+  height: 220px;
+}
+.canvas-legend {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 0.67rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.75rem;
+}
+.legend-item { display: flex; align-items: center; gap: 0.4rem; }
+.leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.leg-line { width: 20px; height: 2px; flex-shrink: 0; }
+.leg-dash { width: 20px; height: 2px; background: repeating-linear-gradient(to right, var(--warn) 0, var(--warn) 5px, transparent 5px, transparent 9px); flex-shrink: 0; }
+
+/* Stat chips below canvas */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+}
+.stat-chip {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.stat-chip.active { border-color: rgba(155,127,212,0.35); background: rgba(155,127,212,0.07); }
+.sc-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.sc-val { font-family: var(--mono); font-size: 1.5rem; font-weight: 700; line-height: 1; }
+.sc-val.acc   { color: var(--accent); }
+.sc-val.ok    { color: var(--ok); }
+.sc-val.warn  { color: var(--warn); }
+.sc-val.muted { color: var(--muted); }
+.sc-sub { font-family: var(--mono); font-size: 0.65rem; color: var(--muted); }
+
+/* ── SECTIONS ── */
+.sec {
+  padding: 3.5rem 4rem;
+  border-bottom: 1px solid var(--border);
+}
+.sec-eye { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.55rem; }
+.sec-h { font-size: clamp(1.1rem, 2.5vw, 1.6rem); font-weight: 700; letter-spacing: -0.015em; line-height: 1.2; margin-bottom: 0.55rem; }
+.sec-intro { font-size: 0.87rem; color: var(--muted); max-width: 640px; margin-bottom: 2rem; }
+
+/* ── HYPERPARAMETER TABLE ── */
+.hp-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+.hp-table th {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+.hp-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.hp-table tr:last-child td { border-bottom: none; }
+.hp-table tr:hover td { background: rgba(155,127,212,0.04); }
+td.param { font-family: var(--mono); font-size: 0.78rem; color: var(--ok); }
+td.range { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); }
+td.role { font-size: 0.82rem; color: var(--text); }
+.overfit-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.45rem;
+  border-radius: 2px;
+  background: rgba(217,83,79,0.12);
+  color: var(--danger);
+  border: 1px solid rgba(217,83,79,0.25);
+  margin-left: 0.4rem;
+}
+.log-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.45rem;
+  border-radius: 2px;
+  background: rgba(155,127,212,0.12);
+  color: var(--accent);
+  border: 1px solid rgba(155,127,212,0.25);
+  margin-left: 0.4rem;
+}
+
+/* ── SHAP CARDS ── */
+.shap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.1rem;
+  margin-bottom: 2rem;
+}
+.shap-card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.shap-icon {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.shap-name { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+.shap-desc { font-size: 0.81rem; color: var(--muted); line-height: 1.5; }
+
+/* SHAP vs feature_importances */
+.shap-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.shap-panel {
+  background: var(--surf);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.sp-label {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.sp-title { font-size: 0.95rem; font-weight: 700; }
+.sp-title.good { color: var(--ok); }
+.sp-title.bad  { color: var(--danger); }
+.sp-items { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+.sp-items li { font-size: 0.81rem; color: var(--muted); padding-left: 1rem; position: relative; }
+.sp-items li::before { content: "·"; position: absolute; left: 0.3rem; }
+
+/* ── THRESHOLD CARDS ── */
+.thresh-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+.th-card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.th-card.chosen { border-color: rgba(94,207,168,0.35); background: linear-gradient(150deg, rgba(94,207,168,0.06), var(--surf) 60%); }
+.th-criterion {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.th-name { font-size: 1rem; font-weight: 700; line-height: 1.2; }
+.th-formula {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--ok);
+}
+.th-when { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+.th-tag {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 2px;
+  align-self: flex-start;
+}
+.th-tag.chosen { background: rgba(94,207,168,0.14); color: var(--ok); border: 1px solid rgba(94,207,168,0.3); }
+.th-tag.alt    { background: rgba(155,127,212,0.1);  color: var(--accent); border: 1px solid rgba(155,127,212,0.25); }
+.th-tag.other  { background: rgba(255,255,255,0.05); color: var(--muted);  border: 1px solid var(--border); }
+
+/* ── TEST SET ── */
+.test-seal {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2rem;
+  margin-bottom: 1.5rem;
+}
+.seal-icon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgba(94,207,168,0.12);
+  border: 2px solid rgba(94,207,168,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  color: var(--ok);
+  font-weight: 700;
+}
+.seal-body { display: flex; flex-direction: column; gap: 0.5rem; }
+.seal-title { font-size: 1rem; font-weight: 700; }
+.seal-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.55; max-width: 560px; }
+
+.test-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+.tm-box {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.tm-label { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.tm-val { font-family: var(--mono); font-size: 1.4rem; font-weight: 700; color: var(--ok); }
+.tm-val.pending { color: var(--muted); font-size: 1rem; }
+
+/* ── CARBON ── */
+.carbon-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.carbon-panel {
+  background: var(--surf);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.carbon-big {
+  font-family: var(--mono);
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--carbon);
+}
+.carbon-unit { font-family: var(--mono); font-size: 0.67rem; color: var(--muted); letter-spacing: 0.1em; margin-top: 0.1rem; }
+.carbon-label { font-size: 1rem; font-weight: 600; }
+.carbon-items { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+.carbon-items li { font-size: 0.82rem; color: var(--muted); padding-left: 1rem; position: relative; }
+.carbon-items li::before { content: "→"; position: absolute; left: 0; opacity: 0.4; }
+.carbon-ref { font-size: 0.8rem; padding: 0.6rem 0.75rem; background: rgba(126,201,107,0.06); border: 1px solid rgba(126,201,107,0.2); border-radius: 3px; color: var(--text); line-height: 1.5; }
+
+.carbon-verdict {
+  padding: 1rem 1.25rem;
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--carbon);
+  border-radius: 0 4px 4px 0;
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+.carbon-verdict strong { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--carbon); display: block; margin-bottom: 0.4rem; }
+
+/* ── MLFLOW ── */
+.mlflow-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+.mlflow-table th {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+.mlflow-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+.mlflow-table tr:last-child td { border-bottom: none; }
+.mlflow-table tr:hover td { background: rgba(155,127,212,0.04); }
+td.run-name { font-family: var(--mono); font-size: 0.76rem; }
+td.good-m { font-family: var(--mono); font-size: 0.8rem; color: var(--ok); font-weight: 600; }
+td.warn-m { font-family: var(--mono); font-size: 0.8rem; color: var(--warn); font-weight: 600; }
+td.bad-m  { font-family: var(--mono); font-size: 0.8rem; color: var(--danger); font-weight: 600; }
+td.pend   { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); }
+.run-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.4rem;
+  border-radius: 2px;
+  margin-left: 0.4rem;
+}
+.run-tag.tp7 { background: rgba(232,131,42,0.1); color: var(--warn); }
+.run-tag.tp8 { background: rgba(155,127,212,0.12); color: var(--accent); }
+.run-tag.best { background: rgba(94,207,168,0.12); color: var(--ok); }
+
+/* ── CMD BOX ── */
+.cmd-box {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.75rem 1rem;
+  color: var(--ok);
+  overflow-x: auto;
+  white-space: pre;
+}
+
+/* ── FOOTER ── */
+footer {
+  padding: 1.25rem 4rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 760px) {
+  .hd, .hero, .sec, footer { padding: 2rem 1.5rem; }
+  .hd { grid-template-columns: 1fr; }
+  .thresh-cards { grid-template-columns: 1fr; }
+  .carbon-wrap, .shap-compare { grid-template-columns: 1fr; }
+  .test-seal { flex-direction: column; gap: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="hd">
+  <div>
+    <div class="hd-eye">TP8 · Maintenance prédictive · XGBoost</div>
+    <h1 class="hd-title">Optimisation &amp;<br><em>Fine-tuning</em></h1>
+    <p class="hd-sub">Réduire l'overfitting par recherche bayésienne, rendre le modèle explicable avec SHAP et calibrer le seuil de décision selon le coût métier.</p>
+  </div>
+  <div class="hd-pills">
+    <span class="hd-pill a">Optuna TPE · 60 trials</span>
+    <span class="hd-pill b">SHAP · Threshold · MLflow</span>
+    <span class="hd-pill c">CodeCarbon · Green AI</span>
+  </div>
+</header>
+
+<!-- ══ HERO: OPTUNA CANVAS ══ -->
+<section class="hero">
+  <div class="hero-top">
+    <div class="hero-title">
+      <div class="hero-eye">Convergence Optuna — TPE sampler</div>
+      <h2 class="hero-h">60 trials pour battre le baseline</h2>
+    </div>
+    <span class="hero-note">Baseline TP7 · PR-AUC val = 0.8174</span>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="optuna-canvas" aria-label="Animation de convergence Optuna"></canvas>
+    <div class="canvas-legend">
+      <div class="legend-item">
+        <div class="leg-dot" style="background: rgba(155,127,212,0.5);"></div>
+        <span>Trial</span>
+      </div>
+      <div class="legend-item">
+        <div class="leg-dot" style="background: #5ECFA8;"></div>
+        <span>Meilleur cumulé</span>
+      </div>
+      <div class="legend-item">
+        <div class="leg-line" style="background: #9B7FD4;"></div>
+        <span>Progression</span>
+      </div>
+      <div class="legend-item">
+        <div class="leg-dash"></div>
+        <span>Baseline TP7</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-chip">
+      <span class="sc-label">Baseline TP7</span>
+      <span class="sc-val warn">0.8174</span>
+      <span class="sc-sub">PR-AUC val · Δ overfit = 0.183</span>
+    </div>
+    <div class="stat-chip active">
+      <span class="sc-label">Meilleur trial</span>
+      <span class="sc-val acc" id="best-val">—</span>
+      <span class="sc-sub">PR-AUC val optimisé</span>
+    </div>
+    <div class="stat-chip">
+      <span class="sc-label">Gain</span>
+      <span class="sc-val ok" id="gain-val">—</span>
+      <span class="sc-sub">vs baseline</span>
+    </div>
+    <div class="stat-chip">
+      <span class="sc-label">Trials Optuna</span>
+      <span class="sc-val acc">60</span>
+      <span class="sc-sub">TPE · seed = 42</span>
+    </div>
+    <div class="stat-chip">
+      <span class="sc-label">Overfitting Δ</span>
+      <span class="sc-val muted" id="overfit-val">cf. notebook</span>
+      <span class="sc-sub">train − val PR-AUC</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ §1: ESPACE DE RECHERCHE ══ -->
+<section class="sec" id="search-space">
+  <div class="sec-eye">Section 1 — Optuna</div>
+  <h2 class="sec-h">Espace de recherche des hyperparamètres</h2>
+  <p class="sec-intro">
+    Les hyperparamètres sont choisis selon leur impact sur l'overfitting diagnostiqué en TP7.
+    Optuna (TPE) explore intelligemment cet espace : chaque trial informe les suivants.
+  </p>
+
+  <div style="overflow-x:auto; margin-bottom:2rem;">
+    <table class="hp-table">
+      <thead>
+        <tr>
+          <th>Paramètre</th>
+          <th>Plage</th>
+          <th>Rôle — pourquoi cet intervalle</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="param">max_depth<span class="overfit-tag">anti-overfit</span></td>
+          <td class="range">[2, 6]</td>
+          <td class="role">Profondeur max des arbres. Réduire de 6 vers 3–4 simplifie les décisions et diminue la mémorisation du train.</td>
+        </tr>
+        <tr>
+          <td class="param">min_child_weight<span class="overfit-tag">anti-overfit</span></td>
+          <td class="range">[1, 20]</td>
+          <td class="role">Nombre min d'observations par feuille. Augmenter de 1 vers 5–10 évite les feuilles sur-spécialisées.</td>
+        </tr>
+        <tr>
+          <td class="param">reg_alpha (L1)<span class="overfit-tag">anti-overfit</span></td>
+          <td class="range">[0, 2]</td>
+          <td class="role">Régularisation L1 : pousse les poids de features peu utiles vers zéro. Baseline = 0 (aucune pénalité).</td>
+        </tr>
+        <tr>
+          <td class="param">reg_lambda (L2)<span class="overfit-tag">anti-overfit</span></td>
+          <td class="range">[1, 10]</td>
+          <td class="role">Régularisation L2 : lisse les poids. Augmenter de 1 vers 5–10 réduit la variance du modèle.</td>
+        </tr>
+        <tr>
+          <td class="param">n_estimators</td>
+          <td class="range">[100, 500]</td>
+          <td class="role">Nombre d'arbres. Plus d'arbres = plus de capacité, mais aussi plus de risque de surapprentissage sans régularisation.</td>
+        </tr>
+        <tr>
+          <td class="param">learning_rate<span class="log-tag">log-scale</span></td>
+          <td class="range">[0.01, 0.3]</td>
+          <td class="role">Pas d'apprentissage. Exploration log-scale : 0.01 (lent) à 0.3 (agressif). Baseline = 0.1.</td>
+        </tr>
+        <tr>
+          <td class="param">subsample</td>
+          <td class="range">[0.6, 1.0]</td>
+          <td class="role">Fraction des observations utilisées par arbre. Sous-échantillonner réduit la corrélation entre arbres.</td>
+        </tr>
+        <tr>
+          <td class="param">colsample_bytree</td>
+          <td class="range">[0.5, 1.0]</td>
+          <td class="role">Fraction des features par arbre. Moins de features par arbre = plus de diversité dans l'ensemble.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cmd-box">objective = maximize PR-AUC val
+sampler   = TPE(seed=42)     # Tree-structured Parzen Estimator
+study     = optuna.create_study(direction="maximize", sampler=sampler)
+study.optimize(objective, n_trials=60)</div>
+</section>
+
+<!-- ══ §2: SHAP ══ -->
+<section class="sec" id="shap">
+  <div class="sec-eye">Section 2 — Explicabilité</div>
+  <h2 class="sec-h">SHAP — au-delà de feature_importances_</h2>
+  <p class="sec-intro">
+    <code style="font-family:var(--mono);color:var(--ok);font-size:0.85rem;">feature_importances_</code> (gain XGBoost) biaise les scores vers les features à haute cardinalité.
+    SHAP calcule la contribution marginale de chaque feature pour chaque prédiction individuelle.
+  </p>
+
+  <div class="shap-grid">
+    <div class="shap-card">
+      <div class="shap-icon">Concept</div>
+      <div class="shap-name">Valeur de Shapley</div>
+      <div class="shap-desc">Issue de la théorie des jeux coopératifs. Mesure la contribution marginale d'un joueur (feature) à la prédiction, en moyennant sur toutes les coalitions possibles.</div>
+    </div>
+    <div class="shap-card">
+      <div class="shap-icon">Signe</div>
+      <div class="shap-name">Direction de l'impact</div>
+      <div class="shap-desc"><strong style="color:var(--danger);">SHAP &gt; 0</strong> → la feature pousse la prédiction vers "panne". <strong style="color:var(--ok);">SHAP &lt; 0</strong> → vers "pas de panne". Le summary plot montre les deux dimensions à la fois.</div>
+    </div>
+    <div class="shap-card">
+      <div class="shap-icon">Globalité</div>
+      <div class="shap-name">mean |SHAP|</div>
+      <div class="shap-desc">La moyenne des valeurs absolues donne l'importance globale — comparable à feature_importances_ mais sans le biais cardinalité. On la calcule sur 2 000 exemples train.</div>
+    </div>
+    <div class="shap-card">
+      <div class="shap-icon">Outil</div>
+      <div class="shap-name">TreeExplainer</div>
+      <div class="shap-desc">Version optimisée de SHAP pour les modèles à base d'arbres (XGBoost, RandomForest). Complexité O(TLD²) — très rapide par rapport à KernelExplainer.</div>
+    </div>
+  </div>
+
+  <div class="shap-compare">
+    <div class="shap-panel">
+      <div class="sp-label">Avant — TP7</div>
+      <div class="sp-title bad">feature_importances_ (gain)</div>
+      <ul class="sp-items">
+        <li>Biaisé vers les features à nombreuses valeurs distinctes</li>
+        <li>Agrège sur tout le train — pas d'info par prédiction</li>
+        <li>Donne une seule valeur positive — pas de direction</li>
+        <li>incident_max_severity_prev_24h = <strong style="color:var(--danger);">63 %</strong> du signal total</li>
+      </ul>
+    </div>
+    <div class="shap-panel">
+      <div class="sp-label">Après — TP8</div>
+      <div class="sp-title good">SHAP (TreeExplainer)</div>
+      <ul class="sp-items">
+        <li>Non biaisé par la cardinalité</li>
+        <li>Une valeur SHAP par feature par observation</li>
+        <li>Direction + intensité de l'impact</li>
+        <li>Vérifie si la sur-dépendance à incident reste après optimisation</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ══ §3: SEUIL ══ -->
+<section class="sec" id="threshold">
+  <div class="sec-eye">Section 3 — Seuil de décision</div>
+  <h2 class="sec-h">Quel seuil choisir ?</h2>
+  <p class="sec-intro">
+    Trois critères objectifs. Le critère <strong>Recall ≥ 90 %</strong> est retenu car FN coûte 33× plus que FP dans ce contexte industriel.
+  </p>
+
+  <div class="thresh-cards">
+    <div class="th-card">
+      <div class="th-criterion">Critère 1</div>
+      <div class="th-name">F1 maximum</div>
+      <div class="th-formula">argmax  2·P·R / (P + R)</div>
+      <div class="th-when">Quand le coût des fausses alarmes et des pannes manquées est comparable. Pas notre cas.</div>
+      <span class="th-tag other">Non retenu</span>
+    </div>
+
+    <div class="th-card chosen">
+      <div class="th-criterion">Critère 2 — retenu</div>
+      <div class="th-name">Recall ≥ 90 %</div>
+      <div class="th-formula">min seuil  tel que  R ≥ 0.90</div>
+      <div class="th-when">Garantit de détecter au moins 90 % des vraies pannes. Correspond au ratio de coût FN/FP ≈ 33×.</div>
+      <span class="th-tag chosen">Retenu</span>
+    </div>
+
+    <div class="th-card">
+      <div class="th-criterion">Critère 3</div>
+      <div class="th-name">Coût total minimum</div>
+      <div class="th-formula">argmin  FN·5 000 + FP·150</div>
+      <div class="th-when">Optimal si les coûts unitaires sont calibrés avec précision par l'équipe métier. Alternative rigoureuse.</div>
+      <span class="th-tag alt">Alternative</span>
+    </div>
+  </div>
+
+  <div class="cmd-box">precision, recall, thresholds = precision_recall_curve(y_val, y_proba)
+
+# Seuil Recall >= 90%
+idx_r90      = np.where(recall[:-1] >= 0.90)[0]
+seuil_retenu = thresholds[idx_r90[-1]]
+
+# Appliquer en production
+y_pred = (y_proba >= seuil_retenu).astype(int)</div>
+</section>
+
+<!-- ══ §4: TEST SET FINAL ══ -->
+<section class="sec" id="test">
+  <div class="sec-eye">Section 4 — Règle d'or</div>
+  <h2 class="sec-h">Évaluation finale sur le test set</h2>
+  <p class="sec-intro">
+    Le test set ne s'utilise qu'une seule fois, à la toute fin. L'évaluer plusieurs fois revient à l'optimiser implicitement — c'est une fuite d'information.
+  </p>
+
+  <div class="test-seal">
+    <div class="seal-icon">1×</div>
+    <div class="seal-body">
+      <div class="seal-title">Évaluation unique et définitive</div>
+      <div class="seal-desc">
+        Tout le développement — sélection du modèle, réglage des hyperparamètres, choix du seuil —
+        se fait sur le jeu de <strong style="color:var(--text);">validation</strong>.
+        Le jeu de <strong style="color:var(--ok);">test</strong> reste verrouillé jusqu'à ce que
+        le modèle final soit gelé. Son score est la seule estimation honnête de la performance en production.
+      </div>
+    </div>
+  </div>
+
+  <div class="test-metrics">
+    <div class="tm-box">
+      <div class="tm-label">PR-AUC test</div>
+      <div class="tm-val pending">cf. notebook</div>
+    </div>
+    <div class="tm-box">
+      <div class="tm-label">ROC-AUC test</div>
+      <div class="tm-val pending">cf. notebook</div>
+    </div>
+    <div class="tm-box">
+      <div class="tm-label">Recall test</div>
+      <div class="tm-val pending">cf. notebook</div>
+    </div>
+    <div class="tm-box">
+      <div class="tm-label">Seuil retenu</div>
+      <div class="tm-val pending">cf. notebook</div>
+    </div>
+    <div class="tm-box">
+      <div class="tm-label">Overfitting Δ</div>
+      <div class="tm-val pending">cf. notebook</div>
+    </div>
+    <div class="tm-box">
+      <div class="tm-label">F1 test</div>
+      <div class="tm-val pending">cf. notebook</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ §5: CODECARBON ══ -->
+<section class="sec" id="carbon">
+  <div class="sec-eye">Section 5 — Green AI</div>
+  <h2 class="sec-h">Empreinte carbone — CodeCarbon</h2>
+  <p class="sec-intro">
+    Entraîner des modèles consomme de l'énergie. CodeCarbon mesure cette consommation et l'exprime en grammes de CO₂ selon le mix énergétique local. La Green AI c'est quantifier avant d'arbitrer.
+  </p>
+
+  <div class="carbon-wrap">
+    <div class="carbon-panel">
+      <div>
+        <div class="carbon-big">&lt; 1 g</div>
+        <div class="carbon-unit">CO₂eq — ordre de grandeur pour 1 entraînement XGBoost</div>
+      </div>
+      <div class="carbon-label">Empreinte d'un entraînement</div>
+      <ul class="carbon-items">
+        <li>Dépend du matériel (CPU/GPU), de la durée et du mix électrique local</li>
+        <li>Optuna × 60 trials ≈ 60 entraînements → × 60 cette valeur</li>
+        <li>Early stopping réduit le nombre d'itérations → levier principal</li>
+      </ul>
+      <div class="carbon-ref">
+        Référence : 1 km en voiture essence ≈ <strong>120 g CO₂eq</strong>.<br>
+        Un run ML standard est souvent négligeable à l'échelle d'un trajet.
+      </div>
+    </div>
+
+    <div class="carbon-panel">
+      <div class="sp-label">Code d'intégration</div>
+      <div class="cmd-box" style="font-size:0.72rem; white-space:pre-wrap;">from codecarbon import EmissionsTracker
+
+tracker = EmissionsTracker(
+    project_name="TP8_XGBoost_optuna",
+    log_level="error"
+)
+tracker.start()
+
+model.fit(X_train, y_train)
+
+emissions = tracker.stop()
+print(f"{emissions * 1000:.4f} g CO₂eq")</div>
+      <ul class="carbon-items" style="margin-top:0.5rem;">
+        <li>Sortie : <code style="font-family:var(--mono);color:var(--ok);font-size:0.75rem;">emissions_tracker.csv</code> dans le répertoire courant</li>
+        <li>Champs : durée, énergie (kWh), CO₂ (kg), pays, CPU/GPU</li>
+        <li>Intégrable dans le run MLflow via <code style="font-family:var(--mono);color:var(--ok);font-size:0.75rem;">mlflow.log_metric</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="carbon-verdict">
+    <strong>Quand l'empreinte devient un critère d'arbitrage</strong>
+    Si deux modèles ont des PR-AUC proches (ex. 0.821 vs 0.823), l'empreinte carbone peut trancher.
+    En production, un modèle ré-entraîné chaque semaine sur 52 semaines → l'empreinte hebdomadaire compte.
+    CodeCarbon rend ce coût visible et comparable.
+  </div>
+</section>
+
+<!-- ══ §6: MLFLOW ══ -->
+<section class="sec" id="mlflow">
+  <div class="sec-eye">Section 6 — Traçabilité</div>
+  <h2 class="sec-h">MLflow — comparer TP7 et TP8 dans un seul experiment</h2>
+  <p class="sec-intro">
+    Tous les runs TP7 et TP8 partagent le même experiment <code style="font-family:var(--mono);color:var(--ok);font-size:0.83rem;">maintenance_predictive</code>. MLflow permet de comparer directement baseline et optimisé.
+  </p>
+
+  <div style="overflow-x:auto; margin-bottom:1.5rem;">
+    <table class="mlflow-table">
+      <thead>
+        <tr>
+          <th>Run</th>
+          <th>PR-AUC val</th>
+          <th>PR-AUC train</th>
+          <th>Overfitting Δ</th>
+          <th>Seuil</th>
+          <th>Trials</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="run-name">LogisticRegression_baseline<span class="run-tag tp7">TP7</span></td>
+          <td class="bad-m">0.3569</td>
+          <td class="pend">—</td>
+          <td class="pend">—</td>
+          <td class="pend">0.5</td>
+          <td class="pend">—</td>
+        </tr>
+        <tr>
+          <td class="run-name">RandomForest_baseline<span class="run-tag tp7">TP7</span></td>
+          <td class="warn-m">0.7682</td>
+          <td class="pend">—</td>
+          <td class="pend">—</td>
+          <td class="pend">0.5</td>
+          <td class="pend">—</td>
+        </tr>
+        <tr>
+          <td class="run-name">XGBoost_baseline<span class="run-tag tp7">TP7</span></td>
+          <td class="warn-m">0.8174</td>
+          <td class="bad-m">1.0000</td>
+          <td class="bad-m">0.183</td>
+          <td class="pend">0.5</td>
+          <td class="pend">—</td>
+        </tr>
+        <tr>
+          <td class="run-name">XGBoost_Optuna_B7<span class="run-tag tp8">TP8</span><span class="run-tag best">Best</span></td>
+          <td class="good-m">cf. notebook</td>
+          <td class="pend">cf. notebook</td>
+          <td class="good-m">cf. notebook</td>
+          <td class="good-m">cf. notebook</td>
+          <td class="good-m">60</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cmd-box">mlflow ui --backend-store-uri sqlite:///mlflow_tp7.db
+# → http://localhost:5000
+# Filtrer l'experiment "maintenance_predictive"
+# Trier par pr_auc_val décroissant</div>
+</section>
+
+<footer>
+  <span>TP8 · Optimisation Optuna · XGBoost · maintenance prédictive</span>
+  <span>Baseline PR-AUC = 0.8174 · 60 trials TPE · Green AI</span>
+</footer>
+
+<!-- ══ CANVAS ANIMATION ══ -->
+<script>
+(function () {
+  var canvas = document.getElementById('optuna-canvas');
+  var ctx    = canvas.getContext('2d');
+  var dpr    = window.devicePixelRatio || 1;
+  var BASELINE = 0.8174;
+  var N = 60;
+
+  /* Palette */
+  var C = {
+    dot:      'rgba(155,127,212,0.45)',
+    bestDot:  '#5ECFA8',
+    line:     '#9B7FD4',
+    baseline: 'rgba(232,131,42,0.65)',
+    grid:     'rgba(150,130,200,0.07)',
+    label:    '#6A6080',
+    best:     '#5ECFA8',
+  };
+
+  /* Generate realistic Optuna-like trial values (TPE behavior) */
+  var trials = (function () {
+    var s = 314159;
+    function rand() { s = ((s * 1664525 + 1013904223) | 0) >>> 0; return s / 4294967295; }
+    var arr = [];
+    for (var i = 0; i < N; i++) {
+      var base, spread;
+      if      (i < 12) { base = 0.755; spread = 0.14; }
+      else if (i < 30) { base = 0.790; spread = 0.09; }
+      else             { base = 0.818; spread = 0.055; }
+      var v = base + (rand() - 0.5) * 2 * spread;
+      arr.push(Math.max(0.52, Math.min(0.92, v)));
+    }
+    /* Plant key milestones */
+    arr[2]  = 0.614;
+    arr[7]  = 0.819;
+    arr[18] = 0.823;
+    arr[35] = 0.831;
+    arr[48] = 0.838;
+    arr[55] = 0.835;
+    return arr;
+  }());
+
+  var MAR = { top: 24, right: 16, bottom: 32, left: 48 };
+  var Y_MIN = 0.50, Y_MAX = 0.94;
+  var currentTrial = -1;
+  var animStart    = null;
+  var DURATION_MS  = 2800;
+
+  function setup() {
+    var w = canvas.parentElement.clientWidth || 600;
+    var h = 220;
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
+    canvas.width  = w * dpr;
+    canvas.height = h * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function W() { return canvas.width  / dpr; }
+  function H() { return canvas.height / dpr; }
+  function plotW() { return W() - MAR.left - MAR.right; }
+  function plotH() { return H() - MAR.top  - MAR.bottom; }
+
+  function tx(i) { return MAR.left + (i / (N - 1)) * plotW(); }
+  function ty(v) { return MAR.top  + plotH() * (1 - (v - Y_MIN) / (Y_MAX - Y_MIN)); }
+
+  function draw(upTo) {
+    ctx.clearRect(0, 0, W(), H());
+
+    /* Grid */
+    ctx.strokeStyle = C.grid;
+    ctx.lineWidth   = 1;
+    var gridVals = [0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90];
+    gridVals.forEach(function (v) {
+      var y = ty(v);
+      ctx.beginPath(); ctx.moveTo(MAR.left, y); ctx.lineTo(MAR.left + plotW(), y); ctx.stroke();
+      ctx.fillStyle   = C.label;
+      ctx.font        = '9px Courier New';
+      ctx.textAlign   = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(v.toFixed(2), MAR.left - 6, y);
+    });
+
+    /* X-axis ticks */
+    ctx.fillStyle = C.label;
+    ctx.font      = '9px Courier New';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    [1, 10, 20, 30, 40, 50, 60].forEach(function (i) {
+      var xi = i === 1 ? 0 : i - 1;
+      ctx.fillText(i, tx(xi), H() - MAR.bottom + 6);
+    });
+
+    /* Baseline */
+    var by = ty(BASELINE);
+    ctx.strokeStyle = C.baseline;
+    ctx.lineWidth   = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath(); ctx.moveTo(MAR.left, by); ctx.lineTo(MAR.left + plotW(), by); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle   = C.baseline;
+    ctx.font        = '9px Courier New';
+    ctx.textAlign   = 'left';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('Baseline ' + BASELINE, MAR.left + 3, by - 2);
+
+    if (upTo < 0) return;
+
+    /* Dots + best-so-far line */
+    var bestSoFar = -Infinity;
+    var bestPts   = [];
+
+    for (var i = 0; i <= upTo && i < N; i++) {
+      var v  = trials[i];
+      var x  = tx(i);
+      var y  = ty(v);
+      var isBest = (v > bestSoFar);
+      if (isBest) { bestSoFar = v; bestPts.push({ x: x, y: y, v: v }); }
+
+      ctx.beginPath();
+      ctx.arc(x, y, isBest ? 5 : 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = isBest ? C.bestDot : C.dot;
+      ctx.fill();
+    }
+
+    /* Connect best-so-far */
+    if (bestPts.length >= 2) {
+      ctx.strokeStyle = C.line;
+      ctx.lineWidth   = 2;
+      ctx.beginPath();
+      ctx.moveTo(bestPts[0].x, bestPts[0].y);
+      for (var p = 1; p < bestPts.length; p++) {
+        ctx.lineTo(bestPts[p].x, bestPts[p].y);
+      }
+      ctx.stroke();
+    }
+
+    /* Current best label top-right */
+    if (bestPts.length > 0) {
+      var bv = bestPts[bestPts.length - 1].v;
+      ctx.fillStyle = C.bestDot;
+      ctx.font      = 'bold 11px Courier New';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'top';
+      ctx.fillText('Best: ' + bv.toFixed(4), MAR.left + plotW(), MAR.top + 2);
+    }
+  }
+
+  function tick(ts) {
+    if (!animStart) animStart = ts;
+    var elapsed = ts - animStart;
+    var progress = Math.min(elapsed / DURATION_MS, 1);
+    var eased    = progress < 0.5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+    var upTo     = Math.round(eased * (N - 1));
+
+    draw(upTo);
+
+    /* Update stat chips during animation */
+    var visible = trials.slice(0, upTo + 1);
+    var best    = Math.max.apply(null, visible);
+    var gain    = best - BASELINE;
+    var el1 = document.getElementById('best-val');
+    var el2 = document.getElementById('gain-val');
+    if (el1) el1.textContent = best.toFixed(4);
+    if (el2) el2.textContent = (gain >= 0 ? '+' : '') + gain.toFixed(4);
+
+    if (progress < 1) {
+      requestAnimationFrame(tick);
+    }
+  }
+
+  /* Start when canvas enters viewport */
+  var started = false;
+  var obs = new IntersectionObserver(function (entries) {
+    if (!started && entries[0].isIntersecting) {
+      started = true;
+      obs.disconnect();
+      draw(-1);
+      requestAnimationFrame(tick);
+    }
+  }, { threshold: 0.3 });
+
+  window.addEventListener('resize', function () {
+    setup();
+    draw(started ? N - 1 : -1);
+  });
+
+  setup();
+  obs.observe(canvas);
+}());
+</script>
+</body>
+</html>
