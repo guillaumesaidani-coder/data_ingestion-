@@ -846,7 +846,7 @@ print(f"{emissions * 1000:.4f} g CO₂eq")</div>
   <div class="sec-eye">Section 6 — Traçabilité</div>
   <h2 class="sec-h">MLflow — comparer TP7 et TP8 dans un seul experiment</h2>
   <p class="sec-intro">
-    Tous les runs TP7 et TP8 partagent le même experiment <code style="font-family:var(--mono);color:var(--ok);font-size:0.83rem;">maintenance_predictive</code>. MLflow permet de comparer directement baseline et optimisé.
+    Tous les runs TP7 et TP8 partagent le même experiment <code style="font-family:var(--mono);color:var(--ok);font-size:0.83rem;">TP7_maintenance_predictive</code>. MLflow permet de comparer directement baseline et optimisé sur les mêmes métriques.
   </p>
 
   <div style="overflow-x:auto; margin-bottom:1.5rem;">
@@ -857,51 +857,76 @@ print(f"{emissions * 1000:.4f} g CO₂eq")</div>
           <th>PR-AUC val</th>
           <th>PR-AUC train</th>
           <th>Overfitting Δ</th>
+          <th>PR-AUC test</th>
+          <th>Recall test</th>
+          <th>F1 test</th>
           <th>Seuil</th>
           <th>Trials</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td class="run-name">LogisticRegression_baseline<span class="run-tag tp7">TP7</span></td>
+          <td class="run-name">Logistic_Regression<span class="run-tag tp7">TP7</span></td>
           <td class="bad-m">0.3569</td>
-          <td class="pend">—</td>
-          <td class="pend">—</td>
+          <td class="bad-m">0.5312</td>
+          <td class="warn-m">0.174</td>
+          <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
+          <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
+          <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
           <td class="pend">0.5</td>
           <td class="pend">—</td>
         </tr>
         <tr>
-          <td class="run-name">RandomForest_baseline<span class="run-tag tp7">TP7</span></td>
+          <td class="run-name">Random_Forest<span class="run-tag tp7">TP7</span></td>
           <td class="warn-m">0.7682</td>
-          <td class="pend">—</td>
-          <td class="pend">—</td>
+          <td class="bad-m">0.9891</td>
+          <td class="bad-m">0.221</td>
+          <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
+          <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
+          <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
           <td class="pend">0.5</td>
           <td class="pend">—</td>
         </tr>
         <tr>
-          <td class="run-name">XGBoost_baseline<span class="run-tag tp7">TP7</span></td>
+          <td class="run-name">XGBoost<span class="run-tag tp7">TP7</span></td>
           <td class="warn-m">0.8174</td>
           <td class="bad-m">1.0000</td>
           <td class="bad-m">0.183</td>
+          <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
+          <td class="warn-m">87.9 %</td>
+          <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
           <td class="pend">0.5</td>
           <td class="pend">—</td>
         </tr>
-        <tr>
+        <tr style="background:rgba(155,127,212,0.04);">
           <td class="run-name">XGBoost_Optuna_B7<span class="run-tag tp8">TP8</span><span class="run-tag best">Best</span></td>
-          <td class="good-m">cf. notebook</td>
-          <td class="pend">cf. notebook</td>
-          <td class="good-m">cf. notebook</td>
-          <td class="good-m">cf. notebook</td>
+          <td class="good-m">0.862 <span style="font-family:var(--mono);font-size:0.65rem;color:var(--ok);">+0.045</span></td>
+          <td class="warn-m">0.998</td>
+          <td class="warn-m">0.136 <span style="font-family:var(--mono);font-size:0.65rem;color:var(--ok);">−0.047</span></td>
+          <td class="warn-m">0.735</td>
+          <td class="warn-m">83.6 %</td>
+          <td class="good-m">0.773</td>
+          <td class="good-m">0.84</td>
           <td class="good-m">60</td>
         </tr>
       </tbody>
     </table>
   </div>
 
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
+    <div style="background:var(--surf);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 4px 4px 0;padding:1rem 1.25rem;font-size:0.83rem;line-height:1.6;">
+      <span style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:0.35rem;">Note — PR-AUC test vs val</span>
+      L'écart <strong style="color:var(--text);">0.862 val → 0.735 test</strong> est attendu : le test set est temporellement le plus éloigné du train. Ce n'est pas du surapprentissage sur val — c'est la variance naturelle entre périodes.
+    </div>
+    <div style="background:var(--surf);border:1px solid var(--border);border-left:3px solid var(--ok);border-radius:0 4px 4px 0;padding:1rem 1.25rem;font-size:0.83rem;line-height:1.6;">
+      <span style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--ok);display:block;margin-bottom:0.35rem;">Seuil 0.84 — lecture</span>
+      Un seuil de <strong style="color:var(--text);">0.84</strong> signifie que le modèle n'alerte que lorsqu'il est très confiant. Recall = 83.6 % avec ce seuil confirme que les vraies pannes obtiennent des probabilités élevées.
+    </div>
+  </div>
+
   <div class="cmd-box">mlflow ui --backend-store-uri sqlite:///mlflow_tp7.db
-# → http://localhost:5000
-# Filtrer l'experiment "maintenance_predictive"
-# Trier par pr_auc_val décroissant</div>
+# → http://localhost:5000  ·  experiment : TP7_maintenance_predictive
+# Trier par pr_auc_val décroissant → XGBoost_Optuna_B7 en tête</div>
 </section>
 
 <footer>

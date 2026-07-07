@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Horizons de prédiction — Matrice de décision</title>
+<style>
+:root {
+  --ground:  #13201E;
+  --surf:    #1C2E2B;
+  --surf2:   #243C38;
+  --text:    #E2EDE9;
+  --muted:   #5A7570;
+  --border:  rgba(56,191,168,0.13);
+  --accent:  #38BFA8;
+  --warn:    #F2C14E;
+  --danger:  #D9534F;
+  --neutral: #6A8A86;
+  --mono:    'Courier New', Courier, monospace;
+  --body:    system-ui, -apple-system, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--ground); color: var(--text); font-family: var(--body); font-size: 16px; line-height: 1.65; }
+
+/* ── HEADER ── */
+.hd {
+  padding: 2.5rem 4rem 2rem;
+  border-bottom: 1px solid var(--border);
+}
+.hd-eye {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.6rem;
+}
+.hd-title {
+  font-size: clamp(1.6rem, 3.5vw, 2.7rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.07;
+  margin-bottom: 0.6rem;
+}
+.hd-title em { font-style: normal; color: var(--accent); }
+.hd-sub { font-size: 0.87rem; color: var(--muted); max-width: 600px; }
+
+/* ── TIMELINE HERO ── */
+.timeline-sec {
+  padding: 3rem 4rem;
+  border-bottom: 1px solid var(--border);
+}
+.tl-eye { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+.tl-h { font-size: clamp(1rem, 2vw, 1.4rem); font-weight: 700; margin-bottom: 2rem; }
+.timeline-wrap { position: relative; padding: 0 1rem; }
+.tl-axis {
+  position: relative;
+  height: 160px;
+  display: flex;
+  align-items: center;
+}
+.tl-line {
+  position: absolute;
+  top: 50%;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(to right, rgba(56,191,168,0.7), rgba(56,191,168,0.15));
+  transform: translateY(-50%);
+}
+.tl-origin {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+.tl-origin-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px rgba(56,191,168,0.5);
+}
+.tl-origin-label { font-family: var(--mono); font-size: 0.62rem; color: var(--accent); letter-spacing: 0.1em; white-space: nowrap; }
+
+.tl-marker {
+  position: absolute;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.tl-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid;
+  background: var(--ground);
+  position: relative;
+  z-index: 2;
+  cursor: default;
+}
+.tl-dot.poor     { border-color: var(--danger); }
+.tl-dot.moderate { border-color: var(--warn); }
+.tl-dot.good     { border-color: var(--accent); box-shadow: 0 0 8px rgba(56,191,168,0.4); }
+.tl-dot.ok       { border-color: rgba(56,191,168,0.5); }
+
+.tl-label-top {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  white-space: nowrap;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.tl-label-bot {
+  position: absolute;
+  top: calc(100% + 8px);
+  white-space: nowrap;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.tl-hor { font-family: var(--mono); font-size: 0.7rem; font-weight: 700; }
+.tl-hor.poor     { color: var(--danger); }
+.tl-hor.moderate { color: var(--warn); }
+.tl-hor.good     { color: var(--accent); }
+.tl-hor.ok       { color: rgba(56,191,168,0.7); }
+.tl-tag {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.1rem 0.4rem; border-radius: 2px;
+}
+.tl-tag.poor     { background: rgba(217,83,79,0.14);  color: var(--danger); }
+.tl-tag.moderate { background: rgba(242,193,78,0.12); color: var(--warn); }
+.tl-tag.good     { background: rgba(56,191,168,0.12); color: var(--accent); }
+.tl-tag.ok       { background: rgba(56,191,168,0.07); color: rgba(56,191,168,0.7); }
+
+/* Maintenance window band */
+.tl-window {
+  position: absolute;
+  top: 0; bottom: 0;
+  background: rgba(56,191,168,0.05);
+  border-left: 1px dashed rgba(56,191,168,0.3);
+  border-right: 1px dashed rgba(56,191,168,0.3);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: 4px;
+  z-index: 1;
+}
+.tl-window-label {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+/* ── SEC SHELL ── */
+.sec { padding: 3rem 4rem; border-bottom: 1px solid var(--border); }
+.sec-eye { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+.sec-h { font-size: clamp(1rem, 2.2vw, 1.55rem); font-weight: 700; letter-spacing: -0.015em; margin-bottom: 0.5rem; }
+.sec-intro { font-size: 0.87rem; color: var(--muted); max-width: 640px; margin-bottom: 2rem; }
+
+/* ── HORIZON PROFILE CARDS ── */
+.horizon-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.hz-card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+.hz-card.best { border-color: rgba(56,191,168,0.4); background: linear-gradient(150deg, rgba(56,191,168,0.07), var(--surf) 55%); }
+.hz-card.poor { opacity: 0.75; }
+.hz-rank { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); }
+.hz-name { font-family: var(--mono); font-size: 1.1rem; font-weight: 700; }
+.hz-name.poor     { color: var(--danger); }
+.hz-name.moderate { color: var(--warn); }
+.hz-name.good     { color: var(--accent); }
+.hz-name.ok       { color: rgba(56,191,168,0.7); }
+.hz-pos-rate {
+  display: flex; flex-direction: column; gap: 0.2rem;
+}
+.hz-pos-label { font-family: var(--mono); font-size: 0.6rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+.hz-pos-bar { height: 4px; background: var(--surf2); border-radius: 2px; overflow: hidden; }
+.hz-pos-fill { height: 100%; border-radius: 2px; }
+.hz-pos-val { font-family: var(--mono); font-size: 0.78rem; font-weight: 600; }
+.hz-items { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+.hz-items li { font-size: 0.8rem; color: var(--muted); padding-left: 1rem; position: relative; line-height: 1.4; }
+.hz-items li::before { content: "·"; position: absolute; left: 0.3rem; }
+.hz-verdict {
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0.25rem 0.6rem; border-radius: 2px; align-self: flex-start;
+}
+.hz-verdict.poor     { background: rgba(217,83,79,0.13); color: var(--danger); border: 1px solid rgba(217,83,79,0.25); }
+.hz-verdict.moderate { background: rgba(242,193,78,0.1); color: var(--warn);   border: 1px solid rgba(242,193,78,0.22); }
+.hz-verdict.good     { background: rgba(56,191,168,0.12); color: var(--accent); border: 1px solid rgba(56,191,168,0.3); }
+.hz-verdict.ok       { background: rgba(56,191,168,0.07); color: rgba(56,191,168,0.7); border: 1px solid rgba(56,191,168,0.18); }
+
+/* ── CRITERIA CARDS ── */
+.crit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.crit-card {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.crit-weight {
+  font-family: var(--mono); font-size: 1.3rem; font-weight: 700; color: var(--accent); line-height: 1;
+}
+.crit-name { font-size: 0.9rem; font-weight: 600; }
+.crit-desc { font-size: 0.79rem; color: var(--muted); line-height: 1.45; }
+
+/* ── HEATMAP MATRIX ── */
+.matrix-wrap { overflow-x: auto; margin-bottom: 2rem; }
+.matrix {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.84rem;
+  min-width: 600px;
+}
+.matrix th {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  font-weight: 500;
+}
+.matrix th.hz-head {
+  text-align: center;
+  font-size: 0.72rem;
+  font-family: var(--mono);
+  font-weight: 700;
+}
+.matrix th.hz-head.poor     { color: var(--danger); }
+.matrix th.hz-head.moderate { color: var(--warn); }
+.matrix th.hz-head.good     { color: var(--accent); }
+.matrix th.hz-head.ok       { color: rgba(56,191,168,0.7); }
+.matrix td {
+  padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.matrix tr:last-child td { border-bottom: none; }
+.matrix tr:hover td { background: rgba(56,191,168,0.03); }
+td.crit-cell { font-size: 0.83rem; }
+td.crit-cell .crit-w { font-family: var(--mono); font-size: 0.68rem; color: var(--muted); display: block; }
+td.score-cell {
+  text-align: center;
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.95rem;
+  position: relative;
+}
+/* Heat colors via inline style data attrs → applied via JS */
+tr.total-row td {
+  font-weight: 700;
+  border-top: 2px solid var(--border);
+  padding-top: 0.9rem;
+}
+td.total-score {
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+td.total-score.winner { color: var(--accent); }
+td.rank-cell {
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Score mini-bars inside cells */
+.score-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.score-num { line-height: 1; }
+.score-bar { width: 36px; height: 3px; background: var(--surf2); border-radius: 2px; overflow: hidden; }
+.score-fill { height: 100%; border-radius: 2px; }
+
+/* ── BAR CHART ── */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+  height: 140px;
+  padding: 0 0.5rem;
+  margin-bottom: 1rem;
+}
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  height: 100%;
+  justify-content: flex-end;
+}
+.bar-body {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.8s cubic-bezier(0.34,1.56,0.64,1);
+  min-height: 4px;
+  position: relative;
+}
+.bar-val {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.bar-label {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-align: center;
+}
+.bar-label.poor     { color: var(--danger); }
+.bar-label.moderate { color: var(--warn); }
+.bar-label.good     { color: var(--accent); }
+.bar-label.ok       { color: rgba(56,191,168,0.7); }
+.chart-note { font-family: var(--mono); font-size: 0.65rem; color: var(--muted); text-align: center; letter-spacing: 0.1em; margin-bottom: 2rem; }
+
+/* ── RECOMMENDATION ── */
+.reco-box {
+  background: var(--surf);
+  border: 1px solid rgba(56,191,168,0.35);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 4px 4px 0;
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  margin-bottom: 1.5rem;
+}
+.reco-icon {
+  font-family: var(--mono);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+  line-height: 1;
+  padding-top: 0.2rem;
+}
+.reco-body { display: flex; flex-direction: column; gap: 0.6rem; }
+.reco-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+.reco-title { font-size: 1.1rem; font-weight: 700; }
+.reco-desc { font-size: 0.86rem; color: var(--muted); line-height: 1.6; }
+.reco-conditions { margin-top: 0.25rem; }
+.reco-conditions strong { display: block; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text); margin-bottom: 0.4rem; }
+.reco-cond-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.reco-cond {
+  padding: 0.6rem 0.75rem;
+  background: rgba(56,191,168,0.05);
+  border: 1px solid rgba(56,191,168,0.15);
+  border-radius: 3px;
+  font-size: 0.8rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+.reco-cond .cond-q { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 0.2rem; }
+
+.alt-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.alt-table th { font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); text-align: left; padding: 0.45rem 0.75rem; border-bottom: 1px solid var(--border); font-weight: 500; }
+.alt-table td { padding: 0.65rem 0.75rem; border-bottom: 1px solid var(--border); color: var(--text); }
+.alt-table tr:last-child td { border-bottom: none; }
+td.if-cell { color: var(--muted); font-size: 0.8rem; }
+td.then-cell { font-weight: 600; }
+td.then-cell.t24 { color: var(--accent); font-family: var(--mono); font-size: 0.78rem; }
+td.then-cell.t48 { color: rgba(56,191,168,0.7); font-family: var(--mono); font-size: 0.78rem; }
+td.then-cell.t12 { color: var(--warn); font-family: var(--mono); font-size: 0.78rem; }
+
+/* ── FOOTER ── */
+footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.13em; text-transform: uppercase; color: var(--muted); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 820px) {
+  .hd, .timeline-sec, .sec, footer { padding: 2rem 1.5rem; }
+  .horizon-grid { grid-template-columns: 1fr 1fr; }
+  .reco-box { grid-template-columns: 1fr; gap: 0.75rem; }
+  .reco-cond-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .horizon-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bar-body { transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="hd">
+  <div class="hd-eye">Maintenance prédictive · Analyse stratégique</div>
+  <h1 class="hd-title">Horizons de prédiction<br><em>matrice de décision</em></h1>
+  <p class="hd-sub">Quatre cibles disponibles dans le gold dataset. Laquelle équilibre le mieux actionnabilité, qualité du signal et valeur métier ?</p>
+</header>
+
+<!-- ══ TIMELINE HERO ══ -->
+<section class="timeline-sec">
+  <div class="tl-eye">Représentation temporelle</div>
+  <h2 class="tl-h">Du signal prédictif à la fenêtre d'intervention</h2>
+
+  <div class="timeline-wrap">
+    <div class="tl-axis">
+      <!-- Axis line -->
+      <div class="tl-line"></div>
+
+      <!-- Maintenance window band (roughly 8h-36h = "planifiable") -->
+      <div class="tl-window" style="left:18%; width:60%;">
+        <span class="tl-window-label">Fenêtre d'intervention planifiable</span>
+      </div>
+
+      <!-- Origin -->
+      <div class="tl-origin" style="left:2%;">
+        <div class="tl-origin-dot"></div>
+        <span class="tl-origin-label">t=0<br>Maintenant</span>
+      </div>
+
+      <!-- 6h -->
+      <div class="tl-marker" style="left:15%;">
+        <div class="tl-label-top">
+          <span class="tl-hor poor">next_6h</span>
+          <span class="tl-tag poor">Trop court</span>
+        </div>
+        <div class="tl-dot poor"></div>
+        <div class="tl-label-bot">
+          <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);">+6 h</span>
+          <span style="font-family:var(--mono);font-size:0.6rem;color:var(--danger);">~1.2 % pos.</span>
+        </div>
+      </div>
+
+      <!-- 12h -->
+      <div class="tl-marker" style="left:32%;">
+        <div class="tl-label-top">
+          <span class="tl-hor moderate">next_12h</span>
+          <span class="tl-tag moderate">Limite</span>
+        </div>
+        <div class="tl-dot moderate"></div>
+        <div class="tl-label-bot">
+          <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);">+12 h</span>
+          <span style="font-family:var(--mono);font-size:0.6rem;color:var(--warn);">~2.3 % pos.</span>
+        </div>
+      </div>
+
+      <!-- 24h ★ -->
+      <div class="tl-marker" style="left:58%;">
+        <div class="tl-label-top">
+          <span class="tl-hor good">next_24h ★</span>
+          <span class="tl-tag good">Optimal</span>
+        </div>
+        <div class="tl-dot good"></div>
+        <div class="tl-label-bot">
+          <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);">+24 h</span>
+          <span style="font-family:var(--mono);font-size:0.6rem;color:var(--accent);">3.6 % pos. ✓</span>
+        </div>
+      </div>
+
+      <!-- 48h -->
+      <div class="tl-marker" style="left:88%;">
+        <div class="tl-label-top">
+          <span class="tl-hor ok">next_48h</span>
+          <span class="tl-tag ok">Signal faible</span>
+        </div>
+        <div class="tl-dot ok"></div>
+        <div class="tl-label-bot">
+          <span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);">+48 h</span>
+          <span style="font-family:var(--mono);font-size:0.6rem;color:rgba(56,191,168,0.6);">~6.5 % pos.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ §1: PROFILS DES 4 HORIZONS ══ -->
+<section class="sec">
+  <div class="sec-eye">Section 1 — Profils</div>
+  <h2 class="sec-h">Caractéristiques de chaque horizon</h2>
+  <p class="sec-intro">
+    Les 4 labels sont <strong style="color:var(--text);">imbriqués</strong> : toute panne dans les 6h suivantes déclenche aussi les labels 12h, 24h et 48h.
+    Les taux de positifs sont donc strictement croissants.
+  </p>
+
+  <div class="horizon-grid">
+    <!-- 6h -->
+    <div class="hz-card poor">
+      <div class="hz-rank">Horizon 1</div>
+      <div class="hz-name poor">next_6h</div>
+      <div class="hz-pos-rate">
+        <div class="hz-pos-label">Taux de positifs estimé</div>
+        <div class="hz-pos-bar"><div class="hz-pos-fill" style="width:18%;background:var(--danger);"></div></div>
+        <div class="hz-pos-val" style="color:var(--danger);">~1.2 %</div>
+      </div>
+      <ul class="hz-items">
+        <li>Déséquilibre extrême → PR-AUC difficile</li>
+        <li>Signal fort (proche) mais fenêtre d'action impossible</li>
+        <li>Pas le temps de commander les pièces</li>
+        <li>Usage : détection d'urgence seulement</li>
+      </ul>
+      <span class="hz-verdict poor">Non retenu</span>
+    </div>
+
+    <!-- 12h -->
+    <div class="hz-card">
+      <div class="hz-rank">Horizon 2</div>
+      <div class="hz-name moderate">next_12h</div>
+      <div class="hz-pos-rate">
+        <div class="hz-pos-label">Taux de positifs estimé</div>
+        <div class="hz-pos-bar"><div class="hz-pos-fill" style="width:35%;background:var(--warn);"></div></div>
+        <div class="hz-pos-val" style="color:var(--warn);">~2.3 %</div>
+      </div>
+      <ul class="hz-items">
+        <li>Déséquilibre fort → scale_pos_weight élevé</li>
+        <li>Intervention possible si équipe de garde disponible</li>
+        <li>Signal encore bon — bonne qualité prédictive</li>
+        <li>Usage : usines à maintenance 24h/24</li>
+      </ul>
+      <span class="hz-verdict moderate">Contexte spécifique</span>
+    </div>
+
+    <!-- 24h ★ -->
+    <div class="hz-card best">
+      <div class="hz-rank">Horizon 3 ★</div>
+      <div class="hz-name good">next_24h</div>
+      <div class="hz-pos-rate">
+        <div class="hz-pos-label">Taux de positifs confirmé</div>
+        <div class="hz-pos-bar"><div class="hz-pos-fill" style="width:55%;background:var(--accent);"></div></div>
+        <div class="hz-pos-val" style="color:var(--accent);">3.6 % ✓</div>
+      </div>
+      <ul class="hz-items">
+        <li>Déséquilibre gérable → scale_pos_weight ≈ 28</li>
+        <li>1 journée de travail pour planifier la maintenance</li>
+        <li>Signal suffisamment fort pour modéliser</li>
+        <li>Standard de l'industrie — validé en TP7</li>
+      </ul>
+      <span class="hz-verdict good">Recommandé</span>
+    </div>
+
+    <!-- 48h -->
+    <div class="hz-card">
+      <div class="hz-rank">Horizon 4</div>
+      <div class="hz-name ok">next_48h</div>
+      <div class="hz-pos-rate">
+        <div class="hz-pos-label">Taux de positifs estimé</div>
+        <div class="hz-pos-bar"><div class="hz-pos-fill" style="width:75%;background:rgba(56,191,168,0.5);"></div></div>
+        <div class="hz-pos-val" style="color:rgba(56,191,168,0.7);">~6.5 %</div>
+      </div>
+      <ul class="hz-items">
+        <li>Positifs plus nombreux → apprentissage plus facile</li>
+        <li>Excellent délai pour l'organisation maintenance</li>
+        <li>Signal plus faible — le futur à 48h est incertain</li>
+        <li>Risque : plus de FP, perte de confiance des équipes</li>
+      </ul>
+      <span class="hz-verdict ok">Alternatif (long terme)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ §2: CRITÈRES ══ -->
+<section class="sec">
+  <div class="sec-eye">Section 2 — Critères d'évaluation</div>
+  <h2 class="sec-h">5 critères pondérés</h2>
+  <p class="sec-intro">Chaque critère est noté de 1 à 10 par horizon et pondéré selon son importance métier.</p>
+
+  <div class="crit-grid">
+    <div class="crit-card">
+      <div class="crit-weight">30 %</div>
+      <div class="crit-name">Actionnabilité</div>
+      <div class="crit-desc">Le délai est-il suffisant pour planifier et exécuter une intervention maintenance (pièces, technicien, arrêt programmé) ?</div>
+    </div>
+    <div class="crit-card">
+      <div class="crit-weight">25 %</div>
+      <div class="crit-name">Qualité du signal</div>
+      <div class="crit-desc">Plus l'horizon est court, plus le signal prédictif est fort et plus le modèle peut être précis. Au-delà de 24h, le futur devient stochastique.</div>
+    </div>
+    <div class="crit-card">
+      <div class="crit-weight">20 %</div>
+      <div class="crit-name">Apprentissage (taux positifs)</div>
+      <div class="crit-desc">Un taux de positifs trop bas rend l'apprentissage très difficile, même avec scale_pos_weight. Un taux trop élevé peut injecter du bruit (pannes peu liées entre elles).</div>
+    </div>
+    <div class="crit-card">
+      <div class="crit-weight">15 %</div>
+      <div class="crit-name">Valeur métier</div>
+      <div class="crit-desc">Anticiper une panne plus tôt permet de réduire les coûts (planification, pièces stock vs urgence). Plus l'horizon est long, plus la valeur potentielle est élevée.</div>
+    </div>
+    <div class="crit-card">
+      <div class="crit-weight">10 %</div>
+      <div class="crit-name">Risque de faux positifs</div>
+      <div class="crit-desc">Un horizon plus long génère plus d'incertitude et donc plus de FP. La perte de confiance des équipes terrain est un risque opérationnel réel.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ §3: MATRICE ══ -->
+<section class="sec">
+  <div class="sec-eye">Section 3 — Matrice pondérée</div>
+  <h2 class="sec-h">Scores par critère et par horizon</h2>
+  <p class="sec-intro">Score de 1 (faible) à 10 (optimal). Score final = somme pondérée. La couleur encode le niveau : <span style="color:var(--accent);">teal = fort</span>, <span style="color:var(--warn);">ambre = moyen</span>, <span style="color:var(--danger);">rouge = faible</span>.</p>
+
+  <div class="matrix-wrap">
+    <table class="matrix" id="score-matrix">
+      <thead>
+        <tr>
+          <th style="min-width:220px;">Critère</th>
+          <th class="hz-head poor" style="min-width:100px;">next_6h</th>
+          <th class="hz-head moderate" style="min-width:100px;">next_12h</th>
+          <th class="hz-head good" style="min-width:100px;">next_24h ★</th>
+          <th class="hz-head ok" style="min-width:100px;">next_48h</th>
+        </tr>
+      </thead>
+      <tbody id="matrix-body">
+        <!-- Injected by JS -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Bar chart -->
+  <div class="bar-chart" id="bar-chart" aria-hidden="true">
+    <!-- Injected by JS -->
+  </div>
+  <p class="chart-note">Score final pondéré / 10 — plus élevé = plus optimal</p>
+</section>
+
+<!-- ══ §4: RECOMMANDATION ══ -->
+<section class="sec">
+  <div class="sec-eye">Section 4 — Décision</div>
+  <h2 class="sec-h">Recommandation et conditions de dérogation</h2>
+
+  <div class="reco-box">
+    <div class="reco-icon">24h</div>
+    <div class="reco-body">
+      <div class="reco-label">Horizon recommandé</div>
+      <div class="reco-title">label_failure_next_24h — score 7.5/10</div>
+      <div class="reco-desc">
+        Équilibre optimal entre actionnabilité (une journée de travail pour organiser l'intervention)
+        et qualité du signal prédictif. Le taux de positifs de 3.6 % est gérable avec
+        <code style="font-family:var(--mono);color:var(--accent);font-size:0.82rem;">scale_pos_weight ≈ 28</code>
+        et le modèle XGBoost atteint PR-AUC = 0.817 sur cet horizon.
+        C'est le standard de l'industrie pour la maintenance prédictive journalière.
+      </div>
+      <div class="reco-conditions">
+        <strong>Pourquoi pas 48h, pourtant proche ?</strong>
+        <div class="reco-cond-grid">
+          <div class="reco-cond">
+            <span class="cond-q">Signal</span>
+            À 48h, les données télémétriques sont moins prédictives de la défaillance. Le modèle doit extrapoler davantage → plus de FP → perte de confiance terrain.
+          </div>
+          <div class="reco-cond">
+            <span class="cond-q">Bruit des labels</span>
+            Entre 24h et 48h, des événements indépendants peuvent survenir. Le label devient moins directement lié aux features actuelles.
+          </div>
+          <div class="reco-cond">
+            <span class="cond-q">Validation TP7</span>
+            PR-AUC = 0.817 sur next_24h est un résultat solide. Changer d'horizon exigerait une ré-évaluation complète (nouveau notebook, nouveaux tests).
+          </div>
+          <div class="reco-cond">
+            <span class="cond-q">Actionnabilité comparable</span>
+            24h et 48h ont une actionnabilité équivalente (au-delà de ~8h, la logistique maintenance est identique). Le gain de délai ne justifie pas la perte de qualité.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <table class="alt-table">
+    <thead>
+      <tr>
+        <th>Si le contexte impose…</th>
+        <th>Alors utiliser</th>
+        <th>Raison</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="if-cell">Maintenance 24h/24 avec techniciens de garde</td>
+        <td class="then-cell t12">next_12h</td>
+        <td style="font-size:0.81rem;color:var(--muted);">Délai suffisant pour une équipe sur place. Signal plus fort.</td>
+      </tr>
+      <tr>
+        <td class="if-cell">Logistique complexe (pièces importées, prestataires)</td>
+        <td class="then-cell t48">next_48h</td>
+        <td style="font-size:0.81rem;color:var(--muted);">Délai nécessaire pour organiser une intervention complexe.</td>
+      </tr>
+      <tr>
+        <td class="if-cell">Équipement très critique (sécurité, production continue)</td>
+        <td class="then-cell t24">next_24h + next_6h</td>
+        <td style="font-size:0.81rem;color:var(--muted);">Double système : planification 24h + alerte d'urgence 6h.</td>
+      </tr>
+      <tr>
+        <td class="if-cell">Exploration initiale / données limitées</td>
+        <td class="then-cell t24">next_24h</td>
+        <td style="font-size:0.81rem;color:var(--muted);">Meilleur équilibre pour établir un baseline robuste.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  <span>Analyse horizons · Maintenance prédictive · TP7–TP8</span>
+  <span>next_24h recommandé · Score = 7.5/10</span>
+</footer>
+
+<script>
+(function () {
+  /* ── DATA ── */
+  var CRITERIA = [
+    { name: "Actionnabilité",            sub: "30 %",  w: 0.30, scores: [2, 5, 9, 8] },
+    { name: "Qualité du signal",         sub: "25 %",  w: 0.25, scores: [9, 7, 6, 4] },
+    { name: "Apprentissage (% positifs)",sub: "20 %",  w: 0.20, scores: [3, 5, 7, 9] },
+    { name: "Valeur métier",             sub: "15 %",  w: 0.15, scores: [5, 7, 8, 9] },
+    { name: "Risque faux positifs",      sub: "10 %",  w: 0.10, scores: [8, 7, 6, 4] },
+  ];
+  var HORIZONS = ["next_6h", "next_12h", "next_24h", "next_48h"];
+  var HZ_CLASS = ["poor", "moderate", "good", "ok"];
+
+  /* Compute weighted totals */
+  var totals = [0, 0, 0, 0];
+  CRITERIA.forEach(function (c) {
+    c.scores.forEach(function (s, i) { totals[i] += s * c.w; });
+  });
+  totals = totals.map(function (t) { return Math.round(t * 10) / 10; });
+
+  /* Score → color */
+  function scoreColor(s) {
+    if (s >= 7)  return "var(--accent)";
+    if (s >= 5)  return "var(--warn)";
+    return "var(--danger)";
+  }
+  function scoreBg(s) {
+    if (s >= 7)  return "rgba(56,191,168,0.12)";
+    if (s >= 5)  return "rgba(242,193,78,0.10)";
+    return "rgba(217,83,79,0.10)";
+  }
+
+  /* Build matrix body */
+  var tbody = document.getElementById("matrix-body");
+  CRITERIA.forEach(function (c) {
+    var tr = document.createElement("tr");
+    /* Criterion cell */
+    var td0 = document.createElement("td");
+    td0.className = "crit-cell";
+    td0.innerHTML = c.name + '<span class="crit-w">' + c.sub + '</span>';
+    tr.appendChild(td0);
+    /* Score cells */
+    c.scores.forEach(function (s) {
+      var td = document.createElement("td");
+      td.className = "score-cell";
+      td.style.background = scoreBg(s);
+      td.innerHTML =
+        '<div class="score-inner">' +
+          '<div class="score-num" style="color:' + scoreColor(s) + ';">' + s + '</div>' +
+          '<div class="score-bar"><div class="score-fill" style="width:' + (s/10*100) + '%;background:' + scoreColor(s) + ';"></div></div>' +
+        '</div>';
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+
+  /* Total row */
+  var trTot = document.createElement("tr");
+  trTot.className = "total-row";
+  var tdLabel = document.createElement("td");
+  tdLabel.className = "crit-cell";
+  tdLabel.innerHTML = '<strong>Score pondéré final</strong><span class="crit-w">/ 10</span>';
+  trTot.appendChild(tdLabel);
+  var maxTotal = Math.max.apply(null, totals);
+  totals.forEach(function (t, i) {
+    var td = document.createElement("td");
+    td.className = "total-score" + (t === maxTotal ? " winner" : "");
+    td.style.color = t === maxTotal ? "var(--accent)" : (t >= 6.5 ? "var(--warn)" : "var(--danger)");
+    td.textContent = t.toFixed(1);
+    trTot.appendChild(td);
+  });
+  tbody.appendChild(trTot);
+
+  /* Rank row */
+  var trRank = document.createElement("tr");
+  var tdRankL = document.createElement("td");
+  tdRankL.className = "crit-cell";
+  tdRankL.innerHTML = '<strong>Classement</strong>';
+  trRank.appendChild(tdRankL);
+  var sorted = totals.slice().sort(function (a, b) { return b - a; });
+  totals.forEach(function (t, i) {
+    var rank = sorted.indexOf(t) + 1;
+    var td = document.createElement("td");
+    td.className = "rank-cell";
+    var color = rank === 1 ? "var(--accent)" : (rank === 2 ? "var(--warn)" : "var(--muted)");
+    td.innerHTML = '<span style="color:' + color + ';font-weight:700;">#' + rank + '</span>';
+    trRank.appendChild(td);
+  });
+  tbody.appendChild(trRank);
+
+  /* Bar chart */
+  var chart  = document.getElementById("bar-chart");
+  var maxH   = 100; /* px, the reference height */
+  var maxTot = Math.max.apply(null, totals);
+  totals.forEach(function (t, i) {
+    var col = document.createElement("div");
+    col.className = "bar-col";
+    var barH = Math.round((t / maxTot) * maxH);
+    var bgColor = i === 0 ? "var(--danger)" : (i === 1 ? "var(--warn)" : (i === 2 ? "var(--accent)" : "rgba(56,191,168,0.5)"));
+    col.innerHTML =
+      '<div class="bar-val">' + t.toFixed(1) + '</div>' +
+      '<div class="bar-body" data-h="' + barH + '" style="height:4px;background:' + bgColor + ';"></div>' +
+      '<div class="bar-label ' + HZ_CLASS[i] + '">' + HORIZONS[i] + '</div>';
+    chart.appendChild(col);
+  });
+
+  /* Animate bars on scroll */
+  var animated = false;
+  var obsBar = new IntersectionObserver(function (entries) {
+    if (!animated && entries[0].isIntersecting) {
+      animated = true;
+      document.querySelectorAll(".bar-body").forEach(function (el) {
+        var h = el.dataset.h;
+        requestAnimationFrame(function () {
+          el.style.height = h + "px";
+        });
+      });
+      obsBar.disconnect();
+    }
+  }, { threshold: 0.4 });
+  obsBar.observe(chart);
+}());
+</script>
+</body>
+</html>
