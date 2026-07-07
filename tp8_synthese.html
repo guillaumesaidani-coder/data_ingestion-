@@ -692,9 +692,158 @@ study.optimize(objective, n_trials=60)</div>
   </div>
 </section>
 
-<!-- ══ §3: SEUIL ══ -->
+<!-- ══ §3: ANALYSE CRITIQUE ══ -->
+<section class="sec" id="critique">
+  <div class="sec-eye">Section 3 — Analyse critique</div>
+  <h2 class="sec-h">Deux alertes à instruire — fuite ou signal ?</h2>
+  <p class="sec-intro">
+    Toute feature avec une importance très élevée et tout recall élevé méritent d'être questionnés.
+    Ce n'est pas systématiquement une erreur — mais ça doit se <strong style="color:var(--text);">démontrer</strong>, pas se supposer.
+  </p>
+
+  <!-- Alerte 1 -->
+  <div style="border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:1.5rem;">
+    <div style="display:grid;grid-template-columns:4px 1fr;background:var(--surf);">
+      <div style="background:var(--danger);"></div>
+      <div style="padding:1.5rem 1.75rem;">
+        <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--danger);margin-bottom:0.4rem;">Alerte 1 — Feature importance</div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:0.75rem;"><code style="font-family:var(--mono);color:var(--danger);font-size:0.9em;">incident_max_severity_prev_24h</code> = 63 % de l'importance</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;font-size:0.83rem;">
+          <div>
+            <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;">Deux types de fuite possibles</div>
+            <div style="display:flex;flex-direction:column;gap:0.5rem;">
+              <div style="padding:0.6rem 0.75rem;background:rgba(94,207,168,0.07);border:1px solid rgba(94,207,168,0.2);border-radius:3px;">
+                <span style="font-family:var(--mono);font-size:0.62rem;color:var(--ok);display:block;margin-bottom:0.2rem;">Type A — Fuite temporelle ✅ Écarté</span>
+                La fenêtre est définie avec <code style="font-family:var(--mono);color:var(--ok);font-size:0.8em;">occurred_at &lt; h</code> (strict) dans TP6 cell [16]. Les fenêtres <em>prev_24h</em> et <em>next_24h</em> sont disjointes par construction.
+              </div>
+              <div style="padding:0.6rem 0.75rem;background:rgba(232,131,42,0.07);border:1px solid rgba(232,131,42,0.2);border-radius:3px;">
+                <span style="font-family:var(--mono);font-size:0.62rem;color:var(--warn);display:block;margin-bottom:0.2rem;">Type B — Feature proxy du target ⚠️ À quantifier</span>
+                Si les pannes se produisent en séquences sur une même machine, la feature encode "cette machine est en train de tomber en panne" — signal <strong>réactif</strong> plutôt que <strong>prédictif</strong>. En production, l'opérateur sait déjà ce que le modèle prédit.
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;">Test à exécuter dans le notebook</div>
+            <div class="cmd-box" style="font-size:0.71rem;white-space:pre-wrap;">FEATURE_SANS = [c for c in FEATURE_COLS
+    if c != 'incident_max_severity_prev_24h']
+
+pipe_sans = Pipeline([
+    ("imp", SimpleImputer(strategy="median")),
+    ("xgb", XGBClassifier(**best_params))
+])
+pipe_sans.fit(X_train[FEATURE_SANS], y_train)
+pr_sans = average_precision_score(
+    y_val,
+    pipe_sans.predict_proba(
+        X_val[FEATURE_SANS])[:, 1])
+
+delta = optim_metrics['val']['pr_auc'] - pr_sans
+print(f"Avec  : {optim_metrics['val']['pr_auc']:.4f}")
+print(f"Sans  : {pr_sans:.4f}  |  Δ = {delta:.4f}")</div>
+            <div style="margin-top:0.6rem;font-size:0.79rem;color:var(--muted);line-height:1.5;">
+              <span style="color:var(--ok);">Δ &lt; 0.05</span> → signal télémetrique dominant ✅<br>
+              <span style="color:var(--danger);">Δ &gt; 0.15</span> → modèle quasi-dépendant de cette seule feature ⚠️
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alerte 2 -->
+  <div style="border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:1.5rem;">
+    <div style="display:grid;grid-template-columns:4px 1fr;background:var(--surf);">
+      <div style="background:var(--warn);"></div>
+      <div style="padding:1.5rem 1.75rem;">
+        <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--warn);margin-bottom:0.4rem;">Alerte 2 — Recall élevé</div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:0.75rem;">Recall = 87.9 % à seuil 0.5 — le modèle prédit-il tout positif ?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;font-size:0.83rem;">
+          <div>
+            <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;">Réfutation par la précision</div>
+            <div style="display:flex;flex-direction:column;gap:0.5rem;">
+              <div style="padding:0.6rem 0.75rem;background:rgba(217,83,79,0.07);border:1px solid rgba(217,83,79,0.2);border-radius:3px;">
+                <span style="font-family:var(--mono);font-size:0.62rem;color:var(--danger);display:block;margin-bottom:0.2rem;">Si tout prédit positif</span>
+                Precision = 727 / 19 944 = <strong style="color:var(--danger);">3.6 %</strong><br>Recall = 100 %
+              </div>
+              <div style="padding:0.6rem 0.75rem;background:rgba(94,207,168,0.07);border:1px solid rgba(94,207,168,0.2);border-radius:3px;">
+                <span style="font-family:var(--mono);font-size:0.62rem;color:var(--ok);display:block;margin-bottom:0.2rem;">Notre modèle ✅ Écarté</span>
+                Precision = <strong style="color:var(--ok);">63.6 %</strong> >> 3.6 %<br>Recall = 87.9 %
+              </div>
+            </div>
+            <div style="margin-top:0.6rem;font-size:0.79rem;color:var(--muted);line-height:1.5;">Une précision 17× supérieure au naïf prouve que le modèle discrimine réellement.</div>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;">Risque résiduel — mémorisation par machine</div>
+            <div class="cmd-box" style="font-size:0.71rem;white-space:pre-wrap;">df_val = X_val.copy()
+df_val['y_true'] = y_val.values
+df_val['y_pred'] = (optim_pipe
+    .predict_proba(X_val)[:, 1]
+    >= SEUIL_FINAL).astype(int)
+df_val['TP'] = (
+    (df_val['y_pred']==1) &
+    (df_val['y_true']==1)).astype(int)
+
+tp_machine = (df_val
+    .groupby('machine_id')['TP']
+    .sum()
+    .sort_values(ascending=False))
+top3 = tp_machine.head(3).sum()
+total = df_val['TP'].sum()
+print(f"Top 3 machines = {top3}/{total} TP")</div>
+            <div style="margin-top:0.6rem;font-size:0.79rem;color:var(--muted);line-height:1.5;">
+              <span style="color:var(--ok);">Top 3 &lt; 40 %</span> → signal généralisé ✅<br>
+              <span style="color:var(--danger);">Top 3 &gt; 70 %</span> → mémorisation de machines ⚠️
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tableau verdict -->
+  <div style="overflow-x:auto;">
+    <table class="mlflow-table">
+      <thead>
+        <tr>
+          <th>Risque</th>
+          <th>Niveau</th>
+          <th>Preuve disponible</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Fuite temporelle (fenêtres chevauchantes)</td>
+          <td class="good-m">✅ Écarté</td>
+          <td style="font-size:0.81rem;color:var(--muted);">Code TP6 cell [16] — <code style="font-family:var(--mono);font-size:0.78rem;">occurred_at &lt; h</code></td>
+          <td style="font-size:0.81rem;">Documenter la preuve dans le notebook</td>
+        </tr>
+        <tr>
+          <td>Feature proxy du target (signal réactif)</td>
+          <td class="warn-m">⚠️ À quantifier</td>
+          <td style="font-size:0.81rem;color:var(--muted);">Non encore mesuré</td>
+          <td style="font-size:0.81rem;">Exécuter le test "sans feature" — mesurer le Δ PR-AUC</td>
+        </tr>
+        <tr>
+          <td>Recall artificiel (tout positif)</td>
+          <td class="good-m">✅ Écarté</td>
+          <td style="font-size:0.81rem;color:var(--muted);">Precision = 63.6 % vs 3.6 % naïf</td>
+          <td style="font-size:0.81rem;">Montrer le calcul naïf au formateur</td>
+        </tr>
+        <tr>
+          <td>Mémorisation par machine</td>
+          <td class="pend">❓ Non vérifié</td>
+          <td style="font-size:0.81rem;color:var(--muted);">Non encore mesuré</td>
+          <td style="font-size:0.81rem;">Exécuter l'analyse TP par machine</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══ §4: SEUIL ══ -->
 <section class="sec" id="threshold">
-  <div class="sec-eye">Section 3 — Seuil de décision</div>
+  <div class="sec-eye">Section 4 — Seuil de décision</div>
   <h2 class="sec-h">Quel seuil choisir ?</h2>
   <p class="sec-intro">
     Trois critères objectifs. Le critère <strong>Recall ≥ 90 %</strong> est retenu car FN coûte 33× plus que FP dans ce contexte industriel.
@@ -738,7 +887,7 @@ y_pred = (y_proba >= seuil_retenu).astype(int)</div>
 
 <!-- ══ §4: TEST SET FINAL ══ -->
 <section class="sec" id="test">
-  <div class="sec-eye">Section 4 — Règle d'or</div>
+  <div class="sec-eye">Section 5 — Règle d'or</div>
   <h2 class="sec-h">Évaluation finale sur le test set</h2>
   <p class="sec-intro">
     Le test set ne s'utilise qu'une seule fois, à la toute fin. L'évaluer plusieurs fois revient à l'optimiser implicitement — c'est une fuite d'information.
@@ -787,7 +936,7 @@ y_pred = (y_proba >= seuil_retenu).astype(int)</div>
 
 <!-- ══ §5: CODECARBON ══ -->
 <section class="sec" id="carbon">
-  <div class="sec-eye">Section 5 — Green AI</div>
+  <div class="sec-eye">Section 6 — Green AI</div>
   <h2 class="sec-h">Empreinte carbone — CodeCarbon</h2>
   <p class="sec-intro">
     Entraîner des modèles consomme de l'énergie. CodeCarbon mesure cette consommation et l'exprime en grammes de CO₂ selon le mix énergétique local. La Green AI c'est quantifier avant d'arbitrer.
@@ -843,7 +992,7 @@ print(f"{emissions * 1000:.4f} g CO₂eq")</div>
 
 <!-- ══ §6: MLFLOW ══ -->
 <section class="sec" id="mlflow">
-  <div class="sec-eye">Section 6 — Traçabilité</div>
+  <div class="sec-eye">Section 7 — Traçabilité</div>
   <h2 class="sec-h">MLflow — comparer TP7 et TP8 dans un seul experiment</h2>
   <p class="sec-intro">
     Tous les runs TP7 et TP8 partagent le même experiment <code style="font-family:var(--mono);color:var(--ok);font-size:0.83rem;">TP7_maintenance_predictive</code>. MLflow permet de comparer directement baseline et optimisé sur les mêmes métriques.
