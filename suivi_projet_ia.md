@@ -27,7 +27,7 @@ Chaque phase liste les tâches, les **technos / outils** à utiliser et les arte
 - [ ] Cadrer le besoin métier et les KPI de succès (prend du temps)
 - [ ] Cartographier les parties prenantes et les impacts (directs/indirects)
 - [ ] Identifier les risques éthiques et le cadre réglementaire (cf. juriste ou resp. RH)
-- [ ] Définir les critères d'acceptation
+- [ ] Définir les critères d'acceptation (pour valider la solution: par ex respect de budget, délai min de détection de panne avant que la panne intervienne réellement => à estimer;)
 
 🔧 **Technos / outils** : **Datasheet for datasets** · cadre **RGPD** 
 (confidentialité, minimisation, traçabilité)
