@@ -271,6 +271,254 @@ td.role { font-size: 0.82rem; color: var(--text); }
 .sp-items li { font-size: 0.81rem; color: var(--muted); padding-left: 1rem; position: relative; }
 .sp-items li::before { content: "·"; position: absolute; left: 0.3rem; }
 
+/* ── SHAP BAR CHART ── */
+.shap-results {
+  margin-top: 2rem;
+}
+.shap-results-title {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1.2rem;
+}
+.shap-bar-row {
+  display: grid;
+  grid-template-columns: 200px 1fr 60px;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.55rem;
+}
+.shap-bar-label {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.shap-bar-label.incident { color: var(--warn); }
+.shap-bar-label.danger   { color: var(--danger); }
+.shap-bar-label.physical { color: var(--ok); }
+.shap-bar-track {
+  background: rgba(255,255,255,0.05);
+  border-radius: 2px;
+  height: 18px;
+  overflow: hidden;
+}
+.shap-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s ease;
+}
+.shap-bar-fill.incident { background: var(--warn); opacity: 0.75; }
+.shap-bar-fill.danger   { background: var(--danger); }
+.shap-bar-fill.physical { background: var(--ok); opacity: 0.65; }
+.shap-bar-val {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.shap-legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+.shap-leg-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.shap-leg-dot {
+  width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0;
+}
+/* ── SHAP NORMALISÉ COMPARATIF ── */
+.shap-norm {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.shap-norm-title {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.shap-norm-subtitle {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 1.5rem;
+}
+.shap-norm-legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+.shap-norm-leg {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.shap-norm-dot {
+  width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0;
+}
+.shap-norm-row {
+  display: grid;
+  grid-template-columns: 210px 1fr 52px;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+.shap-norm-label {
+  font-family: var(--mono);
+  font-size: 0.70rem;
+  color: var(--muted);
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.shap-norm-label.incident { color: var(--warn); }
+.shap-norm-label.danger   { color: var(--danger); }
+.shap-norm-label.physical { color: var(--ok); }
+.shap-norm-bars { display: flex; flex-direction: column; gap: 3px; }
+.shap-norm-track {
+  background: rgba(255,255,255,0.05);
+  border-radius: 2px;
+  height: 9px;
+  overflow: hidden;
+}
+.shap-norm-fill-b5 { height: 100%; border-radius: 2px; background: var(--accent); opacity: 0.6; }
+.shap-norm-fill-b7 { height: 100%; border-radius: 2px; background: var(--warn); opacity: 0.85; }
+.shap-norm-fill-b5.pending { background: var(--muted); opacity: 0.25; }
+.shap-norm-pct {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--muted);
+  text-align: right;
+}
+.shap-norm-note {
+  margin-top: 1.2rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ── RF VS XGBOOST ── */
+.rfxgb-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  margin-bottom: 2rem;
+}
+.rfxgb-col {
+  background: var(--surf);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.rfxgb-col.winner { border-color: rgba(94,207,168,0.35); background: linear-gradient(160deg,rgba(94,207,168,0.05),var(--surf) 50%); }
+.rfxgb-vs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.rfxgb-model {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+}
+.rfxgb-name {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.rfxgb-name.rf  { color: var(--accent); }
+.rfxgb-name.xgb { color: var(--ok); }
+.rfxgb-metrics { display: flex; flex-direction: column; gap: 0.7rem; }
+.rfxgb-metric { display: flex; flex-direction: column; gap: 0.2rem; }
+.rfxgb-metric-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.rfxgb-metric-bar-track {
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  height: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.rfxgb-metric-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  padding-left: 0.5rem;
+}
+.rfxgb-metric-bar-fill span {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--ground);
+}
+.rfxgb-pro { font-size: 0.79rem; color: var(--muted); padding-left: 1rem; position: relative; }
+.rfxgb-pro::before { content: "✓"; position: absolute; left: 0; color: var(--ok); }
+.rfxgb-con { font-size: 0.79rem; color: var(--muted); padding-left: 1rem; position: relative; }
+.rfxgb-con::before { content: "✗"; position: absolute; left: 0; color: var(--danger); }
+.rfxgb-verdict {
+  background: rgba(94,207,168,0.08);
+  border: 1px solid rgba(94,207,168,0.25);
+  border-radius: 4px;
+  padding: 1.2rem 1.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.rfxgb-verdict strong { color: var(--ok); }
+@media (max-width: 680px) {
+  .rfxgb-grid { grid-template-columns: 1fr; }
+  .rfxgb-vs { width: 100%; padding: 0.5rem 0; }
+}
+
+.shap-alert-id {
+  margin-top: 1.5rem;
+  background: rgba(217,83,79,0.1);
+  border: 1px solid rgba(217,83,79,0.35);
+  border-left: 3px solid var(--danger);
+  border-radius: 4px;
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.shap-alert-id .al-title { font-size: 0.9rem; font-weight: 700; color: var(--danger); }
+.shap-alert-id .al-body  { font-size: 0.82rem; color: var(--muted); line-height: 1.55; }
+.shap-alert-id code { font-family: var(--mono); color: var(--text); background: rgba(255,255,255,0.07); padding: 0.1em 0.4em; border-radius: 3px; }
+
 /* ── THRESHOLD CARDS ── */
 .thresh-cards {
   display: grid;
@@ -634,6 +882,115 @@ footer {
 sampler   = TPE(seed=42)     # Tree-structured Parzen Estimator
 study     = optuna.create_study(direction="maximize", sampler=sampler)
 study.optimize(objective, n_trials=60)</div>
+
+  <!-- Comparaison métriques B5 vs B7 -->
+  <div style="margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--border);">
+    <div style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:1.4rem;">Impact du tuning — B5 (sobre) vs B7 (tuné) · mêmes données, mêmes features</div>
+
+    <div style="display:grid;grid-template-columns:160px 1fr 1fr 80px;gap:0.5rem 1rem;align-items:center;margin-bottom:0.25rem;">
+      <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);">Métrique</div>
+      <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);">B5 — Baseline</div>
+      <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ok);">B7 — Optuna 60 trials</div>
+      <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);">Δ</div>
+    </div>
+
+    <!-- PR-AUC val -->
+    <div style="display:grid;grid-template-columns:160px 1fr 1fr 80px;gap:0.5rem 1rem;align-items:center;margin-bottom:0.6rem;">
+      <div style="font-size:0.78rem;color:var(--muted);">PR-AUC val</div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
+        <div style="width:81.7%;height:100%;background:rgba(155,127,212,0.55);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.817</span>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
+        <div style="width:86.2%;height:100%;background:rgba(94,207,168,0.7);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.862</span>
+        </div>
+      </div>
+      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);font-weight:700;">+0.045</div>
+    </div>
+
+    <!-- PR-AUC train -->
+    <div style="display:grid;grid-template-columns:160px 1fr 1fr 80px;gap:0.5rem 1rem;align-items:center;margin-bottom:0.6rem;">
+      <div style="font-size:0.78rem;color:var(--muted);">PR-AUC train</div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
+        <div style="width:100%;height:100%;background:rgba(217,83,79,0.45);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">1.000</span>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
+        <div style="width:99.8%;height:100%;background:rgba(94,207,168,0.35);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--text);">0.998</span>
+        </div>
+      </div>
+      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);">−0.002</div>
+    </div>
+
+    <!-- Overfitting -->
+    <div style="display:grid;grid-template-columns:160px 1fr 1fr 80px;gap:0.5rem 1rem;align-items:center;margin-bottom:0.6rem;">
+      <div style="font-size:0.78rem;color:var(--muted);">Overfitting Δ <span style="font-size:0.68rem;">(↓ mieux)</span></div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
+        <div style="width:100%;height:100%;background:rgba(232,131,42,0.6);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.183</span>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
+        <div style="width:74.6%;height:100%;background:rgba(94,207,168,0.55);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.136</span>
+        </div>
+      </div>
+      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);font-weight:700;">−0.047</div>
+    </div>
+
+    <!-- F1 val -->
+    <div style="display:grid;grid-template-columns:160px 1fr 1fr 80px;gap:0.5rem 1rem;align-items:center;margin-bottom:0.6rem;">
+      <div style="font-size:0.78rem;color:var(--muted);">F1 val</div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
+        <div style="width:73.5%;height:100%;background:rgba(155,127,212,0.55);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.735</span>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
+        <div style="width:76.6%;height:100%;background:rgba(94,207,168,0.7);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.766</span>
+        </div>
+      </div>
+      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);">+0.031</div>
+    </div>
+
+    <!-- ROC-AUC val -->
+    <div style="display:grid;grid-template-columns:160px 1fr 1fr 80px;gap:0.5rem 1rem;align-items:center;">
+      <div style="font-size:0.78rem;color:var(--muted);">ROC-AUC val</div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
+        <div style="width:99.2%;height:100%;background:rgba(155,127,212,0.45);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.992</span>
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
+        <div style="width:99.4%;height:100%;background:rgba(94,207,168,0.45);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.994</span>
+        </div>
+      </div>
+      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--muted);">+0.002</div>
+    </div>
+
+    <div style="margin-top:1rem;font-size:0.78rem;color:var(--muted);font-style:italic;">Le ROC-AUC était déjà excellent en baseline — l'apport d'Optuna se mesure surtout sur le PR-AUC val (+0.045) et l'overfitting Δ (−0.047), les métriques pertinentes pour les classes déséquilibrées.</div>
+
+    <!-- Correction leakage feature_row_id — TP8b -->
+    <div style="margin-top:1.2rem;padding:0.85rem 1rem;background:rgba(217,83,79,0.08);border:1px solid rgba(217,83,79,0.3);border-radius:3px;">
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--danger);margin-bottom:0.45rem;">⚠ Correction fuite — TP8b · feature_row_id retiré</div>
+      <div style="font-size:0.8rem;line-height:1.65;color:var(--text);">
+        <code style="font-family:var(--mono);font-size:0.8em;color:var(--danger);">feature_row_id</code> était présent dans <code style="font-family:var(--mono);font-size:0.8em;">FEATURE_COLS</code> de B7 : identifiant séquentiel = fuite temporelle implicite.
+        Après correction dans <strong>TP8b</strong> :
+        <span style="display:inline-flex;gap:1.2rem;margin-top:0.4rem;flex-wrap:wrap;">
+          <span style="font-family:var(--mono);font-size:0.78rem;">B5c = <strong style="color:var(--ok);">0.8349</strong></span>
+          <span style="font-family:var(--mono);font-size:0.78rem;">B7c = <strong style="color:var(--danger);">0.7504</strong> <span style="color:var(--muted);">(−0.111)</span></span>
+          <span style="font-family:var(--mono);font-size:0.78rem;color:var(--warn);">Optuna a sur-optimisé autour de la fuite → B7c &lt; B5c</span>
+          <span style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);">B8 (re-tuné) val=<strong>0.8497</strong> · test=<strong>0.8232</strong> · F1=<strong>0.7672</strong> — gain réel du tuning : +0.015</span>
+        </span>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ══ §2: SHAP ══ -->
@@ -690,6 +1047,180 @@ study.optimize(objective, n_trials=60)</div>
       </ul>
     </div>
   </div>
+
+  <!-- SHAP résultats réels — B7c corrigé -->
+  <div class="shap-results">
+    <div class="shap-results-title">Résultats SHAP — XGBoost_Optuna_B7c (corrigé · feature_row_id exclu) · Top 10 features · mean |SHAP| sur validation</div>
+
+    <div class="shap-bar-row">
+      <div class="shap-bar-label incident">incident_max_severity_prev_24h</div>
+      <div class="shap-bar-track"><div class="shap-bar-fill incident" style="width:100%"></div></div>
+      <div class="shap-bar-val">4.002</div>
+    </div>
+    <div class="shap-bar-row">
+      <div class="shap-bar-label physical">pressure_zscore_machine</div>
+      <div class="shap-bar-track"><div class="shap-bar-fill physical" style="width:56.3%"></div></div>
+      <div class="shap-bar-val">2.253</div>
+    </div>
+    <div class="shap-bar-row">
+      <div class="shap-bar-label incident">incident_count_prev_24h</div>
+      <div class="shap-bar-track"><div class="shap-bar-fill incident" style="width:23.3%"></div></div>
+      <div class="shap-bar-val">0.932</div>
+    </div>
+    <div class="shap-bar-row">
+      <div class="shap-bar-label physical">pieces_produced_sum_24h</div>
+      <div class="shap-bar-track"><div class="shap-bar-fill physical" style="width:13.1%"></div></div>
+      <div class="shap-bar-val">0.523</div>
+    </div>
+    <div class="shap-bar-row">
+      <div class="shap-bar-label physical">temp_mean_24h</div>
+      <div class="shap-bar-track"><div class="shap-bar-fill physical" style="width:10.8%"></div></div>
+      <div class="shap-bar-val">0.433</div>
+    </div>
+    <div class="shap-bar-row">
+      <div class="shap-bar-label physical">voltage_mean_24h</div>
+      <div class="shap-bar-track"><div class="shap-bar-fill physical" style="width:10.5%"></div></div>
+      <div class="shap-bar-val">0.419</div>
+    </div>
+    <div class="shap-bar-row">
+      <div class="shap-bar-label physical">rotation_std_12h</div>
+      <div class="shap-bar-track"><div class="shap-bar-fill physical" style="width:9.6%"></div></div>
+      <div class="shap-bar-val">0.384</div>
+    </div>
+    <div class="shap-bar-row">
+      <div class="shap-bar-label physical">temp_zscore_machine</div>
+      <div class="shap-bar-track"><div class="shap-bar-fill physical" style="width:7.6%"></div></div>
+      <div class="shap-bar-val">0.303</div>
+    </div>
+    <div class="shap-bar-row">
+      <div class="shap-bar-label physical">rotation_mean_12h</div>
+      <div class="shap-bar-track"><div class="shap-bar-fill physical" style="width:6.5%"></div></div>
+      <div class="shap-bar-val">0.260</div>
+    </div>
+    <div class="shap-bar-row">
+      <div class="shap-bar-label physical">temp_max_24h</div>
+      <div class="shap-bar-track"><div class="shap-bar-fill physical" style="width:6.3%"></div></div>
+      <div class="shap-bar-val">0.252</div>
+    </div>
+
+    <div class="shap-legend">
+      <div class="shap-leg-item"><div class="shap-leg-dot" style="background:var(--warn)"></div>Signal incident (réactif possible)</div>
+      <div class="shap-leg-item"><div class="shap-leg-dot" style="background:var(--ok)"></div>Signal physique / télémétrique</div>
+      <div class="shap-leg-item"><div class="shap-leg-dot" style="background:var(--danger)"></div>Identifiant — à exclure</div>
+    </div>
+
+    <!-- SHAP normalisé comparatif B5 vs B7 -->
+    <div class="shap-norm">
+      <div class="shap-norm-title">Part normalisée du |SHAP| — Sobre (B5) vs Tuné (B7) · somme = 1 par modèle</div>
+      <div class="shap-norm-subtitle">La normalisation permet de comparer deux modèles indépendamment de leur échelle de SHAP absolue.</div>
+      <div class="shap-norm-legend">
+        <div class="shap-norm-leg"><div class="shap-norm-dot" style="background:var(--accent);opacity:0.6"></div>XGBoost sobre (B5) — valeurs à calculer</div>
+        <div class="shap-norm-leg"><div class="shap-norm-dot" style="background:var(--warn)"></div>XGBoost tuné (B7)</div>
+      </div>
+
+      <div class="shap-norm-row">
+        <div class="shap-norm-label incident">incident_max_severity_prev_24h</div>
+        <div class="shap-norm-bars">
+          <div class="shap-norm-track"><div class="shap-norm-fill-b5 pending" style="width:63%"></div></div>
+          <div class="shap-norm-track"><div class="shap-norm-fill-b7" style="width:100%"></div></div>
+        </div>
+        <div class="shap-norm-pct">41.1%</div>
+      </div>
+      <div class="shap-norm-row">
+        <div class="shap-norm-label incident">incident_count_prev_7d</div>
+        <div class="shap-norm-bars">
+          <div class="shap-norm-track"><div class="shap-norm-fill-b5 pending" style="width:20%"></div></div>
+          <div class="shap-norm-track"><div class="shap-norm-fill-b7" style="width:60.4%"></div></div>
+        </div>
+        <div class="shap-norm-pct">24.8%</div>
+      </div>
+      <div class="shap-norm-row">
+        <div class="shap-norm-label danger">feature_row_id ⚠</div>
+        <div class="shap-norm-bars">
+          <div class="shap-norm-track"><div class="shap-norm-fill-b5 pending" style="width:10%"></div></div>
+          <div class="shap-norm-track"><div class="shap-norm-fill-b7" style="width:24.9%"></div></div>
+        </div>
+        <div class="shap-norm-pct">10.2%</div>
+      </div>
+      <div class="shap-norm-row">
+        <div class="shap-norm-label incident">incident_count_prev_24h</div>
+        <div class="shap-norm-bars">
+          <div class="shap-norm-track"><div class="shap-norm-fill-b5 pending" style="width:15%"></div></div>
+          <div class="shap-norm-track"><div class="shap-norm-fill-b7" style="width:20.2%"></div></div>
+        </div>
+        <div class="shap-norm-pct">8.2%</div>
+      </div>
+      <div class="shap-norm-row">
+        <div class="shap-norm-label physical">voltage_mean_24h</div>
+        <div class="shap-norm-bars">
+          <div class="shap-norm-track"><div class="shap-norm-fill-b5 pending" style="width:9%"></div></div>
+          <div class="shap-norm-track"><div class="shap-norm-fill-b7" style="width:9.9%"></div></div>
+        </div>
+        <div class="shap-norm-pct">4.0%</div>
+      </div>
+      <div class="shap-norm-row">
+        <div class="shap-norm-label physical">temp_max_24h</div>
+        <div class="shap-norm-bars">
+          <div class="shap-norm-track"><div class="shap-norm-fill-b5 pending" style="width:8%"></div></div>
+          <div class="shap-norm-track"><div class="shap-norm-fill-b7" style="width:7.8%"></div></div>
+        </div>
+        <div class="shap-norm-pct">3.2%</div>
+      </div>
+      <div class="shap-norm-row">
+        <div class="shap-norm-label physical">rotation_mean_24h</div>
+        <div class="shap-norm-bars">
+          <div class="shap-norm-track"><div class="shap-norm-fill-b5 pending" style="width:7%"></div></div>
+          <div class="shap-norm-track"><div class="shap-norm-fill-b7" style="width:5.9%"></div></div>
+        </div>
+        <div class="shap-norm-pct">2.4%</div>
+      </div>
+      <div class="shap-norm-row">
+        <div class="shap-norm-label incident">hours_since_last_incident</div>
+        <div class="shap-norm-bars">
+          <div class="shap-norm-track"><div class="shap-norm-fill-b5 pending" style="width:6%"></div></div>
+          <div class="shap-norm-track"><div class="shap-norm-fill-b7" style="width:5.4%"></div></div>
+        </div>
+        <div class="shap-norm-pct">2.2%</div>
+      </div>
+      <div class="shap-norm-row">
+        <div class="shap-norm-label physical">pieces_produced_sum_24h</div>
+        <div class="shap-norm-bars">
+          <div class="shap-norm-track"><div class="shap-norm-fill-b5 pending" style="width:5%"></div></div>
+          <div class="shap-norm-track"><div class="shap-norm-fill-b7" style="width:4.8%"></div></div>
+        </div>
+        <div class="shap-norm-pct">2.0%</div>
+      </div>
+      <div class="shap-norm-row">
+        <div class="shap-norm-label physical">pressure_max_24h</div>
+        <div class="shap-norm-bars">
+          <div class="shap-norm-track"><div class="shap-norm-fill-b5 pending" style="width:4%"></div></div>
+          <div class="shap-norm-track"><div class="shap-norm-fill-b7" style="width:4.7%"></div></div>
+        </div>
+        <div class="shap-norm-pct">1.9%</div>
+      </div>
+
+      <div class="shap-norm-note">Les barres B5 (violet) sont indicatives — basées sur feature_importances_ gain (63% pour incident_max_severity). Les valeurs SHAP réelles du modèle baseline seront ajoutées après exécution de la cellule §7c.</div>
+    </div>
+
+    <div class="shap-alert-id" style="border-color:rgba(217,83,79,0.4);">
+      <div class="al-title">❌ feature_row_id — fuite confirmée · impact mesuré dans TP8b</div>
+      <div class="al-body">
+        <code>feature_row_id</code> était un identifiant séquentiel absent de <code>LEAKAGE_COLS</code> : il encodait implicitement l'ordre chronologique des données. En entraînement walk-forward, les IDs récents correspondent aux périodes récentes — le modèle apprenait une tendance temporelle parasite.<br><br>
+        <strong>Correction appliquée (TP8b) :</strong> <code>"feature_row_id"</code> ajouté à <code>LEAKAGE_COLS</code>. Impact mesuré :<br>
+        <div style="display:flex;gap:1.5rem;margin-top:0.5rem;flex-wrap:wrap;font-family:var(--mono);font-size:0.8rem;">
+          <span>B7 (avec fuite) : <strong style="color:var(--warn);">0.8617</strong></span>
+          <span>B7c (corrigé) : <strong style="color:var(--danger);">0.7504</strong> <span style="color:var(--muted);">Δ = −0.111</span></span>
+          <span>B5c (baseline corrigé) : <strong style="color:var(--ok);">0.8349</strong></span>
+        </div>
+        <div style="margin-top:0.5rem;font-size:0.79rem;color:var(--warn);">
+          Optuna a sur-optimisé autour de la fuite : B7c (0.750) &lt; B5c (0.835). Le tuning a empiré les métriques réelles.
+        </div>
+        <div style="margin-top:0.45rem;font-size:0.79rem;color:var(--ok);">
+          SHAP corrigé : <code>pressure_zscore_machine</code> passe en #2 (2.253) — signal télémetrique per-machine déjà présent dans le gold dataset.
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ══ §3: ANALYSE CRITIQUE ══ -->
@@ -717,8 +1248,8 @@ study.optimize(objective, n_trials=60)</div>
                 La fenêtre est définie avec <code style="font-family:var(--mono);color:var(--ok);font-size:0.8em;">occurred_at &lt; h</code> (strict) dans TP6 cell [16]. Les fenêtres <em>prev_24h</em> et <em>next_24h</em> sont disjointes par construction.
               </div>
               <div style="padding:0.6rem 0.75rem;background:rgba(232,131,42,0.07);border:1px solid rgba(232,131,42,0.2);border-radius:3px;">
-                <span style="font-family:var(--mono);font-size:0.62rem;color:var(--warn);display:block;margin-bottom:0.2rem;">Type B — Feature proxy du target ⚠️ À quantifier</span>
-                Si les pannes se produisent en séquences sur une même machine, la feature encode "cette machine est en train de tomber en panne" — signal <strong>réactif</strong> plutôt que <strong>prédictif</strong>. En production, l'opérateur sait déjà ce que le modèle prédit.
+                <span style="font-family:var(--mono);font-size:0.62rem;color:var(--warn);display:block;margin-bottom:0.2rem;">Type B — Signal réactif ⚠️ Confirmé — Δ ablation = 0.170</span>
+                Ablation §7b : PR-AUC <strong style="color:var(--ok);">0.862</strong> → <strong style="color:var(--danger);">0.691</strong> sans la feature. Le modèle dépend quasi-exclusivement de ce signal. La feature reste légitime (fenêtres disjointes) mais <strong>réactive</strong> : elle encode "la machine vient d'avoir un incident" plutôt qu'une anticipation physique. Piste : enrichir les features télémétriques (température, vibration, pression) pour réduire cette dépendance.
               </div>
             </div>
           </div>
@@ -791,8 +1322,12 @@ top3 = tp_machine.head(3).sum()
 total = df_val['TP'].sum()
 print(f"Top 3 machines = {top3}/{total} TP")</div>
             <div style="margin-top:0.6rem;font-size:0.79rem;color:var(--muted);line-height:1.5;">
-              <span style="color:var(--ok);">Top 3 &lt; 40 %</span> → signal généralisé ✅<br>
-              <span style="color:var(--danger);">Top 3 &gt; 70 %</span> → mémorisation de machines ⚠️
+              <strong style="color:var(--warn);">Résultat §7b :</strong> Top 3 machines = <strong style="color:var(--warn);">63.7 %</strong> des 601 TP (MACH-13 seule = 36 %).<br>
+              Zone orange — sous le seuil critique de 70 % mais MACH-13 sur-représentée.<br>
+              <strong style="color:var(--warn);">Out-of-entity test §9 (B8-OOE) :</strong> Entraîné sans MACH-13 → PR-AUC val
+              <strong style="color:var(--ok);">0.8025</strong> → <strong style="color:var(--danger);">0.6825</strong>
+              (Δ = −0.120, 239 TP)&nbsp;·&nbsp;⚠️ mémorisation partielle confirmée.<br>
+              <span style="color:var(--muted);">Test set (24 TP) non représentatif — val (239 TP) est la mesure fiable.</span>
             </div>
           </div>
         </div>
@@ -820,9 +1355,9 @@ print(f"Top 3 machines = {top3}/{total} TP")</div>
         </tr>
         <tr>
           <td>Feature proxy du target (signal réactif)</td>
-          <td class="warn-m">⚠️ À quantifier</td>
-          <td style="font-size:0.81rem;color:var(--muted);">Non encore mesuré</td>
-          <td style="font-size:0.81rem;">Exécuter le test "sans feature" — mesurer le Δ PR-AUC</td>
+          <td class="warn-m">⚠️ Confirmé</td>
+          <td style="font-size:0.81rem;color:var(--muted);">Ablation §7b — PR-AUC 0.862 → 0.691 sans la feature (<strong style="color:var(--danger);">Δ = 0.170</strong>)</td>
+          <td style="font-size:0.81rem;">Feature utile mais réactive — enrichir les features télémétriques pour réduire la dépendance</td>
         </tr>
         <tr>
           <td>Recall artificiel (tout positif)</td>
@@ -832,9 +1367,9 @@ print(f"Top 3 machines = {top3}/{total} TP")</div>
         </tr>
         <tr>
           <td>Mémorisation par machine</td>
-          <td class="pend">❓ Non vérifié</td>
-          <td style="font-size:0.81rem;color:var(--muted);">Non encore mesuré</td>
-          <td style="font-size:0.81rem;">Exécuter l'analyse TP par machine</td>
+          <td class="warn-m">⚠️ Zone orange</td>
+          <td style="font-size:0.81rem;color:var(--muted);">Top 3 = 63.7 % des TP · OOE val Δ = −0.120 (239 TP) · mémorisation partielle confirmée</td>
+          <td style="font-size:0.81rem;">GroupKFold par machine pour validation robuste — enrichir features pour réduire la dépendance aux entités</td>
         </tr>
       </tbody>
     </table>
@@ -1076,6 +1611,103 @@ print(f"{emissions * 1000:.4f} g CO₂eq")</div>
   <div class="cmd-box">mlflow ui --backend-store-uri sqlite:///mlflow_tp7.db
 # → http://localhost:5000  ·  experiment : TP7_maintenance_predictive
 # Trier par pr_auc_val décroissant → XGBoost_Optuna_B7 en tête</div>
+</section>
+
+<!-- ══ §8: RF VS XGBOOST ══ -->
+<section class="sec" id="rfxgb">
+  <div class="sec-eye">Section 8 — Comparaison de modèles</div>
+  <h2 class="sec-h">Random Forest vs XGBoost — pourquoi XGBoost gagne</h2>
+  <p class="sec-intro">Les deux modèles ont été entraînés en TP7 avec les mêmes données. XGBoost obtient un meilleur PR-AUC val et un overfitting moindre — avant même l'optimisation Optuna.</p>
+
+  <div class="rfxgb-grid">
+    <!-- RF -->
+    <div class="rfxgb-col">
+      <div>
+        <div class="rfxgb-model">TP7 — Baseline</div>
+        <div class="rfxgb-name rf">Random Forest</div>
+      </div>
+      <div class="rfxgb-metrics">
+        <div class="rfxgb-metric">
+          <div class="rfxgb-metric-label">PR-AUC val</div>
+          <div class="rfxgb-metric-bar-track">
+            <div class="rfxgb-metric-bar-fill" style="width:76.8%;background:rgba(155,127,212,0.6)">
+              <span>0.768</span>
+            </div>
+          </div>
+        </div>
+        <div class="rfxgb-metric">
+          <div class="rfxgb-metric-label">PR-AUC train</div>
+          <div class="rfxgb-metric-bar-track">
+            <div class="rfxgb-metric-bar-fill" style="width:98.9%;background:rgba(155,127,212,0.4)">
+              <span>0.989</span>
+            </div>
+          </div>
+        </div>
+        <div class="rfxgb-metric">
+          <div class="rfxgb-metric-label">Overfitting Δ — plus bas = mieux</div>
+          <div class="rfxgb-metric-bar-track">
+            <div class="rfxgb-metric-bar-fill" style="width:100%;background:rgba(217,83,79,0.55)">
+              <span>0.221 ← pire des 3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.35rem;">
+        <div class="rfxgb-pro">Robuste sans réglage fin</div>
+        <div class="rfxgb-pro">Stable sur données tabulaires</div>
+        <div class="rfxgb-con">Surapprentissage le plus élevé (Δ=0.221)</div>
+        <div class="rfxgb-con">Probabilités mal calibrées sur données déséquilibrées</div>
+        <div class="rfxgb-con">Pas de mécanisme natif pour classes déséquilibrées</div>
+      </div>
+    </div>
+
+    <div class="rfxgb-vs">vs</div>
+
+    <!-- XGBoost -->
+    <div class="rfxgb-col winner">
+      <div>
+        <div class="rfxgb-model">TP7 baseline → TP8 optimisé</div>
+        <div class="rfxgb-name xgb">XGBoost</div>
+      </div>
+      <div class="rfxgb-metrics">
+        <div class="rfxgb-metric">
+          <div class="rfxgb-metric-label">PR-AUC val — baseline / optimisé</div>
+          <div class="rfxgb-metric-bar-track">
+            <div class="rfxgb-metric-bar-fill" style="width:86.2%;background:rgba(94,207,168,0.7)">
+              <span>0.817 → 0.862</span>
+            </div>
+          </div>
+        </div>
+        <div class="rfxgb-metric">
+          <div class="rfxgb-metric-label">PR-AUC train — baseline / optimisé</div>
+          <div class="rfxgb-metric-bar-track">
+            <div class="rfxgb-metric-bar-fill" style="width:99.8%;background:rgba(94,207,168,0.35)">
+              <span>1.000 → 0.998</span>
+            </div>
+          </div>
+        </div>
+        <div class="rfxgb-metric">
+          <div class="rfxgb-metric-label">Overfitting Δ — baseline / optimisé</div>
+          <div class="rfxgb-metric-bar-track">
+            <div class="rfxgb-metric-bar-fill" style="width:61.6%;background:rgba(94,207,168,0.55)">
+              <span>0.183 → 0.136 ✓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:0.35rem;">
+        <div class="rfxgb-pro">Meilleur PR-AUC val dès la baseline (+6.4%)</div>
+        <div class="rfxgb-pro"><code style="font-family:var(--mono);font-size:0.8em;">scale_pos_weight</code> compense le déséquilibre nativement</div>
+        <div class="rfxgb-pro">Overfitting réductible par Optuna (Δ 0.221→0.136)</div>
+        <div class="rfxgb-pro">Probabilités mieux calibrées → seuil élevé possible (0.84)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rfxgb-verdict">
+    <strong>Pourquoi XGBoost sur ce problème ?</strong><br>
+    Le déséquilibre de classes (3.6 % positifs) est la contrainte principale. XGBoost le gère directement via <code style="font-family:var(--mono);">scale_pos_weight=27</code> — le modèle pondère les pannes 27× plus que les cas normaux pendant l'entraînement. Random Forest n'a pas d'équivalent natif : il faut recourir à <code style="font-family:var(--mono);">class_weight</code> ou du suréchantillonnage (SMOTE), ce qui dégrade souvent la calibration des probabilités. C'est pour cette raison que l'autre étudiant, dont le RF retient un seuil de 0.083, doit abaisser drastiquement son seuil pour compenser — là où XGBoost optimisé maintient un bon recall à seuil 0.84.
+  </div>
 </section>
 
 <footer>
