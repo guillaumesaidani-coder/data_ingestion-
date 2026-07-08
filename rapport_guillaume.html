@@ -1,0 +1,555 @@
+<title>Rapport — Maintenance Prédictive | Guillaume Saïdani</title>
+<style>
+:root {
+  --bg:#F4F6F9;--surface:#FFF;--surface-alt:#F0F2F5;
+  --t1:#1C2128;--t2:#57606A;--t3:#8090A0;
+  --acc:#1563AD;--acc-dim:#DDE9F7;
+  --ok:#1A7F37;--ok-dim:#D8F0DF;
+  --warn:#9A6700;--warn-dim:#FFF8C5;
+  --bad:#CF4526;--bad-dim:#FFEBE9;
+  --bdr:#D0D7DE;--r:6px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.05);
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --mono:'Cascadia Code','SF Mono',Consolas,monospace;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#161B22;--surface:#21262D;--surface-alt:#2A313C;
+  --t1:#E6EDF3;--t2:#8B949E;--t3:#656D76;
+  --acc:#58A6FF;--acc-dim:#0C2D6B;
+  --ok:#3FB950;--ok-dim:#0A3019;
+  --warn:#D29922;--warn-dim:#2E2A0B;
+  --bad:#FF7B72;--bad-dim:#4A0D0A;
+  --bdr:#30363D;
+  --shadow:0 1px 3px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.04);
+}}
+:root[data-theme="dark"]{
+  --bg:#161B22;--surface:#21262D;--surface-alt:#2A313C;
+  --t1:#E6EDF3;--t2:#8B949E;--t3:#656D76;
+  --acc:#58A6FF;--acc-dim:#0C2D6B;
+  --ok:#3FB950;--ok-dim:#0A3019;
+  --warn:#D29922;--warn-dim:#2E2A0B;
+  --bad:#FF7B72;--bad-dim:#4A0D0A;
+  --bdr:#30363D;
+}
+:root[data-theme="light"]{
+  --bg:#F4F6F9;--surface:#FFF;--surface-alt:#F0F2F5;
+  --t1:#1C2128;--t2:#57606A;--t3:#8090A0;
+  --acc:#1563AD;--acc-dim:#DDE9F7;
+  --ok:#1A7F37;--ok-dim:#D8F0DF;
+  --warn:#9A6700;--warn-dim:#FFF8C5;
+  --bad:#CF4526;--bad-dim:#FFEBE9;
+  --bdr:#D0D7DE;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:Georgia,'Times New Roman',serif;font-size:16px;line-height:1.72;padding:2rem 1rem 5rem}
+.page{max-width:840px;margin:0 auto}
+
+/* ── Header ── */
+.rh{padding:2.5rem 0 2rem;border-bottom:2px solid var(--bdr);margin-bottom:2.5rem}
+.rtag{font-family:var(--sans);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);margin-bottom:.65rem}
+.rtitle{font-family:var(--sans);font-size:2rem;font-weight:700;line-height:1.2;text-wrap:balance;margin-bottom:.45rem}
+.rsub{font-size:1.05rem;color:var(--t2);margin-bottom:1.4rem}
+.rmeta{display:flex;gap:2rem;font-family:var(--sans);font-size:.85rem;color:var(--t2);flex-wrap:wrap}
+
+/* ── TOC ── */
+.toc{background:var(--surface);border:1px solid var(--bdr);border-radius:var(--r);padding:1.4rem 1.8rem;margin-bottom:3rem;box-shadow:var(--shadow)}
+.toc-h{font-family:var(--sans);font-size:.7rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);margin-bottom:.7rem}
+.toc ol{padding-left:1.15rem;display:grid;grid-template-columns:1fr 1fr;gap:.22rem .5rem}
+.toc li{font-family:var(--sans);font-size:.88rem}
+.toc a{color:var(--acc);text-decoration:none}
+.toc a:hover{text-decoration:underline}
+
+/* ── Sections ── */
+section{margin-bottom:3.5rem;scroll-margin-top:1rem}
+.snum{font-family:var(--sans);font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:.3rem}
+section h2{font-family:var(--sans);font-size:1.45rem;font-weight:700;margin-bottom:1.2rem;padding-bottom:.5rem;border-bottom:1px solid var(--bdr)}
+section h3{font-family:var(--sans);font-size:.98rem;font-weight:600;margin:1.5rem 0 .55rem}
+p{margin-bottom:.85rem}
+p:last-child{margin-bottom:0}
+ol.body-list{padding-left:1.3rem;margin:.85rem 0}
+ol.body-list li{margin-bottom:.65rem}
+
+/* ── KPIs ── */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:.9rem;margin:1.4rem 0}
+.kpi{background:var(--surface);border:1px solid var(--bdr);border-radius:var(--r);padding:1rem 1.2rem;box-shadow:var(--shadow)}
+.kpi-l{font-family:var(--sans);font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:.3rem}
+.kpi-v{font-family:var(--mono);font-size:1.5rem;font-weight:700;color:var(--acc);line-height:1}
+.kpi-n{font-family:var(--sans);font-size:.72rem;color:var(--t3);margin-top:.22rem}
+.kpi-ok .kpi-v{color:var(--ok)}
+
+/* ── Alert ── */
+.alert{background:var(--surface);border:1px solid var(--bdr);border-left:3px solid var(--acc);border-radius:var(--r);padding:.8rem 1.1rem;margin:1rem 0;font-family:var(--sans);font-size:.875rem}
+.alert-warn{border-left-color:var(--warn)}
+.alert-ok{border-left-color:var(--ok)}
+.alert-bad{border-left-color:var(--bad)}
+.alert strong{display:block;margin-bottom:.22rem;font-weight:600}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;margin:1.2rem 0}
+table{width:100%;border-collapse:collapse;font-family:var(--sans);font-size:.86rem}
+th{background:var(--surface-alt);font-weight:600;padding:.5rem .8rem;border-bottom:2px solid var(--bdr);text-align:left;white-space:nowrap;font-size:.78rem;letter-spacing:.02em}
+td{padding:.46rem .8rem;border-bottom:1px solid var(--bdr);font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface-alt)}
+.r-ok{background:var(--ok-dim)!important}
+.r-bad{background:var(--bad-dim)!important}
+.r-warn{background:var(--warn-dim)!important}
+
+/* ── Badges ── */
+.b{display:inline-block;padding:.12rem .48rem;border-radius:3px;font-size:.72rem;font-weight:700;font-family:var(--sans)}
+.b-ok{background:var(--ok-dim);color:var(--ok)}
+.b-bad{background:var(--bad-dim);color:var(--bad)}
+.b-warn{background:var(--warn-dim);color:var(--warn)}
+.b-acc{background:var(--acc-dim);color:var(--acc)}
+
+/* ── Checklist ── */
+.cl{list-style:none;padding:0}
+.cl li{display:flex;align-items:flex-start;gap:.65rem;padding:.45rem 0;font-family:var(--sans);font-size:.88rem;border-bottom:1px dashed var(--bdr)}
+.cl li:last-child{border-bottom:none}
+.ci{flex-shrink:0;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;margin-top:3px}
+.ci-done{background:var(--ok-dim);color:var(--ok)}
+.ci-todo{background:var(--surface-alt);color:var(--t3);border:1px dashed var(--bdr)}
+.cn{font-size:.78rem;color:var(--t2);margin-top:.12rem}
+
+/* ── Chart ── */
+.cw{background:var(--surface);border:1px solid var(--bdr);border-radius:var(--r);padding:1.4rem 1.4rem 1rem;margin:1.2rem 0;box-shadow:var(--shadow)}
+.cw canvas{display:block;width:100%}
+
+/* ── Code inline ── */
+code{font-family:var(--mono);font-size:.83em;background:var(--surface-alt);padding:.09em .32em;border-radius:3px}
+
+/* ── Segmentation grid ── */
+.seg{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:.8rem;margin:1rem 0}
+.seg-card{background:var(--surface);border:1px solid var(--bdr);border-radius:var(--r);padding:.9rem 1rem;box-shadow:var(--shadow)}
+.seg-tag{font-family:var(--sans);font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem}
+.seg-tag-ok{color:var(--ok)}.seg-tag-warn{color:var(--warn)}.seg-tag-bad{color:var(--bad)}.seg-tag-acc{color:var(--acc)}
+.seg-machines{font-family:var(--mono);font-size:.82rem;color:var(--t1);line-height:1.6}
+.seg-note{font-family:var(--sans);font-size:.75rem;color:var(--t3);margin-top:.3rem}
+
+/* ── Footer ── */
+footer{margin-top:4rem;padding-top:1.4rem;border-top:1px solid var(--bdr);font-family:var(--sans);font-size:.78rem;color:var(--t3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+
+@media(max-width:600px){
+  .rtitle{font-size:1.6rem}
+  .toc ol{grid-template-columns:1fr}
+  .rmeta{gap:.7rem}
+  footer{flex-direction:column}
+}
+</style>
+
+<div class="page">
+
+<header class="rh">
+  <div class="rtag">InduSense · Maintenance Prédictive Industrielle</div>
+  <h1 class="rtitle">Détection anticipée de défaillances machines par apprentissage supervisé</h1>
+  <p class="rsub">Approche XGBoost avec validation GroupKFold et optimisation bayésienne — TP7 à TP11</p>
+  <div class="rmeta">
+    <span>Guillaume Saïdani</span>
+    <span>guillaume.saidani@ext.aelion.fr</span>
+    <span>Juillet 2026</span>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="toc-h">Table des matières</div>
+  <ol>
+    <li><a href="#ctx">Contexte et objectif</a></li>
+    <li><a href="#data">Données et features</a></li>
+    <li><a href="#method">Méthodologie d'évaluation</a></li>
+    <li><a href="#results">Résultats — progression des modèles</a></li>
+    <li><a href="#model">Choix du modèle final</a></li>
+    <li><a href="#threshold">Réglage du seuil de décision</a></li>
+    <li><a href="#improvements">Pistes d'amélioration</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ol>
+</nav>
+
+<!-- §1 -->
+<section id="ctx">
+  <div class="snum">01</div>
+  <h2>Contexte et objectif</h2>
+  <p>InduSense opère un parc de 15 machines industrielles instrumentées avec des capteurs IoT. Les relevés sont agrégés en fenêtres horaires et stockés dans la table <code>gold_machine_hourly_feature</code> de la base <code>indusense_db</code>. Chaque fenêtre est labellisée <code>label_failure_next_24h = 1</code> si une défaillance survient dans les 24 heures suivantes.</p>
+  <p>L'objectif est d'anticiper les pannes suffisamment tôt pour déclencher une maintenance préventive, réduire les arrêts non planifiés et optimiser les tournées de techniciens. La contrainte principale est le fort déséquilibre de classes : seulement 3,6 % des fenêtres précèdent une défaillance.</p>
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-l">Observations</div><div class="kpi-v">132 940</div><div class="kpi-n">fenêtres horaires</div></div>
+    <div class="kpi"><div class="kpi-l">Machines</div><div class="kpi-v">15</div><div class="kpi-n">entités distinctes</div></div>
+    <div class="kpi"><div class="kpi-l">Taux de panne</div><div class="kpi-v">3,6 %</div><div class="kpi-n">déséquilibre 1 : 26</div></div>
+    <div class="kpi"><div class="kpi-l">Horizon</div><div class="kpi-v">24 h</div><div class="kpi-n">prédiction anticipée</div></div>
+  </div>
+</section>
+
+<!-- §2 -->
+<section id="data">
+  <div class="snum">02</div>
+  <h2>Données et features</h2>
+  <p>La table source contient 75 colonnes. Après exclusion des métadonnées et colonnes cibles alternatives, <strong>69 features</strong> ont été retenues — dont des agrégats statistiques par fenêtre (min, max, mean, std) sur les capteurs de pression, température, vibration et débit.</p>
+
+  <h3>Découverte d'une fuite de données (TP8b)</h3>
+  <div class="alert alert-bad">
+    <strong>Fuite détectée — <code>feature_row_id</code></strong>
+    Cet identifiant séquentiel est fortement corrélé à <code>window_start</code>, lui-même corrélé aux périodes de dégradation. Inclus dans B5 et B7 (TP7), il produisait des modèles artificiellement performants (PR-AUC val ≈ 0,92). Retiré dès TP8b — toutes les métriques à partir de B5c sont honnêtes.
+  </div>
+
+  <h3>Split temporel — partitions</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Partition</th><th>Observations</th><th>Positifs</th><th>Taux</th><th>Période</th></tr></thead>
+    <tbody>
+      <tr><td>Train</td><td>93 079</td><td>3 474</td><td>3,7 %</td><td>Chronologiquement premier</td></tr>
+      <tr><td>Validation</td><td>19 917</td><td>773</td><td>3,9 %</td><td>Après train</td></tr>
+      <tr><td>Test</td><td>19 944</td><td>727</td><td>3,6 %</td><td>Chronologiquement dernier</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>Le champ <code>split_set</code> encode la partition. Aucune observation de val ou test n'est visible en train, garantissant l'absence de fuite temporelle (hors <code>feature_row_id</code>, identifiée et corrigée).</p>
+
+  <h3>Déséquilibre de classes</h3>
+  <p>Avec 3,6 % de positifs, le ratio est de 1 : 26. La pondération <code>scale_pos_weight = 26,78</code> est appliquée à XGBoost pour compenser ce déséquilibre lors de l'apprentissage. En validation GroupKFold, ce paramètre est recalculé fold par fold pour refléter la composition réelle de chaque sous-ensemble d'entraînement.</p>
+</section>
+
+<!-- §3 -->
+<section id="method">
+  <div class="snum">03</div>
+  <h2>Méthodologie d'évaluation</h2>
+
+  <h3>Métrique principale : PR-AUC</h3>
+  <p>La courbe précision-rappel (Average Precision / PR-AUC) est la métrique de référence pour les problèmes à classes fortement déséquilibrées. Elle mesure la capacité du modèle à détecter les pannes (rappel) sans déclencher trop d'alertes inutiles (précision). Contrairement au ROC-AUC, elle n'est pas gonflée par la masse de vrais négatifs.</p>
+
+  <h3>Deux phases de validation progressives</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Phase</th><th>Protocole</th><th>Question</th><th>Limite</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Phase 1</b> — TP7, TP8</td>
+        <td>Split temporel train / val / test</td>
+        <td>Le modèle prédit-il bien sur la période future ?</td>
+        <td>Toutes les machines sont dans train <em>et</em> val</td>
+      </tr>
+      <tr>
+        <td><b>Phase 2</b> — TP9, TP11</td>
+        <td>GroupKFold(15) — une machine par fold</td>
+        <td>Le modèle généralise-t-il à une machine <em>jamais vue</em> ?</td>
+        <td>Variance inter-machine élevée (σ ≈ 0,18)</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="alert">
+    <strong>Pourquoi GroupKFold est nécessaire</strong>
+    Un modèle déployé en production rencontre régulièrement des machines nouvelles ou peu vues en entraînement. Le split temporel — où toutes les machines apparaissent en train et en val — ne teste pas ce scénario. GroupKFold exclut une machine entière à chaque fold et mesure réellement la capacité de généralisation inter-machine.
+  </div>
+
+  <h3>Pipeline de traitement</h3>
+  <p>Chaque modèle suit le pipeline : <code>SimpleImputer(median)</code> → <code>XGBClassifier</code>. L'imputation est systématiquement fitée sur le train uniquement, puis appliquée à val et test. XGBoost gère nativement les valeurs manquantes restantes.</p>
+</section>
+
+<!-- §4 -->
+<section id="results">
+  <div class="snum">04</div>
+  <h2>Résultats — Progression des modèles</h2>
+
+  <div class="cw">
+    <canvas id="chart" height="230"></canvas>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Modèle</th><th>TP</th><th>PR-AUC val / CV</th><th>PR-AUC test</th><th>Statut</th></tr></thead>
+    <tbody>
+      <tr class="r-bad"><td><code>B5</code></td><td>TP7</td><td>~0,87</td><td>—</td><td><span class="b b-bad">Fuite feature_row_id</span></td></tr>
+      <tr class="r-bad"><td><code>B7</code></td><td>TP7</td><td>0,9213</td><td>—</td><td><span class="b b-bad">Fuite + Optuna biaisé</span></td></tr>
+      <tr><td><code>B5c</code></td><td>TP8b</td><td>0,8349</td><td>—</td><td>Baseline honnête après correction</td></tr>
+      <tr><td><code>B7c</code></td><td>TP8b</td><td>0,8340</td><td>—</td><td>Optuna sur split temporel (HP biaisés)</td></tr>
+      <tr><td><code>B8</code></td><td>TP8b</td><td>0,8497</td><td>0,8232</td><td>Meilleurs HP sur split temporel</td></tr>
+      <tr class="r-warn"><td><code>B8-ES</code></td><td>TP8c</td><td>0,8471</td><td>0,7968</td><td><span class="b b-warn">Early stopping — régression test</span></td></tr>
+      <tr><td><code>B9-GKF</code></td><td>TP9</td><td>0,7792 ± 0,18</td><td>0,8595</td><td>GroupKFold, HP B8 réutilisés</td></tr>
+      <tr class="r-bad"><td><code>B10-NRM</code></td><td>TP10</td><td>0,5580 ± 0,23</td><td>—</td><td><span class="b b-bad">Normalisation — décalage domaine</span></td></tr>
+      <tr class="r-ok"><td><strong><code>B11-GKF</code></strong></td><td>TP11</td><td><strong>0,7839 ± 0,19</strong></td><td><strong>0,8799</strong></td><td><span class="b b-ok">Meilleur — Optuna GroupKFold</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Analyse des résultats intermédiaires</h3>
+  <p><strong>Correction de la fuite (TP8b) :</strong> la chute apparente de 0,92 → 0,83 reflète la réalité, pas une dégradation du modèle. B5 et B7 mesuraient la capacité à mémoriser un identifiant séquentiel, pas à prédire des pannes.</p>
+  <p><strong>Early stopping (TP8c) :</strong> l'arrêt anticipé réduit à 57 arbres (au lieu de 382) mais l'overfitting persiste (Δ = 0,1529 vs 0,1503). Le score test recule à 0,7968. L'overfitting est structurel — les signatures de chaque machine sont mémorisées — et ne se corrige pas par le seul early stopping.</p>
+  <p><strong>Normalisation intra-machine (TP10) :</strong> tentative de z-score par machine avant l'entraînement. Résultat : CV = 0,5580, effondrement de 22 points. Cause identifiée : la machine de validation n'a pas de statistiques propres calculables — elle reçoit les z-scores flotte, créant un décalage de domaine entre train et val. Expérience négative documentée ; la règle retenue est de normaliser au niveau feature engineering (pré-calculé en base), pas à l'entraînement.</p>
+</section>
+
+<!-- §5 -->
+<section id="model">
+  <div class="snum">05</div>
+  <h2>Choix du modèle final</h2>
+
+  <p>Le modèle <strong>B11-GKF</strong> est retenu : XGBoost optimisé par Optuna (30 trials × 5 folds GroupKFold), avec évaluation finale sur 15 folds (une machine par fold). C'est le seul modèle dont les hyperparamètres ont été optimisés en visant directement la généralisation à de nouvelles machines.</p>
+
+  <div class="kpis">
+    <div class="kpi kpi-ok"><div class="kpi-l">PR-AUC test</div><div class="kpi-v">0,8799</div><div class="kpi-n">meilleur de la série</div></div>
+    <div class="kpi"><div class="kpi-l">PR-AUC CV</div><div class="kpi-v">0,7839</div><div class="kpi-n">± 0,1891 — 15 folds</div></div>
+    <div class="kpi"><div class="kpi-l">F1 test</div><div class="kpi-v">0,7586</div><div class="kpi-n">seuil 0,5</div></div>
+    <div class="kpi"><div class="kpi-l">Overfitting Δ</div><div class="kpi-v">0,216</div><div class="kpi-n">train=0,9997 vs CV</div></div>
+  </div>
+
+  <h3>Fingerprint hyperparamétrique — B8 vs B11</h3>
+  <p>La comparaison des hyperparamètres révèle l'impact du critère d'optimisation. B8 était optimisé sur le split temporel (mêmes machines en train et val) → favorise la mémorisation. B11 optimisé sur GroupKFold → force la régularisation.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Hyperparamètre</th><th>B8 — split temporel</th><th>B11 — GroupKFold</th><th>Ratio</th></tr></thead>
+    <tbody>
+      <tr><td><code>n_estimators</code></td><td>382</td><td>287</td><td>↓ 25 %</td></tr>
+      <tr><td><code>max_depth</code></td><td>8</td><td>9</td><td>↑</td></tr>
+      <tr><td><code>learning_rate</code></td><td>0,1937</td><td><strong>0,0289</strong></td><td><strong>÷ 7</strong></td></tr>
+      <tr><td><code>subsample</code></td><td>0,987</td><td>0,825</td><td>↓</td></tr>
+      <tr><td><code>colsample_bytree</code></td><td>0,804</td><td>0,574</td><td>↓↓</td></tr>
+      <tr><td><code>min_child_weight</code></td><td>6</td><td>11</td><td>↑↑</td></tr>
+      <tr><td><code>reg_alpha</code></td><td>0,00144</td><td>0,0192</td><td>× 13</td></tr>
+      <tr class="r-ok"><td><code>reg_lambda</code></td><td>0,000142</td><td><strong>0,623</strong></td><td><strong>× 4 380</strong></td></tr>
+    </tbody>
+  </table></div>
+  <div class="alert alert-ok">
+    <strong>Interprétation du fingerprint</strong>
+    <code>reg_lambda</code> quasi nul en B8 (la mémorisation des machines était tolérée par le critère d'optimisation) vs 0,623 en B11 (la régularisation est imposée par le signal GroupKFold). Ce ratio × 4 380 confirme l'hypothèse : B8 avait été tuné autour de la mémorisation machine, pas de la généralisation.
+  </div>
+
+  <h3>Performance par machine — B9-GKF vs B11-GKF</h3>
+  <div class="tw"><table>
+    <thead><tr><th>Machine</th><th>B9-GKF</th><th>B11-GKF</th><th>Δ</th><th>Profil</th></tr></thead>
+    <tbody>
+      <tr class="r-ok"><td>MACH-15</td><td>1,000</td><td>1,000</td><td>=</td><td><span class="b b-ok">Fiable</span></td></tr>
+      <tr class="r-ok"><td>MACH-11</td><td>1,000</td><td>1,000</td><td>=</td><td><span class="b b-ok">Fiable</span></td></tr>
+      <tr class="r-ok"><td>MACH-08</td><td>0,955</td><td>1,000</td><td>+0,045</td><td><span class="b b-ok">Fiable</span></td></tr>
+      <tr><td>MACH-06</td><td>0,917</td><td>0,947</td><td>+0,030</td><td><span class="b b-ok">Fiable</span></td></tr>
+      <tr><td>MACH-01</td><td>0,878</td><td>0,936</td><td>+0,058</td><td><span class="b b-acc">Fragile</span></td></tr>
+      <tr><td>MACH-04</td><td>0,874</td><td>—</td><td>—</td><td><span class="b b-acc">Fragile</span></td></tr>
+      <tr><td>MACH-14</td><td>0,793</td><td>—</td><td>—</td><td><span class="b b-acc">Fragile</span></td></tr>
+      <tr><td>MACH-09</td><td>0,784</td><td>—</td><td>—</td><td><span class="b b-acc">Fragile</span></td></tr>
+      <tr><td>MACH-12</td><td>0,761</td><td>—</td><td>—</td><td><span class="b b-acc">Fragile</span></td></tr>
+      <tr><td>MACH-10</td><td>0,760</td><td>—</td><td>—</td><td><span class="b b-acc">Fragile</span></td></tr>
+      <tr><td>MACH-03</td><td>0,707</td><td>—</td><td>—</td><td><span class="b b-warn">Problématique</span></td></tr>
+      <tr class="r-warn"><td>MACH-02</td><td>0,664</td><td>0,449</td><td>−0,215</td><td><span class="b b-warn">Problématique</span></td></tr>
+      <tr><td>MACH-13</td><td>0,639</td><td>—</td><td>—</td><td><span class="b b-warn">Problématique</span></td></tr>
+      <tr><td>MACH-05</td><td>0,568</td><td>—</td><td>—</td><td><span class="b b-warn">Problématique</span></td></tr>
+      <tr class="r-bad"><td>MACH-07</td><td>0,329</td><td>0,387</td><td>+0,058</td><td><span class="b b-bad">Artefact temporel</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Segmentation opérationnelle</h3>
+  <div class="seg">
+    <div class="seg-card">
+      <div class="seg-tag seg-tag-ok">Fiables (&gt; 0,90)</div>
+      <div class="seg-machines">MACH-15, MACH-11<br>MACH-08, MACH-06</div>
+      <div class="seg-note">Détection quasi-parfaite — signal sensoriel clair</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-tag seg-tag-acc">Fragiles (0,70–0,90)</div>
+      <div class="seg-machines">MACH-01, MACH-04<br>MACH-14, MACH-09<br>MACH-12, MACH-10</div>
+      <div class="seg-note">Bonnes performances, vigilance conseillée</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-tag seg-tag-warn">Problématiques (&lt; 0,70)</div>
+      <div class="seg-machines">MACH-03, MACH-02<br>MACH-13, MACH-05</div>
+      <div class="seg-note">Hétérogénéité sensorielle — feature engineering ciblé</div>
+    </div>
+    <div class="seg-card">
+      <div class="seg-tag seg-tag-bad">Artefact temporel</div>
+      <div class="seg-machines">MACH-07</div>
+      <div class="seg-note">0,8 % de pannes en train vs 3,5 % en val — dégradation tardive (H1 confirmée)</div>
+    </div>
+  </div>
+
+  <h3>Analyse MACH-07 — PR-AUC = 0,329</h3>
+  <div class="alert alert-warn">
+    <strong>H1 confirmée — Artefact temporel, pas un échec du modèle</strong>
+    MACH-07 présente 0,8 % de pannes en période d'entraînement contre 3,5 % en validation (dégradation tardive, non représentée en train). Le modèle n'a jamais observé de pannes en conditions nominales pour cette machine. H2 (profil sensoriel atypique) est rejetée : seulement 3 features présentent |z| > 2 vs flotte. H3 (incapacité à scorer les pannes) est rejetée : 93 % des pannes de MACH-07 sont scorées > 0,5 quand on applique le modèle. Le PR-AUC bas (0,329 / 0,387) est un artefact statistique dû aux 24 positifs seulement en val.
+  </div>
+</section>
+
+<!-- §6 -->
+<section id="threshold">
+  <div class="snum">06</div>
+  <h2>Réglage du seuil de décision</h2>
+  <p>Le seuil par défaut (0,5) n'est pas optimal pour la maintenance prédictive. Les coûts sont asymétriques :</p>
+  <div class="tw"><table>
+    <thead><tr><th>Erreur</th><th>Conséquence opérationnelle</th><th>Coût</th></tr></thead>
+    <tbody>
+      <tr><td>Faux négatif (FN)</td><td>Panne non détectée → arrêt non planifié, production perdue</td><td>Élevé</td></tr>
+      <tr><td>Faux positif (FP)</td><td>Intervention préventive inutile → coût technicien</td><td>Modéré</td></tr>
+    </tbody>
+  </table></div>
+  <p>Un seuil plus bas (0,30–0,40) favorise le rappel au détriment de la précision, ce qui est généralement préféré. Le modèle B11-GKF atteint <strong>F1 = 0,7586</strong> au seuil 0,5. Le seuil optimal doit être calibré avec les équipes opérationnelles en fonction du ratio coût FN / coût FP propre au contexte client.</p>
+  <p>Une étape de calibration des probabilités (Platt scaling, régression isotonique) permettrait d'aligner les scores de sortie sur les fréquences réelles de panne et de rendre le réglage du seuil plus interprétable.</p>
+</section>
+
+<!-- §7 -->
+<section id="improvements">
+  <div class="snum">07</div>
+  <h2>Pistes d'amélioration</h2>
+
+  <h3>Ce qui a été implémenté</h3>
+  <ul class="cl">
+    <li>
+      <div class="ci ci-done">✓</div>
+      <div><div><strong>Correction de la fuite <code>feature_row_id</code> (TP8b)</strong></div><div class="cn">Identifiée et exclue — toutes les métriques TP8b → TP11 sont honnêtes</div></div>
+    </li>
+    <li>
+      <div class="ci ci-done">✓</div>
+      <div><div><strong>GroupKFold par machine — validation honnête (TP9)</strong></div><div class="cn">15 folds, une machine exclue par fold — score CV reproductible et interprétable par entité</div></div>
+    </li>
+    <li>
+      <div class="ci ci-done">✓</div>
+      <div><div><strong>Diagnostic per-machine — analyse H1/H2/H3 (TP9 §6)</strong></div><div class="cn">MACH-07 disséqué : artefact temporel identifié, segmentation Fiable / Fragile / Problématique construite</div></div>
+    </li>
+    <li>
+      <div class="ci ci-done">✓</div>
+      <div><div><strong>Normalisation intra-machine expérimentée et documentée (TP10)</strong></div><div class="cn">CV = 0,5580 — échec documenté ; règle dégagée : normaliser au niveau feature engineering, pas entraînement</div></div>
+    </li>
+    <li>
+      <div class="ci ci-done">✓</div>
+      <div><div><strong>Optuna GroupKFold comme objectif (TP11)</strong></div><div class="cn">HP re-tunés directement sur la généralisation machine — fingerprint radicalement différent de B8 (reg_lambda × 4 380)</div></div>
+    </li>
+  </ul>
+
+  <h3>Ce qui reste à faire</h3>
+  <ul class="cl">
+    <li>
+      <div class="ci ci-todo">○</div>
+      <div><div><strong>Features <code>zscore_machine</code> pré-calculées en base</strong></div><div class="cn">Calculer les stats de normalisation sur l'historique de chaque machine et les stocker en DB → évite le décalage de domaine identifié en TP10</div></div>
+    </li>
+    <li>
+      <div class="ci ci-todo">○</div>
+      <div><div><strong>Calibration des probabilités</strong></div><div class="cn">Platt scaling ou régression isotonique — aligner les scores sur les fréquences réelles pour un réglage de seuil plus interprétable</div></div>
+    </li>
+    <li>
+      <div class="ci ci-todo">○</div>
+      <div><div><strong>Feature engineering ciblé sur machines Problématiques</strong></div><div class="cn">MACH-02, MACH-03, MACH-05, MACH-13 présentent une hétérogénéité sensorielle — explorer des lags temporels ou des combinaisons non linéaires de capteurs</div></div>
+    </li>
+    <li>
+      <div class="ci ci-todo">○</div>
+      <div><div><strong>Stratégie de burn-in pour machines nouvelles</strong></div><div class="cn">En production : utiliser les stats flotte les premières semaines, basculer vers les stats machine dès N observations disponibles</div></div>
+    </li>
+  </ul>
+</section>
+
+<!-- §8 -->
+<section id="conclusion">
+  <div class="snum">08</div>
+  <h2>Conclusion</h2>
+  <p>L'objectif — prédire les défaillances machines à 24 h avec un PR-AUC supérieur à 0,85 sur données test — est atteint avec le modèle <strong>B11-GKF</strong> (PR-AUC test = <strong>0,8799</strong>), meilleur résultat de la série de TP7 à TP11.</p>
+  <p>Le chemin parcouru a mis en évidence trois enseignements principaux :</p>
+  <ol class="body-list">
+    <li><strong>Le protocole de validation définit la signification du score.</strong> Un PR-AUC de 0,92 biaisé (fuite + split temporel) et 0,78 honnête (GroupKFold) ne mesurent pas la même chose. La découverte et la correction de la fuite <code>feature_row_id</code> est l'un des résultats les plus importants de cette série.</li>
+    <li><strong>Le critère d'optimisation Optuna doit refléter le déploiement réel.</strong> Optimiser sur le split temporel pour un modèle déployé sur de nouvelles machines introduit un biais systématique dans les hyperparamètres (reg_lambda × 4 380 entre B8 et B11). L'alignement critère / déploiement est un principe général.</li>
+    <li><strong>La variabilité inter-machine est la contrainte structurelle principale.</strong> L'overfitting résiduel (Δ = 0,22) est davantage lié à l'hétérogénéité des machines qu'aux hyperparamètres. MACH-07 illustre qu'un score bas peut être un artefact temporel, pas une défaillance du modèle.</li>
+  </ol>
+  <p>La prochaine priorité est le pré-calcul des <code>zscore_machine</code> au niveau de la feature engineering, seule approche évitant le décalage de domaine identifié en TP10 et ouvrant la voie à une normalisation robuste en production.</p>
+
+  <div class="kpis" style="margin-top:1.5rem">
+    <div class="kpi"><div class="kpi-l">Modèle retenu</div><div class="kpi-v" style="font-size:1.1rem;line-height:1.3">B11-GKF</div><div class="kpi-n">XGBoost + Optuna GroupKFold</div></div>
+    <div class="kpi kpi-ok"><div class="kpi-l">PR-AUC test</div><div class="kpi-v">0,8799</div><div class="kpi-n">meilleur de la série</div></div>
+    <div class="kpi"><div class="kpi-l">F1 test</div><div class="kpi-v">0,7586</div><div class="kpi-n">seuil par défaut 0,5</div></div>
+    <div class="kpi"><div class="kpi-l">CV GroupKFold</div><div class="kpi-v">0,7839</div><div class="kpi-n">± 0,1891 — 15 folds</div></div>
+  </div>
+</section>
+
+<footer>
+  <span>Guillaume Saïdani · guillaume.saidani@ext.aelion.fr</span>
+  <span>Juillet 2026 · InduSense Predictive Maintenance</span>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  const canvas = document.getElementById('chart');
+  if (!canvas) return;
+
+  const models = [
+    { label:'B5c',    tp:'TP8b', cv:0.8349, test:null,   st:'neutral' },
+    { label:'B8',     tp:'TP8b', cv:0.8497, test:0.8232, st:'neutral' },
+    { label:'B8-ES',  tp:'TP8c', cv:0.8471, test:0.7968, st:'warn'    },
+    { label:'B9-GKF', tp:'TP9',  cv:0.7792, test:0.8595, st:'accent'  },
+    { label:'B10-NRM',tp:'TP10', cv:0.5580, test:null,   st:'bad'     },
+    { label:'B11-GKF',tp:'TP11', cv:0.7839, test:0.8799, st:'ok'      },
+  ];
+
+  function isDark(){
+    const t = document.documentElement.getAttribute('data-theme');
+    if(t==='dark') return true; if(t==='light') return false;
+    return window.matchMedia('(prefers-color-scheme:dark)').matches;
+  }
+
+  function draw(){
+    const dark = isDark();
+    const dpr = window.devicePixelRatio||1;
+    const W = canvas.parentElement.clientWidth - 28;
+    const H = 230;
+    canvas.width = W*dpr; canvas.height = H*dpr;
+    canvas.style.width = W+'px'; canvas.style.height = H+'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+
+    const C = {
+      bg:    dark?'#21262D':'#FFFFFF',
+      t1:    dark?'#E6EDF3':'#1C2128',
+      t2:    dark?'#8B949E':'#57606A',
+      grid:  dark?'#30363D':'#D0D7DE',
+      ok:    dark?'#3FB950':'#1A7F37',
+      warn:  dark?'#D29922':'#9A6700',
+      bad:   dark?'#FF7B72':'#CF4526',
+      acc:   dark?'#58A6FF':'#1563AD',
+      neut:  dark?'#58A6FF':'#1563AD',
+    };
+
+    const pad={top:22,right:16,bottom:58,left:42};
+    const cw=W-pad.left-pad.right, ch=H-pad.top-pad.bottom;
+    const n=models.length, colW=cw/n, bW=colW*0.28;
+
+    // Grid lines
+    ctx.setLineDash([3,3]); ctx.lineWidth=1;
+    [0,0.25,0.5,0.75,1].forEach(v=>{
+      const y=pad.top+ch*(1-v);
+      ctx.strokeStyle=C.grid;
+      ctx.beginPath(); ctx.moveTo(pad.left,y); ctx.lineTo(pad.left+cw,y); ctx.stroke();
+      ctx.fillStyle=C.t2; ctx.font=`10px var(--sans,-apple-system,sans-serif)`;
+      ctx.textAlign='right'; ctx.fillText(v.toFixed(2),pad.left-5,y+4);
+    });
+    ctx.setLineDash([]);
+
+    models.forEach((m,i)=>{
+      const cx=pad.left+colW*i+colW/2;
+      const col = m.st==='ok'?C.ok:m.st==='bad'?C.bad:m.st==='warn'?C.warn:C.acc;
+
+      // CV bar (semi-transparent)
+      const cvH=ch*m.cv, cvY=pad.top+ch-cvH;
+      ctx.fillStyle=col+'88';
+      ctx.fillRect(cx-bW-2,cvY,bW,cvH);
+      ctx.fillStyle=col;
+      ctx.font=`bold 9px var(--sans,-apple-system,sans-serif)`;
+      ctx.textAlign='center';
+      ctx.fillText(m.cv.toFixed(3),cx-bW/2-2,cvY-3);
+
+      // Test bar
+      if(m.test!==null){
+        const tH=ch*m.test, tY=pad.top+ch-tH;
+        ctx.fillStyle=col;
+        ctx.fillRect(cx+2,tY,bW,tH);
+        ctx.fillText(m.test.toFixed(3),cx+bW/2+2,tY-3);
+      }
+
+      // Labels
+      ctx.fillStyle=C.t1; ctx.font=`bold 11px var(--sans,-apple-system,sans-serif)`;
+      ctx.textAlign='center'; ctx.fillText(m.label,cx,H-pad.bottom+14);
+      ctx.fillStyle=C.t2; ctx.font=`9px var(--sans,-apple-system,sans-serif)`;
+      ctx.fillText(m.tp,cx,H-pad.bottom+25);
+    });
+
+    // Legend
+    const lx=pad.left, ly=H-5;
+    ctx.fillStyle=C.t2+'88'; ctx.fillRect(lx,ly-8,12,8);
+    ctx.fillStyle=C.t2; ctx.font=`9px var(--sans,-apple-system,sans-serif)`;
+    ctx.textAlign='left'; ctx.fillText('Val/CV',lx+15,ly);
+    ctx.fillStyle=C.t2; ctx.fillRect(lx+72,ly-8,12,8);
+    ctx.fillText('Test',lx+87,ly);
+  }
+
+  draw();
+  new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  window.addEventListener('resize',draw);
+  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',draw);
+})();
+</script>

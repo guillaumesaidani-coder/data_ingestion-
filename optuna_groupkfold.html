@@ -1,0 +1,379 @@
+<title>Optuna GroupKFold — Tuning honnête</title>
+<style>
+  :root {
+    --bg: #F5F6F8; --bg2: #ECEEF2; --bg3: #E2E5EB;
+    --surface: #FFFFFF; --border: #D0D4DC;
+    --text: #1E2233; --text2: #5A607A;
+    --accent: #9B7FD4;
+    --green: #27A876; --green-bg: #E8F8F2;
+    --orange: #D4900A; --orange-bg: #FDF4DC;
+    --red: #CC3A3A; --red-bg: #FDEAEA;
+    --mono: "SF Mono", "Fira Code", "Consolas", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0F1117; --bg2: #161923; --bg3: #1E2233;
+      --surface: #1A1D2E; --border: #2D3244;
+      --text: #E4E8F5; --text2: #8892B0;
+      --green: #5ECFA8; --green-bg: #0D2B22;
+      --orange: #E8B84B; --orange-bg: #2A2010;
+      --red: #E05A5A; --red-bg: #2B1010;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:#F5F6F8;--bg2:#ECEEF2;--bg3:#E2E5EB;--surface:#FFFFFF;--border:#D0D4DC;
+    --text:#1E2233;--text2:#5A607A;--green:#27A876;--green-bg:#E8F8F2;
+    --orange:#D4900A;--orange-bg:#FDF4DC;--red:#CC3A3A;--red-bg:#FDEAEA;
+  }
+  :root[data-theme="dark"] {
+    --bg:#0F1117;--bg2:#161923;--bg3:#1E2233;--surface:#1A1D2E;--border:#2D3244;
+    --text:#E4E8F5;--text2:#8892B0;--green:#5ECFA8;--green-bg:#0D2B22;
+    --orange:#E8B84B;--orange-bg:#2A2010;--red:#E05A5A;--red-bg:#2B1010;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:15px}
+  header{background:var(--surface);border-bottom:1px solid var(--border);padding:2rem 2.5rem 1.5rem}
+  .breadcrumb{font-size:12px;color:var(--text2);letter-spacing:.04em;text-transform:uppercase;margin-bottom:.6rem;font-family:var(--mono)}
+  h1{font-size:1.6rem;font-weight:700;margin-bottom:.3rem;text-wrap:balance}
+  .subtitle{color:var(--text2);font-size:.9rem}
+  .container{max-width:900px;margin:0 auto;padding:2rem 2rem 4rem;display:flex;flex-direction:column;gap:2rem}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+  .card-header{padding:1rem 1.4rem;border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:.8rem}
+  .card-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text2)}
+  .card-body{padding:1.4rem}
+  .pending{color:var(--text2);font-style:italic;font-size:.85rem}
+
+  /* Schema */
+  .schema-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  @media(max-width:600px){.schema-grid{grid-template-columns:1fr}}
+  .schema-box{border:1px solid var(--border);border-radius:6px;overflow:hidden}
+  .schema-title{padding:.5rem .9rem;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--bg2);color:var(--text2);border-bottom:1px solid var(--border)}
+  .schema-body{padding:.9rem;display:flex;flex-direction:column;gap:.5rem;font-size:.82rem}
+  .schema-row{display:flex;align-items:flex-start;gap:.5rem}
+  .schema-label{color:var(--text2);width:5rem;flex-shrink:0;padding-top:.1rem}
+  .schema-val{font-family:var(--mono);font-size:.78rem;background:var(--bg2);border-radius:4px;padding:.2rem .6rem;line-height:1.5}
+  .arrow-box{display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--text2);padding-top:1rem}
+
+  .warn-box{background:var(--orange-bg);border:1px solid var(--orange);border-radius:6px;padding:.7rem 1rem;font-size:.82rem;color:var(--orange);display:flex;gap:.5rem}
+  .info-box{background:var(--green-bg);border:1px solid var(--green);border-radius:6px;padding:.7rem 1rem;font-size:.82rem;color:var(--green);display:flex;gap:.5rem}
+
+  /* KPI */
+  .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+  @media(max-width:600px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+  .kpi{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.9rem 1rem;text-align:center}
+  .kpi-val{font-size:1.4rem;font-weight:800;font-family:var(--mono);font-variant-numeric:tabular-nums;line-height:1.1}
+  .kpi-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);margin-top:.3rem}
+  .kpi-sub{font-size:.72rem;color:var(--text2);margin-top:.15rem}
+  .pending-val{color:var(--text2)}
+
+  /* Tables */
+  .data-table{width:100%;border-collapse:collapse;font-size:.84rem;font-variant-numeric:tabular-nums}
+  .data-table th{text-align:left;padding:.55rem .9rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text2);border-bottom:2px solid var(--border);white-space:nowrap}
+  .data-table td{padding:.55rem .9rem;border-bottom:1px solid var(--border)}
+  .data-table tr:last-child td{border-bottom:none}
+  .data-table tr.highlight td{background:var(--bg2);font-weight:600}
+  .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.72rem;font-weight:700;font-family:var(--mono)}
+  .badge-orange{background:var(--orange-bg);color:var(--orange)}
+  .badge-green{background:var(--green-bg);color:var(--green)}
+  .badge-purple{background:#2A1F42;color:var(--accent)}
+  .up{color:var(--green)}.down{color:var(--red)}.neutral{color:var(--text2)}
+
+  /* HP diff row */
+  .changed td{background:color-mix(in srgb,var(--orange-bg) 40%,transparent)}
+
+  canvas{display:block;width:100%;height:auto}
+  .chart-wrap{padding:.4rem 1.4rem 1rem}
+</style>
+
+<header>
+  <div class="breadcrumb">TP11 · Maintenance Prédictive · B11-GKF</div>
+  <h1>Optuna GroupKFold — Tuning ciblant la généralisation machine</h1>
+  <p class="subtitle">Re-tuner les hyperparamètres avec un critère honnête : PR-AUC moyen sur machines inconnues</p>
+</header>
+
+<div class="container">
+
+  <!-- §1 Pourquoi re-tuner -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Pourquoi B8 est biaisé</span></div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:1rem">
+      <div class="schema-grid">
+        <div class="schema-box">
+          <div class="schema-title">⚠ B8 — Optuna sur split temporel</div>
+          <div class="schema-body">
+            <div class="schema-row"><span class="schema-label">Objectif</span><span class="schema-val">PR-AUC val (même machines)</span></div>
+            <div class="schema-row"><span class="schema-label">Risque</span><span class="schema-val">Favorise mémorisation<br>des signatures machine</span></div>
+            <div class="schema-row"><span class="schema-label">Résultat</span><span class="schema-val">max_depth=8, reg_λ≈0<br>→ complexité maximale</span></div>
+          </div>
+        </div>
+        <div class="schema-box">
+          <div class="schema-title">✓ B11 — Optuna sur GroupKFold(5)</div>
+          <div class="schema-body">
+            <div class="schema-row"><span class="schema-label">Objectif</span><span class="schema-val">PR-AUC moyen (5 machines inconnues)</span></div>
+            <div class="schema-row"><span class="schema-label">Attente</span><span class="schema-val">Favorise la généralisation<br>→ régularisation accrue</span></div>
+            <div class="schema-row"><span class="schema-label">Coût</span><span class="schema-val">30 trials × 5 folds<br>= 150 fits (~20 min)</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="warn-box">
+        <span>⚠</span>
+        <span>Le critère d'optimisation Optuna détermine quel type de modèle le tuner cherche. Un critère biaisé produit des hyperparamètres biaisés — même si le CV final semble bon.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- §2 KPIs — placeholders -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-val" style="color:var(--green)">0.7839</div>
+      <div class="kpi-label">PR-AUC CV moyen</div>
+      <div class="kpi-sub up">+0.005 vs B9</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val" style="color:var(--orange)">±0.189</div>
+      <div class="kpi-label">Std inter-machines</div>
+      <div class="kpi-sub" style="color:var(--red)">+0.012 vs B9</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val" style="color:var(--green)">0.8799</div>
+      <div class="kpi-label">PR-AUC test</div>
+      <div class="kpi-sub up">+0.020 — meilleur série</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val" style="color:var(--orange)">0.7586</div>
+      <div class="kpi-label">F1 test</div>
+      <div class="kpi-sub" style="color:var(--red)">−0.032 vs B9</div>
+    </div>
+  </div>
+
+  <!-- §3 HP comparison -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Hyperparamètres — B8 vs B11 (fingerprint)</span></div>
+    <div class="card-body" style="overflow-x:auto">
+      <table class="data-table">
+        <thead>
+          <tr><th>Hyperparamètre</th><th>B8 (split temporel)</th><th>B11 (GroupKFold)</th><th>Signal</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>n_estimators</td><td>382</td><td>287</td><td style="font-size:.78rem;color:var(--text2)">Moins d'arbres (lr compensé)</td></tr>
+          <tr><td>max_depth</td><td>8</td><td>9</td><td style="font-size:.78rem;color:var(--text2)">Compensé par forte régularisation</td></tr>
+          <tr class="changed"><td>learning_rate</td><td>0.1937</td><td><strong>0.0289</strong></td><td style="font-size:.78rem;color:var(--orange)">÷7 — apprentissage beaucoup plus lent</td></tr>
+          <tr><td>subsample</td><td>0.987</td><td>0.825</td><td style="font-size:.78rem;color:var(--text2)">Plus de stochasticité</td></tr>
+          <tr class="changed"><td>colsample_bytree</td><td>0.804</td><td><strong>0.574</strong></td><td style="font-size:.78rem;color:var(--orange)">Moins de features par arbre ↑ généralisation</td></tr>
+          <tr class="changed"><td>min_child_weight</td><td>6</td><td><strong>11</strong></td><td style="font-size:.78rem;color:var(--orange)">Feuilles plus contraintes</td></tr>
+          <tr><td>reg_alpha (L1)</td><td>0.00144</td><td>0.0192</td><td style="font-size:.78rem;color:var(--text2)">×13</td></tr>
+          <tr class="changed"><td>reg_lambda (L2)</td><td>0.000142</td><td><strong>0.6229</strong></td><td style="font-size:.78rem;color:var(--orange)">×4 380 — signal fort du tuner</td></tr>
+        </tbody>
+      </table>
+      <div class="info-box" style="margin-top:1rem">
+        <span>✓</span>
+        <span>Hypothèse confirmée : GroupKFold a poussé vers un modèle bien plus régularisé. <strong>reg_lambda quasi nul en B8</strong> (mémorisation tolérée) vs <strong>0.623 en B11</strong> (généralisation forcée). Le tuner ne peut plus tricher sur les signatures machine.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- §3b Par machine -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">PR-AUC par machine — B9-GKF vs B11-GKF</span></div>
+    <div class="chart-wrap">
+      <canvas id="machineChart" height="440"></canvas>
+    </div>
+  </div>
+
+  <!-- §4 Comparaison globale -->
+  <div class="card">
+    <div class="card-header"><span class="card-title">Comparaison globale — toute la série</span></div>
+    <div class="card-body" style="overflow-x:auto">
+      <table class="data-table">
+        <thead>
+          <tr><th>Modèle</th><th>Optuna objectif</th><th>PR-AUC CV</th><th>PR-AUC test</th><th>F1 test</th><th>Δ test vs B9</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>B8/B9-GKF</strong></td>
+            <td><span class="badge badge-orange">Split temporel</span></td>
+            <td>0.7792 <span style="color:var(--text2);font-size:.75rem">±0.177</span></td>
+            <td>0.8595</td><td>0.7908</td><td class="neutral">—</td>
+          </tr>
+          <tr class="highlight">
+            <td><strong>B11-GKF</strong></td>
+            <td><span class="badge badge-green">GroupKFold(5)</span></td>
+            <td>0.7839 <span style="color:var(--text2);font-size:.75rem">±0.189</span></td>
+            <td><strong style="color:var(--green)">0.8799</strong></td>
+            <td>0.7586</td>
+            <td class="up">+0.020</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="margin-top:1rem;font-size:.8rem;color:var(--text2);line-height:1.5">
+        <strong style="color:var(--text)">PR-AUC test 0.8799 = meilleur de toute la série.</strong>
+        CV quasi-stable (+0.005) — l'amélioration vient du volume de données (modèle final entraîné sur train+val).
+        F1 en léger recul (−0.032) : le modèle régularisé est moins agressif sur le seuil.
+        Overfitting Δ=0.216 — reste élevé, l'hétérogénéité inter-machines est structurelle.
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Convergence chart placeholder ──────────────────────────────────────────
+const B9_SCORES = {
+  "MACH-07":0.329,"MACH-05":0.568,"MACH-13":0.639,"MACH-02":0.664,
+  "MACH-03":0.707,"MACH-10":0.760,"MACH-12":0.761,"MACH-09":0.784,
+  "MACH-14":0.793,"MACH-04":0.874,"MACH-01":0.878,"MACH-06":0.917,
+  "MACH-08":0.955,"MACH-15":1.000,"MACH-11":1.000
+};
+
+function isDark() {
+  const dt = document.documentElement.dataset.theme;
+  if (dt === "dark") return true;
+  if (dt === "light") return false;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+function drawConvergencePlaceholder() {
+  const canvas = document.getElementById("convergenceChart");
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth - 32;
+  const H = 200;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  const dark = isDark();
+  ctx.fillStyle = dark ? "#1A1D2E" : "#F5F6F8";
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = dark ? "#8892B0" : "#5A607A";
+  ctx.font = "13px system-ui";
+  ctx.textAlign = "center";
+  ctx.fillText("En attente des résultats Optuna…", W / 2, H / 2 - 8);
+  ctx.font = "11px monospace";
+  ctx.fillStyle = dark ? "#5ECFA8" : "#27A876";
+  ctx.fillText("30 trials × 5 folds GroupKFold en cours", W / 2, H / 2 + 14);
+}
+
+function drawMachinePlaceholder() {
+  const canvas = document.getElementById("machineChart");
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth - 32;
+  const ROW_H = 26, LABEL_W = 72, PAD_R = 50, PAD_TOP = 16, PAD_BOT = 24;
+  const machines = Object.keys(B9_SCORES).sort((a,b) => B9_SCORES[a]-B9_SCORES[b]);
+  const H = ROW_H * machines.length + PAD_TOP + PAD_BOT;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  const dark = isDark();
+  const chartW = W - LABEL_W - PAD_R;
+  const gridColor = dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
+  const text2 = dark ? "#8892B0" : "#5A607A";
+  const accentColor = dark ? "#9B7FD4" : "#7B5FBF";
+
+  // Grid
+  [0,0.2,0.4,0.6,0.8,1.0].forEach(v => {
+    const x = LABEL_W + v * chartW;
+    ctx.beginPath(); ctx.strokeStyle = gridColor; ctx.lineWidth = 1;
+    ctx.moveTo(x, PAD_TOP); ctx.lineTo(x, PAD_TOP + ROW_H * machines.length); ctx.stroke();
+    ctx.fillStyle = text2; ctx.font = "10px monospace"; ctx.textAlign = "center";
+    ctx.fillText(v.toFixed(1), x, PAD_TOP + ROW_H * machines.length + 14);
+  });
+
+  // B9 bars (reference, faded)
+  machines.forEach((m, i) => {
+    const score = B9_SCORES[m];
+    const y = PAD_TOP + i * ROW_H;
+    const barW = score * chartW;
+    ctx.fillStyle = accentColor + "30";
+    ctx.fillRect(LABEL_W, y + 3, barW, ROW_H - 6);
+    ctx.fillStyle = accentColor + "80";
+    ctx.fillRect(LABEL_W, y + 3, barW, 3);
+    // Label
+    ctx.fillStyle = text2;
+    ctx.font = "bold 10px monospace"; ctx.textAlign = "right";
+    ctx.fillText(m, LABEL_W - 8, y + 3 + (ROW_H-6)/2 + 4);
+    ctx.fillStyle = text2; ctx.font = "10px monospace"; ctx.textAlign = "left";
+    ctx.fillText(score.toFixed(3), LABEL_W + barW + 4, y + 3 + (ROW_H-6)/2 + 4);
+  });
+
+  // Legend
+  ctx.fillStyle = accentColor + "80";
+  ctx.fillRect(LABEL_W, PAD_TOP - 12, 30, 8);
+  ctx.fillStyle = text2; ctx.font = "10px system-ui"; ctx.textAlign = "left";
+  ctx.fillText("B9-GKF (référence) — B11 à venir", LABEL_W + 36, PAD_TOP - 5);
+}
+
+const B11_SCORES = {
+  "MACH-07":0.3872,"MACH-05":0.6102,"MACH-13":0.7363,"MACH-02":0.4485,
+  "MACH-03":0.7159,"MACH-10":0.7882,"MACH-12":0.7538,"MACH-09":0.8065,
+  "MACH-14":0.7975,"MACH-04":0.8311,"MACH-01":0.9357,"MACH-06":0.9473,
+  "MACH-08":1.0000,"MACH-15":1.0000,"MACH-11":1.0000
+};
+
+function drawMachineChart() {
+  const canvas = document.getElementById("machineChart");
+  if (!canvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth - 32;
+  const ROW_H = 28, LABEL_W = 76, PAD_R = 56, PAD_TOP = 28, PAD_BOT = 28;
+  const machines = Object.keys(B9_SCORES).sort((a,b) => B9_SCORES[a]-B9_SCORES[b]);
+  const H = ROW_H * machines.length + PAD_TOP + PAD_BOT;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  canvas.style.width = W + "px"; canvas.style.height = H + "px";
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  const dark = isDark();
+  const chartW = W - LABEL_W - PAD_R;
+  const gridColor = dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
+  const text2 = dark ? "#8892B0" : "#5A607A";
+  const b9Color  = dark ? "#9B7FD4" : "#7B5FBF";
+  const b11Color = dark ? "#5ECFA8" : "#27A876";
+  const redColor = dark ? "#E05A5A" : "#CC3A3A";
+
+  [0,0.2,0.4,0.6,0.8,1.0].forEach(v => {
+    const x = LABEL_W + v * chartW;
+    ctx.beginPath(); ctx.strokeStyle = gridColor; ctx.lineWidth = 1;
+    ctx.moveTo(x, PAD_TOP - 8); ctx.lineTo(x, PAD_TOP + ROW_H * machines.length); ctx.stroke();
+    ctx.fillStyle = text2; ctx.font = "10px monospace"; ctx.textAlign = "center";
+    ctx.fillText(v.toFixed(1), x, PAD_TOP + ROW_H * machines.length + 14);
+  });
+
+  ctx.fillStyle = b9Color; ctx.fillRect(LABEL_W, 6, 20, 8);
+  ctx.fillStyle = text2; ctx.font = "10px system-ui"; ctx.textAlign = "left";
+  ctx.fillText("B9-GKF", LABEL_W + 24, 15);
+  ctx.fillStyle = b11Color; ctx.fillRect(LABEL_W + 90, 6, 20, 8);
+  ctx.fillText("B11-GKF", LABEL_W + 114, 15);
+
+  machines.forEach((m, i) => {
+    const b9  = B9_SCORES[m];
+    const b11 = B11_SCORES[m];
+    const delta = b11 - b9;
+    const y = PAD_TOP + i * ROW_H;
+    const gap = 3, bh = (ROW_H - gap * 3) / 2;
+    ctx.fillStyle = b9Color + "25";
+    ctx.fillRect(LABEL_W, y + gap, b9 * chartW, bh);
+    ctx.fillStyle = b9Color;
+    ctx.fillRect(LABEL_W, y + gap, b9 * chartW, 2);
+    const b11col = delta < -0.05 ? redColor : b11Color;
+    ctx.fillStyle = b11col + "35";
+    ctx.fillRect(LABEL_W, y + gap + bh + gap, b11 * chartW, bh);
+    ctx.fillStyle = b11col;
+    ctx.fillRect(LABEL_W, y + gap + bh + gap, b11 * chartW, 2);
+    ctx.fillStyle = text2; ctx.font = "bold 10px monospace"; ctx.textAlign = "right";
+    ctx.fillText(m, LABEL_W - 6, y + ROW_H / 2 + 4);
+    const deltaStr = (delta >= 0 ? "+" : "") + delta.toFixed(3);
+    ctx.fillStyle = delta < -0.05 ? redColor : delta > 0.02 ? b11Color : text2;
+    ctx.font = "bold 9px monospace"; ctx.textAlign = "left";
+    ctx.fillText(deltaStr, LABEL_W + Math.max(b9, b11) * chartW + 4, y + ROW_H / 2 + 4);
+  });
+}
+
+drawConvergencePlaceholder();
+drawMachineChart();
+window.addEventListener("resize", () => { drawConvergencePlaceholder(); drawMachineChart(); });
+new MutationObserver(() => { drawConvergencePlaceholder(); drawMachineChart(); })
+  .observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+  drawConvergencePlaceholder(); drawMachineChart();
+});
+</script>

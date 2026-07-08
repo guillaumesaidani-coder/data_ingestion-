@@ -1,0 +1,380 @@
+<title>TP10 — Normalisation Intra-Machine | InduSense</title>
+<style>
+:root {
+  --bg:#F2F4F8;--surf:#FFF;--surf2:#EAECF1;
+  --t1:#1A1E2B;--t2:#52596A;--t3:#8E97A8;
+  --acc:#3E72B8;--acc-d:#D2E0F4;
+  --ok:#2E8B57;--ok-d:#D4EDE0;
+  --warn:#C07A10;--warn-d:#FDF3DC;
+  --bad:#C03A2B;--bad-d:#FAE2DF;
+  --bdr:#CDD2DC;--r:8px;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --mono:'Cascadia Code','SF Mono',Consolas,monospace;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#141820;--surf:#1E2330;--surf2:#262D3E;
+  --t1:#E2E8F5;--t2:#8A94A8;--t3:#5A6275;
+  --acc:#6B9FE0;--acc-d:#1A2E4A;
+  --ok:#4BB87A;--ok-d:#0E2B1C;
+  --warn:#E0A030;--warn-d:#2A1E06;
+  --bad:#E06055;--bad-d:#2E100D;
+  --bdr:#2C3448;
+}}
+:root[data-theme="dark"]{--bg:#141820;--surf:#1E2330;--surf2:#262D3E;--t1:#E2E8F5;--t2:#8A94A8;--t3:#5A6275;--acc:#6B9FE0;--acc-d:#1A2E4A;--ok:#4BB87A;--ok-d:#0E2B1C;--warn:#E0A030;--warn-d:#2A1E06;--bad:#E06055;--bad-d:#2E100D;--bdr:#2C3448}
+:root[data-theme="light"]{--bg:#F2F4F8;--surf:#FFF;--surf2:#EAECF1;--t1:#1A1E2B;--t2:#52596A;--t3:#8E97A8;--acc:#3E72B8;--acc-d:#D2E0F4;--ok:#2E8B57;--ok-d:#D4EDE0;--warn:#C07A10;--warn-d:#FDF3DC;--bad:#C03A2B;--bad-d:#FAE2DF;--bdr:#CDD2DC}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:15px;line-height:1.65;padding:0 0 5rem}
+
+/* ── Hero ── */
+.hero{padding:3rem 2rem 2.5rem;border-bottom:1px solid var(--bdr);background:var(--surf)}
+.hero-inner{max-width:860px;margin:0 auto}
+.tp-tag{font-size:.7rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--acc);margin-bottom:.6rem}
+.hero h1{font-size:1.9rem;font-weight:700;line-height:1.2;text-wrap:balance;margin-bottom:.5rem}
+.hero-sub{color:var(--t2);font-size:1rem;margin-bottom:1.6rem}
+.hero-kpis{display:flex;gap:1rem;flex-wrap:wrap}
+.hkpi{background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r);padding:.75rem 1.1rem;min-width:130px}
+.hkpi-l{font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:.2rem}
+.hkpi-v{font-family:var(--mono);font-size:1.3rem;font-weight:700;line-height:1}
+.hkpi-n{font-size:.7rem;color:var(--t3);margin-top:.15rem}
+.hkpi-bad .hkpi-v{color:var(--bad)}
+.hkpi-warn .hkpi-v{color:var(--warn)}
+.hkpi-ok .hkpi-v{color:var(--ok)}
+
+/* ── Layout ── */
+.page{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem}
+section{margin-bottom:3.2rem}
+.sn{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:.3rem}
+h2{font-size:1.25rem;font-weight:700;margin-bottom:1rem;padding-bottom:.45rem;border-bottom:1px solid var(--bdr)}
+h3{font-size:.95rem;font-weight:700;color:var(--t1);margin:1.4rem 0 .5rem}
+p{margin-bottom:.8rem;color:var(--t1)}
+p:last-child{margin-bottom:0}
+
+/* ── Code blocks ── */
+.codeblock{background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r);padding:1rem 1.2rem;margin:1rem 0;overflow-x:auto}
+.codeblock pre{font-family:var(--mono);font-size:.82rem;line-height:1.6;color:var(--t1);white-space:pre}
+.cm{color:var(--t3);font-style:italic}
+.ck{color:var(--acc)}
+.cv{color:var(--ok)}
+.cbad{color:var(--bad)}
+
+/* ── Alert ── */
+.alert{border:1px solid var(--bdr);border-left:3px solid var(--acc);border-radius:var(--r);padding:.8rem 1.1rem;margin:.9rem 0;font-size:.88rem}
+.alert-bad{border-left-color:var(--bad);background:var(--bad-d)}
+.alert-ok{border-left-color:var(--ok);background:var(--ok-d)}
+.alert-warn{border-left-color:var(--warn);background:var(--warn-d)}
+.alert strong{display:block;margin-bottom:.2rem;font-weight:700}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;margin:.9rem 0}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th{background:var(--surf2);font-weight:700;padding:.5rem .8rem;border-bottom:2px solid var(--bdr);text-align:left;font-size:.78rem;letter-spacing:.02em;white-space:nowrap}
+td{padding:.44rem .8rem;border-bottom:1px solid var(--bdr);font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:none}
+.r-ok{background:var(--ok-d)}.r-bad{background:var(--bad-d)}.r-warn{background:var(--warn-d)}
+
+/* ── Badges ── */
+.b{display:inline-block;padding:.1rem .42rem;border-radius:3px;font-size:.71rem;font-weight:700}
+.b-ok{background:var(--ok-d);color:var(--ok)}.b-bad{background:var(--bad-d);color:var(--bad)}.b-warn{background:var(--warn-d);color:var(--warn)}.b-acc{background:var(--acc-d);color:var(--acc)}
+
+/* ── Domain-shift diagram ── */
+.dsd{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:1.4rem;margin:1rem 0}
+.dsd canvas{display:block;width:100%}
+
+/* ── Options table ── */
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin:1rem 0}
+.opt{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:1rem 1.1rem}
+.opt-h{font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.4rem}
+.opt-h-ok{color:var(--ok)}.opt-h-acc{color:var(--acc)}
+.opt p{font-size:.85rem;margin-bottom:.35rem}
+
+/* ── Rule box ── */
+.rule{background:var(--surf);border:2px solid var(--acc);border-radius:var(--r);padding:1.4rem 1.6rem;margin-top:1.2rem}
+.rule-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);margin-bottom:.5rem}
+.rule p{font-size:.95rem;line-height:1.6;font-style:italic;color:var(--t1)}
+
+/* ── Limits list ── */
+.limits{list-style:none;padding:0}
+.limits li{display:flex;gap:.7rem;align-items:flex-start;padding:.45rem 0;border-bottom:1px dashed var(--bdr);font-size:.88rem}
+.limits li:last-child{border-bottom:none}
+.lim-dot{flex-shrink:0;width:6px;height:6px;border-radius:50%;background:var(--warn);margin-top:.55rem}
+
+code{font-family:var(--mono);font-size:.83em;background:var(--surf2);padding:.08em .3em;border-radius:3px}
+
+@media(max-width:580px){.opts{grid-template-columns:1fr}.hero-kpis{gap:.7rem}}
+</style>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="tp-tag">TP10 · InduSense Predictive Maintenance</div>
+    <h1>Normalisation Intra-Machine — Z-Score par Machine</h1>
+    <p class="hero-sub">Tentative de centrage-réduction par entité pour corriger les baselines hétérogènes — et pourquoi ça a échoué avec GroupKFold.</p>
+    <div class="hero-kpis">
+      <div class="hkpi hkpi-bad">
+        <div class="hkpi-l">PR-AUC CV</div>
+        <div class="hkpi-v">0,5580</div>
+        <div class="hkpi-n">B10-NRM · ± 0,23</div>
+      </div>
+      <div class="hkpi hkpi-warn">
+        <div class="hkpi-l">Δ vs B9-GKF</div>
+        <div class="hkpi-v">−0,221</div>
+        <div class="hkpi-n">régression −28 %</div>
+      </div>
+      <div class="hkpi hkpi-ok">
+        <div class="hkpi-l">Référence B9</div>
+        <div class="hkpi-v">0,7792</div>
+        <div class="hkpi-n">GroupKFold sans normalisation</div>
+      </div>
+      <div class="hkpi">
+        <div class="hkpi-l">Machines régressées</div>
+        <div class="hkpi-v" style="color:var(--bad)">13 / 15</div>
+        <div class="hkpi-n">dont MACH-06 : −0,483</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- §1 -->
+<section>
+  <div class="sn">01</div>
+  <h2>Le problème — Baselines machine hétérogènes</h2>
+  <p>Chaque machine a ses propres valeurs nominales. Une pression de 205 bar peut être normale pour MACH-07 et anormale pour MACH-01. Sans normalisation, le modèle apprend des niveaux absolus plutôt que des déviations par rapport à la normale de chaque machine.</p>
+
+  <div class="codeblock"><pre><span class="cm"># Sans normalisation — le modèle confond baselines et anomalies</span>
+MACH-01 : pressure_mean = <span class="cv">195</span>  (normal)  → label = 0
+MACH-07 : pressure_mean = <span class="cv">205</span>  (normal)  → label = 0
+MACH-01 : pressure_mean = <span class="cv">205</span>  <span class="cbad">(anomalie)</span> → label = 1  ← ambigu
+
+<span class="cm"># Avec z-score par machine — le signal devient universel</span>
+MACH-01 : z = (195 - µ_01) / σ_01 = <span class="ck">0.0</span>  → label = 0
+MACH-07 : z = (205 - µ_07) / σ_07 = <span class="ck">0.0</span>  → label = 0
+MACH-01 : z = (205 - µ_01) / σ_01 = <span class="cbad">+3.2</span> → label = 1  ← signal clair</pre></div>
+
+  <p><strong>Conséquence attendue :</strong> un signal transférable entre machines, une meilleure généralisation en GroupKFold, une variance inter-machine réduite.</p>
+</section>
+
+<!-- §2 -->
+<section>
+  <div class="sn">02</div>
+  <h2>Mécanisme — Implémentation</h2>
+  <p>Les statistiques µ et σ sont calculées <em>uniquement sur le train</em> du fold courant. Un fallback flotte est appliqué pour les machines sans historique dans le fold.</p>
+
+  <div class="codeblock"><pre><span class="ck">def</span> normalize_by_machine(df_train_ref, df_to_transform, feature_cols):
+    stats     = df_train_ref.groupby(<span class="cv">"machine_id"</span>)[feature_cols].agg([<span class="cv">"mean"</span>, <span class="cv">"std"</span>])
+    fleet_mu  = df_train_ref[feature_cols].mean()     <span class="cm"># fallback si machine inconnue</span>
+    fleet_sig = df_train_ref[feature_cols].std().replace(0, 1)
+
+    result = df_to_transform[feature_cols].copy()
+    m_ids  = df_to_transform[<span class="cv">"machine_id"</span>].reset_index(drop=True)
+
+    <span class="ck">for</span> col <span class="ck">in</span> feature_cols:
+        mu  = m_ids.map(stats[col][<span class="cv">"mean"</span>]).fillna(fleet_mu[col])
+        sig = m_ids.map(stats[col][<span class="cv">"std"</span>]).fillna(fleet_sig[col]).replace(0, 1)
+        result[col] = (result[col] - mu) / sig          <span class="cm"># z-score par machine</span>
+
+    <span class="ck">return</span> result</pre></div>
+</section>
+
+<!-- §3 -->
+<section>
+  <div class="sn">03</div>
+  <h2>Le problème GroupKFold — Machine inconnue</h2>
+  <p>Dans un fold GroupKFold, la machine de validation n'a <strong>aucune ligne dans le train</strong> du fold. Elle ne dispose d'aucune statistique propre. Seul le fallback flotte est disponible.</p>
+
+  <div class="dsd">
+    <canvas id="dsDiag" height="190"></canvas>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Stratégie</th><th>Description</th><th>Quand</th><th>Implémenté</th></tr></thead>
+    <tbody>
+      <tr class="r-bad"><td><strong>Fleet fallback</strong></td><td>µ/σ flotte pour la machine val inconnue</td><td>Machine neuve, zéro historique</td><td><span class="b b-bad">TP10 — a échoué</span></td></tr>
+      <tr class="r-ok"><td><strong>Burn-in</strong></td><td>N semaines de collecte avant prédiction</td><td>Déploiement progressif</td><td><span class="b b-acc">Production</span></td></tr>
+      <tr class="r-ok"><td><strong>Pré-calcul en BDD</strong></td><td>Features <code>zscore_machine</code> calculées sur historique complet</td><td>Machine connue dans les données historiques</td><td><span class="b b-ok">Disponible</span></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- §4 -->
+<section>
+  <div class="sn">04</div>
+  <h2>Résultats — TP10</h2>
+
+  <div class="tw"><table>
+    <thead><tr><th>Modèle</th><th>Stratégie val</th><th>PR-AUC CV</th><th>Std</th><th>PR-AUC test</th></tr></thead>
+    <tbody>
+      <tr class="r-ok"><td><code>B9-GKF</code></td><td>GroupKFold sans normalisation</td><td><strong>0,7792</strong></td><td>0,1772</td><td><strong>0,8595</strong></td></tr>
+      <tr class="r-bad"><td><code>B10-NRM</code></td><td>GroupKFold + z-score machine à l'entraînement</td><td>0,5580</td><td>0,2279</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Diagnostic — Pourquoi ça a échoué</h3>
+  <div class="alert alert-bad">
+    <strong>Domain shift train / validation</strong>
+    En train : chaque machine est normalisée sur ses propres µ/σ. En validation : la machine inconnue reçoit les µ/σ de la flotte entière. Le modèle évalue des z-scores "flotte" en ayant appris sur des z-scores "machine" — deux référentiels incompatibles. C'est l'inverse de ce qu'on voulait : la normalisation crée le problème qu'elle était censée résoudre.
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Machine</th><th>B9-GKF</th><th>B10-NRM</th><th>Δ</th></tr></thead>
+    <tbody>
+      <tr class="r-ok"><td>MACH-13</td><td>0,639</td><td>0,702</td><td><span class="b b-ok">+0,063</span></td></tr>
+      <tr class="r-ok"><td>MACH-01</td><td>0,878</td><td>0,927</td><td><span class="b b-ok">+0,049</span></td></tr>
+      <tr class="r-bad"><td>MACH-06</td><td>0,917</td><td>0,434</td><td><span class="b b-bad">−0,483</span></td></tr>
+      <tr class="r-bad"><td>MACH-14</td><td>0,793</td><td>0,463</td><td><span class="b b-bad">−0,330</span></td></tr>
+      <tr><td colspan="4" style="font-size:.8rem;color:var(--t3);padding:.6rem .8rem">13 machines sur 15 en régression — dont plusieurs massives</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- §5 -->
+<section>
+  <div class="sn">05</div>
+  <h2>La bonne approche</h2>
+  <p>La normalisation intra-machine n'est valide que si les statistiques machine sont disponibles <em>au moment de l'inférence</em>. Deux chemins corrects :</p>
+
+  <div class="opts">
+    <div class="opt">
+      <div class="opt-h opt-h-ok">Burn-in (production)</div>
+      <p>La machine collecte N semaines de données avant d'activer les prédictions. Les µ/σ sont calculées progressivement sur l'historique réel.</p>
+      <p style="font-size:.8rem;color:var(--t3)">Pas disponible pendant la validation rétrospective.</p>
+    </div>
+    <div class="opt">
+      <div class="opt-h opt-h-ok">Pré-calcul en feature engineering</div>
+      <p>Les features <code>zscore_machine</code> sont déjà présentes dans <code>gold_machine_hourly_feature</code>, calculées sur l'historique complet de chaque machine.</p>
+      <p style="font-size:.8rem;color:var(--ok)">✓ Disponible immédiatement — c'est la bonne implémentation.</p>
+    </div>
+  </div>
+
+  <div class="alert alert-ok">
+    <strong>Observation clé</strong>
+    Les features <code>zscore_machine</code> avaient été exclues en TP10 pour "éviter le double comptage". C'était une erreur — elles représentent exactement la normalisation correcte, pré-calculée avec le bon historique machine. Il faut les garder, pas les recalculer à l'entraînement.
+  </div>
+
+  <h3>Limites intrinsèques de la normalisation machine</h3>
+  <ul class="limits">
+    <li><div class="lim-dot"></div><div><strong>σ instable sur peu de données</strong> — moins de 100 observations par machine rendent le z-score bruité</div></li>
+    <li><div class="lim-dot"></div><div><strong>Dérive temporelle</strong> — si les baselines changent avec l'usure, les stats calculées en début de vie deviennent obsolètes</div></li>
+    <li><div class="lim-dot"></div><div><strong>Double normalisation</strong> — certaines features sont déjà des z-scores (<code>zscore_machine</code>) ; les re-normaliser n'a pas de sens</div></li>
+  </ul>
+</section>
+
+<!-- §6 -->
+<section>
+  <div class="sn">06</div>
+  <h2>Règle générale</h2>
+  <div class="rule">
+    <div class="rule-label">Principe retenu — TP10</div>
+    <p>La normalisation intra-machine appliquée <strong>à l'entraînement</strong> dans un contexte GroupKFold crée un décalage de domaine pour les machines inconnues (val/test). Elle n'est valide que si les statistiques machine sont disponibles au moment de l'inférence — via burn-in en production, ou via les features <code>zscore_machine</code> pré-calculées en feature engineering. Les re-calculer à l'entraînement revient à créer le problème qu'on veut résoudre.</p>
+  </div>
+</section>
+
+</div>
+
+<script>
+// Domain-shift diagram
+(function(){
+  const canvas = document.getElementById('dsDiag');
+  if(!canvas) return;
+
+  function isDark(){
+    const t=document.documentElement.getAttribute('data-theme');
+    if(t==='dark') return true; if(t==='light') return false;
+    return window.matchMedia('(prefers-color-scheme:dark)').matches;
+  }
+
+  function draw(){
+    const dark=isDark();
+    const dpr=window.devicePixelRatio||1;
+    const W=canvas.parentElement.clientWidth-28;
+    const H=190;
+    canvas.width=W*dpr; canvas.height=H*dpr;
+    canvas.style.width=W+'px'; canvas.style.height=H+'px';
+    const ctx=canvas.getContext('2d');
+    ctx.scale(dpr,dpr);
+
+    const C={
+      t1: dark?'#E2E8F5':'#1A1E2B',
+      t2: dark?'#8A94A8':'#52596A',
+      t3: dark?'#5A6275':'#8E97A8',
+      ok: dark?'#4BB87A':'#2E8B57',
+      bad:dark?'#E06055':'#C03A2B',
+      acc:dark?'#6B9FE0':'#3E72B8',
+      bdr:dark?'#2C3448':'#CDD2DC',
+      surf:dark?'#262D3E':'#EAECF1',
+    };
+
+    const midX=W/2;
+
+    // Left panel — TRAIN
+    const lW=(W/2)-20, lX=10;
+    ctx.fillStyle=C.surf; ctx.strokeStyle=C.bdr; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.roundRect(lX,10,lW,H-20,6); ctx.fill(); ctx.stroke();
+
+    ctx.fillStyle=C.ok; ctx.font=`bold 11px var(--sans,-apple-system,sans-serif)`;
+    ctx.textAlign='center'; ctx.fillText('TRAIN',lX+lW/2,28);
+    ctx.fillStyle=C.t2; ctx.font=`9px var(--sans,-apple-system,sans-serif)`;
+    ctx.fillText('14 machines — µ et σ propres',lX+lW/2,42);
+
+    const mColors=['#6B9FE0','#4BB87A','#E0A030','#9B7FD4','#E06055'];
+    const mNames=['M-01','M-04','M-08','M-11','M-15'];
+    mNames.forEach((m,i)=>{
+      const y=60+i*22, bX=lX+12, bW2=lW-24;
+      const pct=0.3+Math.sin(i*1.3)*0.35+0.35;
+      ctx.fillStyle=mColors[i%mColors.length]+'44';
+      ctx.fillRect(bX,y,bW2,14);
+      ctx.fillStyle=mColors[i%mColors.length];
+      ctx.fillRect(bX,y,bW2*pct,14);
+      ctx.fillStyle=C.t1; ctx.font=`bold 8px var(--mono,monospace)`;
+      ctx.textAlign='left'; ctx.fillText(m,bX+4,y+10);
+      ctx.fillStyle=C.t2; ctx.font=`8px var(--mono,monospace)`;
+      ctx.textAlign='right'; ctx.fillText('z = (x - µ_m) / σ_m',bX+bW2-4,y+10);
+    });
+
+    ctx.fillStyle=C.ok; ctx.font=`8px var(--sans,-apple-system,sans-serif)`;
+    ctx.textAlign='center'; ctx.fillText('z-scores machine individuels',lX+lW/2,H-12);
+
+    // Arrow
+    const arX=midX;
+    ctx.strokeStyle=C.bad; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(arX-14,H/2); ctx.lineTo(arX+14,H/2); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(arX+8,H/2-6); ctx.lineTo(arX+14,H/2); ctx.lineTo(arX+8,H/2+6); ctx.stroke();
+
+    ctx.fillStyle=C.bad; ctx.font=`bold 8px var(--sans,-apple-system,sans-serif)`;
+    ctx.textAlign='center'; ctx.fillText('FOLD',arX,H/2-10);
+    ctx.fillText('VAL',arX,H/2+18);
+
+    // Right panel — VAL
+    const rX=midX+20, rW=(W/2)-30;
+    ctx.fillStyle=dark?'#2E100D':'#FAE2DF';
+    ctx.strokeStyle=C.bad; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.roundRect(rX,10,rW,H-20,6); ctx.fill(); ctx.stroke();
+
+    ctx.fillStyle=C.bad; ctx.font=`bold 11px var(--sans,-apple-system,sans-serif)`;
+    ctx.textAlign='center'; ctx.fillText('VAL — Machine inconnue',rX+rW/2,28);
+    ctx.fillStyle=C.t2; ctx.font=`9px var(--sans,-apple-system,sans-serif)`;
+    ctx.fillText('Aucune statistique propre disponible',rX+rW/2,42);
+
+    // Fleet fallback box
+    const fbX=rX+10, fbW=rW-20, fbY=52;
+    ctx.fillStyle=dark?'#2A1E06':'#FDF3DC';
+    ctx.strokeStyle=C.bad; ctx.lineWidth=1; ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.roundRect(fbX,fbY,fbW,50,4); ctx.fill(); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=C.t1; ctx.font=`bold 9px var(--sans,-apple-system,sans-serif)`;
+    ctx.textAlign='center'; ctx.fillText('Fleet fallback utilisé',rX+rW/2,fbY+14);
+    ctx.fillStyle=C.t2; ctx.font=`8px var(--mono,monospace)`;
+    ctx.fillText('z = (x - µ_flotte) / σ_flotte',rX+rW/2,fbY+28);
+    ctx.fillStyle=C.bad; ctx.font=`bold 8px var(--sans,-apple-system,sans-serif)`;
+    ctx.fillText('≠ référentiel des données train',rX+rW/2,fbY+42);
+
+    ctx.fillStyle=C.bad; ctx.font=`8px var(--sans,-apple-system,sans-serif)`;
+    ctx.textAlign='center'; ctx.fillText('→ Domain shift train / val',rX+rW/2,H-12);
+  }
+
+  draw();
+  new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  window.addEventListener('resize',draw);
+  window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',draw);
+})();
+</script>
