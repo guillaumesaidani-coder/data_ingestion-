@@ -1,7 +1,14 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "PowerShell(Stop-Process -Name python -Force -ErrorAction SilentlyContinue)",
+      "PowerShell(netstat -ano)",
+      "PowerShell(Get-Process -Id 6948, 10804 -ErrorAction SilentlyContinue)",
+      "Bash(ls \"C:\\\\Users\\\\Aelion\\\\AppData\\\\Roaming\\\\jupyter\\\\runtime\\\\\" 2>/dev/null | head -10)",
+      "Read(//c/Users/Aelion/AppData/Roaming/jupyter/runtime\" 2>/dev/**)",
+      "PowerShell(Get-ChildItem \"$env:APPDATA\\\\jupyter\\\\runtime\\\\\" -ErrorAction SilentlyContinue | Select-Object Name, LastWriteTime | Sort-Object LastWriteTime -Descending | Select-Object -First 5)",
+      "PowerShell($json = Get-Content \"$env:APPDATA\\\\jupyter\\\\runtime\\\\jpserver-19672.json\" | ConvertFrom-Json; Write-Host \"URL: http://localhost:$\\($json.port\\)?token=$\\($json.token\\)\")"
     ]
   }
 }

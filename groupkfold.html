@@ -1,0 +1,724 @@
+<title>GroupKFold — Validation par machine</title>
+<style>
+  :root {
+    --bg: #F5F6F8;
+    --bg2: #ECEEF2;
+    --bg3: #E2E5EB;
+    --surface: #FFFFFF;
+    --border: #D0D4DC;
+    --text: #1E2233;
+    --text2: #5A607A;
+    --accent: #9B7FD4;
+    --green: #27A876;
+    --green-bg: #E8F8F2;
+    --orange: #D4900A;
+    --orange-bg: #FDF4DC;
+    --red: #CC3A3A;
+    --red-bg: #FDEAEA;
+    --mono: "SF Mono", "Fira Code", "Consolas", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0F1117;
+      --bg2: #161923;
+      --bg3: #1E2233;
+      --surface: #1A1D2E;
+      --border: #2D3244;
+      --text: #E4E8F5;
+      --text2: #8892B0;
+      --green: #5ECFA8;
+      --green-bg: #0D2B22;
+      --orange: #E8B84B;
+      --orange-bg: #2A2010;
+      --red: #E05A5A;
+      --red-bg: #2B1010;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #F5F6F8; --bg2: #ECEEF2; --bg3: #E2E5EB;
+    --surface: #FFFFFF; --border: #D0D4DC;
+    --text: #1E2233; --text2: #5A607A;
+    --green: #27A876; --green-bg: #E8F8F2;
+    --orange: #D4900A; --orange-bg: #FDF4DC;
+    --red: #CC3A3A; --red-bg: #FDEAEA;
+  }
+  :root[data-theme="dark"] {
+    --bg: #0F1117; --bg2: #161923; --bg3: #1E2233;
+    --surface: #1A1D2E; --border: #2D3244;
+    --text: #E4E8F5; --text2: #8892B0;
+    --green: #5ECFA8; --green-bg: #0D2B22;
+    --orange: #E8B84B; --orange-bg: #2A2010;
+    --red: #E05A5A; --red-bg: #2B1010;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 2.5rem 1.5rem;
+  }
+
+  .breadcrumb {
+    font-size: 12px;
+    color: var(--text2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    font-family: var(--mono);
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+    text-wrap: balance;
+  }
+
+  .subtitle {
+    color: var(--text2);
+    font-size: 0.9rem;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 2rem 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 1rem 1.4rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+
+  .card-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text2);
+  }
+
+  .card-body { padding: 1.4rem; }
+
+  /* Schema split vs gkf */
+  .schema-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  @media (max-width: 600px) { .schema-grid { grid-template-columns: 1fr; } }
+
+  .schema-box {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .schema-title {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--bg2);
+    color: var(--text2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .schema-body { padding: 0.9rem; display: flex; flex-direction: column; gap: 0.4rem; }
+
+  .timeline-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    font-family: var(--mono);
+  }
+
+  .tl-label { color: var(--text2); width: 3.5rem; flex-shrink: 0; }
+
+  .tl-bar {
+    height: 18px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    padding: 0 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--bg);
+  }
+
+  .bar-train { background: var(--accent); flex: 2; }
+  .bar-val   { background: var(--green);  flex: 1; }
+  .bar-test  { background: var(--orange); flex: 0.6; }
+  .bar-held  { background: var(--red);    flex: 1; }
+  .bar-trainN{ background: var(--accent); flex: 2.5; }
+
+  .warning-box {
+    background: var(--red-bg);
+    border: 1px solid var(--red);
+    border-radius: 6px;
+    padding: 0.7rem 1rem;
+    font-size: 0.82rem;
+    color: var(--red);
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .info-box {
+    background: var(--green-bg);
+    border: 1px solid var(--green);
+    border-radius: 6px;
+    padding: 0.7rem 1rem;
+    font-size: 0.82rem;
+    color: var(--green);
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  /* Canvas chart */
+  canvas { display: block; width: 100%; height: auto; }
+
+  .chart-wrap {
+    position: relative;
+    padding: 0.4rem 1.4rem 1rem;
+  }
+
+  /* Metrics table */
+  .metrics-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.84rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .metrics-table th {
+    text-align: left;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text2);
+    border-bottom: 2px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .metrics-table td {
+    padding: 0.6rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .metrics-table tr:last-child td { border-bottom: none; }
+
+  .metrics-table tr.highlight td { background: var(--bg2); font-weight: 600; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: var(--mono);
+  }
+
+  .badge-green  { background: var(--green-bg);  color: var(--green); }
+  .badge-orange { background: var(--orange-bg); color: var(--orange);}
+  .badge-red    { background: var(--red-bg);    color: var(--red);   }
+  .badge-purple { background: #2A1F42;          color: var(--accent);}
+
+  /* Fleet grid */
+  .fleet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.8rem;
+  }
+  @media (max-width: 600px) { .fleet-grid { grid-template-columns: 1fr; } }
+
+  .fleet-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .fleet-card-head {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .fleet-card-head.c-green  { background: var(--green-bg);  color: var(--green); }
+  .fleet-card-head.c-orange { background: var(--orange-bg); color: var(--orange);}
+  .fleet-card-head.c-red    { background: var(--red-bg);    color: var(--red);   }
+
+  .fleet-card-body { padding: 0.7rem 0.8rem; display: flex; flex-direction: column; gap: 0.3rem; }
+
+  .fleet-machine {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-family: var(--mono);
+  }
+
+  .fleet-machine .score { font-weight: 700; }
+
+  .fleet-reco {
+    font-size: 0.72rem;
+    color: var(--text2);
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--border);
+    line-height: 1.4;
+  }
+
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+  @media (max-width: 600px) { .kpi-row { grid-template-columns: repeat(2, 1fr); } }
+
+  .kpi {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.9rem 1rem;
+    text-align: center;
+  }
+
+  .kpi-val {
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+
+  .kpi-label {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text2);
+    margin-top: 0.3rem;
+  }
+
+  .delta-up   { color: var(--green); }
+  .delta-down { color: var(--red);   }
+</style>
+
+<header>
+  <div class="breadcrumb">TP9 · Maintenance Prédictive · B9-GKF</div>
+  <h1>Validation GroupKFold par machine</h1>
+  <p class="subtitle">Évaluation de la généralisation réelle — simulation du déploiement sur une machine jamais vue</p>
+</header>
+
+<div class="container">
+
+  <!-- §1 Concept -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Pourquoi GroupKFold ?</span>
+    </div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:1rem;">
+      <div class="schema-grid">
+        <div class="schema-box">
+          <div class="schema-title">⚠ Split temporel (TP8b) — biaisé</div>
+          <div class="schema-body">
+            <div class="timeline-row">
+              <span class="tl-label">Train</span>
+              <div class="tl-bar bar-train">MACH 01–15 (jan–jun)</div>
+            </div>
+            <div class="timeline-row">
+              <span class="tl-label">Val</span>
+              <div class="tl-bar bar-val">MACH 01–15 (jul–sep)</div>
+            </div>
+            <div class="timeline-row">
+              <span class="tl-label">Test</span>
+              <div class="tl-bar bar-test">MACH 01–15</div>
+            </div>
+            <div class="warning-box" style="margin-top:0.5rem;">
+              Mêmes machines en train et val → le modèle mémorise les signatures machine. PR-AUC val = 0.8497 surestimé.
+            </div>
+          </div>
+        </div>
+        <div class="schema-box">
+          <div class="schema-title">✓ GroupKFold (TP9) — honnête</div>
+          <div class="schema-body">
+            <div class="timeline-row">
+              <span class="tl-label">Fold 1</span>
+              <div class="tl-bar bar-trainN">MACH 02–15</div>
+              <div class="tl-bar bar-held" style="flex:0.5;">M-01</div>
+            </div>
+            <div class="timeline-row">
+              <span class="tl-label">Fold 2</span>
+              <div class="tl-bar bar-trainN">MACH 01,03–15</div>
+              <div class="tl-bar bar-held" style="flex:0.5;">M-02</div>
+            </div>
+            <div class="timeline-row">
+              <span class="tl-label">…</span>
+              <div class="tl-bar bar-trainN" style="opacity:0.4;flex:3;">…</div>
+            </div>
+            <div class="info-box" style="margin-top:0.5rem;">
+              Chaque fold exclut une machine entière. Simule le déploiement sur une machine inconnue.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- §2 KPIs -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-val delta-down">0.7792</div>
+      <div class="kpi-label">PR-AUC CV moyen</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val" style="color:var(--orange);">±0.1772</div>
+      <div class="kpi-label">Std inter-machines</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val delta-up">0.8595</div>
+      <div class="kpi-label">PR-AUC test final</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-val delta-up">0.7908</div>
+      <div class="kpi-label">F1 test</div>
+    </div>
+  </div>
+
+  <!-- §3 Graphique par machine -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">PR-AUC par machine (fold val)</span>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="machineChart" height="420"></canvas>
+    </div>
+  </div>
+
+  <!-- §4 Segmentation flotte -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Segmentation de la flotte</span>
+    </div>
+    <div class="card-body">
+      <div class="fleet-grid">
+        <div class="fleet-card">
+          <div class="fleet-card-head c-green">Fiables — ≥ 0.87</div>
+          <div class="fleet-card-body">
+            <div class="fleet-machine"><span>MACH-11</span><span class="score" style="color:var(--green);">1.000</span></div>
+            <div class="fleet-machine"><span>MACH-15</span><span class="score" style="color:var(--green);">1.000</span></div>
+            <div class="fleet-machine"><span>MACH-08</span><span class="score" style="color:var(--green);">0.955</span></div>
+            <div class="fleet-machine"><span>MACH-06</span><span class="score" style="color:var(--green);">0.917</span></div>
+            <div class="fleet-machine"><span>MACH-01</span><span class="score" style="color:var(--green);">0.878</span></div>
+            <div class="fleet-machine"><span>MACH-04</span><span class="score" style="color:var(--green);">0.874</span></div>
+            <div class="fleet-reco">Modèle global suffisant. Pannes transférables depuis les autres machines.</div>
+          </div>
+        </div>
+        <div class="fleet-card">
+          <div class="fleet-card-head c-orange">Fragiles — 0.70–0.87</div>
+          <div class="fleet-card-body">
+            <div class="fleet-machine"><span>MACH-14</span><span class="score" style="color:var(--orange);">0.793</span></div>
+            <div class="fleet-machine"><span>MACH-09</span><span class="score" style="color:var(--orange);">0.784</span></div>
+            <div class="fleet-machine"><span>MACH-12</span><span class="score" style="color:var(--orange);">0.761</span></div>
+            <div class="fleet-machine"><span>MACH-10</span><span class="score" style="color:var(--orange);">0.760</span></div>
+            <div class="fleet-machine"><span>MACH-03</span><span class="score" style="color:var(--orange);">0.707</span></div>
+            <div class="fleet-reco">Monitoring renforcé. Abaisser le seuil d'alerte pour réduire les faux négatifs.</div>
+          </div>
+        </div>
+        <div class="fleet-card">
+          <div class="fleet-card-head c-red">Problématiques — &lt; 0.70</div>
+          <div class="fleet-card-body">
+            <div class="fleet-machine"><span>MACH-02</span><span class="score" style="color:var(--red);">0.664</span></div>
+            <div class="fleet-machine"><span>MACH-13</span><span class="score" style="color:var(--red);">0.639</span></div>
+            <div class="fleet-machine"><span>MACH-05</span><span class="score" style="color:var(--red);">0.568</span></div>
+            <div class="fleet-machine"><span>MACH-07</span><span class="score" style="color:var(--red);">0.329</span></div>
+            <div class="fleet-reco">MACH-07 = artefact temporel (dégradation tardive, 0.8% pannes en train). MACH-02/05/13 nécessitent un modèle dédié ou features supplémentaires.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- §5 Tableau comparatif -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Comparaison B8 vs B9-GKF</span>
+    </div>
+    <div class="card-body" style="overflow-x:auto;">
+      <table class="metrics-table">
+        <thead>
+          <tr>
+            <th>Modèle</th>
+            <th>Validation</th>
+            <th>PR-AUC val/CV</th>
+            <th>PR-AUC test</th>
+            <th>F1 test</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>B8</strong></td>
+            <td><span class="badge badge-orange">Split temporel</span></td>
+            <td>0.8497</td>
+            <td>0.8232</td>
+            <td>0.7672</td>
+            <td style="color:var(--orange);font-size:0.8rem;">Val surestimée (mêmes machines)</td>
+          </tr>
+          <tr class="highlight">
+            <td><strong>B9-GKF</strong></td>
+            <td><span class="badge badge-green">GroupKFold</span></td>
+            <td>0.7792 <span style="color:var(--text2);font-size:0.75rem;">± 0.18</span></td>
+            <td><strong>0.8595</strong></td>
+            <td><strong>0.7908</strong></td>
+            <td style="color:var(--green);font-size:0.8rem;">Estimation honnête — meilleur test</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="margin-top:1rem;font-size:0.8rem;color:var(--text2);line-height:1.5;">
+        <strong style="color:var(--text);">Lecture :</strong> le CV moyen (0.7792) est l'estimation réaliste de la performance sur une machine inconnue. Le test (0.8595) est meilleur car le modèle final s'entraîne sur train+val (plus de données). La vraie limite est la <strong style="color:var(--orange);">std ±0.1772</strong> — certaines machines sont bien moins prédictibles que d'autres.
+      </p>
+    </div>
+  </div>
+
+  <!-- §6 Verdict -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Verdict & prochaines étapes</span>
+    </div>
+    <div class="card-body" style="display:flex;flex-direction:column;gap:0.8rem;">
+      <div class="info-box">
+        <span>✓</span>
+        <span>Le modèle global est <strong>fiable sur 6 machines / 15</strong> (≥ 0.87). Sur ces machines, GroupKFold confirme que le signal est transférable.</span>
+      </div>
+      <div class="info-box">
+        <span>🔍</span>
+        <span><strong>MACH-07 diagnostic (TP9 §6)</strong> — H1 confirmée : taux de panne train = 0.8% vs 3.6% flotte (dégradation tardive, burst en test). H2 rejetée : features non atypiques. H3 rejetée : le modèle détecte 93% des pannes (médiane score=0.961). PR-AUC=0.329 est un artefact statistique (24 positifs en val) — MACH-07 est learnable avec plus de données historiques.</span>
+      </div>
+      <div class="warning-box">
+        <span>⚠</span>
+        <span><strong>MACH-13 confirmé atypique</strong> — cohérent avec OOE TP8b (val Δ = −0.120). MACH-02, MACH-05 nécessitent investigation.</span>
+      </div>
+      <table class="metrics-table" style="margin-top:0.5rem;">
+        <thead>
+          <tr><th>Prochaine étape</th><th>Objectif</th><th>Priorité</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>TP10 — Normalisation intra-machine</strong></td>
+            <td>Z-score par machine → signal transférable, réduire variance ±0.1772</td>
+            <td><span class="badge badge-red">Haute</span></td>
+          </tr>
+          <tr>
+            <td>Investiguer MACH-02/05/13</td>
+            <td>Même diagnostic H1/H2/H3 que MACH-07</td>
+            <td><span class="badge badge-orange">Moyenne</span></td>
+          </tr>
+          <tr>
+            <td>Modèles par cluster</td>
+            <td>Séparer machines fiables et fragiles si normalisation insuffisante</td>
+            <td><span class="badge badge-orange">Basse</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const MACHINES = [
+  { name: "MACH-07", score: 0.329 },
+  { name: "MACH-05", score: 0.568 },
+  { name: "MACH-13", score: 0.639 },
+  { name: "MACH-02", score: 0.664 },
+  { name: "MACH-03", score: 0.707 },
+  { name: "MACH-10", score: 0.760 },
+  { name: "MACH-12", score: 0.761 },
+  { name: "MACH-09", score: 0.784 },
+  { name: "MACH-14", score: 0.793 },
+  { name: "MACH-04", score: 0.874 },
+  { name: "MACH-01", score: 0.878 },
+  { name: "MACH-06", score: 0.917 },
+  { name: "MACH-08", score: 0.955 },
+  { name: "MACH-15", score: 1.000 },
+  { name: "MACH-11", score: 1.000 },
+];
+
+const B8_REF = 0.8497;
+
+function getColor(score, dark) {
+  if (score < 0.70) return dark ? "#E05A5A" : "#CC3A3A";
+  if (score < 0.82) return dark ? "#E8B84B" : "#D4900A";
+  return dark ? "#5ECFA8" : "#27A876";
+}
+
+function isDark() {
+  const dt = document.documentElement.dataset.theme;
+  if (dt === "dark") return true;
+  if (dt === "light") return false;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+function drawChart() {
+  const canvas = document.getElementById("machineChart");
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.parentElement.clientWidth - 32;
+  const ROW_H = 26, LABEL_W = 72, PAD_R = 50, PAD_TOP = 16, PAD_BOT = 24;
+  const H = ROW_H * MACHINES.length + PAD_TOP + PAD_BOT;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  canvas.style.width = W + "px";
+  canvas.style.height = H + "px";
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+
+  const dark = isDark();
+  const textColor    = dark ? "#E4E8F5" : "#1E2233";
+  const text2Color   = dark ? "#8892B0" : "#5A607A";
+  const refColor     = dark ? "#9B7FD4" : "#7B5FBF";
+  const gridColor    = dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
+
+  const chartW = W - LABEL_W - PAD_R;
+  const xScale = v => LABEL_W + v * chartW;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid lines
+  [0, 0.2, 0.4, 0.6, 0.8, 1.0].forEach(v => {
+    const x = xScale(v);
+    ctx.beginPath();
+    ctx.strokeStyle = gridColor;
+    ctx.lineWidth = 1;
+    ctx.moveTo(x, PAD_TOP);
+    ctx.lineTo(x, PAD_TOP + ROW_H * MACHINES.length);
+    ctx.stroke();
+
+    ctx.fillStyle = text2Color;
+    ctx.font = `10px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.fillText(v.toFixed(1), x, PAD_TOP + ROW_H * MACHINES.length + 14);
+  });
+
+  // B8 reference line
+  const refX = xScale(B8_REF);
+  ctx.beginPath();
+  ctx.strokeStyle = refColor;
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([5, 4]);
+  ctx.moveTo(refX, PAD_TOP - 6);
+  ctx.lineTo(refX, PAD_TOP + ROW_H * MACHINES.length);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = refColor;
+  ctx.font = `bold 9px monospace`;
+  ctx.textAlign = "center";
+  ctx.fillText("B8 val", refX, PAD_TOP - 8);
+
+  // Bars (animated)
+  let progress = 0;
+  const DURATION = 800;
+  let startTime = null;
+
+  function animate(ts) {
+    if (!startTime) startTime = ts;
+    progress = Math.min((ts - startTime) / DURATION, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+
+    ctx.clearRect(LABEL_W, 0, W - LABEL_W, H);
+
+    // Redraw grid
+    [0, 0.2, 0.4, 0.6, 0.8, 1.0].forEach(v => {
+      const x = xScale(v);
+      ctx.beginPath();
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+      ctx.moveTo(x, PAD_TOP);
+      ctx.lineTo(x, PAD_TOP + ROW_H * MACHINES.length);
+      ctx.stroke();
+    });
+
+    // Ref line
+    ctx.beginPath();
+    ctx.strokeStyle = refColor;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5, 4]);
+    ctx.moveTo(refX, PAD_TOP - 6);
+    ctx.lineTo(refX, PAD_TOP + ROW_H * MACHINES.length);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    MACHINES.forEach((m, i) => {
+      const y = PAD_TOP + i * ROW_H;
+      const barW = m.score * chartW * ease;
+      const barH = ROW_H - 6;
+      const color = getColor(m.score, dark);
+
+      // Bar
+      ctx.fillStyle = color + "30";
+      ctx.fillRect(LABEL_W, y + 3, barW, barH);
+      ctx.fillStyle = color;
+      ctx.fillRect(LABEL_W, y + 3, barW, 3);
+
+      // Score label
+      if (progress > 0.6) {
+        ctx.fillStyle = textColor;
+        ctx.font = `bold 10px monospace`;
+        ctx.textAlign = "left";
+        ctx.fillText(m.score.toFixed(3), xScale(m.score) + 4, y + 3 + barH / 2 + 4);
+      }
+    });
+
+    if (progress < 1) requestAnimationFrame(animate);
+  }
+
+  // Machine labels (static, left side)
+  MACHINES.forEach((m, i) => {
+    const y = PAD_TOP + i * ROW_H;
+    const color = getColor(m.score, dark);
+    ctx.fillStyle = color;
+    ctx.font = `bold 10px monospace`;
+    ctx.textAlign = "right";
+    ctx.fillText(m.name, LABEL_W - 8, y + 3 + (ROW_H - 6) / 2 + 4);
+  });
+
+  requestAnimationFrame(animate);
+}
+
+// Init & redraw on resize/theme change
+drawChart();
+window.addEventListener("resize", drawChart);
+new MutationObserver(drawChart).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", drawChart);
+</script>
