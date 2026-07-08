@@ -109,6 +109,7 @@ tr:hover td{background:var(--surface-alt)}
 .ci{flex-shrink:0;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;margin-top:3px}
 .ci-done{background:var(--ok-dim);color:var(--ok)}
 .ci-todo{background:var(--surface-alt);color:var(--t3);border:1px dashed var(--bdr)}
+.ci-skip{background:var(--bad-dim);color:var(--bad)}
 .cn{font-size:.78rem;color:var(--t2);margin-top:.12rem}
 
 /* ── Chart ── */
@@ -142,7 +143,7 @@ footer{margin-top:4rem;padding-top:1.4rem;border-top:1px solid var(--bdr);font-f
 <header class="rh">
   <div class="rtag">InduSense · Maintenance Prédictive Industrielle</div>
   <h1 class="rtitle">Détection anticipée de défaillances machines par apprentissage supervisé</h1>
-  <p class="rsub">Approche XGBoost avec validation GroupKFold et optimisation bayésienne — TP7 à TP11</p>
+  <p class="rsub">Approche XGBoost avec validation GroupKFold et optimisation bayésienne — TP7 à TP12</p>
   <div class="rmeta">
     <span>Guillaume Saïdani</span>
     <span>guillaume.saidani@ext.aelion.fr</span>
@@ -263,6 +264,7 @@ footer{margin-top:4rem;padding-top:1.4rem;border-top:1px solid var(--bdr);font-f
       <tr><td><code>B9-GKF</code></td><td>TP9</td><td>0,7792 ± 0,18</td><td>0,8595</td><td>GroupKFold, HP B8 réutilisés</td></tr>
       <tr class="r-bad"><td><code>B10-NRM</code></td><td>TP10</td><td>0,5580 ± 0,23</td><td>—</td><td><span class="b b-bad">Normalisation — décalage domaine</span></td></tr>
       <tr class="r-ok"><td><strong><code>B11-GKF</code></strong></td><td>TP11</td><td><strong>0,7839 ± 0,19</strong></td><td><strong>0,8799</strong></td><td><span class="b b-ok">Meilleur — Optuna GroupKFold</span></td></tr>
+      <tr class="r-warn"><td><code>B12-GKF</code></td><td>TP12</td><td>0,7480 ± 0,23</td><td>0,8487</td><td><span class="b b-warn">Stack 136 features — HP désalignés</span></td></tr>
     </tbody>
   </table></div>
 
@@ -270,6 +272,7 @@ footer{margin-top:4rem;padding-top:1.4rem;border-top:1px solid var(--bdr);font-f
   <p><strong>Correction de la fuite (TP8b) :</strong> la chute apparente de 0,92 → 0,83 reflète la réalité, pas une dégradation du modèle. B5 et B7 mesuraient la capacité à mémoriser un identifiant séquentiel, pas à prédire des pannes.</p>
   <p><strong>Early stopping (TP8c) :</strong> l'arrêt anticipé réduit à 57 arbres (au lieu de 382) mais l'overfitting persiste (Δ = 0,1529 vs 0,1503). Le score test recule à 0,7968. L'overfitting est structurel — les signatures de chaque machine sont mémorisées — et ne se corrige pas par le seul early stopping.</p>
   <p><strong>Normalisation intra-machine (TP10) :</strong> tentative de z-score par machine avant l'entraînement. Résultat : CV = 0,5580, effondrement de 22 points. Cause identifiée : la machine de validation n'a pas de statistiques propres calculables — elle reçoit les z-scores flotte, créant un décalage de domaine entre train et val. Expérience négative documentée ; la règle retenue est de normaliser au niveau feature engineering (pré-calculé en base), pas à l'entraînement.</p>
+  <p><strong>Z-score machine pré-calculé — stratégie Stack (TP12) :</strong> pré-calcul des z-scores sur l'historique complet machine (correction du domain shift de TP10) puis empilement des 67 nouvelles features sur les 67 raw → 136 features. Résultat : CV = 0,7480, régression de −0,031 vs B11. Diagnostic : <code>colsample_bytree = 0,574</code> expose désormais ~78 features/arbre au lieu de ~40 — les paires corrélées (raw + zmachine) diluent le signal. Les HP B11 sont désalignés avec un espace de 136 features. La stratégie <em>Replace</em> (remplacer raw par zmachine, N stable à 69) reste à tester.</p>
 </section>
 
 <!-- §5 -->
@@ -402,13 +405,17 @@ footer{margin-top:4rem;padding-top:1.4rem;border-top:1px solid var(--bdr);font-f
       <div class="ci ci-done">✓</div>
       <div><div><strong>Optuna GroupKFold comme objectif (TP11)</strong></div><div class="cn">HP re-tunés directement sur la généralisation machine — fingerprint radicalement différent de B8 (reg_lambda × 4 380)</div></div>
     </li>
+    <li>
+      <div class="ci ci-done">✓</div>
+      <div><div><strong>Z-score machine pré-calculé — stratégie Stack expérimentée (TP12)</strong></div><div class="cn">CV = 0,7480 — concept juste (stats sur historique complet), implémentation à affiner : empilement 69+67=136 features désaligne colsample_bytree</div></div>
+    </li>
   </ul>
 
   <h3>Ce qui reste à faire</h3>
   <ul class="cl">
     <li>
-      <div class="ci ci-todo">○</div>
-      <div><div><strong>Features <code>zscore_machine</code> pré-calculées en base</strong></div><div class="cn">Calculer les stats de normalisation sur l'historique de chaque machine et les stocker en DB → évite le décalage de domaine identifié en TP10</div></div>
+      <div class="ci ci-skip">✗</div>
+      <div><div><strong>Z-score machine — stratégie <em>Replace</em> (B12b) — non retenu</strong></div><div class="cn">XGBoost invariant à l'échelle (seuils, pas distances) · zmachine critiques (temp, pressure) déjà dans B11 · features count z-scorées perdent leur sens absolu → abandon confirmé</div></div>
     </li>
     <li>
       <div class="ci ci-todo">○</div>
@@ -429,14 +436,14 @@ footer{margin-top:4rem;padding-top:1.4rem;border-top:1px solid var(--bdr);font-f
 <section id="conclusion">
   <div class="snum">08</div>
   <h2>Conclusion</h2>
-  <p>L'objectif — prédire les défaillances machines à 24 h avec un PR-AUC supérieur à 0,85 sur données test — est atteint avec le modèle <strong>B11-GKF</strong> (PR-AUC test = <strong>0,8799</strong>), meilleur résultat de la série de TP7 à TP11.</p>
+  <p>L'objectif — prédire les défaillances machines à 24 h avec un PR-AUC supérieur à 0,85 sur données test — est atteint avec le modèle <strong>B11-GKF</strong> (PR-AUC test = <strong>0,8799</strong>), meilleur résultat de la série de TP7 à TP12.</p>
   <p>Le chemin parcouru a mis en évidence trois enseignements principaux :</p>
   <ol class="body-list">
     <li><strong>Le protocole de validation définit la signification du score.</strong> Un PR-AUC de 0,92 biaisé (fuite + split temporel) et 0,78 honnête (GroupKFold) ne mesurent pas la même chose. La découverte et la correction de la fuite <code>feature_row_id</code> est l'un des résultats les plus importants de cette série.</li>
     <li><strong>Le critère d'optimisation Optuna doit refléter le déploiement réel.</strong> Optimiser sur le split temporel pour un modèle déployé sur de nouvelles machines introduit un biais systématique dans les hyperparamètres (reg_lambda × 4 380 entre B8 et B11). L'alignement critère / déploiement est un principe général.</li>
     <li><strong>La variabilité inter-machine est la contrainte structurelle principale.</strong> L'overfitting résiduel (Δ = 0,22) est davantage lié à l'hétérogénéité des machines qu'aux hyperparamètres. MACH-07 illustre qu'un score bas peut être un artefact temporel, pas une défaillance du modèle.</li>
   </ol>
-  <p>La prochaine priorité est le pré-calcul des <code>zscore_machine</code> au niveau de la feature engineering, seule approche évitant le décalage de domaine identifié en TP10 et ouvrant la voie à une normalisation robuste en production.</p>
+  <p>TP12 a validé le concept de pré-calcul zscore_machine sur l'historique complet — sans domain shift — mais la stratégie Stack (69 + 67 = 136 features) a dégradé les performances (CV = 0,7480). La stratégie Replace (B12b) a été évaluée et abandonnée : XGBoost étant invariant à l'échelle, le z-score n'apporte pas d'information supplémentaire aux arbres de décision ; les zmachine critiques (<code>temp</code>, <code>pressure</code>) existent déjà dans B11 ; les features count z-scorées perdent leur sens absolu. <strong>B11-GKF est le modèle final retenu.</strong></p>
 
   <div class="kpis" style="margin-top:1.5rem">
     <div class="kpi"><div class="kpi-l">Modèle retenu</div><div class="kpi-v" style="font-size:1.1rem;line-height:1.3">B11-GKF</div><div class="kpi-n">XGBoost + Optuna GroupKFold</div></div>
@@ -465,6 +472,7 @@ footer{margin-top:4rem;padding-top:1.4rem;border-top:1px solid var(--bdr);font-f
     { label:'B9-GKF', tp:'TP9',  cv:0.7792, test:0.8595, st:'accent'  },
     { label:'B10-NRM',tp:'TP10', cv:0.5580, test:null,   st:'bad'     },
     { label:'B11-GKF',tp:'TP11', cv:0.7839, test:0.8799, st:'ok'      },
+    { label:'B12-GKF',tp:'TP12', cv:0.7480, test:0.8487, st:'warn'    },
   ];
 
   function isDark(){

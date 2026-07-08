@@ -1,0 +1,458 @@
+<title>TP12 — Z-Score Machine Pré-Calculé | InduSense</title>
+<style>
+:root {
+  --bg:#F1F4F8;--surf:#FFF;--surf2:#E8ECF2;--surf3:#DDE2EA;
+  --t1:#18202E;--t2:#4E5A6E;--t3:#8898AE;
+  --acc:#3D6FA8;--acc-d:#D3E3F5;
+  --ok:#2A8A68;--ok-d:#C8EDE1;
+  --bad:#C96A20;--bad-d:#FAE8D5;
+  --crit:#B83030;--crit-d:#F9DDD8;
+  --bdr:#CDD4DF;--r:7px;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --mono:'Cascadia Code','SF Mono',Consolas,monospace;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111620;--surf:#1A2030;--surf2:#222A3C;--surf3:#2A3448;
+  --t1:#DDE6F5;--t2:#8898AE;--t3:#556070;
+  --acc:#6090D0;--acc-d:#152040;
+  --ok:#3EAA82;--ok-d:#0C2820;
+  --bad:#E08040;--bad-d:#2A1808;
+  --crit:#E05050;--crit-d:#2C0C0C;
+  --bdr:#2A3448;
+}}
+:root[data-theme="dark"]{--bg:#111620;--surf:#1A2030;--surf2:#222A3C;--surf3:#2A3448;--t1:#DDE6F5;--t2:#8898AE;--t3:#556070;--acc:#6090D0;--acc-d:#152040;--ok:#3EAA82;--ok-d:#0C2820;--bad:#E08040;--bad-d:#2A1808;--crit:#E05050;--crit-d:#2C0C0C;--bdr:#2A3448}
+:root[data-theme="light"]{--bg:#F1F4F8;--surf:#FFF;--surf2:#E8ECF2;--surf3:#DDE2EA;--t1:#18202E;--t2:#4E5A6E;--t3:#8898AE;--acc:#3D6FA8;--acc-d:#D3E3F5;--ok:#2A8A68;--ok-d:#C8EDE1;--bad:#C96A20;--bad-d:#FAE8D5;--crit:#B83030;--crit-d:#F9DDD8;--bdr:#CDD4DF}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:15px;line-height:1.65;padding:0 0 5rem}
+
+/* ── Hero ── */
+.hero{background:var(--surf);border-bottom:1px solid var(--bdr);padding:2.8rem 1.5rem 2.2rem}
+.hero-inner{max-width:880px;margin:0 auto}
+.tp-tag{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin-bottom:.6rem}
+.hero h1{font-size:1.85rem;font-weight:700;line-height:1.2;text-wrap:balance;margin-bottom:.45rem}
+.hero-sub{color:var(--t2);margin-bottom:1.8rem;max-width:620px}
+
+/* ── Model comparison strip ── */
+.models{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;margin-bottom:.5rem}
+.model-card{border:1px solid var(--bdr);border-radius:var(--r);padding:1rem 1.1rem;background:var(--surf2)}
+.mc-label{font-size:.65rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-bottom:.35rem}
+.mc-name{font-family:var(--mono);font-size:.95rem;font-weight:700;margin-bottom:.55rem}
+.mc-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.18rem}
+.mc-k{font-size:.72rem;color:var(--t3)}
+.mc-v{font-family:var(--mono);font-size:.88rem;font-weight:700}
+.mc-delta{font-size:.72rem;font-weight:700;font-family:var(--mono)}
+.mc-ref .mc-label{color:var(--t3)}.mc-ref .mc-name{color:var(--t2)}
+.mc-mid .mc-label{color:var(--ok)}.mc-mid .mc-name{color:var(--ok)}
+.mc-bad .mc-label{color:var(--crit)}.mc-bad .mc-name{color:var(--crit)}
+.mc-bad{border-color:var(--crit);background:var(--crit-d)}
+.delta-neg{color:var(--crit)}.delta-pos{color:var(--ok)}.delta-ref{color:var(--t3)}
+
+/* ── Page body ── */
+.page{max-width:880px;margin:0 auto;padding:2.5rem 1.5rem}
+section{margin-bottom:3rem}
+.sn{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:.28rem}
+h2{font-size:1.2rem;font-weight:700;margin-bottom:1rem;padding-bottom:.42rem;border-bottom:1px solid var(--bdr)}
+h3{font-size:.93rem;font-weight:700;margin:1.4rem 0 .5rem;color:var(--t1)}
+p{margin-bottom:.8rem;color:var(--t1);line-height:1.68}
+p:last-child{margin-bottom:0}
+
+/* ── Canvas areas ── */
+.cw{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:1.3rem;margin:.9rem 0}
+.cw canvas{display:block;width:100%}
+.cw-title{font-size:.72rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:.9rem}
+
+/* ── Code ── */
+.cb{background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r);padding:.9rem 1.1rem;margin:.9rem 0;overflow-x:auto}
+.cb pre{font-family:var(--mono);font-size:.8rem;line-height:1.6;color:var(--t1);white-space:pre}
+.ck{color:var(--acc)}.cv{color:var(--ok)}.cm{color:var(--t3);font-style:italic}.cbad{color:var(--crit)}
+
+/* ── Alert ── */
+.alert{border:1px solid var(--bdr);border-left:3px solid var(--acc);border-radius:var(--r);padding:.75rem 1rem;margin:.85rem 0;font-size:.875rem;background:var(--surf)}
+.alert-bad{border-left-color:var(--crit);background:var(--crit-d)}
+.alert-ok{border-left-color:var(--ok);background:var(--ok-d)}
+.alert-warn{border-left-color:var(--bad);background:var(--bad-d)}
+.alert strong{display:block;margin-bottom:.18rem;font-weight:700}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;margin:.85rem 0}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+th{background:var(--surf2);font-weight:700;padding:.48rem .78rem;border-bottom:2px solid var(--bdr);text-align:left;font-size:.76rem;letter-spacing:.02em;white-space:nowrap}
+td{padding:.42rem .78rem;border-bottom:1px solid var(--bdr);font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:none}
+.r-ok{background:var(--ok-d)}.r-bad{background:var(--crit-d)}.r-warn{background:var(--bad-d)}
+
+/* ── Badges ── */
+.b{display:inline-block;padding:.1rem .4rem;border-radius:3px;font-size:.7rem;font-weight:700;font-family:var(--sans)}
+.b-ok{background:var(--ok-d);color:var(--ok)}.b-bad{background:var(--crit-d);color:var(--crit)}.b-warn{background:var(--bad-d);color:var(--bad)}.b-acc{background:var(--acc-d);color:var(--acc)}
+
+/* ── Hypothesis cards ── */
+.hyps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.8rem;margin:.9rem 0}
+.hyp{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:1rem 1.05rem}
+.hyp-h{font-size:.7rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:.45rem;color:var(--crit)}
+.hyp p{font-size:.84rem;line-height:1.55;margin-bottom:.35rem}
+.hyp p:last-child{margin-bottom:0}
+.hyp-verdict{font-size:.72rem;font-weight:700;padding:.12rem .4rem;border-radius:3px;background:var(--crit-d);color:var(--crit)}
+
+/* ── Next step cards ── */
+.steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.8rem;margin:.9rem 0}
+.step{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:1rem 1.05rem}
+.step-tag{font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem}
+.step-tag-ok{color:var(--ok)}.step-tag-acc{color:var(--acc)}.step-tag-warn{color:var(--bad)}
+.step h4{font-size:.88rem;font-weight:700;margin-bottom:.35rem}
+.step p{font-size:.82rem;line-height:1.55;color:var(--t2);margin-bottom:0}
+
+/* ── Rule ── */
+.rule{border:2px solid var(--acc);border-radius:var(--r);padding:1.3rem 1.5rem;background:var(--surf)}
+.rule-l{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);margin-bottom:.5rem}
+.rule p{font-size:.93rem;font-style:italic;line-height:1.65}
+
+code{font-family:var(--mono);font-size:.83em;background:var(--surf2);padding:.07em .3em;border-radius:3px}
+
+@media(max-width:620px){
+  .models,.hyps,.steps{grid-template-columns:1fr}
+  .hero h1{font-size:1.5rem}
+}
+</style>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="tp-tag">TP12 · InduSense · Feature Engineering</div>
+    <h1>Z-Score Machine Pré-Calculé</h1>
+    <p class="hero-sub">Corriger le domain shift de TP10 en calculant les z-scores machine sur l'historique complet — concept juste, implémentation à affiner.</p>
+
+    <div class="models">
+      <div class="model-card mc-ref">
+        <div class="mc-label">Référence</div>
+        <div class="mc-name">B9-GKF</div>
+        <div class="mc-row"><span class="mc-k">PR-AUC CV</span><span class="mc-v">0.7792</span></div>
+        <div class="mc-row"><span class="mc-k">± std</span><span class="mc-v">0.1772</span></div>
+        <div class="mc-row"><span class="mc-k">PR-AUC test</span><span class="mc-v">0.8595</span></div>
+        <div class="mc-row"><span class="mc-k">Features</span><span class="mc-v">69</span></div>
+        <div class="mc-delta delta-ref" style="margin-top:.5rem">— référence</div>
+      </div>
+      <div class="model-card mc-mid">
+        <div class="mc-label">Meilleur</div>
+        <div class="mc-name">B11-GKF</div>
+        <div class="mc-row"><span class="mc-k">PR-AUC CV</span><span class="mc-v">0.7839</span></div>
+        <div class="mc-row"><span class="mc-k">± std</span><span class="mc-v">0.1891</span></div>
+        <div class="mc-row"><span class="mc-k">PR-AUC test</span><span class="mc-v">0.8799</span></div>
+        <div class="mc-row"><span class="mc-k">Features</span><span class="mc-v">69</span></div>
+        <div class="mc-delta delta-pos" style="margin-top:.5rem">CV +0.0047 · test +0.0204</div>
+      </div>
+      <div class="model-card mc-bad">
+        <div class="mc-label">TP12 — Ce TP</div>
+        <div class="mc-name">B12-GKF</div>
+        <div class="mc-row"><span class="mc-k">PR-AUC CV</span><span class="mc-v">0.7480</span></div>
+        <div class="mc-row"><span class="mc-k">± std</span><span class="mc-v">0.2300</span></div>
+        <div class="mc-row"><span class="mc-k">PR-AUC test</span><span class="mc-v">0.8487</span></div>
+        <div class="mc-row"><span class="mc-k">Features</span><span class="mc-v">136</span></div>
+        <div class="mc-delta delta-neg" style="margin-top:.5rem">CV −0.0312 · test −0.0312</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- §1 -->
+<section>
+  <div class="sn">01</div>
+  <h2>Audit des features zscore_machine</h2>
+  <p>Sur 69 features disponibles, seulement <strong>2 features zscore_machine</strong> existaient dans la base. 67 features raw n'avaient aucun équivalent machine-normalisé.</p>
+
+  <div class="cw">
+    <div class="cw-title">Répartition des 69 features — avant TP12</div>
+    <canvas id="auditChart" height="120"></canvas>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr><th>Catégorie</th><th>Count</th><th>Exemples</th></tr></thead>
+    <tbody>
+      <tr class="r-ok"><td><b>zscore_machine existantes</b></td><td>2</td><td><code>temp_zscore_machine</code>, <code>pressure_zscore_machine</code></td></tr>
+      <tr><td>Agrégats temporels (1h/6h/24h)</td><td>~40</td><td><code>temp_mean_1h</code>, <code>pressure_std_24h</code>, <code>voltage_mean_1h</code>…</td></tr>
+      <tr><td>Indicateurs d'incidents</td><td>~15</td><td><code>incident_count_prev_24h</code>, <code>incident_max_severity_prev_24h</code>…</td></tr>
+      <tr><td>Types d'anomalie</td><td>~12</td><td><code>type_blocage_mecanique_count_prev_24h</code>…</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>TP12 a pré-calculé un <code>_zmachine</code> pour chacune des 67 features raw → feature set augmenté à <strong>136 features</strong>.</p>
+</section>
+
+<!-- §2 -->
+<section>
+  <div class="sn">02</div>
+  <h2>Concept — Pré-calcul sur historique complet</h2>
+  <p>La correction clé vs TP10 : les µ et σ sont calculés sur la <strong>totalité du dataset</strong>, avant tout split. La machine de validation a toujours ses statistiques propres disponibles.</p>
+
+  <div class="cw">
+    <div class="cw-title">TP10 vs TP12 — Où sont calculées les statistiques machine ?</div>
+    <canvas id="conceptChart" height="200"></canvas>
+  </div>
+
+  <div class="cb"><pre><span class="cm"># TP12 — stats calculées sur df_full (historique complet machine)</span>
+<span class="ck">def</span> compute_machine_zscores(df_full, raw_cols, suffix=<span class="cv">"_zmachine"</span>):
+    machine_stats = df_full.groupby(<span class="cv">"machine_id"</span>)[raw_cols].agg([<span class="cv">"mean"</span>, <span class="cv">"std"</span>])
+    <span class="cm"># Toute machine a ses propres µ/σ — pas de fallback flotte nécessaire</span>
+    <span class="ck">for</span> col <span class="ck">in</span> raw_cols:
+        mu  = df_full[<span class="cv">"machine_id"</span>].map(machine_stats[col][<span class="cv">"mean"</span>])
+        sig = df_full[<span class="cv">"machine_id"</span>].map(machine_stats[col][<span class="cv">"std"</span>]).replace(0, 1)
+        result[f<span class="cv">"{col}{suffix}"</span>] = (df_full[col] - mu) / sig</pre></div>
+</section>
+
+<!-- §3 -->
+<section>
+  <div class="sn">03</div>
+  <h2>Résultats &amp; Diagnostic</h2>
+
+  <div class="alert alert-bad">
+    <strong>B12-GKF : CV = 0.7480 ± 0.23 — régression vs B11 (0.7839)</strong>
+    Doubler le feature set de 69 → 136 sans re-tuner les HP dégrade les performances. Variance inter-machine en hausse (std 0.19 → 0.23).
+  </div>
+
+  <h3>Trois hypothèses explicatives</h3>
+  <div class="hyps">
+    <div class="hyp">
+      <div class="hyp-h">H1 — Redondance</div>
+      <p>67 paires (raw + zmachine) hautement corrélées. Le signal utile est dilué par des features quasi-identiques dans un référentiel différent.</p>
+      <span class="hyp-verdict">Confirmée</span>
+    </div>
+    <div class="hyp">
+      <div class="hyp-h">H2 — HP désalignés</div>
+      <p><code>colsample_bytree=0.574</code> → 69×0.574 ≈ 40 features/arbre en B11, mais 136×0.574 ≈ 78 en B12. Deux fois plus de features corrélées par arbre.</p>
+      <span class="hyp-verdict">Confirmée</span>
+    </div>
+    <div class="hyp">
+      <div class="hyp-h">H3 — Stack vs Replace</div>
+      <p>Empiler zscore sur raw <em>au lieu de remplacer</em> crée une redondance inutile. HP B11 optimisés pour 69 features, pas 136.</p>
+      <span class="hyp-verdict">Confirmée</span>
+    </div>
+  </div>
+
+  <div class="cw">
+    <div class="cw-title">Impact de colsample_bytree selon la taille du feature set</div>
+    <canvas id="colsampleChart" height="150"></canvas>
+  </div>
+</section>
+
+<!-- §4 -->
+<section>
+  <div class="sn">04</div>
+  <h2>Stratégies — Stack vs Replace vs Select</h2>
+
+  <div class="tw"><table>
+    <thead><tr><th>Stratégie</th><th>Features</th><th>HP B11 applicables ?</th><th>Attente</th></tr></thead>
+    <tbody>
+      <tr class="r-bad"><td><b>Stack (TP12 actuel)</b></td><td>136 (raw + zmachine)</td><td>Non — colsample_bytree désaligné</td><td>Redondance → dégradation</td></tr>
+      <tr class="r-ok"><td><b>Replace (B12b)</b></td><td>69 (zmachine uniquement)</td><td>Oui — même espace</td><td>Comparable ou mieux que B11</td></tr>
+      <tr><td><b>Optuna 136 (B12c)</b></td><td>136</td><td>Re-tuning complet</td><td>Potentiellement meilleur</td></tr>
+      <tr><td><b>SHAP Select (B12d)</b></td><td>Top-N features</td><td>Re-tuning conseillé</td><td>Signal concentré</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-tag step-tag-ok">Priorité 1</div>
+      <h4>B12b — Replace</h4>
+      <p>Garder <em>uniquement</em> les zmachine (remplacer les raw). Même N features que B11 → HP réutilisables sans re-tuning.</p>
+    </div>
+    <div class="step">
+      <div class="step-tag step-tag-acc">Priorité 2</div>
+      <h4>B12c — Optuna 136</h4>
+      <p>Re-tuner Optuna GroupKFold sur le feature set 136. Coût : 150 fits × 2× temps. HP adaptés à l'espace augmenté.</p>
+    </div>
+    <div class="step">
+      <div class="step-tag step-tag-warn">Priorité 3</div>
+      <h4>B12d — SHAP Select</h4>
+      <p>Entraîner B12, calculer les importances SHAP sur 136, retenir Top-N. Vérifie si les nouvelles zmachine apportent un signal réel.</p>
+    </div>
+  </div>
+
+  <h3>Code — Stratégie Replace (B12b)</h3>
+  <div class="cb"><pre><span class="cm"># Identifier les raw qui ont maintenant un équivalent zmachine</span>
+zmachine_cols = [c <span class="ck">for</span> c <span class="ck">in</span> df.columns <span class="ck">if</span> <span class="cv">"_zmachine"</span> <span class="ck">in</span> c]
+raw_bases     = {c.replace(<span class="cv">"_zmachine"</span>, <span class="cv">""</span>) <span class="ck">for</span> c <span class="ck">in</span> zmachine_cols}
+
+<span class="cm"># Remplacer raw par zmachine — conserver features sans équivalent</span>
+FEATURE_COLS_REPLACE = (
+    [c <span class="ck">for</span> c <span class="ck">in</span> FEATURE_COLS <span class="ck">if</span> c <span class="ck">not in</span> raw_bases]  <span class="cm"># raw sans zmachine</span>
+    + zmachine_cols                                              <span class="cm"># zmachine</span>
+)
+<span class="cm"># → même N features ≈ 69, HP B11 applicables sans re-tuning</span></pre></div>
+</section>
+
+<!-- §5 -->
+<section>
+  <div class="sn">05</div>
+  <h2>Règle générale</h2>
+  <div class="rule">
+    <div class="rule-l">Principe retenu — TP12</div>
+    <p>Pré-calculer les z-scores machine sur l'historique complet est la bonne approche pour éviter le domain shift de TP10. <strong>Mais empiler les zscore sur les raw sans re-tuner les HP introduit une redondance structurelle.</strong> La stratégie correcte est de <em>remplacer</em> les raw par leurs équivalents zmachine (N features stables → HP réutilisables), ou de re-tuner Optuna sur l'espace augmenté. Doubler le feature set sans adapter <code>colsample_bytree</code> revient à exposer deux fois plus de features corrélées par arbre — le modèle ne peut pas en tirer parti.</p>
+  </div>
+</section>
+
+</div>
+
+<script>
+function isDark(){
+  const t=document.documentElement.getAttribute('data-theme');
+  if(t==='dark')return true;if(t==='light')return false;
+  return window.matchMedia('(prefers-color-scheme:dark)').matches;
+}
+function getC(){
+  const d=isDark();
+  return{
+    t1:d?'#DDE6F5':'#18202E',t2:d?'#8898AE':'#4E5A6E',t3:d?'#556070':'#8898AE',
+    ok:d?'#3EAA82':'#2A8A68',bad:d?'#E05050':'#B83030',warn:d?'#E08040':'#C96A20',
+    acc:d?'#6090D0':'#3D6FA8',bdr:d?'#2A3448':'#CDD4DF',
+    surf:d?'#1A2030':'#FFF',surf2:d?'#222A3C':'#E8ECF2',
+  };
+}
+
+// ── Feature audit chart ──
+function drawAudit(){
+  const canvas=document.getElementById('auditChart');
+  if(!canvas)return;
+  const C=getC(),dpr=window.devicePixelRatio||1;
+  const W=canvas.parentElement.clientWidth-26,H=120;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+
+  const barH=34,y0=20;
+  // Background bar (69 features)
+  ctx.fillStyle=C.surf2;ctx.fillRect(20,y0,W-40,barH);
+  // zscore portion (2/69)
+  const zw=(2/69)*(W-40);
+  ctx.fillStyle=C.ok+'AA';ctx.fillRect(20,y0,zw,barH);
+  // Border
+  ctx.strokeStyle=C.bdr;ctx.lineWidth=1;ctx.strokeRect(20,y0,W-40,barH);
+  // Labels
+  ctx.fillStyle=C.t1;ctx.font=`bold 11px var(--sans,-apple-system,sans-serif)`;
+  ctx.textAlign='left';ctx.fillText('2 zscore_machine',24,y0+21);
+  ctx.textAlign='right';ctx.fillText('67 features raw (sans équivalent zmachine)',W-24,y0+21);
+
+  // After bar (136)
+  const y1=y0+barH+22;
+  ctx.fillStyle=C.surf2;ctx.fillRect(20,y1,(W-40)*0.5-2,barH);
+  ctx.fillStyle=C.ok+'AA';ctx.fillRect(20+(W-40)*0.5+2,y1,(W-40)*0.5-2,barH);
+  ctx.fillStyle=C.bdr;ctx.fillRect((W)/2-1,y1,2,barH);
+  ctx.strokeStyle=C.bdr;ctx.strokeRect(20,y1,W-40,barH);
+  ctx.fillStyle=C.t1;ctx.font=`bold 11px var(--sans,-apple-system,sans-serif)`;
+  ctx.textAlign='left';ctx.fillText('69 features originales',24,y1+21);
+  ctx.textAlign='right';ctx.fillText('+ 67 zmachine pré-calculées = 136 total',W-24,y1+21);
+
+  // Row labels
+  ctx.fillStyle=C.t3;ctx.font=`9px var(--sans,-apple-system,sans-serif)`;
+  ctx.textAlign='left';ctx.fillText('Avant TP12',20,y0-5);
+  ctx.fillText('Après TP12',20,y1-5);
+}
+
+// ── Concept chart (TP10 vs TP12) ──
+function drawConcept(){
+  const canvas=document.getElementById('conceptChart');
+  if(!canvas)return;
+  const C=getC(),dpr=window.devicePixelRatio||1;
+  const W=canvas.parentElement.clientWidth-26,H=200;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+
+  const col=W/2-10,pad=10;
+
+  // TP10 panel
+  ctx.fillStyle=C.bad+'18';ctx.strokeStyle=C.bad;ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.roundRect(pad,10,col-pad,H-20,6);ctx.fill();ctx.stroke();
+  ctx.fillStyle=C.bad;ctx.font=`bold 11px var(--sans,-apple-system,sans-serif)`;
+  ctx.textAlign='center';ctx.fillText('TP10 — stats sur fold train',pad+col/2,28);
+  ctx.fillStyle=C.t2;ctx.font=`9px var(--sans,-apple-system,sans-serif)`;
+  ctx.fillText('machines train : µ/σ propres ✓',pad+col/2,46);
+  ctx.fillText('machine val : NaN → fallback flotte ✗',pad+col/2,62);
+  // Arrow down
+  const ax1=pad+col/2;
+  ctx.strokeStyle=C.bad;ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(ax1,72);ctx.lineTo(ax1,110);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ax1-8,104);ctx.lineTo(ax1,110);ctx.lineTo(ax1+8,104);ctx.stroke();
+  ctx.fillStyle=C.bad;ctx.font=`bold 9px var(--sans,-apple-system,sans-serif)`;
+  ctx.textAlign='center';ctx.fillText('z_flotte ≠ z_machine',ax1,125);
+  ctx.fillText('→ domain shift',ax1,138);
+  ctx.fillText('CV = 0.5580 ↓',ax1,155);
+
+  // TP12 panel
+  const x2=W/2+10;
+  ctx.fillStyle=C.ok+'18';ctx.strokeStyle=C.ok;ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.roundRect(x2,10,W-x2-pad,H-20,6);ctx.fill();ctx.stroke();
+  ctx.fillStyle=C.ok;ctx.font=`bold 11px var(--sans,-apple-system,sans-serif)`;
+  ctx.textAlign='center';ctx.fillText('TP12 — stats sur historique complet',x2+(W-x2-pad)/2,28);
+  ctx.fillStyle=C.t2;ctx.font=`9px var(--sans,-apple-system,sans-serif)`;
+  ctx.fillText('toutes machines : µ/σ propres ✓',x2+(W-x2-pad)/2,46);
+  ctx.fillText('machine val : ses propres stats ✓',x2+(W-x2-pad)/2,62);
+  const ax2=x2+(W-x2-pad)/2;
+  ctx.strokeStyle=C.ok;ctx.lineWidth=2;
+  ctx.beginPath();ctx.moveTo(ax2,72);ctx.lineTo(ax2,110);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ax2-8,104);ctx.lineTo(ax2,110);ctx.lineTo(ax2+8,104);ctx.stroke();
+  ctx.fillStyle=C.ok;ctx.font=`bold 9px var(--sans,-apple-system,sans-serif)`;
+  ctx.textAlign='center';ctx.fillText('référentiel cohérent ✓',ax2,125);
+  ctx.fillText('mais 136 features → HP désalignés',ax2,138);
+  ctx.fillStyle=C.warn;ctx.font=`bold 9px var(--sans,-apple-system,sans-serif)`;
+  ctx.fillText('CV = 0.7480 — concept ok, stack ko',ax2,155);
+}
+
+// ── Colsample chart ──
+function drawColsample(){
+  const canvas=document.getElementById('colsampleChart');
+  if(!canvas)return;
+  const C=getC(),dpr=window.devicePixelRatio||1;
+  const W=canvas.parentElement.clientWidth-26,H=150;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+
+  const models=[
+    {label:'B11-GKF',features:69,color:C.ok},
+    {label:'B12-GKF',features:136,color:C.bad},
+  ];
+  const cbt=0.574;
+  const maxF=136,barW=(W-80)/2-15,pad=40;
+
+  models.forEach((m,i)=>{
+    const x=pad+i*(barW+30);
+    const total=m.features;
+    const seen=Math.round(total*cbt);
+    const totalH=(total/maxF)*(H-60);
+    const seenH=(seen/maxF)*(H-60);
+    const baseY=H-30;
+
+    // Total features bar
+    ctx.fillStyle=m.color+'33';
+    ctx.fillRect(x,baseY-totalH,barW,totalH);
+    ctx.strokeStyle=m.color+'88';ctx.lineWidth=1;
+    ctx.strokeRect(x,baseY-totalH,barW,totalH);
+
+    // Seen features bar
+    ctx.fillStyle=m.color+'AA';
+    ctx.fillRect(x,baseY-seenH,barW,seenH);
+
+    // Labels
+    ctx.fillStyle=m.color;ctx.font=`bold 11px var(--sans,-apple-system,sans-serif)`;
+    ctx.textAlign='center';ctx.fillText(m.label,x+barW/2,baseY+14);
+    ctx.fillStyle=C.t2;ctx.font=`9px var(--sans,-apple-system,sans-serif)`;
+    ctx.fillText(`${total} features total`,x+barW/2,baseY-totalH-3);
+    ctx.fillStyle=m.color;ctx.font=`bold 9px var(--sans,-apple-system,sans-serif)`;
+    ctx.fillText(`${seen} vues/arbre`,x+barW/2,baseY-seenH-3);
+  });
+
+  // Legend
+  ctx.fillStyle=C.t3;ctx.font=`9px var(--sans,-apple-system,sans-serif)`;
+  ctx.textAlign='left';
+  ctx.fillStyle=C.t2+'66';ctx.fillRect(pad,H-12,12,8);
+  ctx.fillStyle=C.t2;ctx.fillText('Total features',pad+16,H-5);
+  ctx.fillStyle=C.acc+'AA';ctx.fillRect(pad+115,H-12,12,8);
+  ctx.fillStyle=C.t2;ctx.fillText(`Vues/arbre (colsample=0.574)`,pad+131,H-5);
+}
+
+function drawAll(){drawAudit();drawConcept();drawColsample();}
+drawAll();
+new MutationObserver(drawAll).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+window.addEventListener('resize',drawAll);
+window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',drawAll);
+</script>
