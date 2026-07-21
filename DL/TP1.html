@@ -355,7 +355,7 @@ pre.code{background:var(--code-bg);border-radius:6px;padding:1rem 1.2rem;font-fa
   <p>Les pixels bruts sont en [0, 255] (uint8). Diviser par 255 les place dans [0, 1] en float32 — ce que les couches de convolution et la fonction d'activation sigmoïde du décodeur attendent.</p>
 
   <h3>Split train / val</h3>
-  <p>On réserve <strong>20 % des images saines</strong> pour la validation, avec un tirage aléatoire fixe (<code style="font-family:var(--mono);font-size:.85rem">seed=42</code>). Résultat : <strong>167 images train, 42 images val</strong>. La validation servira à <em>calibrer le seuil</em> en partie 2 — elle ne doit pas voir d'images défectueuses.</p>
+  <p>On réserve <strong>20 % des images saines</strong> pour la validation, avec un tirage aléatoire fixe (<code style="font-family:var(--mono);font-size:.85rem">seed=42</code>). Résultat : <strong>168 images train, 41 images val</strong>. La validation servira à <em>calibrer le seuil</em> en partie 2 — elle ne doit pas voir d'images défectueuses.</p>
 
 <pre class="code"><span class="kw">from</span> indusense.vision.dataset <span class="kw">import</span> load_train_val, load_test
 
@@ -363,9 +363,9 @@ pre.code{background:var(--code-bg);border-radius:6px;padding:1rem 1.2rem;font-fa
 X_train, X_val = <span class="fn">load_train_val</span>(BOTTLE_ROOT, val_ratio=<span class="num">0.2</span>, seed=<span class="num">42</span>)
 X_test, y_test, classes = <span class="fn">load_test</span>(BOTTLE_ROOT)
 
-<span class="cm"># X_train : (167, 128, 128, 3) float32  — valeurs dans [0, 1]</span>
-<span class="cm"># X_val   : (42,  128, 128, 3) float32</span>
-<span class="cm"># X_test  : (83,  128, 128, 3)  y_test : 0=saine / 1=défaut</span></pre>
+<span class="cm"># X_train : (168, 256, 256, 3) float32  — valeurs dans [0, 1]</span>
+<span class="cm"># X_val   : (41,  256, 256, 3) float32</span>
+<span class="cm"># X_test  : (83,  256, 256, 3)  y_test : 0=saine / 1=défaut</span></pre>
 
   <div class="insight">
     <div class="insight-label">Règle importante</div>
@@ -373,12 +373,54 @@ X_test, y_test, classes = <span class="fn">load_test</span>(BOTTLE_ROOT)
   </div>
 </section>
 
-<!-- ── §5 Augmentation ── -->
+<!-- ── §5 Normalisation ── -->
 <section>
   <div class="eyebrow">05 — Étape 2</div>
+  <h2>Normalisation des pixels</h2>
+
+  <p>Deux étapes complémentaires permettent de mettre tous les pixels à la même échelle avant d'entrer dans le réseau.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem">
+    <div style="background:var(--ok-dim);border:1.5px solid var(--ok);border-radius:8px;padding:1rem">
+      <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ok);margin-bottom:.4rem">Étape 1 — déjà faite au chargement</div>
+      <strong style="color:var(--t1)">Mise à l'échelle [0, 1]</strong>
+      <p style="font-size:.88rem;margin-top:.35rem">Division par 255 : les uint8 [0–255] deviennent des float32 [0–1]. La sigmoïde du décodeur produit des valeurs dans [0, 1] — la MSE est cohérente.</p>
+      <code style="font-family:var(--mono);font-size:.82rem;color:var(--code-t)">X = pixel / 255.0</code>
+    </div>
+    <div style="background:var(--teal-dim);border:1.5px solid var(--teal);border-radius:8px;padding:1rem">
+      <div style="font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:.4rem">Étape 2 — standardisation</div>
+      <strong style="color:var(--t1)">Centrage-réduction par canal</strong>
+      <p style="font-size:.88rem;margin-top:.35rem">Centre chaque canal R/G/B autour de 0 avec σ=1. Stabilise le gradient et accélère la convergence de l'optimiseur.</p>
+      <code style="font-family:var(--mono);font-size:.82rem;color:var(--code-t)">X = (X − μ) / σ</code>
+    </div>
+  </div>
+
+  <h3>Règle anti-fuite — stats train uniquement</h3>
+  <p>μ et σ sont calculés <strong>sur X_train exclusivement</strong>, puis appliqués à val et test <em>sans recalcul</em>. Utiliser les stats de val ou test reviendrait à laisser filtrer de l'information du futur dans le modèle (<em>data leakage</em>).</p>
+
+<pre class="code"><span class="kw">from</span> indusense.vision.dataset <span class="kw">import</span> compute_stats, standardize
+
+<span class="cm"># Stats calculées sur le train uniquement</span>
+mean, std = <span class="fn">compute_stats</span>(X_train)
+print(mean)   <span class="cm"># ex. [0.4812, 0.4721, 0.4689]  — par canal RGB</span>
+
+<span class="cm"># Même mean/std appliqués partout</span>
+X_train = <span class="fn">standardize</span>(X_train, mean, std)
+X_val   = <span class="fn">standardize</span>(X_val,   mean, std)
+X_test  = <span class="fn">standardize</span>(X_test,  mean, std)</pre>
+
+  <div class="insight">
+    <div class="insight-label">Pourquoi par canal et pas globalement ?</div>
+    Les trois canaux R/G/B d'une image de bouteille ont des distributions légèrement différentes (le verre réfléchit la lumière différemment selon la longueur d'onde). Standardiser canal par canal évite que l'un d'eux domine la reconstruction.
+  </div>
+</section>
+
+<!-- ── §6 Augmentation ── -->
+<section>
+  <div class="eyebrow">06 — Étape 3</div>
   <h2>Pipeline d'augmentation (Albumentations)</h2>
 
-  <p>L'augmentation artificialise la variabilité des données saines pour empêcher l'auto-encodeur de mémoriser exactement les 167 images d'entraînement. Elle doit <strong>élargir la notion de "normal" sans la dénaturer</strong>.</p>
+  <p>L'augmentation artificialise la variabilité des données saines pour empêcher l'auto-encodeur de mémoriser exactement les 168 images d'entraînement. Elle doit <strong>élargir la notion de "normal" sans la dénaturer</strong>.</p>
 
   <div class="tr-section">
     <div class="tr-label tr-ok">✓ Retenues pour bottle</div>
@@ -433,9 +475,9 @@ X_test, y_test, classes = <span class="fn">load_test</span>(BOTTLE_ROOT)
   </div>
 </section>
 
-<!-- ── §6 Réflexion ── -->
+<!-- ── §7 Réflexion ── -->
 <section>
-  <div class="eyebrow">06 — Point de réflexion</div>
+  <div class="eyebrow">07 — Point de réflexion</div>
   <h2>Objet centré vs Texture — une stratégie différente</h2>
 
   <p>Le bon choix d'augmentation dépend <strong>de la nature de l'objet</strong>, pas du dataset en général. La même transform peut être excellente pour une texture et catastrophique pour un objet.</p>
@@ -468,13 +510,79 @@ X_test, y_test, classes = <span class="fn">load_test</span>(BOTTLE_ROOT)
   </div>
 </section>
 
+<!-- ── §8 Versionnage ── -->
+<section>
+  <div class="eyebrow">08 — Bonnes pratiques</div>
+  <h2>Versionnage du dataset</h2>
+
+  <p>Un dataset non versionné n'est pas reproductible. Si les images changent, si le split change ou si les stats de normalisation changent, le modèle entraîné n'est plus le même — <strong>sans qu'on le sache</strong>.</p>
+
+  <h3>Pourquoi versionner ?</h3>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-bottom:1.2rem">
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:.85rem">
+      <strong style="font-size:.88rem">Reproductibilité</strong>
+      <p style="font-size:.83rem;margin-top:.3rem">Le même identifiant de version produit toujours le même dataset, même 6 mois plus tard.</p>
+    </div>
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:.85rem">
+      <strong style="font-size:.88rem">Traçabilité</strong>
+      <p style="font-size:.83rem;margin-top:.3rem">On sait exactement quelles images, quel split et quelles stats ont produit un modèle donné.</p>
+    </div>
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:.85rem">
+      <strong style="font-size:.88rem">Collaboration</strong>
+      <p style="font-size:.83rem;margin-top:.3rem">Un coéquipier peut recréer le dataset sans poser de questions.</p>
+    </div>
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:.85rem">
+      <strong style="font-size:.88rem">Retour arrière</strong>
+      <p style="font-size:.83rem;margin-top:.3rem">Si un nouveau split dégrade les performances, on peut revenir à la version précédente.</p>
+    </div>
+  </div>
+
+  <h3>Ce qui est versionné dans ce projet</h3>
+  <div style="overflow-x:auto">
+  <table style="width:100%;border-collapse:collapse;font-size:.88rem">
+    <thead>
+      <tr style="background:var(--card2)">
+        <th style="text-align:left;padding:.5rem .75rem;border-bottom:2px solid var(--border)">Artefact</th>
+        <th style="text-align:center;padding:.5rem .75rem;border-bottom:2px solid var(--border)">Git ?</th>
+        <th style="text-align:left;padding:.5rem .75rem;border-bottom:2px solid var(--border)">Rôle</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="padding:.45rem .75rem;border-bottom:1px solid var(--border)"><code style="font-family:var(--mono)">bottle/</code> (images)</td><td style="text-align:center;color:var(--bad)">✗</td><td style="padding:.45rem .75rem;border-bottom:1px solid var(--border);color:var(--t2)">.gitignore — ~250 Mo, téléchargées séparément</td></tr>
+      <tr style="background:var(--card2)"><td style="padding:.45rem .75rem;border-bottom:1px solid var(--border)"><code style="font-family:var(--mono)">dataset_card.yaml</code></td><td style="text-align:center;color:var(--ok)">✓</td><td style="padding:.45rem .75rem;border-bottom:1px solid var(--border);color:var(--t2)">Source, version_id, split params, preprocessing</td></tr>
+      <tr><td style="padding:.45rem .75rem;border-bottom:1px solid var(--border)"><code style="font-family:var(--mono)">norm_stats.json</code></td><td style="text-align:center;color:var(--ok)">✓</td><td style="padding:.45rem .75rem;border-bottom:1px solid var(--border);color:var(--t2)">μ et σ par canal — doit suivre le modèle en production</td></tr>
+      <tr style="background:var(--card2)"><td style="padding:.45rem .75rem"><code style="font-family:var(--mono)">dataset.py</code></td><td style="text-align:center;color:var(--ok)">✓</td><td style="padding:.45rem .75rem;color:var(--t2)">Logique de chargement, split, normalisation</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+<pre class="code" style="margin-top:1.1rem"><span class="kw">from</span> indusense.vision.dataset <span class="kw">import</span> save_stats, load_stats
+
+<span class="cm"># Après compute_stats — sauvegarder dans un fichier commité dans Git</span>
+<span class="fn">save_stats</span>(mean_train, std_train, path=<span class="str">"norm_stats.json"</span>)
+
+<span class="cm"># En inférence (ou pour un collaborateur) : recharger sans recalculer</span>
+mean, std = <span class="fn">load_stats</span>(<span class="str">"norm_stats.json"</span>)
+img_standardized = <span class="fn">standardize</span>(img_new, mean, std)</pre>
+
+  <div class="insight">
+    <div class="insight-label">Règle d'or</div>
+    Un même <code style="font-family:var(--mono);font-size:.85rem">version_id</code> dans <code style="font-family:var(--mono);font-size:.85rem">dataset_card.yaml</code> + le même <code style="font-family:var(--mono);font-size:.85rem">dataset.py</code> doivent <strong>toujours</strong> produire le même dataset — mêmes images, même split, mêmes stats.
+  </div>
+
+  <h3>Pour aller plus loin</h3>
+  <p><strong>DVC</strong> (Data Version Control) étend Git pour versionner de gros fichiers binaires (images, modèles) en stockant leur hash dans Git et le contenu dans un remote (S3, GCS…). <strong>Git-LFS</strong> fait de même directement dans GitHub. Pour ce TP, l'approche légère (<code style="font-family:var(--mono);font-size:.85rem">dataset_card.yaml</code> + <code style="font-family:var(--mono);font-size:.85rem">norm_stats.json</code> + <code style="font-family:var(--mono);font-size:.85rem">.gitignore</code>) suffit.</p>
+</section>
+
 <!-- ── Summary ── -->
 <div class="summary">
   <div class="summary-title">Récapitulatif — Ce que produit cette partie</div>
   <div class="summary-grid">
-    <div class="sum-item"><strong>X_train (167 images)</strong>Saines, 256×256, [0,1] — prêtes pour l'auto-encodeur</div>
-    <div class="sum-item"><strong>X_val (42 images)</strong>Saines — pour calibrer le seuil de détection (partie 2)</div>
-    <div class="sum-item"><strong>X_test (83 images)</strong>Saines + 3 types de défauts + masques GT pixel-level</div>
+    <div class="sum-item"><strong>X_train (168 images)</strong>Saines, 256×256, standardisées (μ≈0, σ≈1) — prêtes pour l'auto-encodeur</div>
+    <div class="sum-item"><strong>X_val (41 images)</strong>Saines — même standardisation que train, pour calibrer le seuil (partie 2)</div>
+    <div class="sum-item"><strong>X_test (83 images)</strong>Saines + 3 types de défauts + masques GT pixel-level, standardisées</div>
+    <div class="sum-item"><strong>norm_stats.json</strong>μ et σ RGB sauvegardés et versionnés — à fournir avec le modèle en production</div>
+    <div class="sum-item"><strong>dataset_card.yaml</strong>Métadonnées de version : source, split params, preprocessing — commité dans Git</div>
     <div class="sum-item"><strong>Pipeline augmentation</strong>5 transforms conservatrices, adaptées à un objet centré</div>
   </div>
 </div>

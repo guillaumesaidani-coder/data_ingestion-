@@ -1,0 +1,41 @@
+# Dataset Card — MVTec AD · bottle
+# Ce fichier EST versionné dans Git (les images, elles, ne le sont pas).
+# Règle d'or : un même version_id doit toujours produire le même dataset.
+
+version_id: "bottle-v1.0"
+
+source:
+  name: "MVTec Anomaly Detection Dataset"
+  url: "https://www.mvtec.com/company/research/datasets/mvtec-ad"
+  category: "bottle"
+  license: "CC BY-NC-SA 4.0"
+
+acquisition:
+  date_downloaded: null    # à renseigner : "YYYY-MM-DD"
+  sensor: null             # à renseigner si connu (ex: "Basler acA2440")
+  resolution_original: [900, 900]
+
+preprocessing:
+  target_size: [256, 256]
+  resize_strategy: "padding"          # letterbox — ratio préservé
+  interpolation_images: "LANCZOS"
+  interpolation_masks: "NEAREST"      # labels binaires, pas d'interpolation couleur
+
+split:
+  seed: 42
+  val_ratio: 0.20
+  counts:
+    train_good: 167
+    val_good: 42
+    test_good: 20
+    test_broken_large: 20
+    test_broken_small: 22
+    test_contamination: 21
+    masks: 63
+
+normalization:
+  # Calculé sur train uniquement via compute_stats(X_train).
+  # À régénérer si le split change (nouveau seed ou val_ratio).
+  # Les valeurs sont également sauvegardées dans norm_stats.json.
+  mean_rgb: null   # ex. [0.4812, 0.4721, 0.4689]
+  std_rgb: null    # ex. [0.2134, 0.2089, 0.2102]

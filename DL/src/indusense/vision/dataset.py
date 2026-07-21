@@ -4,9 +4,12 @@ Conventions :
   - Taille cible : 256×256 (suffisante pour préserver les défauts visuels)
   - Redimensionnement : padding centré (letterbox) — ratio préservé
   - Interpolation images : LANCZOS  |  masques : NEAREST (labels binaires)
-  - Normalisation : float32 dans [0, 1]
+  - Normalisation étape 1 : mise à l'échelle [0, 1] par division par 255
+  - Normalisation étape 2 : standardisation (x − μ) / σ par canal,
+                            μ et σ calculés sur le train uniquement
 """
 
+import json
 from pathlib import Path
 
 import numpy as np
@@ -90,6 +93,63 @@ def load_test(
             labels.append(label)
             classes.append(cls)
     return np.stack(images), np.array(labels, dtype=np.int8), classes
+
+
+def compute_stats(X_train: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Calcule moyenne et écart-type par canal RGB sur le set d'entraînement.
+
+    Args:
+        X_train : (N, H, W, 3) float32 dans [0, 1]
+
+    Returns:
+        mean : (3,) — moyenne par canal
+        std  : (3,) — écart-type par canal (jamais nul)
+    """
+    mean = X_train.mean(axis=(0, 1, 2))
+    std  = X_train.std(axis=(0, 1, 2))
+    std  = np.where(std < 1e-8, 1.0, std)  # évite la division par zéro
+    return mean, std
+
+
+def standardize(
+    X: np.ndarray,
+    mean: np.ndarray,
+    std: np.ndarray,
+) -> np.ndarray:
+    """Applique la standardisation (x − mean) / std, par canal.
+
+    Les stats (mean, std) doivent être calculées sur X_train uniquement
+    via compute_stats(), puis réutilisées telles quelles sur val et test.
+
+    Args:
+        X    : (N, H, W, 3) float32
+        mean : (3,) — issu de compute_stats(X_train)
+        std  : (3,) — issu de compute_stats(X_train)
+
+    Returns:
+        (N, H, W, 3) float32 standardisé
+    """
+    return (X - mean) / std
+
+
+def save_stats(
+    mean: np.ndarray,
+    std: np.ndarray,
+    path: Path | str = "norm_stats.json",
+) -> None:
+    """Persiste mean et std dans un fichier JSON versionnable.
+
+    À sauvegarder avec le modèle : toute inférence future doit utiliser
+    les mêmes stats que celles vues à l'entraînement.
+    """
+    data = {"mean_rgb": mean.tolist(), "std_rgb": std.tolist()}
+    Path(path).write_text(json.dumps(data, indent=2))
+
+
+def load_stats(path: Path | str = "norm_stats.json") -> tuple[np.ndarray, np.ndarray]:
+    """Charge mean et std depuis un fichier JSON sauvegardé par save_stats()."""
+    data = json.loads(Path(path).read_text())
+    return np.array(data["mean_rgb"], dtype=np.float32), np.array(data["std_rgb"], dtype=np.float32)
 
 
 def load_masks(
