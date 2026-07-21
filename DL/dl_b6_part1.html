@@ -1,0 +1,482 @@
+<title>B6 · Partie 1 — Détection d'Anomalies Visuelles (MVTec AD)</title>
+<style>
+:root {
+  --navy:#0C2040; --teal:#00A896; --teal-dim:#D0F0EC; --amber:#F5A623; --amber-dim:#FEF0D6;
+  --ok:#16A34A; --ok-dim:#DCFCE7; --bad:#DC2626; --bad-dim:#FEE2E2;
+  --bg:#F0F5FB; --card:#FFF; --card2:#EBF2FA; --border:#CBD8E8;
+  --t1:#1C2E42; --t2:#4E6680; --t3:#8099B0;
+  --code-bg:#E4EEF8; --code-t:#1C2E42;
+  --mono:'Cascadia Code','SF Mono',Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0A1520; --card:#112030; --card2:#162840; --border:#1E3050;
+  --t1:#C8DCF0; --t2:#6A90B0; --t3:#3A6090;
+  --code-bg:#0C1C2E; --code-t:#A8D0F0;
+  --teal-dim:#003830; --amber-dim:#3A2800; --ok-dim:#052010; --bad-dim:#250808;
+}}
+:root[data-theme="dark"]{
+  --bg:#0A1520; --card:#112030; --card2:#162840; --border:#1E3050;
+  --t1:#C8DCF0; --t2:#6A90B0; --t3:#3A6090;
+  --code-bg:#0C1C2E; --code-t:#A8D0F0;
+  --teal-dim:#003830; --amber-dim:#3A2800; --ok-dim:#052010; --bad-dim:#250808;
+}
+:root[data-theme="light"]{
+  --bg:#F0F5FB; --card:#FFF; --card2:#EBF2FA; --border:#CBD8E8;
+  --t1:#1C2E42; --t2:#4E6680; --t3:#8099B0;
+  --code-bg:#E4EEF8; --code-t:#1C2E42;
+  --teal-dim:#D0F0EC; --amber-dim:#FEF0D6; --ok-dim:#DCFCE7; --bad-dim:#FEE2E2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:15px;line-height:1.65;padding:0 1rem 5rem}
+a{color:var(--teal);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ── Header ── */
+.hd{background:var(--navy);color:#fff;padding:2.8rem 2rem 2.2rem;max-width:860px;margin:0 auto 2.8rem;border-radius:0 0 10px 10px;position:relative;overflow:hidden}
+.hd::after{content:'';position:absolute;right:-80px;top:-80px;width:300px;height:300px;background:var(--teal);border-radius:50%;opacity:.12}
+.hd-tag{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.6rem}
+.hd h1{font-size:1.7rem;font-weight:700;line-height:1.2;text-wrap:balance;position:relative;z-index:1}
+.hd p{font-size:.95rem;color:rgba(255,255,255,.65);margin-top:.5rem;max-width:540px}
+.hd-badge{display:inline-block;background:var(--teal);color:#fff;font-size:.7rem;font-weight:700;letter-spacing:.07em;padding:.2rem .55rem;border-radius:3px;margin-top:.9rem}
+
+/* ── Layout ── */
+.page{max-width:860px;margin:0 auto}
+section{margin-bottom:3rem}
+.eyebrow{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem}
+h2{font-size:1.35rem;font-weight:700;color:var(--t1);margin-bottom:1.1rem;padding-bottom:.45rem;border-bottom:1.5px solid var(--border)}
+h3{font-size:.95rem;font-weight:700;color:var(--t1);margin:1.2rem 0 .45rem}
+p{margin-bottom:.75rem;color:var(--t2);font-size:.95rem}
+p:last-child{margin-bottom:0}
+strong{color:var(--t1)}
+
+/* ── Scénario ── */
+.dialog{display:flex;flex-direction:column;gap:.8rem}
+.dlg-row{display:flex;gap:.7rem;align-items:flex-start}
+.dlg-row.dev{flex-direction:row-reverse}
+.dlg-avatar{flex-shrink:0;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700}
+.po-av{background:var(--amber);color:#fff}
+.dev-av{background:var(--navy);color:var(--teal)}
+.dlg-bubble{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;font-size:.88rem;max-width:85%;color:var(--t1);line-height:1.6}
+.dlg-row.dev .dlg-bubble{background:var(--card);border-color:var(--teal);border-left:3px solid var(--teal)}
+.dlg-label{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-bottom:.18rem}
+
+/* ── Approach cards ── */
+.approach-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+.ap-card{border:1.5px solid var(--border);border-radius:8px;padding:1.1rem 1.3rem}
+.ap-card.selected{border-color:var(--teal);background:var(--teal-dim)}
+.ap-card.disabled{opacity:.7}
+.ap-badge{font-size:.65rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;margin-bottom:.5rem}
+.ap-badge.ok{color:var(--ok)}
+.ap-badge.skip{color:var(--t3)}
+.ap-title{font-size:1rem;font-weight:700;color:var(--t1);margin-bottom:.4rem}
+.ap-card ul{padding-left:1.1rem;font-size:.86rem;color:var(--t2)}
+.ap-card li{margin-bottom:.3rem}
+.ap-card li.pro{color:var(--ok)}
+.ap-card li.con{color:var(--bad)}
+
+/* ── SVG zone ── */
+.diagram-wrap{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1.2rem;overflow-x:auto;margin:1rem 0}
+.diagram-wrap svg{display:block;max-width:100%}
+
+/* ── Insight box ── */
+.insight{background:var(--amber-dim);border-left:3px solid var(--amber);border-radius:4px;padding:.8rem 1rem;font-size:.88rem;color:var(--t1);margin:1rem 0}
+.insight-label{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:.3rem}
+
+/* ── Dataset ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin:1rem 0}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.8rem 1rem;text-align:center}
+.stat-v{font-family:var(--mono);font-size:1.4rem;font-weight:700;color:var(--teal);line-height:1}
+.stat-l{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-top:.25rem}
+.tree{background:var(--code-bg);border-radius:6px;padding:1rem 1.2rem;font-family:var(--mono);font-size:.82rem;color:var(--code-t);line-height:1.9;margin:1rem 0;overflow-x:auto}
+.tree .dir{color:var(--teal);font-weight:600}
+.tree .file{color:var(--t2)}
+.tree .comment{color:var(--t3)}
+
+/* ── Code block ── */
+pre.code{background:var(--code-bg);border-radius:6px;padding:1rem 1.2rem;font-family:var(--mono);font-size:.82rem;color:var(--code-t);line-height:1.8;overflow-x:auto;margin:.8rem 0}
+.kw{color:#7CB9E8;font-weight:600}
+.fn{color:var(--teal)}
+.cm{color:var(--t3);font-style:italic}
+.st{color:#F5A623}
+.num{color:#A8D0F0}
+
+/* ── Transforms ── */
+.tr-section{margin:1rem 0}
+.tr-label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;padding:.2rem .6rem;border-radius:3px;display:inline-block}
+.tr-ok{background:var(--ok-dim);color:var(--ok)}
+.tr-bad{background:var(--bad-dim);color:var(--bad)}
+.tr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.7rem;margin-bottom:1.4rem}
+.tr-card{border:1px solid var(--border);border-radius:8px;padding:.9rem 1rem;background:var(--card);transition:box-shadow .15s,border-color .15s;cursor:default}
+.tr-card:hover{box-shadow:0 3px 10px rgba(0,0,0,.08);border-color:var(--teal)}
+.tr-card.kept{border-left:3px solid var(--ok)}
+.tr-card.dropped{border-left:3px solid var(--bad);opacity:.8}
+.tr-name{font-family:var(--mono);font-size:.83rem;font-weight:700;color:var(--t1);margin-bottom:.25rem}
+.tr-badge{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.4rem}
+.tr-badge.ok{color:var(--ok)}
+.tr-badge.bad{color:var(--bad)}
+.tr-why{font-size:.8rem;color:var(--t2);line-height:1.5}
+
+/* ── Objet vs texture ── */
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+.cmp-card{border:1.5px solid var(--border);border-radius:8px;padding:1.1rem 1.2rem}
+.cmp-title{font-size:.9rem;font-weight:700;margin-bottom:.6rem}
+.cmp-chip{display:inline-block;font-size:.7rem;font-weight:700;padding:.1rem .4rem;border-radius:3px;margin-right:.3rem;margin-bottom:.3rem}
+.chip-ok{background:var(--ok-dim);color:var(--ok)}
+.chip-bad{background:var(--bad-dim);color:var(--bad)}
+
+/* ── Summary ── */
+.summary{background:var(--navy);color:#fff;border-radius:8px;padding:1.6rem 1.8rem;margin-top:2rem}
+.summary-title{font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.9rem}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.sum-item{font-size:.88rem;color:rgba(255,255,255,.85);padding-left:.9rem;border-left:2px solid var(--teal)}
+.sum-item strong{color:#fff;display:block;margin-bottom:.15rem;font-size:.92rem}
+
+@media(max-width:640px){
+  .approach-grid,.cmp-grid,.summary-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .hd{border-radius:0}
+}
+</style>
+
+<div class="hd">
+  <div class="hd-tag">InduSense · Deep Learning · B6</div>
+  <h1>Détection d'Anomalies Visuelles<br>sans images défectueuses annotées</h1>
+  <p>Auto-encodeur CNN sur MVTec AD — préparation des données et stratégie d'augmentation</p>
+  <span class="hd-badge">Partie 1 — Données</span>
+</div>
+
+<div class="page">
+
+<!-- ── §1 Scénario ── -->
+<section>
+  <div class="eyebrow">Contexte</div>
+  <h2>Pourquoi ne pas utiliser YOLO ?</h2>
+
+  <div class="dialog">
+    <div class="dlg-row po">
+      <div class="dlg-avatar po-av">PO</div>
+      <div>
+        <div class="dlg-label">Product Owner</div>
+        <div class="dlg-bubble">On voudrait repérer automatiquement les défauts visuels sur les pièces produites. Le problème : on n'a <strong>aucune image de pièce défectueuse annotée</strong>. Tu as une idée ?</div>
+      </div>
+    </div>
+    <div class="dlg-row dev">
+      <div class="dlg-avatar dev-av">DEV</div>
+      <div>
+        <div class="dlg-label" style="text-align:right">Developer</div>
+        <div class="dlg-bubble">Oui — il faut distinguer deux familles d'approches. La première (YOLO / classification supervisée) est très performante mais nécessite <strong>des milliers d'exemples annotés par type de défaut</strong> — irréaliste ici. La seconde (auto-encodeur) n'a besoin <strong>que de pièces saines</strong>.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="approach-grid" style="margin-top:1.2rem">
+    <div class="ap-card disabled">
+      <div class="ap-badge skip">✗ Non retenu</div>
+      <div class="ap-title">Classification supervisée (YOLO)</div>
+      <ul>
+        <li class="pro">Localisation précise des défauts</li>
+        <li class="con">Milliers d'exemples annotés requis</li>
+        <li class="con">Annotation manuelle par type de défaut</li>
+        <li class="con">Irréaliste sans données initiales</li>
+      </ul>
+    </div>
+    <div class="ap-card selected">
+      <div class="ap-badge ok">✓ Retenu</div>
+      <div class="ap-title">Reconstruction non supervisée (auto-encodeur)</div>
+      <ul>
+        <li class="pro">Aucun défaut annoté requis</li>
+        <li class="pro">Entraînement sur pièces saines uniquement</li>
+        <li class="pro">Adapté au démarrage (peu de données)</li>
+        <li class="con">Performance dépend du seuil de détection</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── §2 Principe auto-encodeur ── -->
+<section>
+  <div class="eyebrow">02 — Principe</div>
+  <h2>Comment fonctionne l'auto-encodeur ?</h2>
+
+  <p>On entraîne le modèle à <strong>compresser puis reconstruire uniquement des pièces saines</strong>. Une fois entraîné, il ne sait reconstruire que ce qu'il a vu — c'est-à-dire le normal. Quand on lui présente un défaut, la reconstruction est mauvaise : l'<strong>erreur de reconstruction devient le score d'anomalie</strong>.</p>
+
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:480px">
+      <!-- ── Labels colonnes ── -->
+      <text x="55"  y="18" text-anchor="middle" font-size="9" font-weight="700" fill="#8099B0" letter-spacing="1">ENTRÉE</text>
+      <text x="215" y="18" text-anchor="middle" font-size="9" font-weight="700" fill="#8099B0" letter-spacing="1">ENCODER</text>
+      <text x="360" y="18" text-anchor="middle" font-size="9" font-weight="700" fill="#8099B0" letter-spacing="1">ESPACE LATENT</text>
+      <text x="505" y="18" text-anchor="middle" font-size="9" font-weight="700" fill="#8099B0" letter-spacing="1">DECODER</text>
+      <text x="665" y="18" text-anchor="middle" font-size="9" font-weight="700" fill="#8099B0" letter-spacing="1">SORTIE</text>
+
+      <!-- ════ ROW 1 — Saine ════ -->
+      <text x="6" y="85" font-size="9" font-weight="700" fill="#16A34A" letter-spacing=".5">SAINE</text>
+
+      <!-- Input saine -->
+      <rect x="10" y="50" width="90" height="60" rx="5" fill="#D0F0EC" stroke="#00A896" stroke-width="1.5"/>
+      <rect x="22" y="60" width="66" height="40" rx="3" fill="#00A896" opacity=".25"/>
+      <rect x="30" y="66" width="50" height="28" rx="2" fill="#00A896" opacity=".6"/>
+      <text x="55" y="127" text-anchor="middle" font-size="8.5" fill="#16A34A">saine</text>
+
+      <!-- Arrow 1 -->
+      <line x1="102" y1="80" x2="152" y2="80" stroke="#8099B0" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- Encoder -->
+      <rect x="153" y="36" width="124" height="88" rx="5" fill="#EBF2FA" stroke="#CBD8E8" stroke-width="1.5"/>
+      <text x="215" y="77" text-anchor="middle" font-size="11" font-weight="700" fill="#1C2E42">Encoder</text>
+      <text x="215" y="92" text-anchor="middle" font-size="9" fill="#4E6680">CNN (conv layers)</text>
+      <text x="215" y="107" text-anchor="middle" font-size="8.5" fill="#8099B0">compression ↓</text>
+
+      <!-- Arrow 2 -->
+      <line x1="279" y1="80" x2="312" y2="80" stroke="#8099B0" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- Latent -->
+      <rect x="313" y="60" width="94" height="40" rx="5" fill="#FEF0D6" stroke="#F5A623" stroke-width="1.5"/>
+      <text x="360" y="76" text-anchor="middle" font-size="11" font-weight="700" fill="#9A6700">z</text>
+      <text x="360" y="91" text-anchor="middle" font-size="8" fill="#9A6700">vecteur compact</text>
+
+      <!-- Arrow 3 -->
+      <line x1="409" y1="80" x2="442" y2="80" stroke="#8099B0" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- Decoder -->
+      <rect x="443" y="36" width="124" height="88" rx="5" fill="#EBF2FA" stroke="#CBD8E8" stroke-width="1.5"/>
+      <text x="505" y="77" text-anchor="middle" font-size="11" font-weight="700" fill="#1C2E42">Decoder</text>
+      <text x="505" y="92" text-anchor="middle" font-size="9" fill="#4E6680">CNN (transposé)</text>
+      <text x="505" y="107" text-anchor="middle" font-size="8.5" fill="#8099B0">reconstruction ↑</text>
+
+      <!-- Arrow 4 -->
+      <line x1="569" y1="80" x2="612" y2="80" stroke="#8099B0" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- Output saine -->
+      <rect x="613" y="50" width="90" height="60" rx="5" fill="#D0F0EC" stroke="#00A896" stroke-width="1.5"/>
+      <rect x="625" y="60" width="66" height="40" rx="3" fill="#00A896" opacity=".25"/>
+      <rect x="633" y="66" width="50" height="28" rx="2" fill="#00A896" opacity=".6"/>
+      <text x="658" y="127" text-anchor="middle" font-size="8.5" fill="#16A34A">reconstruit ≈ saine</text>
+
+      <!-- Error OK -->
+      <rect x="613" y="135" width="90" height="26" rx="4" fill="#DCFCE7"/>
+      <text x="658" y="152" text-anchor="middle" font-size="10" font-weight="700" fill="#16A34A">Δ ≈ 0 → Normal ✓</text>
+
+      <!-- ════ ROW 2 — Défaut ════ -->
+      <text x="6" y="205" font-size="9" font-weight="700" fill="#DC2626" letter-spacing=".5">DÉFAUT</text>
+
+      <!-- Input défaut -->
+      <rect x="10" y="170" width="90" height="60" rx="5" fill="#FEE2E2" stroke="#DC2626" stroke-width="1.5"/>
+      <rect x="22" y="180" width="66" height="40" rx="3" fill="#00A896" opacity=".2"/>
+      <rect x="30" y="186" width="50" height="28" rx="2" fill="#00A896" opacity=".4"/>
+      <!-- crack -->
+      <polyline points="45,186 52,200 48,214" fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round"/>
+      <text x="55" y="247" text-anchor="middle" font-size="8.5" fill="#DC2626">défaut (crack)</text>
+
+      <!-- Arrow 1b -->
+      <line x1="102" y1="200" x2="152" y2="200" stroke="#8099B0" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- Encoder (shared) — dashed box -->
+      <rect x="153" y="156" width="124" height="88" rx="5" fill="none" stroke="#CBD8E8" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="215" y="200" text-anchor="middle" font-size="10" fill="#8099B0">(même poids)</text>
+
+      <!-- Arrow 2b -->
+      <line x1="279" y1="200" x2="312" y2="200" stroke="#8099B0" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- Latent défaut — same latent but for anomalous signal -->
+      <rect x="313" y="180" width="94" height="40" rx="5" fill="#FEF0D6" stroke="#F5A623" stroke-width="1.5"/>
+      <text x="360" y="196" text-anchor="middle" font-size="11" font-weight="700" fill="#9A6700">z'</text>
+      <text x="360" y="211" text-anchor="middle" font-size="8" fill="#9A6700">signal hors-distribution</text>
+
+      <!-- Arrow 3b -->
+      <line x1="409" y1="200" x2="442" y2="200" stroke="#8099B0" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- Decoder (shared) -->
+      <rect x="443" y="156" width="124" height="88" rx="5" fill="none" stroke="#CBD8E8" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="505" y="200" text-anchor="middle" font-size="10" fill="#8099B0">(même poids)</text>
+
+      <!-- Arrow 4b -->
+      <line x1="569" y1="200" x2="612" y2="200" stroke="#8099B0" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- Output défaut → reconstruite comme saine -->
+      <rect x="613" y="170" width="90" height="60" rx="5" fill="#D0F0EC" stroke="#00A896" stroke-width="1.5"/>
+      <rect x="625" y="180" width="66" height="40" rx="3" fill="#00A896" opacity=".25"/>
+      <rect x="633" y="186" width="50" height="28" rx="2" fill="#00A896" opacity=".6"/>
+      <text x="658" y="247" text-anchor="middle" font-size="8.5" fill="#8099B0">reconstruit ≈ saine</text>
+
+      <!-- Error HIGH -->
+      <rect x="613" y="255" width="90" height="26" rx="4" fill="#FEE2E2"/>
+      <text x="658" y="272" text-anchor="middle" font-size="10" font-weight="700" fill="#DC2626">Δ ≫ 0 → Anomalie !</text>
+
+      <!-- Arrow marker -->
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill="#8099B0"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+
+  <div class="insight">
+    <div class="insight-label">Insight clé</div>
+    L'auto-encodeur ne peut reconstruire que ce qu'il a appris à reconstruire : des pièces <strong>saines</strong>. Présenté à un défaut, il le reconstruit "corrigé" → l'erreur pixel révèle la zone anormale.
+  </div>
+</section>
+
+<!-- ── §3 Dataset ── -->
+<section>
+  <div class="eyebrow">03 — Dataset</div>
+  <h2>MVTec AD — catégorie <code style="font-family:var(--mono);font-size:1rem;color:var(--teal)">bottle</code></h2>
+
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-v">209</div><div class="stat-l">train/good</div></div>
+    <div class="stat-box"><div class="stat-v">83</div><div class="stat-l">images test</div></div>
+    <div class="stat-box"><div class="stat-v">63</div><div class="stat-l">masques GT</div></div>
+    <div class="stat-box"><div class="stat-v">3</div><div class="stat-l">types de défaut</div></div>
+  </div>
+
+  <div class="tree">
+<span class="dir">bottle/</span>
+├── <span class="dir">train/</span>
+│   └── <span class="dir">good/</span>          <span class="comment"># 209 images saines → entraînement auto-encodeur</span>
+├── <span class="dir">test/</span>
+│   ├── <span class="dir">good/</span>           <span class="comment"># 20 images saines → évaluation</span>
+│   ├── <span class="dir">broken_large/</span>   <span class="comment"># 20 défauts → grands éclats</span>
+│   ├── <span class="dir">broken_small/</span>   <span class="comment"># 22 défauts → petits éclats</span>
+│   └── <span class="dir">contamination/</span>  <span class="comment"># 21 défauts → souillures</span>
+└── <span class="dir">ground_truth/</span>
+    ├── <span class="dir">broken_large/</span>   <span class="comment"># masques binaires pixel</span>
+    ├── <span class="dir">broken_small/</span>
+    └── <span class="dir">contamination/</span></div>
+</section>
+
+<!-- ── §4 Chargement ── -->
+<section>
+  <div class="eyebrow">04 — Étape 1</div>
+  <h2>Chargement, normalisation et split</h2>
+
+  <h3>Pourquoi normaliser dans [0, 1] ?</h3>
+  <p>Les pixels bruts sont en [0, 255] (uint8). Diviser par 255 les place dans [0, 1] en float32 — ce que les couches de convolution et la fonction d'activation sigmoïde du décodeur attendent.</p>
+
+  <h3>Split train / val</h3>
+  <p>On réserve <strong>20 % des images saines</strong> pour la validation, avec un tirage aléatoire fixe (<code style="font-family:var(--mono);font-size:.85rem">seed=42</code>). Résultat : <strong>167 images train, 42 images val</strong>. La validation servira à <em>calibrer le seuil</em> en partie 2 — elle ne doit pas voir d'images défectueuses.</p>
+
+<pre class="code"><span class="kw">from</span> indusense.vision.dataset <span class="kw">import</span> load_train_val, load_test
+
+<span class="cm"># Split reproductible : 80 % train / 20 % val</span>
+X_train, X_val = <span class="fn">load_train_val</span>(BOTTLE_ROOT, val_ratio=<span class="num">0.2</span>, seed=<span class="num">42</span>)
+X_test, y_test, classes = <span class="fn">load_test</span>(BOTTLE_ROOT)
+
+<span class="cm"># X_train : (167, 128, 128, 3) float32  — valeurs dans [0, 1]</span>
+<span class="cm"># X_val   : (42,  128, 128, 3) float32</span>
+<span class="cm"># X_test  : (83,  128, 128, 3)  y_test : 0=saine / 1=défaut</span></pre>
+
+  <div class="insight">
+    <div class="insight-label">Règle importante</div>
+    Les images de <strong>validation et de test ne sont jamais augmentées</strong>. L'augmentation s'applique uniquement à <code style="font-family:var(--mono);font-size:.85rem">X_train</code> pendant l'entraînement.
+  </div>
+</section>
+
+<!-- ── §5 Augmentation ── -->
+<section>
+  <div class="eyebrow">05 — Étape 2</div>
+  <h2>Pipeline d'augmentation (Albumentations)</h2>
+
+  <p>L'augmentation artificialise la variabilité des données saines pour empêcher l'auto-encodeur de mémoriser exactement les 167 images d'entraînement. Elle doit <strong>élargir la notion de "normal" sans la dénaturer</strong>.</p>
+
+  <div class="tr-section">
+    <div class="tr-label tr-ok">✓ Retenues pour bottle</div>
+    <div class="tr-grid">
+      <div class="tr-card kept">
+        <div class="tr-badge ok">✓ Retenu · p=0.50</div>
+        <div class="tr-name">HorizontalFlip</div>
+        <div class="tr-why">La bouteille est symétrique gauche/droite — une bouteille vue en miroir reste une bouteille saine.</div>
+      </div>
+      <div class="tr-card kept">
+        <div class="tr-badge ok">✓ Retenu · p=0.70</div>
+        <div class="tr-name">Rotate(limit=15°)</div>
+        <div class="tr-why">Légère inclinaison de pose caméra ou de placement sur le convoyeur. Au-delà de 30° la bouteille sort du cadre.</div>
+      </div>
+      <div class="tr-card kept">
+        <div class="tr-badge ok">✓ Retenu · p=0.70</div>
+        <div class="tr-name">RandomBrightnessContrast</div>
+        <div class="tr-why">Variation d'éclairage industriel entre sessions (±15 %) — très fréquente en production réelle.</div>
+      </div>
+      <div class="tr-card kept">
+        <div class="tr-badge ok">✓ Retenu · p=0.50</div>
+        <div class="tr-name">HueSaturationValue</div>
+        <div class="tr-why">Léger drift de teinte entre lots de production (verre légèrement teinté). Amplitudes conservatrices.</div>
+      </div>
+      <div class="tr-card kept">
+        <div class="tr-badge ok">✓ Retenu · p=0.30</div>
+        <div class="tr-name">GaussNoise</div>
+        <div class="tr-why">Simule le bruit capteur de la caméra industrielle. Probabilité basse pour ne pas bruiter le signal utile.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tr-section">
+    <div class="tr-label tr-bad">✗ Écartées</div>
+    <div class="tr-grid">
+      <div class="tr-card dropped">
+        <div class="tr-badge bad">✗ Écarté</div>
+        <div class="tr-name">VerticalFlip</div>
+        <div class="tr-why">Une bouteille retournée tête en bas n'est pas "normale" — le modèle apprendrait à tolérer ce cas.</div>
+      </div>
+      <div class="tr-card dropped">
+        <div class="tr-badge bad">✗ Écarté</div>
+        <div class="tr-name">ElasticTransform</div>
+        <div class="tr-why">Déformation irréaliste sur un objet rigide en verre. Risque de rendre le modèle tolérant à des défauts de forme.</div>
+      </div>
+      <div class="tr-card dropped">
+        <div class="tr-badge bad">✗ Écarté</div>
+        <div class="tr-name">RandomCrop / Zoom fort</div>
+        <div class="tr-why">Couper la bouteille produit des images hors-distribution — le modèle apprendrait à reconstruire des demi-bouteilles.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── §6 Réflexion ── -->
+<section>
+  <div class="eyebrow">06 — Point de réflexion</div>
+  <h2>Objet centré vs Texture — une stratégie différente</h2>
+
+  <p>Le bon choix d'augmentation dépend <strong>de la nature de l'objet</strong>, pas du dataset en général. La même transform peut être excellente pour une texture et catastrophique pour un objet.</p>
+
+  <div class="cmp-grid">
+    <div class="cmp-card">
+      <div class="cmp-title">🍾 <code style="font-family:var(--mono)">bottle</code> — Objet centré</div>
+      <p style="font-size:.85rem;margin-bottom:.7rem">La bouteille est <strong>orientée, centrée, alignée</strong> dans l'image. Chaque transformation géométrique forte élargit la notion de "normal" vers des configurations irréelles.</p>
+      <div>
+        <span class="cmp-chip chip-ok">HorizontalFlip ✓</span>
+        <span class="cmp-chip chip-ok">Rotate ±15° ✓</span>
+        <span class="cmp-chip chip-bad">VerticalFlip ✗</span>
+        <span class="cmp-chip chip-bad">Rotation 90° ✗</span>
+        <span class="cmp-chip chip-bad">Elastic ✗</span>
+      </div>
+      <p style="font-size:.8rem;margin-top:.6rem;color:var(--t3)">Stratégie : conservatrice — favorise la sensibilité aux anomalies.</p>
+    </div>
+    <div class="cmp-card">
+      <div class="cmp-title">🔲 <code style="font-family:var(--mono)">tile</code> — Texture isotrope</div>
+      <p style="font-size:.85rem;margin-bottom:.7rem">Le carrelage est <strong>uniforme dans toutes les directions</strong>. N'importe quelle rotation ou flip produit une image réaliste — la texture n'a pas de "haut" ou de "bas".</p>
+      <div>
+        <span class="cmp-chip chip-ok">HorizontalFlip ✓</span>
+        <span class="cmp-chip chip-ok">VerticalFlip ✓</span>
+        <span class="cmp-chip chip-ok">Rotation 90° ✓</span>
+        <span class="cmp-chip chip-ok">RandomCrop ✓</span>
+        <span class="cmp-chip chip-ok">Elastic ✓</span>
+      </div>
+      <p style="font-size:.8rem;margin-top:.6rem;color:var(--t3)">Stratégie : agressive — la texture supporte toutes les transformations géométriques.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── Summary ── -->
+<div class="summary">
+  <div class="summary-title">Récapitulatif — Ce que produit cette partie</div>
+  <div class="summary-grid">
+    <div class="sum-item"><strong>X_train (167 images)</strong>Saines, 128×128, [0,1] — prêtes pour l'auto-encodeur</div>
+    <div class="sum-item"><strong>X_val (42 images)</strong>Saines — pour calibrer le seuil de détection (partie 2)</div>
+    <div class="sum-item"><strong>X_test (83 images)</strong>Saines + 3 types de défauts + masques GT pixel-level</div>
+    <div class="sum-item"><strong>Pipeline augmentation</strong>5 transforms conservatrices, adaptées à un objet centré</div>
+  </div>
+</div>
+
+</div>
