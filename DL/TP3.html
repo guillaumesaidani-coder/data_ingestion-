@@ -1,0 +1,405 @@
+<title>B6 · Partie 2 — Auto-encodeur & Détection d'Anomalies</title>
+<style>
+:root{
+  --navy:#0C2040;--teal:#00A896;--teal-dim:#D0F0EC;--amber:#F5A623;--amber-dim:#FEF0D6;
+  --ok:#16A34A;--ok-dim:#DCFCE7;--bad:#DC2626;--bad-dim:#FEE2E2;
+  --bg:#F0F5FB;--card:#FFF;--card2:#EBF2FA;--border:#CBD8E8;
+  --t1:#1C2E42;--t2:#4E6680;--t3:#8099B0;
+  --code-bg:#E4EEF8;--code-t:#1C2E42;
+  --mono:'Cascadia Code','SF Mono',Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#0A1520;--card:#112030;--card2:#162840;--border:#1E3050;
+  --t1:#C8DCF0;--t2:#6A90B0;--t3:#3A6090;
+  --code-bg:#0C1C2E;--code-t:#A8D0F0;
+  --teal-dim:#003830;--amber-dim:#3A2800;--ok-dim:#052010;--bad-dim:#250808;
+}}
+:root[data-theme="dark"]{--bg:#0A1520;--card:#112030;--card2:#162840;--border:#1E3050;--t1:#C8DCF0;--t2:#6A90B0;--t3:#3A6090;--code-bg:#0C1C2E;--code-t:#A8D0F0;--teal-dim:#003830;--amber-dim:#3A2800;--ok-dim:#052010;--bad-dim:#250808;}
+:root[data-theme="light"]{--bg:#F0F5FB;--card:#FFF;--card2:#EBF2FA;--border:#CBD8E8;--t1:#1C2E42;--t2:#4E6680;--t3:#8099B0;--code-bg:#E4EEF8;--code-t:#1C2E42;--teal-dim:#D0F0EC;--amber-dim:#FEF0D6;--ok-dim:#DCFCE7;--bad-dim:#FEE2E2;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:15px;line-height:1.65;padding:0 1rem 5rem}
+a{color:var(--teal);text-decoration:none}
+
+.hd{background:var(--navy);color:#fff;padding:2.8rem 2rem 2.2rem;max-width:880px;margin:0 auto 2.8rem;border-radius:0 0 10px 10px;position:relative;overflow:hidden}
+.hd::after{content:'';position:absolute;right:-80px;top:-80px;width:320px;height:320px;background:var(--teal);border-radius:50%;opacity:.10}
+.hd-tag{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.5rem}
+.hd h1{font-size:1.7rem;font-weight:700;line-height:1.2;position:relative;z-index:1;text-wrap:balance}
+.hd p{font-size:.92rem;color:rgba(255,255,255,.6);margin-top:.5rem;max-width:560px}
+.hd-badges{display:flex;gap:.5rem;margin-top:.9rem;flex-wrap:wrap}
+.hd-badge{display:inline-block;background:var(--teal);color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.07em;padding:.2rem .55rem;border-radius:3px}
+.hd-badge.amber{background:var(--amber);color:#1C2E42}
+
+.page{max-width:880px;margin:0 auto}
+section{margin-bottom:3rem}
+.eyebrow{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem}
+h2{font-size:1.3rem;font-weight:700;color:var(--t1);margin-bottom:1rem;padding-bottom:.4rem;border-bottom:1.5px solid var(--border)}
+h3{font-size:.95rem;font-weight:700;color:var(--t1);margin:1.2rem 0 .45rem}
+p{margin-bottom:.75rem;color:var(--t2);font-size:.93rem}
+p:last-child{margin-bottom:0}
+strong{color:var(--t1)}
+ul{padding-left:1.4rem;color:var(--t2);font-size:.93rem}
+li{margin-bottom:.3rem}
+
+pre.code{background:var(--code-bg);color:var(--code-t);font-family:var(--mono);font-size:.82rem;line-height:1.6;padding:1rem 1.2rem;border-radius:7px;overflow-x:auto;margin:1rem 0}
+.kw{color:#0070C0;font-weight:600}
+.fn{color:#006699}
+.cm{color:#6A8FA8;font-style:italic}
+.num{color:#A31515}
+.str{color:#A31515}
+
+.insight{background:var(--amber-dim);border-left:3px solid var(--amber);padding:.75rem 1rem;border-radius:0 6px 6px 0;margin:1rem 0}
+.insight-label{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:.3rem}
+.warn{background:var(--bad-dim);border-left:3px solid var(--bad);padding:.75rem 1rem;border-radius:0 6px 6px 0;margin:1rem 0}
+.warn-label{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bad);margin-bottom:.3rem}
+.ok-box{background:var(--ok-dim);border-left:3px solid var(--ok);padding:.75rem 1rem;border-radius:0 6px 6px 0;margin:1rem 0}
+
+/* Pipeline flow */
+.flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin:1.2rem 0}
+.flow-box{background:var(--card2);border:1.5px solid var(--border);border-radius:7px;padding:.55rem .9rem;font-size:.83rem;font-weight:600;color:var(--t1);white-space:nowrap}
+.flow-box.enc{border-color:var(--teal);background:var(--teal-dim)}
+.flow-box.bottleneck{border-color:var(--bad);background:var(--bad-dim);font-weight:700}
+.flow-box.dec{border-color:var(--ok);background:var(--ok-dim)}
+.flow-arr{color:var(--t3);font-size:1.1rem;padding:0 .4rem;flex-shrink:0}
+.flow-label{font-size:.72rem;color:var(--t3);text-align:center;margin-top:.2rem}
+
+/* Architecture grid */
+.arch-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+.arch-card{background:var(--card2);border:1.5px solid var(--border);border-radius:8px;padding:.9rem}
+.arch-card h4{font-size:.83rem;font-weight:700;margin-bottom:.5rem;color:var(--t1)}
+.layer-row{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;padding:.3rem 0;border-bottom:1px solid var(--border)}
+.layer-row:last-child{border-bottom:none}
+.layer-name{font-family:var(--mono);color:var(--teal)}
+.layer-shape{color:var(--t2)}
+.layer-params{color:var(--t3)}
+
+/* Steps */
+.step-list{display:flex;flex-direction:column;gap:1rem;margin:1rem 0}
+.step{display:flex;gap:1rem;align-items:flex-start}
+.step-num{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:700;margin-top:.1rem}
+.step-body{flex:1}
+.step-title{font-size:.9rem;font-weight:700;color:var(--t1);margin-bottom:.2rem}
+.step-desc{font-size:.85rem;color:var(--t2)}
+
+/* Threshold diagram */
+.threshold-viz{margin:1.2rem 0;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:1.2rem}
+.tv-label{font-size:.72rem;color:var(--t3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem}
+.tv-bar{height:28px;display:flex;border-radius:5px;overflow:hidden;position:relative;margin-bottom:.4rem}
+.tv-ok{background:#22C55E;flex:4}
+.tv-overlap{background:#FACC15;flex:1}
+.tv-bad{background:#EF4444;flex:5}
+.tv-threshold{position:absolute;left:40%;top:0;bottom:0;width:3px;background:var(--navy)}
+.tv-thr-label{position:absolute;left:41%;top:-22px;font-size:.7rem;font-weight:700;color:var(--navy)}
+.tv-legend{display:flex;gap:1rem;font-size:.78rem;color:var(--t2)}
+.tv-dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:.3rem}
+
+/* Metrics grid */
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin:1rem 0}
+.metric-card{background:var(--card2);border:1.5px solid var(--border);border-radius:8px;padding:.8rem;text-align:center}
+.metric-card.highlight{border-color:var(--teal)}
+.metric-val{font-size:1.5rem;font-weight:700;color:var(--t1);font-variant-numeric:tabular-nums}
+.metric-name{font-size:.72rem;color:var(--t3);margin-top:.2rem;letter-spacing:.05em;text-transform:uppercase}
+
+/* Summary */
+.summary{background:var(--navy);color:#fff;border-radius:8px;padding:1.6rem 2rem;margin-top:1rem}
+.summary-title{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:1rem}
+.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
+.sum-item{background:rgba(255,255,255,.07);border-radius:5px;padding:.65rem .85rem;font-size:.83rem}
+.sum-item strong{display:block;color:var(--teal);font-size:.78rem;margin-bottom:.2rem}
+</style>
+
+<div class="hd">
+  <div class="hd-tag">B6 · Partie 2 · Deep Learning — Détection d'anomalies</div>
+  <h1>Auto-encodeur convolutionnel &amp; Détection d'Anomalies</h1>
+  <p>Entraîner un CNN à reconstruire des pièces saines, puis détecter les défauts par erreur de reconstruction.</p>
+  <div class="hd-badges">
+    <span class="hd-badge">TensorFlow / Keras</span>
+    <span class="hd-badge">MLflow</span>
+    <span class="hd-badge amber">Non supervisé</span>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- ── §1 Principe ── -->
+<section>
+  <div class="eyebrow">01 — Principe</div>
+  <h2>Apprendre le normal, signaler l'inattendu</h2>
+
+  <p>On ne dispose pas d'images de défauts annotées. L'auto-encodeur résout ce problème en apprenant uniquement sur des pièces saines : il compresse l'image vers un espace latent compact, puis la reconstruit. Un défaut — jamais vu à l'entraînement — sera <strong>mal reconstruit</strong>. L'erreur de reconstruction devient le signal d'anomalie.</p>
+
+  <div class="flow">
+    <div>
+      <div class="flow-box enc">Image entrée<br><span style="font-size:.7rem;font-weight:400">256×256×3</span></div>
+      <div class="flow-label">Input</div>
+    </div>
+    <div class="flow-arr">→</div>
+    <div>
+      <div class="flow-box enc">Encodeur<br><span style="font-size:.7rem;font-weight:400">3 × Conv2D</span></div>
+      <div class="flow-label">Compression</div>
+    </div>
+    <div class="flow-arr">→</div>
+    <div>
+      <div class="flow-box bottleneck">Latent<br><span style="font-size:.7rem;font-weight:400">32×32×128</span></div>
+      <div class="flow-label">Goulot</div>
+    </div>
+    <div class="flow-arr">→</div>
+    <div>
+      <div class="flow-box dec">Décodeur<br><span style="font-size:.7rem;font-weight:400">3 × ConvTranspose</span></div>
+      <div class="flow-label">Reconstruction</div>
+    </div>
+    <div class="flow-arr">→</div>
+    <div>
+      <div class="flow-box dec">Reconstruction<br><span style="font-size:.7rem;font-weight:400">256×256×3</span></div>
+      <div class="flow-label">Sigmoid [0,1]</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-top:1rem">
+    <div class="ok-box">
+      <strong style="font-size:.85rem">Image saine → erreur faible</strong>
+      <p style="font-size:.84rem;margin-top:.3rem">Le modèle a appris à reconstruire ce type d'image. Reconstruction ≈ original.</p>
+    </div>
+    <div class="warn">
+      <div class="warn-label">Anomalie détectée</div>
+      <strong style="font-size:.85rem">Image défaut → erreur forte</strong>
+      <p style="font-size:.84rem;margin-top:.3rem">Le modèle n'a jamais vu ce défaut. Reconstruction ≠ original → score élevé.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── §2 Architecture ── -->
+<section>
+  <div class="eyebrow">02 — Étape 1</div>
+  <h2>Architecture de l'auto-encodeur</h2>
+
+  <div class="arch-grid">
+    <div class="arch-card">
+      <h4>🔽 Encodeur — compression</h4>
+      <div class="layer-row"><span class="layer-name">enc1 · Conv2D(32, 3, s=2)</span><span class="layer-shape">128×128×32</span></div>
+      <div class="layer-row"><span class="layer-name">enc2 · Conv2D(64, 3, s=2)</span><span class="layer-shape">64×64×64</span></div>
+      <div class="layer-row"><span class="layer-name">enc3 · Conv2D(128, 3, s=2)</span><span class="layer-shape" style="color:var(--bad);font-weight:700">32×32×128 ← goulot</span></div>
+    </div>
+    <div class="arch-card">
+      <h4>🔼 Décodeur — reconstruction</h4>
+      <div class="layer-row"><span class="layer-name">dec1 · ConvTranspose(64, 3, s=2)</span><span class="layer-shape">64×64×64</span></div>
+      <div class="layer-row"><span class="layer-name">dec2 · ConvTranspose(32, 3, s=2)</span><span class="layer-shape">128×128×32</span></div>
+      <div class="layer-row"><span class="layer-name">dec3 · ConvTranspose(3, 3, s=2)</span><span class="layer-shape">256×256×3 · sigmoid</span></div>
+    </div>
+  </div>
+
+  <div class="warn">
+    <div class="warn-label">Piège central — ratio de compression</div>
+    <p style="font-size:.88rem;margin:0">
+      Entrée : 256×256×3 = <strong>196 608</strong> valeurs<br>
+      Goulot : 32×32×128 = <strong>131 072</strong> valeurs<br>
+      <strong>Ratio ≈ 1.5</strong> — très proche de 1 !<br><br>
+      Un ratio aussi faible permet au modèle d'apprendre une quasi-identité : il reconstruit les défauts aussi fidèlement que les pièces saines, ce qui annule le signal d'anomalie. Pour forcer une représentation vraiment compacte, il faudrait un ratio ≥ 4 (ex. réduire les filtres ou ajouter un MaxPool supplémentaire).
+    </p>
+  </div>
+
+<pre class="code"><span class="kw">from</span> indusense.vision.model <span class="kw">import</span> build_autoencoder, compression_ratio
+
+model = <span class="fn">build_autoencoder</span>(input_shape=(<span class="num">256</span>, <span class="num">256</span>, <span class="num">3</span>), filters=(<span class="num">32</span>, <span class="num">64</span>, <span class="num">128</span>))
+model.<span class="fn">summary</span>()
+
+ratio = <span class="fn">compression_ratio</span>(model)
+print(f<span class="str">"Ratio : {ratio:.2f}"</span>)  <span class="cm"># → 1.50  ⚠ trop proche de 1</span></pre>
+</section>
+
+<!-- ── §3 Entraînement ── -->
+<section>
+  <div class="eyebrow">03 — Étape 2</div>
+  <h2>Entraînement</h2>
+
+  <p>La cible est <strong>l'image elle-même</strong> — c'est l'astuce centrale de l'auto-encodeur : minimiser l'erreur de reconstruction sur les seules images saines.</p>
+
+  <h3>Perte : MSE vs SSIM</h3>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-bottom:1rem">
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:.85rem">
+      <strong style="font-size:.85rem">MSE — Mean Squared Error</strong>
+      <p style="font-size:.83rem;margin-top:.3rem">Pénalise les grandes erreurs de valeur de pixel. Dominé par les zones homogènes (fond noir). Rapide et stable.</p>
+      <code style="font-family:var(--mono);font-size:.78rem">loss="mse"</code>
+    </div>
+    <div style="background:var(--teal-dim);border:1.5px solid var(--teal);border-radius:7px;padding:.85rem">
+      <strong style="font-size:.85rem">SSIM — Structural Similarity</strong>
+      <p style="font-size:.83rem;margin-top:.3rem">Compare la structure locale, le contraste et la luminance. Plus sensible aux altérations de texture — mieux adapté à la détection de défauts fins.</p>
+      <code style="font-family:var(--mono);font-size:.78rem">loss=mse_ssim_loss(alpha=0.8)</code>
+    </div>
+  </div>
+
+  <h3>Stratégie d'entraînement</h3>
+  <div class="step-list">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Adam + EarlyStopping</div>
+        <div class="step-desc">lr=1e-3, patience=10 — arrêt si la val_loss ne s'améliore plus. <code style="font-family:var(--mono)">restore_best_weights=True</code>.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">ReduceLROnPlateau</div>
+        <div class="step-desc">Divise le lr par 2 après 5 époques sans amélioration → convergence plus fine.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Augmentation sur X_train uniquement</div>
+        <div class="step-desc">Pipeline Albumentations (TP1) appliqué avant le fit. Doublé le dataset sain → moins de mémorisation.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Suivi MLflow</div>
+        <div class="step-desc">Params, métriques et checkpoint loggués automatiquement. <code style="font-family:var(--mono)">mlflow ui</code> dans <code style="font-family:var(--mono)">DL/</code> pour visualiser.</div>
+      </div>
+    </div>
+  </div>
+
+<pre class="code"><span class="kw">from</span> indusense.vision.train <span class="kw">import</span> train <span class="kw">as</span> ae_train
+
+history = <span class="fn">ae_train</span>(
+    model, X_train, X_val,
+    pipeline=<span class="fn">build_pipeline</span>(),
+    epochs=<span class="num">50</span>, batch_size=<span class="num">16</span>, learning_rate=<span class="num">1e-3</span>,
+    loss=<span class="str">"mse"</span>,
+    run_name=<span class="str">"ae-bottle-mse"</span>,
+)</pre>
+</section>
+
+<!-- ── §4 Score & Seuil ── -->
+<section>
+  <div class="eyebrow">04 — Étape 3</div>
+  <h2>Score d'anomalie &amp; calibration du seuil</h2>
+
+  <p>Le score par image = MSE entre l'image et sa reconstruction. On calibre le seuil <strong>sur les images saines de validation uniquement</strong> (centile 99 ou moyenne + k·σ).</p>
+
+  <div class="threshold-viz">
+    <div class="tv-label">Distribution des scores — avant vs après seuil</div>
+    <div style="position:relative">
+      <div class="tv-thr-label">Seuil</div>
+      <div class="tv-bar">
+        <div class="tv-ok"></div>
+        <div class="tv-overlap"></div>
+        <div class="tv-bad"></div>
+        <div class="tv-threshold"></div>
+      </div>
+    </div>
+    <div class="tv-legend">
+      <div><span class="tv-dot" style="background:#22C55E"></span>Saines (score faible)</div>
+      <div><span class="tv-dot" style="background:#FACC15"></span>Zone d'incertitude</div>
+      <div><span class="tv-dot" style="background:#EF4444"></span>Défauts (score élevé)</div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-label">Arbitrage métier</div>
+    <p style="font-size:.88rem;margin:0">Abaisser le seuil → plus de <strong>rappel</strong> (moins de défauts manqués) mais plus de <strong>fausses alertes</strong> (pièces saines rejetées). Le bon choix dépend du coût d'une panne manquée vs du coût d'un arrêt machine inutile.</p>
+  </div>
+
+<pre class="code"><span class="kw">from</span> indusense.vision.anomaly <span class="kw">import</span> reconstruction_errors, calibrate_threshold
+
+errors_val  = <span class="fn">reconstruction_errors</span>(model, X_val)
+errors_test = <span class="fn">reconstruction_errors</span>(model, X_test)
+
+<span class="cm"># Calibré sur validation (images saines uniquement)</span>
+threshold = <span class="fn">calibrate_threshold</span>(errors_val, method=<span class="str">"percentile"</span>, percentile=<span class="num">99</span>)</pre>
+</section>
+
+<!-- ── §5 Heatmaps & Évaluation ── -->
+<section>
+  <div class="eyebrow">05 — Étape 4</div>
+  <h2>Heatmaps &amp; Évaluation</h2>
+
+  <p>La <strong>carte d'erreur par pixel</strong> (MSE canal par canal) permet de localiser la zone suspecte. On la superpose au masque de vérité terrain pour vérifier qualitativement.</p>
+
+<pre class="code"><span class="kw">from</span> indusense.vision.anomaly <span class="kw">import</span> pixel_error_map, plot_heatmap, evaluate
+
+<span class="cm"># Heatmap pour un défaut</span>
+recon, err_map = <span class="fn">pixel_error_map</span>(model, image)
+<span class="fn">plot_heatmap</span>(image, recon, err_map, mask_gt=mask_gt, title=<span class="str">"broken_large"</span>)
+
+<span class="cm"># AUROC niveau image</span>
+metrics = <span class="fn">evaluate</span>(y_test, errors_test, threshold)
+print(f<span class="str">"AUROC = {metrics['auroc']:.3f}"</span>)</pre>
+
+  <h3>Métriques obtenues (run MSE, 256×256, ratio ≈ 1.5)</h3>
+  <div class="metrics-grid">
+    <div class="metric-card" style="border-color:var(--bad)">
+      <div class="metric-val" style="color:var(--bad)">0.465</div>
+      <div class="metric-name">AUROC image</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val">15.9%</div>
+      <div class="metric-name">Rappel</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-val">90.0%</div>
+      <div class="metric-name">Spécificité</div>
+    </div>
+    <div class="metric-card highlight">
+      <div class="metric-val">>98%</div>
+      <div class="metric-name">AUROC PatchCore</div>
+    </div>
+  </div>
+  <div class="warn" style="margin-top:.9rem">
+    <div class="warn-label">AUROC &lt; 0.5 — pire que le hasard</div>
+    <p style="font-size:.88rem;margin:0">Un AUROC = 0.5 correspond à un classifieur aléatoire. <strong>0.465 signifie que les défauts ont une erreur de reconstruction plus faible que les pièces saines</strong> — le classement est inversé. Le modèle reconstruit les défauts <em>aussi bien</em> (voire mieux) que le normal : le piège du ratio ≈ 1.5 est confirmé en pratique. Inverser le seuil donnerait un AUROC de 0.535 — toujours médiocre. La solution est structurelle : resserrer le goulot.</p>
+  </div>
+  <p style="font-size:.82rem;color:var(--t3);margin-top:.6rem">TP=10 · TN=18 · FP=2 · FN=53 sur 83 images test.</p>
+</section>
+
+<!-- ── §6 Critique ── -->
+<section>
+  <div class="eyebrow">06 — Analyse critique</div>
+  <h2>Ce qui marche, ce qui échoue</h2>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+    <div class="ok-box">
+      <strong style="font-size:.88rem">✓ Ce qui fonctionne</strong>
+      <ul style="margin-top:.5rem;font-size:.84rem">
+        <li>Reconstruction fidèle des pièces saines</li>
+        <li>Défauts grossiers (<code style="font-family:var(--mono)">broken_large</code>) détectés</li>
+        <li>Heatmap localise qualitativement</li>
+        <li>Aucune annotation de défaut nécessaire</li>
+      </ul>
+    </div>
+    <div class="warn">
+      <div class="warn-label">✗ Ce qui échoue — constaté en pratique</div>
+      <ul style="margin-top:.5rem;font-size:.84rem;color:var(--t1)">
+        <li><strong>AUROC = 0.465</strong> — en dessous du hasard (0.5)</li>
+        <li>Ratio ≈ 1.5 → identité quasi-parfaite : défauts reconstruits aussi bien que les sains</li>
+        <li>FN = 53 sur 63 défauts : 84 % des anomalies sont manquées</li>
+        <li>MSE dominé par le fond noir, insensible aux altérations de texture</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>Pour aller plus loin</h3>
+  <p>L'auto-encodeur est un <strong>baseline pédagogique</strong>. En production, les méthodes basées sur des features pré-entraînées dominent :</p>
+  <ul>
+    <li><strong>PatchCore / PaDiM / SPADE</strong> — mémoire de features ResNet/WideResNet → AUROC > 98 % sans entraîner from scratch</li>
+    <li><strong>FastFlow / CFLOW</strong> — Normalizing Flows sur features pré-entraînées</li>
+    <li><strong>MemAE / Denoising AE</strong> — variantes de l'auto-encodeur qui atténuent le problème d'identité</li>
+  </ul>
+  <p style="margin-top:.6rem">Bibliothèque clé : <a href="https://github.com/openvinotoolkit/anomalib" target="_blank">anomalib</a> (OpenVINO) — implémentations SOTA prêtes à l'emploi.</p>
+</section>
+
+<!-- ── Summary ── -->
+<div class="summary">
+  <div class="summary-title">Récapitulatif — Livrables de la Partie 2</div>
+  <div class="summary-grid">
+    <div class="sum-item"><strong>model.py</strong>Auto-encodeur 3+3 conv, MSE/SSIM, compression_ratio()</div>
+    <div class="sum-item"><strong>train.py</strong>Boucle d'entraînement + EarlyStopping + suivi MLflow</div>
+    <div class="sum-item"><strong>anomaly.py</strong>Score MSE, seuil, AUROC, heatmaps, confusion matrix</div>
+    <div class="sum-item"><strong>TP3.ipynb</strong>§1 architecture · §2 entraînement · §3 seuil · §4 heatmaps · §5 critique</div>
+    <div class="sum-item"><strong>checkpoints/ae_best.keras</strong>Meilleur modèle sauvegardé (val_loss minimale)</div>
+    <div class="sum-item"><strong>mlruns/</strong>Runs MLflow — visualiser avec <code style="font-family:var(--mono)">mlflow ui</code></div>
+  </div>
+</div>
+
+</div>

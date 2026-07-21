@@ -5,7 +5,14 @@ bottle/
 figures/
 
 # Checkpoints modèles
+checkpoints/
 *.h5
 *.keras
 *.pt
 *.ckpt
+
+# MLflow runs
+mlruns/
+
+# Stats de normalisation générées (versionner norm_stats.json explicitement)
+# norm_stats.json  ← NE PAS ignorer — doit être commité avec le modèle

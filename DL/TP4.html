@@ -1,0 +1,315 @@
+<title>B6 · Partie 3 — Améliorations Auto-encodeur &amp; PatchCore</title>
+<style>
+:root{
+  --navy:#0C2040;--teal:#00A896;--teal-dim:#D0F0EC;--amber:#F5A623;--amber-dim:#FEF0D6;
+  --ok:#16A34A;--ok-dim:#DCFCE7;--bad:#DC2626;--bad-dim:#FEE2E2;
+  --bg:#F0F5FB;--card:#FFF;--card2:#EBF2FA;--border:#CBD8E8;
+  --t1:#1C2E42;--t2:#4E6680;--t3:#8099B0;
+  --code-bg:#E4EEF8;--code-t:#1C2E42;
+  --mono:'Cascadia Code','SF Mono',Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+}
+@media(prefers-color-scheme:dark){:root{--bg:#0A1520;--card:#112030;--card2:#162840;--border:#1E3050;--t1:#C8DCF0;--t2:#6A90B0;--t3:#3A6090;--code-bg:#0C1C2E;--code-t:#A8D0F0;--teal-dim:#003830;--amber-dim:#3A2800;--ok-dim:#052010;--bad-dim:#250808;}}
+:root[data-theme="dark"]{--bg:#0A1520;--card:#112030;--card2:#162840;--border:#1E3050;--t1:#C8DCF0;--t2:#6A90B0;--t3:#3A6090;--code-bg:#0C1C2E;--code-t:#A8D0F0;--teal-dim:#003830;--amber-dim:#3A2800;--ok-dim:#052010;--bad-dim:#250808;}
+:root[data-theme="light"]{--bg:#F0F5FB;--card:#FFF;--card2:#EBF2FA;--border:#CBD8E8;--t1:#1C2E42;--t2:#4E6680;--t3:#8099B0;--code-bg:#E4EEF8;--code-t:#1C2E42;--teal-dim:#D0F0EC;--amber-dim:#FEF0D6;--ok-dim:#DCFCE7;--bad-dim:#FEE2E2;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:15px;line-height:1.65;padding:0 1rem 5rem}
+
+.hd{background:var(--navy);color:#fff;padding:2.8rem 2rem 2.2rem;max-width:880px;margin:0 auto 2.8rem;border-radius:0 0 10px 10px;position:relative;overflow:hidden}
+.hd::after{content:'';position:absolute;right:-60px;top:-60px;width:280px;height:280px;background:var(--ok);border-radius:50%;opacity:.10}
+.hd-tag{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:.5rem}
+.hd h1{font-size:1.65rem;font-weight:700;line-height:1.2;position:relative;z-index:1;text-wrap:balance}
+.hd p{font-size:.92rem;color:rgba(255,255,255,.6);margin-top:.5rem}
+.hd-badges{display:flex;gap:.5rem;margin-top:.9rem;flex-wrap:wrap}
+.hd-badge{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.07em;padding:.2rem .55rem;border-radius:3px}
+.b-teal{background:var(--teal);color:#fff}
+.b-ok{background:var(--ok);color:#fff}
+.b-amber{background:var(--amber);color:#1C2E42}
+
+.page{max-width:880px;margin:0 auto}
+section{margin-bottom:3rem}
+.eyebrow{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:.3rem}
+h2{font-size:1.3rem;font-weight:700;color:var(--t1);margin-bottom:1rem;padding-bottom:.4rem;border-bottom:1.5px solid var(--border)}
+h3{font-size:.95rem;font-weight:700;color:var(--t1);margin:1.2rem 0 .45rem}
+p{margin-bottom:.75rem;color:var(--t2);font-size:.93rem}
+p:last-child{margin-bottom:0}
+strong{color:var(--t1)}
+ul{padding-left:1.4rem;color:var(--t2);font-size:.9rem;margin-bottom:.6rem}
+li{margin-bottom:.3rem}
+
+pre.code{background:var(--code-bg);color:var(--code-t);font-family:var(--mono);font-size:.81rem;line-height:1.6;padding:1rem 1.2rem;border-radius:7px;overflow-x:auto;margin:.9rem 0}
+.kw{color:#0070C0;font-weight:600}.fn{color:#006699}.cm{color:#6A8FA8;font-style:italic}.num{color:#A31515}.str{color:#A31515}
+
+.warn{background:var(--bad-dim);border-left:3px solid var(--bad);padding:.7rem 1rem;border-radius:0 6px 6px 0;margin:.9rem 0}
+.warn-label{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--bad);margin-bottom:.25rem}
+.ok-box{background:var(--ok-dim);border-left:3px solid var(--ok);padding:.7rem 1rem;border-radius:0 6px 6px 0;margin:.9rem 0}
+.insight{background:var(--amber-dim);border-left:3px solid var(--amber);padding:.7rem 1rem;border-radius:0 6px 6px 0;margin:.9rem 0}
+.insight-label{font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:.25rem}
+
+/* Ratio viz */
+.ratio-cmp{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+.ratio-card{border:2px solid var(--border);border-radius:8px;padding:1rem;text-align:center}
+.ratio-card.bad{border-color:var(--bad);background:var(--bad-dim)}
+.ratio-card.ok{border-color:var(--ok);background:var(--ok-dim)}
+.ratio-val{font-size:2.2rem;font-weight:700;font-variant-numeric:tabular-nums}
+.ratio-label{font-size:.72rem;color:var(--t2);margin-top:.2rem}
+.ratio-bottleneck{font-family:var(--mono);font-size:.8rem;margin-top:.4rem;color:var(--t3)}
+
+/* PatchCore steps */
+.pc-steps{display:flex;flex-direction:column;gap:.8rem;margin:1rem 0}
+.pc-step{display:flex;gap:.9rem;align-items:flex-start}
+.pc-num{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:700}
+.pc-body .pc-title{font-size:.9rem;font-weight:700;margin-bottom:.2rem}
+.pc-body p{font-size:.85rem;margin:0}
+
+/* Comparison table */
+.cmp-table{width:100%;border-collapse:collapse;font-size:.88rem;overflow-x:auto;display:block}
+.cmp-table th{background:var(--navy);color:#fff;padding:.55rem .8rem;text-align:left;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+.cmp-table td{padding:.5rem .8rem;border-bottom:1px solid var(--border);white-space:nowrap}
+.cmp-table tr:nth-child(even) td{background:var(--card2)}
+.cmp-table tr.best td{background:var(--ok-dim)}
+.cmp-table tr.baseline td{opacity:.7}
+.badge-auroc{display:inline-block;padding:.15rem .45rem;border-radius:3px;font-weight:700;font-family:var(--mono)}
+.auroc-bad{background:var(--bad-dim);color:var(--bad)}
+.auroc-mid{background:var(--amber-dim);color:#92400E}
+.auroc-ok{background:var(--ok-dim);color:var(--ok)}
+
+/* Summary */
+.summary{background:var(--navy);color:#fff;border-radius:8px;padding:1.6rem 2rem;margin-top:1rem}
+.summary-title{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal);margin-bottom:1rem}
+.summary-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
+.sum-item{background:rgba(255,255,255,.07);border-radius:5px;padding:.65rem .85rem;font-size:.83rem}
+.sum-item strong{display:block;color:var(--teal);font-size:.78rem;margin-bottom:.2rem}
+</style>
+
+<div class="hd">
+  <div class="hd-tag">B6 · Partie 3 · Deep Learning — Améliorations</div>
+  <h1>Améliorer la détection d'anomalies</h1>
+  <p>Trois pistes concrètes pour dépasser l'AUROC = 0.465 du baseline TP3.</p>
+  <div class="hd-badges">
+    <span class="hd-badge b-teal">Goulot resserré</span>
+    <span class="hd-badge b-teal">MSE + SSIM</span>
+    <span class="hd-badge b-ok">PatchCore-lite</span>
+    <span class="hd-badge b-amber">Baseline: AUROC 0.465</span>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- §0 Rappel -->
+<section>
+  <div class="eyebrow">00 — Rappel du problème</div>
+  <h2>Pourquoi le TP3 a échoué</h2>
+
+  <div class="warn">
+    <div class="warn-label">Diagnostic TP3 — AUROC = 0.465 (pire que le hasard)</div>
+    <p style="font-size:.88rem;margin:0">
+      <strong>Cause racine : ratio de compression ≈ 1.5.</strong> Le goulot (32×32×128 = 131 072 valeurs) est trop proche de l'entrée (256×256×3 = 196 608 valeurs). Le modèle a appris une quasi-identité : il reconstruit les défauts aussi fidèlement que les pièces saines, éliminant tout signal d'anomalie.
+      <br><br>
+      FN = 53/63 défauts manqués. Inverser le seuil donnerait AUROC = 0.535 — toujours médiocre.
+    </p>
+  </div>
+  <p>Ce TP corrige les trois causes structurelles :</p>
+  <ul>
+    <li><strong>§1</strong> — Goulot trop large → le resserrer (ratio ≥ 4)</li>
+    <li><strong>§2</strong> — MSE insensible aux textures → ajouter SSIM</li>
+    <li><strong>§3</strong> — Entraînement from scratch → utiliser un backbone pré-entraîné</li>
+  </ul>
+</section>
+
+<!-- §1 Goulot -->
+<section>
+  <div class="eyebrow">01 — Amélioration 1</div>
+  <h2>Goulot d'étranglement resserré</h2>
+
+  <p>On ajoute une 4e couche Conv2D dans l'encodeur (<code style="font-family:var(--mono)">filters=(32, 64, 128, 64)</code>). Le goulot passe de 32×32×128 à <strong>16×16×64</strong>.</p>
+
+  <div class="ratio-cmp">
+    <div class="ratio-card bad">
+      <div class="ratio-val" style="color:var(--bad)">1.5×</div>
+      <div class="ratio-label">TP3 — 3 couches Conv2D</div>
+      <div class="ratio-bottleneck">32×32×128 = 131 072 val.</div>
+      <div style="font-size:.78rem;margin-top:.5rem;color:var(--bad)">⚠ Quasi-identité possible</div>
+    </div>
+    <div class="ratio-card ok">
+      <div class="ratio-val" style="color:var(--ok)">12×</div>
+      <div class="ratio-label">TP4 — 4 couches Conv2D</div>
+      <div class="ratio-bottleneck">16×16×64 = 16 384 val.</div>
+      <div style="font-size:.78rem;margin-top:.5rem;color:var(--ok)">✓ Représentation compacte</div>
+    </div>
+  </div>
+
+<pre class="code"><span class="cm"># TP3 baseline — ratio ≈ 1.5</span>
+model_v1 = <span class="fn">build_autoencoder</span>(filters=(<span class="num">32</span>, <span class="num">64</span>, <span class="num">128</span>))
+
+<span class="cm"># TP4 amélioré — ratio ≈ 12</span>
+model_v2 = <span class="fn">build_autoencoder</span>(filters=(<span class="num">32</span>, <span class="num">64</span>, <span class="num">128</span>, <span class="num">64</span>))
+print(<span class="fn">compression_ratio</span>(model_v2))  <span class="cm"># → 12.0</span></pre>
+
+  <div class="insight">
+    <div class="insight-label">Pourquoi le ratio 12 ?</div>
+    <p style="font-size:.88rem;margin:0">Un ratio ≥ 4 force le modèle à encoder uniquement les structures récurrentes dans les images saines — pas les détails uniques comme les défauts. Mais un ratio trop élevé (> 20) peut dégrader aussi la reconstruction des images saines, augmentant la val_loss de référence.</p>
+  </div>
+</section>
+
+<!-- §2 SSIM -->
+<section>
+  <div class="eyebrow">02 — Amélioration 2</div>
+  <h2>Perte MSE + SSIM</h2>
+
+  <p>Même architecture (ratio ≈ 12), perte <strong>0.8 × MSE + 0.2 × (1 − SSIM)</strong>.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0">
+    <div style="background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:.9rem">
+      <strong style="font-size:.85rem">MSE seul</strong>
+      <p style="font-size:.83rem;margin-top:.35rem">Compare les valeurs absolues pixel par pixel. Dominé par les grandes zones homogènes (fond noir). Insensible aux petites différences de texture ou de bord.</p>
+    </div>
+    <div style="background:var(--teal-dim);border:1.5px solid var(--teal);border-radius:7px;padding:.9rem">
+      <strong style="font-size:.85rem">+ SSIM</strong>
+      <p style="font-size:.83rem;margin-top:.35rem">Compare la <strong>structure locale</strong> : luminance, contraste, corrélation de patches 11×11. Beaucoup plus sensible aux défauts fins de texture et aux crack.</p>
+    </div>
+  </div>
+
+<pre class="code"><span class="kw">from</span> indusense.vision.model <span class="kw">import</span> mse_ssim_loss
+
+loss_fn = <span class="fn">mse_ssim_loss</span>(alpha=<span class="num">0.8</span>)   <span class="cm"># 80% MSE + 20% (1−SSIM)</span>
+history = <span class="fn">ae_train</span>(model_v2, X_train, X_val, loss=loss_fn, ...)</pre>
+</section>
+
+<!-- §3 PatchCore -->
+<section>
+  <div class="eyebrow">03 — Amélioration 3</div>
+  <h2>PatchCore-lite — backbone pré-entraîné</h2>
+
+  <p>PatchCore résout le problème d'identité <strong>par construction</strong> : au lieu de reconstruire des pixels, on compare des <em>représentations</em> extraites par un réseau pré-entraîné sur ImageNet qui n'a jamais vu de bouteilles.</p>
+
+  <div class="pc-steps">
+    <div class="pc-step">
+      <div class="pc-num">1</div>
+      <div class="pc-body">
+        <div class="pc-title">Backbone ResNet50 → features patches</div>
+        <p>On coupe ResNet50 à une couche intermédiaire (<code style="font-family:var(--mono)">conv3_block4_out</code>). Chaque image 256×256 produit une grille de patches 32×32, chacun décrit par un vecteur de 512 features.</p>
+      </div>
+    </div>
+    <div class="pc-step">
+      <div class="pc-num">2</div>
+      <div class="pc-body">
+        <div class="pc-title">Banque mémoire (coreset)</div>
+        <p>On extrait les features de toutes les images saines d'entraînement → 168 × 1024 = ~172 000 patches. On sous-échantillonne à ~17 000 (coreset 10%) pour limiter la mémoire.</p>
+      </div>
+    </div>
+    <div class="pc-step">
+      <div class="pc-num">3</div>
+      <div class="pc-body">
+        <div class="pc-title">Score = distance max au voisin le plus proche</div>
+        <p>Pour chaque image test, on calcule la distance de chaque patch au voisin le plus proche dans la banque mémoire. Le score image = max sur tous les patches. Une distance élevée = patch sans équivalent dans les images saines = anomalie.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="ok-box">
+    <strong style="font-size:.88rem">Avantage clé vs auto-encodeur</strong>
+    <p style="font-size:.85rem;margin-top:.3rem">Le backbone a appris à représenter les structures visuelles générales (ImageNet, 1.2M images). Il encode les textures, les bords, les formes — pas à reconstruire des bouteilles spécifiques. Un défaut produit nécessairement un vecteur feature différent des patches sains : pas de risque d'identité.</p>
+  </div>
+
+<pre class="code"><span class="kw">from</span> tensorflow.keras.applications <span class="kw">import</span> ResNet50
+<span class="kw">from</span> sklearn.neighbors <span class="kw">import</span> NearestNeighbors
+
+<span class="cm"># Backbone — pas d'entraînement</span>
+base = <span class="fn">ResNet50</span>(include_top=<span class="kw">False</span>, input_shape=(<span class="num">256</span>,<span class="num">256</span>,<span class="num">3</span>), weights=<span class="str">"imagenet"</span>)
+feat_model = keras.Model(base.input, base.<span class="fn">get_layer</span>(<span class="str">"conv3_block4_out"</span>).output)
+
+<span class="cm"># Banque mémoire (coreset 10%)</span>
+feats  = feat_model.<span class="fn">predict</span>(X_train)          <span class="cm"># (168, 32, 32, 512)</span>
+patches = feats.<span class="fn">reshape</span>(-<span class="num">1</span>, <span class="num">512</span>)              <span class="cm"># (172032, 512)</span>
+idx    = rng.<span class="fn">choice</span>(len(patches), size=len(patches)//<span class="num">10</span>)
+nn     = <span class="fn">NearestNeighbors</span>(n_neighbors=<span class="num">1</span>).<span class="fn">fit</span>(patches[idx])
+
+<span class="cm"># Score = max distance sur les patches de l'image</span>
+dists, _ = nn.<span class="fn">kneighbors</span>(img_patches)
+score = dists.<span class="fn">max</span>()</pre>
+</section>
+
+<!-- §4 Comparaison -->
+<section>
+  <div class="eyebrow">04 — Bilan</div>
+  <h2>Comparaison des quatre approches</h2>
+
+  <div style="overflow-x:auto;margin:1rem 0">
+  <table class="cmp-table">
+    <thead>
+      <tr>
+        <th>Modèle</th>
+        <th>Architecture / Perte</th>
+        <th>AUROC</th>
+        <th>Rappel</th>
+        <th>FN</th>
+        <th>Entraînement</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="baseline">
+        <td>TP3 baseline</td>
+        <td>ratio 1.5 · MSE</td>
+        <td><span class="badge-auroc auroc-bad">0.465</span></td>
+        <td>15.9 %</td>
+        <td>53</td>
+        <td>from scratch</td>
+      </tr>
+      <tr>
+        <td>§1 Goulot resserré</td>
+        <td>ratio 12 · MSE</td>
+        <td><span class="badge-auroc auroc-mid">0.527</span></td>
+        <td>23.8 %</td>
+        <td>48</td>
+        <td>from scratch</td>
+      </tr>
+      <tr>
+        <td>§2 MSE + SSIM</td>
+        <td>ratio 12 · MSE+SSIM</td>
+        <td><span class="badge-auroc auroc-mid">0.618</span></td>
+        <td>22.2 %</td>
+        <td>49</td>
+        <td>from scratch</td>
+      </tr>
+      <tr class="best">
+        <td><strong>§3 PatchCore-lite</strong></td>
+        <td>ResNet50 backbone</td>
+        <td><span class="badge-auroc auroc-ok">0.859</span></td>
+        <td>68.3 %</td>
+        <td>20</td>
+        <td><strong>aucun (0-shot)</strong></td>
+      </tr>
+      <tr>
+        <td>PatchCore complet</td>
+        <td>WideResNet50 + coreset</td>
+        <td><span class="badge-auroc auroc-ok">&gt; 0.98</span></td>
+        <td>&gt; 95 %</td>
+        <td>&lt; 3</td>
+        <td>aucun (0-shot)</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>Lecture des résultats</h3>
+  <ul>
+    <li><strong>§1 (ratio 12, MSE)</strong> : AUROC 0.465 → 0.527. Amélioration modeste — resserrer le goulot aide mais ne suffit pas seul. L'encodeur compresse mieux mais la perte MSE reste aveugle aux textures.</li>
+    <li><strong>§2 (ratio 12, MSE+SSIM)</strong> : AUROC 0.618. Le SSIM apporte un gain supplémentaire (+0.09) grâce à la sensibilité structurelle locale, malgré un rappel légèrement inférieur à §1 (seuil à recalibrer).</li>
+    <li><strong>§3 PatchCore-lite</strong> : AUROC 0.859, FN réduit de 53 → 20. Bond de +0.24 par rapport à §2 — sans aucun entraînement. Confirme la supériorité des features pré-entraînées sur la reconstruction from scratch.</li>
+  </ul>
+
+  <h3>Conclusion</h3>
+  <p>L'auto-encodeur de reconstruction est un <strong>excellent support pédagogique</strong> : il force à comprendre la compression, le goulot, la perte et le seuil. Mais il atteint ses limites structurelles en production. Les méthodes feature-based (PatchCore, PaDiM) résolvent le problème d'identité par construction et dominent MVTec AD avec peu ou pas d'entraînement.</p>
+</section>
+
+<div class="summary">
+  <div class="summary-title">Récapitulatif — TP4</div>
+  <div class="summary-grid">
+    <div class="sum-item"><strong>§1 — model_v2</strong>filters=(32,64,128,64) · ratio≈12 · MSE · 4 couches enc/dec</div>
+    <div class="sum-item"><strong>§2 — model_v3</strong>Même architecture · perte mse_ssim_loss(alpha=0.8)</div>
+    <div class="sum-item"><strong>§3 — PatchCore-lite</strong>ResNet50 ImageNet · banque mémoire patches · kNN</div>
+    <div class="sum-item"><strong>§4 — Comparaison</strong>Tableau AUROC / Rappel / FN sur les 4 approches</div>
+  </div>
+</div>
+
+</div>
