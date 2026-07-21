@@ -1,4 +1,4 @@
-<title>B6 · Partie 1 — Détection d'Anomalies Visuelles (MVTec AD)</title>
+﻿<title>B6 · Partie 1 — Détection d'Anomalies Visuelles (MVTec AD)</title>
 <style>
 :root {
   --navy:#0C2040; --teal:#00A896; --teal-dim:#D0F0EC; --amber:#F5A623; --amber-dim:#FEF0D6;
@@ -472,7 +472,7 @@ X_test, y_test, classes = <span class="fn">load_test</span>(BOTTLE_ROOT)
 <div class="summary">
   <div class="summary-title">Récapitulatif — Ce que produit cette partie</div>
   <div class="summary-grid">
-    <div class="sum-item"><strong>X_train (167 images)</strong>Saines, 128×128, [0,1] — prêtes pour l'auto-encodeur</div>
+    <div class="sum-item"><strong>X_train (167 images)</strong>Saines, 256×256, [0,1] — prêtes pour l'auto-encodeur</div>
     <div class="sum-item"><strong>X_val (42 images)</strong>Saines — pour calibrer le seuil de détection (partie 2)</div>
     <div class="sum-item"><strong>X_test (83 images)</strong>Saines + 3 types de défauts + masques GT pixel-level</div>
     <div class="sum-item"><strong>Pipeline augmentation</strong>5 transforms conservatrices, adaptées à un objet centré</div>

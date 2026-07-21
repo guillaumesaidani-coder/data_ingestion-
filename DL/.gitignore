@@ -1,0 +1,11 @@
+# Dataset MVTec AD — ne pas committer les images (~250 Mo)
+bottle/
+
+# Figures générées par les notebooks
+figures/
+
+# Checkpoints modèles
+*.h5
+*.keras
+*.pt
+*.ckpt
