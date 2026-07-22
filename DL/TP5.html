@@ -1,0 +1,989 @@
+<title>TP5 — Explicabilité avec SHAP | B6 Deep Learning</title>
+<style>
+  /* ── Tokens ── */
+  :root {
+    --bg:        #f7f6fd;
+    --surface:   #ffffff;
+    --surface2:  #f0eefb;
+    --border:    #e0daf5;
+    --accent:    #7c3aed;
+    --accent2:   #a78bfa;
+    --ok:        #059669;
+    --warn:      #d97706;
+    --danger:    #dc2626;
+    --info:      #0284c7;
+    --text:      #1e1535;
+    --muted:     #6b6580;
+    --code-bg:   #1e1535;
+    --code-text: #c4b5fd;
+    --tag-bg:    #ede9fe;
+    --tag-text:  #5b21b6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:        #0d0c18;
+      --surface:   #16152a;
+      --surface2:  #1e1c35;
+      --border:    #2d2a4a;
+      --accent:    #a78bfa;
+      --accent2:   #7c3aed;
+      --ok:        #34d399;
+      --warn:      #fbbf24;
+      --danger:    #f87171;
+      --info:      #38bdf8;
+      --text:      #ede9fe;
+      --muted:     #9d95c0;
+      --code-bg:   #0a0916;
+      --code-text: #c4b5fd;
+      --tag-bg:    #2d2060;
+      --tag-text:  #c4b5fd;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:#f7f6fd; --surface:#ffffff; --surface2:#f0eefb; --border:#e0daf5;
+    --accent:#7c3aed; --accent2:#a78bfa; --ok:#059669; --warn:#d97706;
+    --danger:#dc2626; --info:#0284c7; --text:#1e1535; --muted:#6b6580;
+    --code-bg:#1e1535; --code-text:#c4b5fd; --tag-bg:#ede9fe; --tag-text:#5b21b6;
+  }
+  :root[data-theme="dark"] {
+    --bg:#0d0c18; --surface:#16152a; --surface2:#1e1c35; --border:#2d2a4a;
+    --accent:#a78bfa; --accent2:#7c3aed; --ok:#34d399; --warn:#fbbf24;
+    --danger:#f87171; --info:#38bdf8; --text:#ede9fe; --muted:#9d95c0;
+    --code-bg:#0a0916; --code-text:#c4b5fd; --tag-bg:#2d2060; --tag-text:#c4b5fd;
+  }
+
+  /* ── Reset & base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.7;
+    padding: 0 1rem 4rem;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Layout ── */
+  .page { max-width: 880px; margin: 0 auto; }
+
+  /* ── Header ── */
+  .page-header {
+    border-bottom: 2px solid var(--accent);
+    padding: 2.5rem 0 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .eyebrow {
+    font-size: .75rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: .5rem;
+  }
+  .page-header h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 700;
+    line-height: 1.2;
+    text-wrap: balance;
+    color: var(--text);
+  }
+  .page-header p {
+    margin-top: .75rem;
+    color: var(--muted);
+    font-size: .95rem;
+  }
+  .prereq {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    padding: .25rem .75rem;
+    border-radius: 999px;
+    margin-top: .75rem;
+  }
+
+  /* ── Section cards ── */
+  .section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: baseline;
+    gap: .6rem;
+  }
+  .section-num {
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* ── Overview table ── */
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: .75rem;
+    margin-bottom: 1.5rem;
+  }
+  .overview-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: .9rem 1rem;
+  }
+  .overview-card .label {
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: .3rem;
+  }
+  .overview-card .value {
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .overview-card .sub {
+    font-size: .8rem;
+    color: var(--muted);
+    margin-top: .15rem;
+  }
+
+  /* ── Callout boxes ── */
+  .callout {
+    border-radius: 6px;
+    padding: .9rem 1.1rem;
+    margin: 1rem 0;
+    font-size: .9rem;
+    border-left: 3px solid;
+  }
+  .callout.info  { background: #e0f2fe; border-color: var(--info);   color: #0c4a6e; }
+  .callout.warn  { background: #fef9c3; border-color: var(--warn);   color: #78350f; }
+  .callout.ok    { background: #d1fae5; border-color: var(--ok);     color: #064e3b; }
+  .callout.theory{ background: var(--tag-bg); border-color: var(--accent); color: var(--tag-text); }
+  @media (prefers-color-scheme: dark) {
+    .callout.info  { background: #0c2a3d; color: #7dd3fc; }
+    .callout.warn  { background: #2d1e00; color: #fde68a; }
+    .callout.ok    { background: #052e16; color: #6ee7b7; }
+    .callout.theory{ background: var(--tag-bg); color: var(--tag-text); }
+  }
+  :root[data-theme="dark"] .callout.info  { background:#0c2a3d; color:#7dd3fc; }
+  :root[data-theme="dark"] .callout.warn  { background:#2d1e00; color:#fde68a; }
+  :root[data-theme="dark"] .callout.ok    { background:#052e16; color:#6ee7b7; }
+  :root[data-theme="light"] .callout.info { background:#e0f2fe; color:#0c4a6e; }
+  :root[data-theme="light"] .callout.warn { background:#fef9c3; color:#78350f; }
+  :root[data-theme="light"] .callout.ok   { background:#d1fae5; color:#064e3b; }
+
+  /* ── Code blocks ── */
+  pre {
+    background: var(--code-bg);
+    border-radius: 6px;
+    padding: 1.1rem 1.25rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-size: .82rem;
+    line-height: 1.6;
+  }
+  code {
+    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    color: var(--code-text);
+  }
+  p code, li code {
+    background: var(--surface2);
+    color: var(--accent);
+    padding: .1em .35em;
+    border-radius: 3px;
+    font-size: .85em;
+  }
+
+  /* ── Tables ── */
+  .tbl-wrap { overflow-x: auto; margin: 1rem 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .88rem;
+    font-variant-numeric: tabular-nums;
+  }
+  th {
+    background: var(--surface2);
+    font-weight: 600;
+    text-align: left;
+    padding: .55rem .9rem;
+    border-bottom: 2px solid var(--border);
+    font-size: .78rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  td {
+    padding: .5rem .9rem;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+
+  /* ── Badges ── */
+  .badge {
+    display: inline-block;
+    padding: .15em .55em;
+    border-radius: 4px;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+  }
+  .badge-violet  { background: var(--tag-bg);  color: var(--tag-text); }
+  .badge-ok      { background: #d1fae5; color: #065f46; }
+  .badge-warn    { background: #fef3c7; color: #92400e; }
+  .badge-danger  { background: #fee2e2; color: #991b1b; }
+  .badge-info    { background: #e0f2fe; color: #0c4a6e; }
+  @media (prefers-color-scheme: dark) {
+    .badge-ok    { background:#052e16; color:#6ee7b7; }
+    .badge-warn  { background:#2d1e00; color:#fde68a; }
+    .badge-danger{ background:#2d0a0a; color:#fca5a5; }
+    .badge-info  { background:#0c2a3d; color:#7dd3fc; }
+  }
+  :root[data-theme="dark"] .badge-ok    { background:#052e16; color:#6ee7b7; }
+  :root[data-theme="dark"] .badge-warn  { background:#2d1e00; color:#fde68a; }
+  :root[data-theme="dark"] .badge-danger{ background:#2d0a0a; color:#fca5a5; }
+  :root[data-theme="dark"] .badge-info  { background:#0c2a3d; color:#7dd3fc; }
+  :root[data-theme="light"] .badge-ok   { background:#d1fae5; color:#065f46; }
+  :root[data-theme="light"] .badge-warn { background:#fef3c7; color:#92400e; }
+  :root[data-theme="light"] .badge-danger{ background:#fee2e2; color:#991b1b; }
+  :root[data-theme="light"] .badge-info { background:#e0f2fe; color:#0c4a6e; }
+
+  /* ── Formula block ── */
+  .formula {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+    text-align: center;
+    font-family: Georgia, serif;
+    font-size: .95rem;
+    line-height: 2;
+    color: var(--text);
+    overflow-x: auto;
+  }
+  .formula .phi { color: var(--accent); font-weight: 700; }
+  .formula .frac { display: inline-block; vertical-align: middle; text-align: center; }
+  .formula .frac .num { border-bottom: 1px solid currentColor; display: block; padding: 0 .3em; font-size: .9em; }
+  .formula .frac .den { display: block; padding: 0 .3em; font-size: .9em; }
+
+  /* ── Explainer comparison cards ── */
+  .explainer-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: .75rem;
+    margin: 1.25rem 0;
+  }
+  .explainer-card {
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 1rem;
+    background: var(--surface2);
+  }
+  .explainer-card h4 {
+    font-size: .88rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: .4rem;
+    font-family: 'Cascadia Code', monospace;
+  }
+  .explainer-card p { font-size: .83rem; color: var(--muted); }
+  .explainer-card .model-tag {
+    margin-top: .5rem;
+    font-size: .75rem;
+    color: var(--muted);
+  }
+  .explainer-card .model-tag strong { color: var(--text); }
+
+  /* ── Comparison strip ── */
+  .compare-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+  .compare-strip .half {
+    background: var(--surface2);
+    padding: 1rem 1.1rem;
+  }
+  .compare-strip h4 {
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    margin-bottom: .5rem;
+  }
+  .compare-strip ul { padding-left: 1.2rem; font-size: .85rem; }
+  .compare-strip li { margin-bottom: .2rem; }
+  @media (max-width: 560px) {
+    .compare-strip { grid-template-columns: 1fr; }
+  }
+
+  /* ── Misc ── */
+  ul, ol { padding-left: 1.4rem; }
+  li { margin-bottom: .2rem; }
+  p { margin-bottom: .8rem; }
+  p:last-child { margin-bottom: 0; }
+  h3 {
+    font-family: Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 1.25rem 0 .5rem;
+    color: var(--text);
+  }
+  h4 { font-size: .9rem; font-weight: 600; margin: .9rem 0 .3rem; color: var(--text); }
+  @media (max-width: 640px) {
+    .section { padding: 1.25rem 1rem; }
+    .page-header { padding: 1.5rem 0 1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="page">
+
+  <!-- ── Header ───────────────────────────────────────────────────── -->
+  <header class="page-header">
+    <p class="eyebrow">B6 Deep Learning — Détection d'anomalies industrielles</p>
+    <h1>TP5 — Explicabilité des détections avec SHAP</h1>
+    <p>Comprendre <em>pourquoi</em> le modèle classe une image comme défectueuse,
+       pas seulement <em>où</em> l'erreur se situe.</p>
+    <span class="prereq">⚙ Prérequis : TP4 exécuté — checkpoints <code>ae_v3_best.keras</code></span>
+  </header>
+
+  <!-- ── Vue d'ensemble ────────────────────────────────────────────── -->
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="label">Bibliothèque</div>
+      <div class="value">SHAP 0.52</div>
+      <div class="sub">Lundberg &amp; Lee, 2017</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Explainers utilisés</div>
+      <div class="value">3 (Gradient · Partition · Tree)</div>
+      <div class="sub">Modèles différentiables + noir</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Granularité</div>
+      <div class="value">Pixel · Superpixel · Feature</div>
+      <div class="sub">Du plus fin au plus global</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Modèles expliqués</div>
+      <div class="value">AE MSE+SSIM + PatchCore</div>
+      <div class="sub">Meilleurs modèles de TP4</div>
+    </div>
+  </div>
+
+  <!-- ── §0 Contexte ───────────────────────────────────────────────── -->
+  <section class="section" id="s0">
+    <div class="section-title">
+      <span class="section-num">§0</span>
+      Pourquoi l'explicabilité ?
+    </div>
+
+    <p>En TP3 et TP4, on a optimisé la <strong>performance</strong> (AUROC, rappel).
+       Mais en contexte industriel, un opérateur humain doit pouvoir <em>valider</em>
+       ou <em>rejeter</em> la décision du système. Pour cela, il lui faut une réponse
+       à la question :</p>
+
+    <div class="callout info">
+      <strong>Question production :</strong> « Pourquoi ce flacon est-il signalé défectueux ?
+      Quelle zone visuelle déclenche l'alarme ? »
+    </div>
+
+    <p>SHAP (SHapley Additive exPlanations) répond à cette question en calculant la
+       <em>contribution marginale</em> de chaque feature (pixel, superpixel, métrique)
+       sur le score final — avec une garantie théorique d'unicité issue de la
+       <strong>théorie des jeux coopératifs</strong>.</p>
+
+    <h3>Valeur de Shapley — intuition</h3>
+    <p>Imaginons que chaque pixel soit un <em>joueur</em> dans un jeu où le score d'anomalie
+       est le <em>gain</em>. La valeur de Shapley de chaque joueur est sa contribution
+       équitable au gain, moyennée sur toutes les coalitions possibles :</p>
+
+    <div class="formula">
+      <span class="phi">φ<sub>i</sub></span>(f) =
+      <span style="margin: 0 .5rem">Σ</span>
+      <span class="frac">
+        <span class="num">|S|! × (|N| − |S| − 1)!</span>
+        <span class="den">|N|!</span>
+      </span>
+      <span style="margin: 0 .5rem">&times;</span>
+      [ f(S ∪ {<em>i</em>}) − f(S) ]
+    </div>
+
+    <p style="font-size:.85rem; color: var(--muted)">
+      S = coalition de features, N = ensemble de toutes les features,
+      f(S) = prédiction du modèle avec seulement les features de S.
+    </p>
+
+    <div class="explainer-row">
+      <div class="explainer-card">
+        <h4>GradientExplainer</h4>
+        <p>Expected Gradients — intègre ∂score/∂pixel sur un fond aléatoire d'images saines.
+           Rapide pour les modèles différentiables.</p>
+        <div class="model-tag"><strong>Modèle :</strong> auto-encodeur MSE+SSIM</div>
+      </div>
+      <div class="explainer-card">
+        <h4>PartitionExplainer</h4>
+        <p>Masque/inpaint des groupes de superpixels, mesure l'effet sur le score.
+           Compatible avec tout scorer non-différentiable.</p>
+        <div class="model-tag"><strong>Modèle :</strong> PatchCore-lite</div>
+      </div>
+      <div class="explainer-card">
+        <h4>TreeExplainer</h4>
+        <p>Calcul exact polynomial sur les arbres de décision. Donne l'importance
+           globale des features de haut niveau.</p>
+        <div class="model-tag"><strong>Modèle :</strong> RandomForest (méta-classifieur)</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Rappel hyperparamètres ────────────────────────────────────── -->
+  <section class="section" id="hyperparams">
+    <div class="section-title">
+      <span class="section-num">Rappel</span>
+      Évolution des hyperparamètres TP3 → TP4 → TP5
+    </div>
+
+    <p>Chaque TP apporte un changement ciblé sur un seul levier.
+       Le tableau ci-dessous montre comment les hyperparamètres évoluent
+       d'une étape à l'autre — les cases <strong>en gras</strong> sont les paramètres
+       qui changent par rapport à l'étape précédente.</p>
+
+    <!-- Tableau de progression transversal -->
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th>TP3 baseline</th>
+            <th>TP4 §1</th>
+            <th>TP4 §2</th>
+            <th>TP4 §3</th>
+            <th>TP5</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Approche</td>
+            <td>AE reconstruction</td>
+            <td>AE goulot serré</td>
+            <td>AE + SSIM</td>
+            <td>PatchCore</td>
+            <td>Explicabilité SHAP</td>
+          </tr>
+          <tr>
+            <td><code>filters</code></td>
+            <td><code>(32, 64, 128)</code></td>
+            <td><strong><code>(32, 64, 128, 64)</code></strong></td>
+            <td><code>(32, 64, 128, 64)</code></td>
+            <td>ResNet50 backbone</td>
+            <td style="color:var(--muted)">modèles figés</td>
+          </tr>
+          <tr>
+            <td>Ratio compression</td>
+            <td><span class="badge badge-danger">≈ 1.5</span></td>
+            <td><strong><span class="badge badge-ok">≈ 12</span></strong></td>
+            <td><span class="badge badge-ok">≈ 12</span></td>
+            <td style="color:var(--muted)">—</td>
+            <td style="color:var(--muted)">—</td>
+          </tr>
+          <tr>
+            <td>Fonction de perte</td>
+            <td>MSE</td>
+            <td>MSE</td>
+            <td><strong>MSE + SSIM (α=0.8)</strong></td>
+            <td>kNN dist.</td>
+            <td style="color:var(--muted)">—</td>
+          </tr>
+          <tr>
+            <td>Explainer ajouté</td>
+            <td style="color:var(--muted)">—</td>
+            <td style="color:var(--muted)">—</td>
+            <td style="color:var(--muted)">—</td>
+            <td style="color:var(--muted)">—</td>
+            <td><strong>Gradient · Partition · Tree</strong></td>
+          </tr>
+          <tr>
+            <td>AUROC (test set)</td>
+            <td><span class="badge badge-danger">0.465</span></td>
+            <td><span class="badge badge-warn">0.527</span></td>
+            <td><span class="badge badge-warn">0.618</span></td>
+            <td><span class="badge badge-ok">0.859</span></td>
+            <td><span class="badge badge-ok">0.876*</span></td>
+          </tr>
+          <tr>
+            <td>FN (sur 63 défauts)</td>
+            <td>53</td>
+            <td>48</td>
+            <td>49</td>
+            <td><strong>20</strong></td>
+            <td style="color:var(--muted)">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.8rem;color:var(--muted)">
+      * AUROC TP5 = RandomForestClassifier entraîné sur 8 features combinant AE v3 + PatchCore.
+      Pas un nouveau modèle de détection — un méta-classifieur pour l'analyse d'importance.
+    </p>
+
+    <!-- Zooms détaillés -->
+    <h3>Zoom — Architecture auto-encodeur</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Hyperparamètre</th><th>TP3 baseline</th><th>TP4 §1 / §2</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>filters</code></td>
+              <td><code>(32, 64, 128)</code></td>
+              <td><strong><code>(32, 64, 128, 64)</code></strong></td></tr>
+          <tr><td><code>input_shape</code></td>
+              <td><code>(256, 256, 3)</code></td>
+              <td><code>(256, 256, 3)</code></td></tr>
+          <tr><td>Goulot (valeurs)</td>
+              <td>32×32×128 = 131 072</td>
+              <td><strong>16×16×64 = 16 384</strong></td></tr>
+          <tr><td>Ratio compression</td>
+              <td><span class="badge badge-danger">≈ 1.5</span> quasi-identité</td>
+              <td><strong><span class="badge badge-ok">≈ 12</span></strong> compact</td></tr>
+          <tr><td>Activation encodeur</td>
+              <td>ReLU</td><td>ReLU</td></tr>
+          <tr><td>Activation sortie</td>
+              <td>Sigmoid → [0, 1]</td><td>Sigmoid → [0, 1]</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Zoom — Entraînement (commun §1 et §2)</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Hyperparamètre</th><th>TP3</th><th>TP4 §1</th><th>TP4 §2</th></tr></thead>
+        <tbody>
+          <tr><td><code>epochs</code></td><td>50</td><td>50</td><td>50</td></tr>
+          <tr><td><code>batch_size</code></td><td>16</td><td>16</td><td>16</td></tr>
+          <tr><td><code>learning_rate</code></td><td>1e-3</td><td>1e-3</td><td>1e-3</td></tr>
+          <tr><td><code>loss</code></td>
+              <td>MSE</td><td>MSE</td><td><strong>MSE + SSIM α=0.8</strong></td></tr>
+          <tr><td>EarlyStopping patience</td><td>10</td><td>10</td><td>10</td></tr>
+          <tr><td>ReduceLROnPlateau</td>
+              <td colspan="3">factor=0.5 · patience=5 · min_lr=1e-6</td></tr>
+          <tr><td>Optimiseur</td><td colspan="3">Adam</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Zoom — PatchCore-lite (TP4 §3)</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Hyperparamètre</th><th>Valeur</th></tr></thead>
+        <tbody>
+          <tr><td>Backbone</td><td>ResNet50 — poids ImageNet (figé)</td></tr>
+          <tr><td>Couche d'extraction</td><td><code>conv3_block4_out</code></td></tr>
+          <tr><td>Taille patches</td><td>32×32 (stride réseau → entrée 256×256)</td></tr>
+          <tr><td>Coreset</td><td>10 % des patches train (sous-échantillonnage aléatoire)</td></tr>
+          <tr><td>kNN voisins</td><td>1</td></tr>
+          <tr><td>Score image</td><td>max(dist kNN) sur tous les patches de l'image</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Zoom — Explainers SHAP (TP5)</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Explainer</th><th>Hyperparamètre</th><th>Valeur</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="2"><code>GradientExplainer</code></td>
+              <td>Fond (background)</td>
+              <td>min(50, |X_val|) = 41 images saines</td></tr>
+          <tr><td>Images expliquées</td>
+              <td>1 image / classe de défaut (5 max)</td></tr>
+          <tr><td rowspan="3"><code>PartitionExplainer</code></td>
+              <td><code>max_evals</code></td>
+              <td>500 évaluations / image</td></tr>
+          <tr><td><code>batch_size</code></td>
+              <td>50</td></tr>
+          <tr><td>Masker</td>
+              <td><code>inpaint_telea</code></td></tr>
+          <tr><td rowspan="3"><code>TreeExplainer</code><br><small>(méta-RF)</small></td>
+              <td><code>n_estimators</code></td>
+              <td>300</td></tr>
+          <tr><td>Validation</td>
+              <td>5-fold CV · AUROC = 0.876 ± 0.091</td></tr>
+          <tr><td>Features</td>
+              <td>8 (mse, ssim, patchcore, max_err, p95_err, std_err, mean_int, std_int)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="section" id="s1">
+    <div class="section-title">
+      <span class="section-num">§1</span>
+      SHAP Gradient — attribution pixel par pixel (auto-encodeur)
+    </div>
+
+    <p>L'auto-encodeur produit un score <strong>MSE(image, reconstruction)</strong>.
+       Pour l'expliquer, on crée un <em>scorer_model</em> qui expose ce scalaire
+       comme sortie :</p>
+
+<pre><code># scorer_model : AE → MSE scalaire
+inp_s   = keras.Input(shape=(256, 256, 3))
+recon_s = model_v3(inp_s)
+score_s = Lambda(
+    lambda t: tf.expand_dims(
+        tf.reduce_mean(tf.square(t[0] - t[1]), axis=[1,2,3]), axis=1
+    )
+)([inp_s, recon_s])
+scorer_model = keras.Model(inp_s, score_s)
+
+# GradientExplainer : fond = 50 images saines de validation
+explainer = shap.GradientExplainer(scorer_model, background)
+shap_vals = explainer.shap_values(imgs_defect)
+# → liste de 1 array (N, 256, 256, 3)</code></pre>
+
+    <div class="callout theory">
+      <strong>Expected Gradients :</strong> approximation différentiable de SHAP.
+      Pour chaque pixel, intègre le gradient ∂score/∂pixel entre le fond aléatoire
+      et l'image cible. Équivalent à des Integrated Gradients avec fond stochastique.
+    </div>
+
+    <h3>Lecture de la carte SHAP</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Couleur</th><th>Signification</th></tr></thead>
+        <tbody>
+          <tr><td><span class="badge badge-danger">rouge</span></td>
+              <td>Ce pixel <strong>augmente</strong> le score d'anomalie</td></tr>
+          <tr><td><span class="badge badge-info">bleu</span></td>
+              <td>Ce pixel <strong>diminue</strong> le score d'anomalie</td></tr>
+          <tr><td>|valeur| grande</td>
+              <td>Pixel très influent — positif ou négatif</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>On agrège sur les 3 canaux RGB pour obtenir une carte 2D :
+       <code>|shap_vals[0]|.sum(axis=-1)</code> → (N, 256, 256).</p>
+  </section>
+
+  <!-- ── §2 Comparaison ────────────────────────────────────────────── -->
+  <section class="section" id="s2">
+    <div class="section-title">
+      <span class="section-num">§2</span>
+      Comparaison : carte d'erreur vs carte SHAP
+    </div>
+
+    <p>Les deux cartes répondent à des questions <em>différentes</em> :</p>
+
+    <div class="compare-strip">
+      <div class="half">
+        <h4 style="color: var(--info)">Carte d'erreur de reconstruction</h4>
+        <ul>
+          <li>Espace <strong>OUTPUT</strong> (décodeur)</li>
+          <li>Où le décodeur s'est trompé</li>
+          <li>Mesure : <code>(img − recon)²</code> par pixel</li>
+          <li>Rapide — 1 forward pass</li>
+          <li>Ne distingue pas cause/effet</li>
+        </ul>
+      </div>
+      <div class="half">
+        <h4 style="color: var(--accent)">Carte SHAP</h4>
+        <ul>
+          <li>Espace <strong>INPUT</strong> (encodeur)</li>
+          <li>Quels pixels <em>causent</em> le score élevé</li>
+          <li>Mesure : contribution marginale de chaque pixel</li>
+          <li>Coûteux — N forward passes × fond</li>
+          <li>Garantie théorique d'additivité</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <strong>Divergence possible :</strong> un pixel défectueux peut être
+      <em>partiellement masqué</em> par le décodeur (faible erreur output)
+      mais avoir une forte attribution SHAP (input très influent).
+      Les deux vues sont complémentaires.
+    </div>
+  </section>
+
+  <!-- ── §3 PartitionExplainer ─────────────────────────────────────── -->
+  <section class="section" id="s3">
+    <div class="section-title">
+      <span class="section-num">§3</span>
+      SHAP Partition — superpixels sur PatchCore
+    </div>
+
+    <p>PatchCore est non-différentiable (kNN, pas de gradient). On utilise
+       <strong>PartitionExplainer</strong>, activé automatiquement par
+       <code>shap.Explainer</code> avec un masker image.</p>
+
+    <h3>Masker et inpainting</h3>
+    <p>Pour évaluer <em>f(S)</em> (score sans les features de S), les pixels masqués
+       sont remplacés par inpainting <code>"inpaint_telea"</code> — algorithme
+       de propagation de texture — plutôt que par une couleur unie qui créerait
+       une distribution hors domaine.</p>
+
+<pre><code>def patchcore_scorer(imgs):  # (n, 256, 256, 3) → (n,)
+    feats = feat_model(tf.cast(imgs, tf.float32), training=False).numpy()
+    return np.array([
+        float(nn_pc.kneighbors(f.reshape(-1, 512))[0].max())
+        for f in feats
+    ])
+
+masker     = shap.maskers.Image("inpaint_telea", shape=(256,256,3))
+explainer  = shap.Explainer(patchcore_scorer, masker)
+shap_vals  = explainer(imgs_pc, max_evals=500, batch_size=50)
+# shap_vals.values : (n, 256, 256, 3)</code></pre>
+
+    <div class="callout info">
+      <strong>max_evals=500 :</strong> nombre d'évaluations du scorer par image.
+      Plus de valeurs → meilleure approximation, mais ≈ 2–4 min par image.
+      Chaque évaluation fait un forward pass du backbone ResNet50 entier.
+    </div>
+
+    <h3>Lecture des superpixels</h3>
+    <p>Les superpixels rouges sont les <strong>régions qui augmentent</strong> la distance
+       kNN (donc le score d'anomalie). Ils correspondent généralement aux zones
+       dont les features s'écartent le plus de la banque mémoire normale.</p>
+  </section>
+
+  <!-- ── §4 TreeExplainer ───────────────────────────────────────────── -->
+  <section class="section" id="s4">
+    <div class="section-title">
+      <span class="section-num">§4</span>
+      Importance globale des features (TreeExplainer + beeswarm)
+    </div>
+
+    <p>On extrait un vecteur de <strong>8 features de haut niveau</strong> par image,
+       on entraîne un <code>RandomForestClassifier</code>, puis <code>TreeExplainer</code>
+       calcule les valeurs de Shapley exactes (algorithme polynomial sur les arbres —
+       pas d'approximation).</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Feature</th><th>Description</th><th>Modèle source</th></tr></thead>
+        <tbody>
+          <tr><td><code>mse_score</code></td>
+              <td>Erreur MSE moyenne sur l'image entière</td>
+              <td><span class="badge badge-violet">AE v3</span></td></tr>
+          <tr><td><code>ssim_score</code></td>
+              <td>Similarité structurelle image ↔ reconstruction</td>
+              <td><span class="badge badge-violet">AE v3</span></td></tr>
+          <tr><td><code>patchcore_score</code></td>
+              <td>Distance max kNN dans la banque mémoire</td>
+              <td><span class="badge badge-info">PatchCore</span></td></tr>
+          <tr><td><code>max_error</code></td>
+              <td>Pic d'erreur de reconstruction (pixel le pire)</td>
+              <td><span class="badge badge-violet">AE v3</span></td></tr>
+          <tr><td><code>p95_error</code></td>
+              <td>Percentile 95 de la carte d'erreur</td>
+              <td><span class="badge badge-violet">AE v3</span></td></tr>
+          <tr><td><code>std_error</code></td>
+              <td>Dispersion spatiale de l'erreur</td>
+              <td><span class="badge badge-violet">AE v3</span></td></tr>
+          <tr><td><code>mean_intensity</code></td>
+              <td>Luminosité moyenne de l'image brute</td>
+              <td>—</td></tr>
+          <tr><td><code>std_intensity</code></td>
+              <td>Contraste global de l'image brute</td>
+              <td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Résultats — RandomForest AUROC</h3>
+    <div class="overview-grid" style="margin-bottom:1rem">
+      <div class="overview-card">
+        <div class="label">CV AUROC (5-fold)</div>
+        <div class="value" style="color:var(--ok)">0.876</div>
+        <div class="sub">± 0.091</div>
+      </div>
+      <div class="overview-card">
+        <div class="label">Feature #1 (beeswarm)</div>
+        <div class="value">patchcore_score</div>
+        <div class="sub">feature la plus discriminante</div>
+      </div>
+      <div class="overview-card">
+        <div class="label">Feature #2</div>
+        <div class="value">max_error</div>
+        <div class="sub">pic de reconstruction</div>
+      </div>
+      <div class="overview-card">
+        <div class="label">Feature moins utile</div>
+        <div class="value">ssim_score</div>
+        <div class="sub">redondant avec mse_score</div>
+      </div>
+    </div>
+
+    <h3>Lecture du beeswarm</h3>
+    <ul>
+      <li><strong>Axe X :</strong> valeur SHAP → à gauche = diminue le score défaut,
+          à droite = l'augmente</li>
+      <li><strong>Axe Y :</strong> features triées par importance décroissante (|SHAP| moyen)</li>
+      <li><strong>Couleur des points :</strong> valeur brute de la feature (bleu = faible, rouge = élevée)</li>
+    </ul>
+    <p>Observation : les points roses (valeur élevée) de <code>patchcore_score</code>
+       et <code>max_error</code> sont tous à droite → un score PatchCore ou une erreur
+       max élevés augmentent systématiquement la probabilité de défaut.</p>
+
+    <h3>Lecture du waterfall — image <em>broken_large</em></h3>
+    <div class="callout ok">
+      <strong>Garantie additive SHAP :</strong> somme des contributions = f(x) − E[f(X)]<br>
+      E[f(X)] = 0.76  →  f(x) = 0.873
+    </div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Feature</th><th>Valeur</th><th>Contribution SHAP</th><th>Interprétation</th></tr></thead>
+        <tbody>
+          <tr><td><code>max_error</code></td><td>0.19</td>
+              <td><span class="badge badge-danger">+0.10</span></td>
+              <td>Pic de reconstruction élevé → forte suspicion de défaut</td></tr>
+          <tr><td><code>patchcore_score</code></td><td>1.545</td>
+              <td><span class="badge badge-info">−0.08</span></td>
+              <td>Distance kNN modérée → patches encore proches de la normale en espace ResNet</td></tr>
+          <tr><td><code>p95_error</code></td><td>0.002</td>
+              <td><span class="badge badge-danger">+0.06</span></td>
+              <td>Queue haute de la distribution d'erreur</td></tr>
+          <tr><td><code>mean_intensity</code></td><td>0.547</td>
+              <td><span class="badge badge-info">−0.03</span></td>
+              <td>Luminosité dans la plage des bouteilles normales</td></tr>
+          <tr><td><code>mse_score</code></td><td>0.001</td>
+              <td><span class="badge badge-danger">+0.03</span></td>
+              <td>MSE moyen légèrement élevé</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout warn">
+      <strong>Cas contre-intuitif :</strong> <code>patchcore_score = 1.545</code> contribue
+      <em>négativement</em> pour cette image. Explication : le RandomForest a appris que
+      les défauts <em>broken_large</em> produisent des patches ResNet50 encore relativement
+      proches des bouteilles saines — c'est l'erreur de reconstruction pixel qui fait le diagnostic,
+      pas la distance feature. Les deux familles d'approches sont complémentaires.
+    </div>
+
+<pre><code>explainer_tree = shap.TreeExplainer(clf)
+shap_vals      = explainer_tree.shap_values(X_feat)
+# SHAP 0.46+ : array 3D (N, n_feat, n_classes) ou liste [classe0, classe1]
+sv_anomaly = shap_vals[1] if isinstance(shap_vals, list) else shap_vals[:, :, 1]
+
+shap.summary_plot(sv_anomaly, X_feat,
+                  feature_names=FEATURE_NAMES,
+                  plot_type="dot")     # beeswarm</code></pre>
+  </section>
+
+  <!-- ── §5 Limites ────────────────────────────────────────────────── -->
+  <section class="section" id="s5">
+    <div class="section-title">
+      <span class="section-num">§5</span>
+      Limites de l'explicabilité SHAP
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Limite</th><th>Explication</th><th>Atténuation</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Coût calcul</strong></td>
+            <td>GradientExplainer ≈ N_bg × N_images forward passes ;
+                PartitionExplainer ≈ 500 passes / image</td>
+            <td>Batch processing, GPU, max_evals limité</td>
+          </tr>
+          <tr>
+            <td><strong>Corrélation ≠ causalité</strong></td>
+            <td>SHAP mesure des contributions marginales, pas des relations causales</td>
+            <td>Compléter avec tests d'intervention (masking réel)</td>
+          </tr>
+          <tr>
+            <td><strong>Dépendance au fond</strong></td>
+            <td>GradientExplainer est sensible au choix du background
+                (ici : 50 images de validation)</td>
+            <td>Tester plusieurs backgrounds, vérifier la stabilité</td>
+          </tr>
+          <tr>
+            <td><strong>Mauvais modèle → mauvais SHAP</strong></td>
+            <td>Si le modèle a un AUROC faible, SHAP explique un mauvais modèle</td>
+            <td>Toujours vérifier la performance avant l'explicabilité</td>
+          </tr>
+          <tr>
+            <td><strong>Features corrélées</strong></td>
+            <td>mse_score et mean_error sont quasi identiques → SHAP les discrimine
+                parfois arbitrairement</td>
+            <td>Réduire la base de features, vérifier les corrélations</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Conclusion</h3>
+    <p>L'explicabilité est <strong>complémentaire</strong> à la performance, non substituable.
+       En production, la bonne pratique est de combiner :</p>
+    <ol>
+      <li>Une <strong>métrique de performance</strong> validée (AUROC ≥ 0.85 → PatchCore)</li>
+      <li>Une <strong>carte de localisation</strong> (superpixels SHAP ou heatmap)</li>
+      <li>Un <strong>score de confiance</strong> affiché à l'opérateur (distance brute)</li>
+    </ol>
+
+    <div class="tbl-wrap" style="margin-top:1.25rem">
+      <table>
+        <thead><tr>
+          <th>Explainer</th><th>Modèle</th><th>Granularité</th>
+          <th>Exactitude</th><th>Vitesse</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><code>GradientExplainer</code></td>
+            <td>AE (diff.)</td>
+            <td>Pixel 256×256</td>
+            <td><span class="badge badge-warn">Approx.</span></td>
+            <td><span class="badge badge-ok">Rapide</span></td>
+          </tr>
+          <tr>
+            <td><code>PartitionExplainer</code></td>
+            <td>PatchCore (boîte noire)</td>
+            <td>Superpixel</td>
+            <td><span class="badge badge-warn">Approx.</span></td>
+            <td><span class="badge badge-danger">Lent</span></td>
+          </tr>
+          <tr>
+            <td><code>TreeExplainer</code></td>
+            <td>RandomForest (features)</td>
+            <td>Feature × 8</td>
+            <td><span class="badge badge-ok">Exact</span></td>
+            <td><span class="badge badge-ok">Très rapide</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+</div>
