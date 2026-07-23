@@ -1,0 +1,386 @@
+<title>TP10 — Post-mortem : notebook vs documentation | B8 suite</title>
+<style>
+  /* ── Tokens — thème gris ardoise/rouille, post-mortem ── */
+  :root {
+    --bg:        #f6f5f3;
+    --surface:   #ffffff;
+    --surface2:  #ece9e4;
+    --border:    #ddd7cd;
+    --accent:    #9a3412;
+    --accent2:   #c2410c;
+    --ok:        #059669;
+    --warn:      #d97706;
+    --danger:    #dc2626;
+    --info:      #0284c7;
+    --text:      #241f1a;
+    --muted:     #6b6156;
+    --code-bg:   #201a14;
+    --code-text: #f0d9c0;
+    --tag-bg:    #ffedd5;
+    --tag-text:  #9a3412;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:        #17140f;
+      --surface:   #1e1a14;
+      --surface2:  #27211a;
+      --border:    #3a3226;
+      --accent:    #fb923c;
+      --accent2:   #c2410c;
+      --ok:        #34d399;
+      --warn:      #fbbf24;
+      --danger:    #f87171;
+      --info:      #38bdf8;
+      --text:      #f3ece0;
+      --muted:     #b3a693;
+      --code-bg:   #120e0a;
+      --code-text: #f0d9c0;
+      --tag-bg:    #3a2410;
+      --tag-text:  #fdba74;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:#f6f5f3; --surface:#ffffff; --surface2:#ece9e4; --border:#ddd7cd;
+    --accent:#9a3412; --accent2:#c2410c; --ok:#059669; --warn:#d97706;
+    --danger:#dc2626; --info:#0284c7; --text:#241f1a; --muted:#6b6156;
+    --code-bg:#201a14; --code-text:#f0d9c0; --tag-bg:#ffedd5; --tag-text:#9a3412;
+  }
+  :root[data-theme="dark"] {
+    --bg:#17140f; --surface:#1e1a14; --surface2:#27211a; --border:#3a3226;
+    --accent:#fb923c; --accent2:#c2410c; --ok:#34d399; --warn:#fbbf24;
+    --danger:#f87171; --info:#38bdf8; --text:#f3ece0; --muted:#b3a693;
+    --code-bg:#120e0a; --code-text:#f0d9c0; --tag-bg:#3a2410; --tag-text:#fdba74;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.7;
+    padding: 0 1rem 4rem;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .page { max-width: 900px; margin: 0 auto; }
+
+  .page-header { border-bottom: 2px solid var(--accent); padding: 2.5rem 0 1.5rem; margin-bottom: 2rem; }
+  .eyebrow { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: .5rem; }
+  .page-header h1 { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.2; text-wrap: balance; color: var(--text); }
+  .page-header p { margin-top: .75rem; color: var(--muted); font-size: .95rem; }
+  .prereq { display: inline-flex; align-items: center; gap: .4rem; background: var(--tag-bg); color: var(--tag-text); font-size: .78rem; font-weight: 600; letter-spacing: .04em; padding: .25rem .75rem; border-radius: 999px; margin-top: .75rem; }
+
+  .quote-block { background: var(--surface2); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: 1rem 1.25rem; margin: 1.25rem 0; font-style: italic; font-size: .92rem; color: var(--text); }
+  .quote-block cite { display: block; margin-top: .5rem; font-style: normal; font-size: .75rem; color: var(--muted); }
+
+  .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .75rem; margin-bottom: 1.5rem; }
+  .overview-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: .9rem 1rem; }
+  .overview-card .label { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: .3rem; }
+  .overview-card .value { font-size: .95rem; font-weight: 600; color: var(--text); }
+  .overview-card .sub { font-size: .8rem; color: var(--muted); margin-top: .15rem; }
+
+  .section { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+  .section-title { font-family: Georgia, serif; font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; display: flex; align-items: baseline; gap: .6rem; }
+  .section-num { font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+
+  .callout { border-radius: 6px; padding: .9rem 1.1rem; margin: 1rem 0; font-size: .9rem; border-left: 3px solid; }
+  .callout.info  { background: #e0f2fe; border-color: var(--info);   color: #0c4a6e; }
+  .callout.warn  { background: #fef9c3; border-color: var(--warn);   color: #78350f; }
+  .callout.ok    { background: #d1fae5; border-color: var(--ok);     color: #064e3b; }
+  .callout.theory{ background: var(--tag-bg); border-color: var(--accent); color: var(--tag-text); }
+  @media (prefers-color-scheme: dark) {
+    .callout.info  { background: #0c2a3d; color: #7dd3fc; }
+    .callout.warn  { background: #2d1e00; color: #fde68a; }
+    .callout.ok    { background: #052e16; color: #6ee7b7; }
+    .callout.theory{ background: var(--tag-bg); color: var(--tag-text); }
+  }
+  :root[data-theme="dark"] .callout.info  { background:#0c2a3d; color:#7dd3fc; }
+  :root[data-theme="dark"] .callout.warn  { background:#2d1e00; color:#fde68a; }
+  :root[data-theme="dark"] .callout.ok    { background:#052e16; color:#6ee7b7; }
+  :root[data-theme="light"] .callout.info { background:#e0f2fe; color:#0c4a6e; }
+  :root[data-theme="light"] .callout.warn { background:#fef9c3; color:#78350f; }
+  :root[data-theme="light"] .callout.ok   { background:#d1fae5; color:#064e3b; }
+
+  pre { background: var(--code-bg); border-radius: 6px; padding: 1.1rem 1.25rem; overflow-x: auto; margin: 1rem 0; font-size: .82rem; line-height: 1.6; }
+  code { font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; color: var(--code-text); }
+  p code, li code, td code { background: var(--surface2); color: var(--accent); padding: .1em .35em; border-radius: 3px; font-size: .85em; }
+
+  .tbl-wrap { overflow-x: auto; margin: 1rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; font-variant-numeric: tabular-nums; }
+  th { background: var(--surface2); font-weight: 600; text-align: left; padding: .55rem .9rem; border-bottom: 2px solid var(--border); font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  td { padding: .5rem .9rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  tr.bad td { background: #fee2e2; }
+  tr.good td { background: var(--tag-bg); }
+  :root[data-theme="dark"] tr.bad td { background: #2d0a0a; }
+
+  .badge { display: inline-block; padding: .15em .55em; border-radius: 4px; font-size: .78rem; font-weight: 700; letter-spacing: .03em; }
+  .badge-ok      { background: #d1fae5; color: #065f46; }
+  .badge-warn    { background: #fef3c7; color: #92400e; }
+  .badge-danger  { background: #fee2e2; color: #991b1b; }
+  .badge-info    { background: #e0f2fe; color: #0c4a6e; }
+  @media (prefers-color-scheme: dark) {
+    .badge-ok    { background:#052e16; color:#6ee7b7; }
+    .badge-warn  { background:#2d1e00; color:#fde68a; }
+    .badge-danger{ background:#2d0a0a; color:#fca5a5; }
+    .badge-info  { background:#0c2a3d; color:#7dd3fc; }
+  }
+
+  .layers { display: flex; flex-direction: column; gap: .5rem; margin: 1rem 0; }
+  .layer { border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 6px; padding: .8rem 1.1rem; background: var(--surface2); }
+  .layer.wrong { border-left-color: var(--danger); }
+  .layer strong { color: var(--accent); font-family: 'Cascadia Code', monospace; font-size: .88rem; }
+  .layer.wrong strong { color: var(--danger); }
+  .layer p { font-size: .85rem; margin: .2rem 0 0; }
+
+  .before-after { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: .75rem; margin: 1rem 0; }
+  @media (max-width: 640px) { .before-after { grid-template-columns: 1fr; } }
+  .ba-card { border-radius: 6px; padding: .9rem 1.1rem; font-size: .85rem; }
+  .ba-before { background: #fee2e2; border: 1px solid var(--danger); }
+  :root[data-theme="dark"] .ba-before { background: #2d0a0a; }
+  .ba-after { background: var(--tag-bg); border: 1px solid var(--accent); }
+  .ba-arrow { font-size: 1.4rem; color: var(--muted); text-align: center; }
+  .ba-card .ba-label { font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .35rem; opacity: .75; }
+  .ba-card code { display: block; margin-top: .3rem; font-size: .8rem; }
+
+  ul, ol { padding-left: 1.4rem; }
+  li { margin-bottom: .3rem; }
+  p { margin-bottom: .8rem; }
+  p:last-child { margin-bottom: 0; }
+  h3 { font-family: Georgia, serif; font-size: 1.05rem; font-weight: 700; margin: 1.25rem 0 .5rem; color: var(--text); }
+  h4 { font-size: .9rem; font-weight: 600; margin: .9rem 0 .3rem; color: var(--text); }
+
+  .summary { background: #241207; color: #fff; border-radius: 8px; padding: 1.6rem 2rem; margin-top: 1rem; }
+  .summary-title { font-size: .65rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent2); margin-bottom: 1rem; }
+  .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .6rem; }
+  .sum-item { background: rgba(255,255,255,.08); border-radius: 5px; padding: .65rem .85rem; font-size: .83rem; }
+  .sum-item strong { display: block; color: var(--accent2); font-size: .78rem; margin-bottom: .2rem; }
+
+  @media (max-width: 640px) {
+    .section { padding: 1.25rem 1rem; }
+    .page-header { padding: 1.5rem 0 1rem; }
+    .summary-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="page">
+
+  <header class="page-header">
+    <p class="eyebrow">Post-mortem — correction de packaging suite au retour formateur</p>
+    <h1>TP10 — Quand le notebook devient l'artefact</h1>
+    <p>Deux model cards avaient été construites comme des notebooks plutôt que comme
+       des documents. Ce TP raconte le diagnostic et la correction réellement
+       appliquée — avec preuve que rien n'a été perdu au passage.</p>
+    <span class="prereq">⚙ Fait suite à TP8 (model cards) et TP9 (tracking MLflow)</span>
+  </header>
+
+  <div class="quote-block">
+    « t'as fait la model card sous format notebook plutôt que documentation pure ; du
+    coup le html essaye de comparer 2 notebooks ; et le fichier doit être un fichier
+    purement textuel (.md) en général »
+    <cite>— retour formateur</cite>
+  </div>
+  <div class="quote-block">
+    « le model card est censé intégrer la documentation du modèle ; donc
+    <code>model_card.ipynb</code> devrait être un <code>.md</code> »
+    <cite>— clarification du retour</cite>
+  </div>
+
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="label">Fichiers supprimés</div>
+      <div class="value">2 notebooks</div>
+      <div class="sub">DL/TP8.ipynb, ML/model_card.ipynb</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Fichiers créés</div>
+      <div class="value">2 scripts .py</div>
+      <div class="sub">Aucune cellule, aucun kernel</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Contenu documentaire</div>
+      <div class="value">Inchangé</div>
+      <div class="sub">Mêmes métriques, vérifiées</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Pages HTML corrigées</div>
+      <div class="value">TP8.html, TP9.html</div>
+      <div class="sub">Ne référencent plus les notebooks</div>
+    </div>
+  </div>
+
+  <!-- §1 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§1</span> Point de départ : ce qui a été construit</div>
+
+    <p>Pour produire les deux model cards, deux notebooks avaient été écrits — même
+    schéma dans les deux cas : recharger/ré-entraîner le modèle, recalculer les
+    métriques en direct, instrumenter CodeCarbon, interroger MLflow, puis appeler
+    <code>ModelCard.from_template(...)</code> et sauvegarder un <code>.md</code>.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Fichier (supprimé)</th><th>Cellules</th><th>Taille</th><th>Contenu</th></tr></thead>
+        <tbody>
+          <tr class="bad"><td><code>DL/TP8.ipynb</code></td><td>16 (8 code / 8 md)</td><td>29 108 octets</td><td>DB checkpoint, ré-évaluation, CodeCarbon, template HF</td></tr>
+          <tr class="bad"><td><code>ML/model_card.ipynb</code></td><td>21 (10 code / 11 md)</td><td>35 269 octets</td><td>Connexion Postgres, ré-entraînement XGBoost, MLflow, CodeCarbon, template HF</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <strong>Confirmé par <code>git status</code></strong> après suppression :
+      <code>D DL/TP8.ipynb</code>, <code>D ML/model_card.ipynb</code> — les deux
+      fichiers étaient bien versionnés en tant que notebooks, pas en tant que documents.
+    </div>
+  </section>
+
+  <!-- §2 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§2</span> Le diagnostic : deux couches confondues</div>
+
+    <p>Une model card répond à <em>« que fait ce modèle, avec quelle performance, dans
+    quelles limites »</em> — c'est un <strong>document</strong>, lu par un humain, pas
+    exécuté.</p>
+
+    <div class="layers">
+      <div class="layer">
+        <strong>Document</strong>
+        <p><code>model_card.md</code> — texte, tableaux, prose. Se lit, se diffuse, se versionne comme du texte pur.</p>
+      </div>
+      <div class="layer wrong">
+        <strong>Ce qui a été fait à tort</strong>
+        <p>Le document relégué en sous-produit, généré en dernière cellule d'un notebook Jupyter — le nom du fichier ML affirmait même être la card.</p>
+      </div>
+      <div class="layer">
+        <strong>Processus (légitimement scriptable)</strong>
+        <p>Recharger le modèle, recalculer les métriques, interroger MLflow — un script <code>.py</code> suffit, pas un notebook.</p>
+      </div>
+    </div>
+
+    <div class="callout danger" style="background:#fee2e2;border-color:var(--danger);color:#991b1b">
+      <strong>Le signal le plus clair : le nom du fichier.</strong>
+      <code>model_card.ipynb</code> affirme, par son nom, qu'il <em>est</em> la card.
+      Un notebook ne peut pas être une documentation — il peut au mieux la
+      <em>produire</em>. Conséquence visible : la première version de
+      <code>TP8.html</code> disait littéralement <em>« Les deux notebooks (DL/TP8.ipynb,
+      ML/model_card.ipynb) confirment que... »</em> — la page pédagogique elle-même
+      comparait des pipelines d'exécution, pas des documents de référence.
+    </div>
+  </section>
+
+  <!-- §3 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§3</span> Les évolutions : notebook → script</div>
+
+    <div class="before-after">
+      <div class="ba-card ba-before">
+        <div class="ba-label">Avant</div>
+        <strong>DL/TP8.ipynb</strong>
+        <code>16 cellules · 29 108 octets</code>
+      </div>
+      <div class="ba-arrow">→</div>
+      <div class="ba-card ba-after">
+        <div class="ba-label">Après</div>
+        <strong>DL/scripts/generate_model_card.py</strong>
+        <code>224 lignes · 0 cellule</code>
+      </div>
+    </div>
+    <div class="before-after">
+      <div class="ba-card ba-before">
+        <div class="ba-label">Avant</div>
+        <strong>ML/model_card.ipynb</strong>
+        <code>21 cellules · 35 269 octets</code>
+      </div>
+      <div class="ba-arrow">→</div>
+      <div class="ba-card ba-after">
+        <div class="ba-label">Après</div>
+        <strong>ML/generate_model_card.py</strong>
+        <code>358 lignes · 0 cellule</code>
+      </div>
+    </div>
+
+    <h3>Ce qui disparaît</h3>
+    <ul>
+      <li>Le kernel Jupyter et son cycle exécution/sortie capturée (<code>nbconvert --execute</code>)</li>
+      <li>L'ambiguïté « le fichier <code>.ipynb</code> est-il le document ou l'outil ? »</li>
+      <li>Le risque qu'une exécution partielle (cellules dans le désordre) laisse le <code>.md</code> incohérent avec le code qui l'a produit</li>
+    </ul>
+
+    <h3>Ce qui reste identique</h3>
+    <ul>
+      <li>La règle <strong>ne jamais copier un chiffre</strong> — les scripts recalculent les métriques en direct à chaque exécution</li>
+      <li>La sortie : <code>DL/reports/model_card.md</code> et <code>ML/artifacts/model_card.md</code>, mêmes chemins, même rôle</li>
+    </ul>
+  </section>
+
+  <!-- §4 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§4</span> Preuve : le contenu documentaire est inchangé</div>
+
+    <p>La conversion ne doit pas changer <em>ce que dit</em> la card, seulement
+    <em>comment elle est produite</em>.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Projet</th><th>Métrique</th><th>Avant (notebook)</th><th>Après (script)</th><th>Statut</th></tr></thead>
+        <tbody>
+          <tr class="good"><td>DL</td><td>AUROC (test)</td><td>0.618</td><td>0.618</td><td><span class="badge badge-ok">✓ identique</span></td></tr>
+          <tr class="good"><td>DL</td><td>Seuil</td><td>0.00081</td><td>0.00081</td><td><span class="badge badge-ok">✓ identique</span></td></tr>
+          <tr class="good"><td>ML</td><td>PR-AUC (test)</td><td>0.8799</td><td>0.8799</td><td><span class="badge badge-ok">✓ identique</span></td></tr>
+          <tr class="good"><td>ML</td><td>ROC-AUC (test)</td><td>0.9949</td><td>0.9949</td><td><span class="badge badge-ok">✓ identique</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout ok">
+      <strong>Métriques strictement identiques.</strong> La conversion n'a rien changé
+      au contenu documentaire. Les pages <code>TP8.html</code> et <code>TP9.html</code>
+      ont été corrigées en conséquence : elles ne référencent plus <code>TP8.ipynb</code>
+      ni <code>model_card.ipynb</code>, mais les scripts et surtout les <code>.md</code>
+      eux-mêmes.
+    </div>
+  </section>
+
+  <!-- §5 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§5</span> Ce qui reste légitimement un notebook</div>
+
+    <p>Tous les notebooks ne sont pas suspects — seuls ceux qui <em>sont</em> nommés ou
+    traités comme un document le sont. <code>DL/TP9.ipynb</code> (tracking MLflow de
+    B11-GKF) reste un notebook à raison.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Critère</th><th>model_card.ipynb (supprimé)</th><th>TP9.ipynb (conservé)</th></tr></thead>
+        <tbody>
+          <tr><td>Objet</td><td>Être lu comme documentation</td><td>Ré-entraîner, logger, vérifier une action</td></tr>
+          <tr><td>Nom</td><td>Affirme être « la card »</td><td>Convention <code>TPx</code> — une étape numérotée</td></tr>
+          <tr><td>Artefact durable</td><td>Prétendait être le livrable final</td><td>Un run MLflow, consommé ensuite par un script</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout theory">
+      <strong>Le critère qui tranche.</strong> Si le fichier est destiné à être lu seul,
+      hors contexte d'exécution, par quelqu'un qui ne l'exécutera jamais — c'est un
+      document, il doit être <code>.md</code>. Si son rôle est de vérifier, calculer ou
+      orchestrer une action ponctuelle — un notebook (ou un script) convient.
+    </div>
+  </section>
+
+  <div class="summary">
+    <div class="summary-title">Récapitulatif — TP10</div>
+    <div class="summary-grid">
+      <div class="sum-item"><strong>§1-2 — Diagnostic</strong>Deux notebooks confondaient document et processus ; le nom du fichier ML trahissait l'erreur</div>
+      <div class="sum-item"><strong>§3 — Évolution</strong>Notebooks supprimés, remplacés par des scripts .py sans cellule ni kernel</div>
+      <div class="sum-item"><strong>§4 — Preuve</strong>Métriques strictement identiques avant/après — rien perdu</div>
+      <div class="sum-item"><strong>§5 — Nuance</strong>TP9.ipynb reste un notebook, à raison — action, pas documentation</div>
+    </div>
+  </div>
+
+</div>

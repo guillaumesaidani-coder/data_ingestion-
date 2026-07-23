@@ -18,7 +18,9 @@ mlruns/
 emissions/
 
 # Rapports JSON générés par scripts/run_vision_pipeline.py
-reports/
+reports/*
+# ... sauf la model card — c'est un livrable de documentation, pas un artefact jetable
+!reports/model_card.md
 
 # Stats de normalisation générées (versionner norm_stats.json explicitement)
 # norm_stats.json  ← NE PAS ignorer — doit être commité avec le modèle

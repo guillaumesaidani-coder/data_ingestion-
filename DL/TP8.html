@@ -208,10 +208,12 @@ card.save("model_card.md")</code></pre>
     <div class="callout theory">
       <strong>Méthode identique dans les deux cas</strong> : recharger/reconstruire le
       modèle et <strong>recalculer les métriques en direct</strong> — jamais recopier un
-      chiffre d'un ancien run non vérifiable. Les deux notebooks (<code>DL/TP8.ipynb</code>,
-      <code>ML/model_card.ipynb</code>) confirment que leurs métriques recalculées sont
-      strictement identiques à celles déjà documentées ailleurs (TP4 pour le DL, TP11
-      pour le ML).
+      chiffre d'un ancien run non vérifiable. Les deux scripts
+      (<code>DL/scripts/generate_model_card.py</code>,
+      <code>ML/generate_model_card.py</code>) confirment que leurs métriques recalculées
+      sont strictement identiques à celles déjà documentées ailleurs (TP4 pour le DL,
+      TP11 pour le ML) — puis écrivent chacun un unique fichier <code>.md</code>, le
+      seul livrable.
     </div>
   </section>
 

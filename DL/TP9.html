@@ -162,7 +162,7 @@
   <header class="page-header">
     <p class="eyebrow">Suite du module B8 — combler un trou identifié en documentant</p>
     <h1>TP9 — Tracker B11-GKF dans MLflow</h1>
-    <p>La model card ML (<code>ML/model_card.ipynb</code>) a révélé un trou en le
+    <p>La model card ML (<code>ML/artifacts/model_card.md</code>) a révélé un trou en le
        documentant honnêtement : le modèle retenu n'avait aucun artefact persisté.
        Ce TP le comble.</p>
     <span class="prereq">⚙ S'exécute contre <code>ML/.venv</code> + PostgreSQL, bien que rangé dans <code>DL/</code></span>
@@ -173,7 +173,7 @@
     <span class="cross-arrow">— écrit dans →</span>
     <span class="cross-chip">ML/mlflow_tp7.db</span>
     <span class="cross-arrow">— lu par →</span>
-    <span class="cross-chip">ML/model_card.ipynb</span>
+    <span class="cross-chip">ML/generate_model_card.py</span>
   </div>
 
   <div class="overview-grid">
@@ -205,7 +205,7 @@
 
     <p>Mêmes données (requête PostgreSQL <code>gold_machine_hourly_feature</code>),
     mêmes hyperparamètres figés — ceux trouvés par l'étude Optuna rejouée dans
-    <code>TP11.ipynb</code> et déjà vérifiés dans <code>ML/model_card.ipynb</code>.
+    <code>TP11.ipynb</code> et déjà vérifiés par <code>ML/generate_model_card.py</code>.
     Aucune redécouverte de hyperparamètres ici, juste une reproduction fidèle.</p>
 
     <pre><code>BEST_PARAMS = {
@@ -218,7 +218,7 @@
 
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>Métrique</th><th>Valeur recalculée</th><th>vs model_card.ipynb</th></tr></thead>
+        <thead><tr><th>Métrique</th><th>Valeur recalculée</th><th>vs model_card.md</th></tr></thead>
         <tbody>
           <tr class="best"><td>PR-AUC test</td><td><strong>0.8799</strong></td><td><span class="badge badge-ok">✓ identique</span></td></tr>
           <tr><td>ROC-AUC test</td><td>0.9949</td><td><span class="badge badge-ok">✓ identique</span></td></tr>
@@ -305,7 +305,7 @@ pr_auc_reloaded = average_precision_score(y_test, y_prob)
       <div class="sum-item"><strong>§1-2 — Tracking</strong>B11-GKF loggé dans le même store MLflow que B7, tags de lignée explicites</div>
       <div class="sum-item"><strong>§3 — Vérification</strong>Rechargement depuis MLflow → PR-AUC identique (0.8799)</div>
       <div class="sum-item"><strong>§4 — Comparaison</strong>B7 (fuyant, 0.844) vs B11-GKF (corrigé, 0.880) côte à côte</div>
-      <div class="sum-item"><strong>Suite</strong><code>ML/model_card.ipynb</code> mis à jour pour référencer cet artefact</div>
+      <div class="sum-item"><strong>Suite</strong><code>ML/generate_model_card.py</code> (script, pas notebook) mis à jour pour référencer cet artefact</div>
     </div>
   </div>
 

@@ -16,4 +16,6 @@ wheels/
 releves_incidents.csv
 
 # Fichiers générés
-artifacts/
+artifacts/*
+# ... sauf la model card — c'est un livrable de documentation, pas un artefact jetable
+!artifacts/model_card.md
