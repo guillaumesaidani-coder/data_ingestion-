@@ -15,6 +15,12 @@ dependencies = [
     "psycopg2-binary>=2.9",
     "python-dotenv>=1.0",
     "pydantic>=2.0",
+    "xgboost>=3.3.0",
+    "scikit-learn>=1.9.0",
+    "optuna>=4.9.0",
+    "huggingface-hub>=1.24.0",
+    "codecarbon>=3.2.9",
+    "mlflow>=3.14.0",
 ]
 
 [dependency-groups]

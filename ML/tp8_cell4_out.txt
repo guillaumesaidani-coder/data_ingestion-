@@ -1,0 +1,4 @@
+Dataset : 132,940 lignes x 79 colonnes
+Train : 93,079 | Val : 19,917 | Test : 19,944
+scale_pos_weight = 26.78
+

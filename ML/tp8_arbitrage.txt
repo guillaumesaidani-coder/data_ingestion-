@@ -1,0 +1,168 @@
+--- CELL 18 markdown SOURCE ---
+## 8. Ajustement du seuil de décision — arbitrage métier
+
+### Le problème du seuil
+
+Le seuil par défaut (0.5) maximise l'accuracy, pas le rappel. En maintenance industrielle :
+
+```
+Coût Faux Négatif (panne manquée)  >> Coût Faux Positif (fausse alerte)
+→ On préfère trop d'alertes plutôt que des pannes manquées
+```
+
+On cherche le seuil qui **maximise le F1** ou qui garantit un **Recall minimum** (ex. 90 %).
+--- CELL 19 code SOURCE ---
+y_proba_val = optim_pipe.predict_proba(X_val)[:, 1]
+precision_c, recall_c, thresholds = precision_recall_curve(y_val, y_proba_val)
+
+f1_scores = 2 * precision_c[:-1] * recall_c[:-1] / (precision_c[:-1] + recall_c[:-1] + 1e-9)
+idx_best_f1     = np.argmax(f1_scores)
+SEUIL_F1        = round(thresholds[idx_best_f1], 3)
+
+# Seuil recall >= 90%
+idx_recall90 = np.where(recall_c[:-1] >= 0.90)[0]
+SEUIL_RECALL90 = round(thresholds[idx_recall90[-1]], 3) if len(idx_recall90) > 0 else SEUIL_F1
+
+fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+# Courbe PR
+axes[0].plot(recall_c, precision_c, "b-", lw=2, label="Courbe PR")
+axes[0].axhline(y_val.mean(), color="gray", linestyle="--", alpha=0.5,
+                label=f"Baseline ({y_val.mean():.3f})")
+axes[0].scatter(recall_c[idx_best_f1], precision_c[idx_best_f1],
+                color="crimson", s=100, zorder=5,
+                label=f"Seuil F1 max ({SEUIL_F1})")
+axes[0].set_xlabel("Recall"); axes[0].set_ylabel("Precision")
+axes[0].set_title("Courbe Precision-Recall (validation)", fontweight="bold")
+axes[0].legend(); axes[0].grid(alpha=0.3)
+
+# F1 par seuil
+axes[1].plot(thresholds, f1_scores, "g-", lw=2)
+axes[1].axvline(SEUIL_F1, color="crimson", linestyle="--",
+                label=f"Seuil F1 max = {SEUIL_F1} (F1={f1_scores[idx_best_f1]:.3f})")
+axes[1].axvline(SEUIL_RECALL90, color="orange", linestyle="--",
+                label=f"Seuil Recall≥90% = {SEUIL_RECALL90}")
+axes[1].axvline(0.5, color="gray", linestyle=":", label="Seuil par défaut (0.5)")
+axes[1].set_xlabel("Seuil"); axes[1].set_ylabel("F1")
+axes[1].set_title("F1 en fonction du seuil", fontweight="bold")
+axes[1].legend(); axes[1].grid(alpha=0.3)
+
+plt.tight_layout()
+plt.show()
+
+print(f"Seuil F1 max     : {SEUIL_F1}  → F1 = {f1_scores[idx_best_f1]:.4f}")
+print(f"Seuil Recall≥90% : {SEUIL_RECALL90}")
+print("\n=> Choix recommandé en maintenance : seuil Recall≥90% pour minimiser les pannes manquées")
+--- CELL 19 OUTPUT(data) ---
+<Figure size 1400x500 with 2 Axes>
+--- CELL 19 OUTPUT ---
+Seuil F1 max     : 0.7960000038146973  → F1 = 0.8250
+Seuil Recall≥90% : 0.8399999737739563
+
+=> Choix recommandé en maintenance : seuil Recall≥90% pour minimiser les pannes manquées
+
+--- CELL 20 markdown SOURCE ---
+## 9. Évaluation finale sur le Test set
+
+⚠️ **Règle d'or** : le test set ne s'utilise qu'**une seule fois**, à la toute fin.
+Évaluer plusieurs fois sur le test set revient à optimiser pour lui — c'est de la fuite.
+--- CELL 21 code SOURCE ---
+SEUIL_FINAL = SEUIL_RECALL90
+
+y_proba_test = optim_pipe.predict_proba(X_test)[:, 1]
+y_pred_test  = (y_proba_test >= SEUIL_FINAL).astype(int)
+
+pr_auc_test  = average_precision_score(y_test, y_proba_test)
+roc_auc_test = roc_auc_score(y_test, y_proba_test)
+f1_test      = f1_score(y_test, y_pred_test, zero_division=0)
+cm           = confusion_matrix(y_test, y_pred_test)
+tn, fp, fn, tp = cm.ravel()
+
+fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+
+disp = ConfusionMatrixDisplay(cm, display_labels=["No Failure", "Failure"])
+disp.plot(ax=axes[0], colorbar=False, cmap="Blues")
+axes[0].set_title(f"Matrice de confusion — Optimisé\n(seuil={SEUIL_FINAL})", fontweight="bold")
+
+precision_t, recall_t, _ = precision_recall_curve(y_test, y_proba_test)
+axes[1].plot(recall_t, precision_t, "b-", lw=2, label=f"PR-AUC = {pr_auc_test:.4f}")
+axes[1].axhline(y_test.mean(), color="r", linestyle="--", alpha=0.7)
+axes[1].set_xlabel("Recall"); axes[1].set_ylabel("Precision")
+axes[1].set_title("Courbe PR — Test set", fontweight="bold")
+axes[1].legend(); axes[1].set_xlim([0,1]); axes[1].set_ylim([0,1])
+
+models_names = ["Baseline TP7", "Optimisé B7"]
+pr_vals = [baseline_metrics["val"]["pr_auc"], pr_auc_test]
+colors_b = ["steelblue", "crimson"]
+bars = axes[2].bar(models_names, pr_vals, color=colors_b, edgecolor="white", width=0.4)
+for bar, val in zip(bars, pr_vals):
+    axes[2].text(bar.get_x() + bar.get_width()/2, val + 0.005,
+                 f"{val:.4f}", ha="center", fontweight="bold")
+axes[2].set_ylim(0, 1.0)
+axes[2].set_title("PR-AUC val : Baseline vs Optimisé", fontweight="bold")
+axes[2].grid(alpha=0.3, axis="y")
+
+plt.tight_layout()
+plt.show()
+
+print("=== Résultats finaux — Test set ===")
+print(f"  PR-AUC   : {pr_auc_test:.4f}  (baseline val : {baseline_metrics['val']['pr_auc']:.4f})")
+print(f"  ROC-AUC  : {roc_auc_test:.4f}")
+print(f"  F1       : {f1_test:.4f}  (seuil = {SEUIL_FINAL})")
+print(f"\n  Vrais Positifs  (pannes détectées) : {tp:>5,}  ✅")
+print(f"  Faux Positifs   (fausses alertes)   : {fp:>5,}  ⚠️")
+print(f"  Faux Négatifs   (pannes manquées)   : {fn:>5,}  ❌")
+print(f"  Vrais Négatifs  (OK détectés)       : {tn:>5,}  ✅")
+print(f"\n  Recall    : {tp/(tp+fn)*100:.1f}%")
+print(f"  Précision : {tp/(tp+fp)*100:.1f}%")
+--- CELL 21 OUTPUT(data) ---
+<Figure size 1800x500 with 3 Axes>
+--- CELL 21 OUTPUT ---
+=== Résultats finaux — Test set ===
+  PR-AUC   : 0.8437  (baseline val : 0.8174)
+  ROC-AUC  : 0.9938
+  F1       : 0.7730  (seuil = 0.8399999737739563)
+
+  Vrais Positifs  (pannes détectées) :   608  ✅
+  Faux Positifs   (fausses alertes)   :   238  ⚠️
+  Faux Négatifs   (pannes manquées)   :   119  ❌
+  Vrais Négatifs  (OK détectés)       : 18,979  ✅
+
+  Recall    : 83.6%
+  Précision : 71.9%
+
+--- CELL 22 markdown SOURCE ---
+## 10. Empreinte carbone avec CodeCarbon
+
+La **Green AI** mesure le coût environnemental de l'entraînement.
+CodeCarbon enregistre la consommation électrique et l'estime en CO₂ selon le mix énergétique local.
+--- CELL 23 code SOURCE ---
+if not CARBON_OK:
+    print("pip install codecarbon pour activer cette section")
+else:
+    tracker = EmissionsTracker(project_name="TP8_XGBoost_optuna", log_level="error")
+    tracker.start()
+
+    # On ré-entraîne le modèle optimisé avec suivi carbone
+    optim_pipe_carbon = Pipeline([
+        ("imputer", SimpleImputer(strategy="median")),
+        ("model",   XGBClassifier(**best_params))
+    ])
+    optim_pipe_carbon.fit(X_train, y_train)
+
+    emissions = tracker.stop()
+
+    print(f"Émissions CO₂ estimées : {emissions * 1000:.4f} g CO₂eq")
+    print(f"(Référence : 1 km en voiture ≈ 120 g CO₂eq)")
+    if emissions * 1000 < 1:
+        print("=> Empreinte négligeable pour cet entraînement ✅")
+    else:
+        print("=> Envisager early stopping pour réduire l'empreinte")
+--- CELL 23 OUTPUT ---
+[codecarbon WARNING @ 12:41:16] Multiple instances of codecarbon are allowed to run at the same time.
+
+--- CELL 23 OUTPUT ---
+Émissions CO₂ estimées : 0.0061 g CO₂eq
+(Référence : 1 km en voiture ≈ 120 g CO₂eq)
+=> Empreinte négligeable pour cet entraînement ✅
+

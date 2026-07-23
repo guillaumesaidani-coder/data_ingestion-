@@ -1,0 +1,177 @@
+CELL 0 markdown
+# TP8 — Optimisation & Fine-tuning : XGBoost + Optuna
+
+> **Objectif** : réduire l'overfitting du modèle TP7 (PR-AUC train = 1.0, val = 0.817)
+> en optimisant les hyperparamètres avec **Optuna**, en analysant l'explicabilité avec **SHAP**
+> et en ajustant le seuil de décision selon le coût métier.
+
+| | |
+|---|---|
+| **Entrée** | XGBoost baseline TP7 — PR-AUC val = 0.8174, Δ overfitting = 0.18 |
+| **Outils** | Optuna (TPE) · SHAP · MLflow · CodeCarbon |
+| **Sortie** | Modèle optimisé + seuil métier + rapport d'empreinte carbone |
+
+---
+### Rappel du diagnostic TP7
+- `incident_max_severity_prev_24h` = **63 % de l'importance** → sur-dépendance
+- 4 features concentrent 80 % du signal sur 68 totales
+- Le modèle mémorise le train → régularisation nécessaire
+
+CELL 1 markdown
+## 1. Imports et configuration
+
+CELL 2 code
+import warnings
+warnings.filterwarnings("ignore")
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
+
+from sqlalchemy import create_engine
+from sqlalchemy.engine import URL
+
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.metrics import (
+    average_precision_score, roc_auc_score, f1_score,
+    confusion_matrix, ConfusionMatrixDisplay,
+    precision_recall_curve, classification_report
+)
+from sklearn.model_selection import TimeSeriesSplit
+
+from xgboost import XGBClassifier
+import optuna
+optuna.logging.set_verbosity(optuna.logging.WARNING)
+
+import mlflow
+import mlflow.xgboost
+
+try:
+    from codecarbon import EmissionsTracker
+    CARBON_OK = True
+except ImportError:
+    CARBON_OK = False
+    print("CodeCarbon non installé (pip install codecarbon) — empreinte ignorée")
+
+try:
+    import shap
+    SHAP_OK = True
+except ImportError:
+    SHAP_OK = False
+    print("SHAP non installé (pip install shap) — explicabilité ignorée")
+
+RANDOM_STATE = 42
+np.random.seed(RANDOM_STATE)
+print("Imports OK")
+
+CELL 3 markdown
+## 2. Chargement des données et préparation des splits
+
+On repart du Gold dataset et du même split temporel que TP7.
+
+CELL 4 code
+url = URL.create(
+    drivername="postgresql+psycopg2",
+    username="indusense_user",
+    password="ThEP@ssW0rd",
+    host="localhost",
+    port=5432,
+    database="indusense_db",
+)
+engine = create_engine(url)
+
+df = pd.read_sql(
+    "SELECT * FROM gold_machine_hourly_feature ORDER BY machine_id, window_start",
+    engine
+)
+print(f"Dataset : {df.shape[0]:,} lignes x {df.shape[1]} colonnes")
+
+TARGET = "label_failure_next_24h"
+LEAKAGE_COLS = [
+    "machine_id", "ingestion_batch_id", "window_start", "window_end", "split_set",
+    "label_failure_next_6h", "label_failure_next_12h", "label_failure_next_48h", TARGET,
+]
+FEATURE_COLS = [c for c in df.columns if c not in LEAKAGE_COLS]
+
+train_df = df[df["split_set"] == "train"].copy()
+val_df   = df[df["split_set"] == "validation"].copy()
+test_df  = df[df["split_set"] == "test"].copy()
+
+X_train, y_train = train_df[FEATURE_COLS], train_df[TARGET]
+X_val,   y_val   = val_df[FEATURE_COLS],   val_df[TARGET]
+X_test,  y_test  = test_df[FEATURE_COLS],  test_df[TARGET]
+
+neg_count = (y_train == 0).sum()
+pos_count = (y_train == 1).sum()
+SPW = round(neg_count / pos_count, 2)
+
+print(f"Train : {len(X_train):,} | Val : {len(X_val):,} | Test : {len(X_test):,}")
+print(f"scale_pos_weight = {SPW}")
+
+CELL 5 markdown
+## 3. Baseline TP7 — point de départ
+
+On ré-entraîne le modèle TP7 pour avoir la référence dans ce notebook.
+
+CELL 6 code
+def eval_pipeline(pipeline, X_tr, y_tr, X_v, y_v, label=""):
+    """Évalue un pipeline entraîné et retourne un dict de métriques."""
+    pipeline.fit(X_tr, y_tr)
+    res = {}
+    for name, X, y in [("train", X_tr, y_tr), ("val", X_v, y_v)]:
+        yp = pipeline.predict_proba(X)[:, 1]
+        res[name] = {
+            "pr_auc":  round(average_precision_score(y, yp), 4),
+            "roc_auc": round(roc_auc_score(y, yp), 4),
+            "f1":      round(f1_score(y, pipeline.predict(X), zero_division=0), 4),
+        }
+    delta = round(res["train"]["pr_auc"] - res["val"]["pr_auc"], 4)
+    flag = " ⚠️ overfitting" if delta > 0.10 else ""
+    print(f"[{label}] PR-AUC train={res['train']['pr_auc']:.4f} | val={res['val']['pr_auc']:.4f} | Δ={delta:.4f}{flag}")
+    return res
+
+baseline_pipe = Pipeline([
+    ("imputer", SimpleImputer(strategy="median")),
+    ("model",   XGBClassifier(
+                    n_estimators=300, max_depth=6, learning_rate=0.1,
+                    subsample=0.8, colsample_bytree=0.8,
+                    scale_pos_weight=SPW, eval_metric="aucpr",
+                    random_state=RANDOM_STATE, verbosity=0))
+])
+baseline_metrics = eval_pipeline(baseline_pipe, X_train, y_train, X_val, y_val, "BASELINE TP7")
+
+CELL 7 markdown
+## 4. Optimisation des hyperparamètres avec Optuna
+
+### Principe de l'optimisation bayésienne (TPE)
+
+Contrairement à GridSearchCV (exploration exhaustive) ou RandomSearch (exploration aléatoire),
+Optuna utilise l'algorithme **TPE (Tree-structured Parzen Estimator)** :
+
+```
+Trial 1 → résultat → mise à jour du modèle probabiliste
+Trial 2 → résultat → mise à jour ...
+Trial N → exploration ciblée des zones prometteuses
+```
+
+**Avantages** :
+- Convergence plus rapide (50 trials ≈ GridSearch sur 500 combinaisons)
+- **Pruning** : les essais peu prometteurs sont arrêtés tôt
+
+### Espace de recherche
+
+On cible les hyperparamètres liés à l'overfitting identifié en TP7 :
+
+| Paramètre | Plage | Impact |
+|---|---|---|
+| `max_depth` | [2, 6] | Complexité des arbres ↓ |
+| `min_child_weight` | [1, 20] | Nombre min d'exemples par feuille ↑ |
+| `reg_alpha` (L1) | [0, 2] | Régularisation — élimine features inutiles |
+| `reg_lambda` (L2) | [1, 10] | Régularisation — lisse les poids |
+| `n_estimators` | [100, 500] | Nombre d'arbres |
+| `learning_rate` | [0.01, 0.3] | Pas d'apprentissage |
+| `subsample` | [0.6, 1.0] | Sous-échantillonnage lignes |
+| `colsample_bytree` | [0.5, 1.0] | Sous-échantillonnage features |
+

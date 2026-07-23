@@ -1,0 +1,389 @@
+--- CELL 0 markdown ---
+# TP8b — Correction fuite `feature_row_id`
+
+Lors de l'analyse SHAP de TP8, `feature_row_id` est apparu en **3ème position** (SHAP=1.031) alors qu'il n'est pas dans `LEAKAGE_COLS`.
+
+> `feature_row_id` est un identifiant séquentiel de ligne : il encode implicitement **l'ordre chronologique** des données.
+> En train/val/test ordonné dans le temps, le modèle apprend que les IDs récents → plus de pannes → **fuite de données temporelle**.
+
+Ce notebook mesure l'impact de cette correction sur toutes les métriques.
+
+| Modèle | feature_row_id | PR-AUC val (attendu) |
+|--------|---------------|----------------------|
+| B5 (TP7 baseline) | ✅ inclus | 0.8174 |
+| B7 (TP8 Optuna)   | ✅ inclus | 0.8617 |
+| **B5c (corrigé)** | ❌ exclu  | ? |
+| **B7c (corrigé)** | ❌ exclu  | ? |
+--- CELL 1 markdown ---
+## 1. Imports et configuration
+--- CELL 2 code ---
+import warnings
+warnings.filterwarnings("ignore")
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sqlalchemy import create_engine
+from sqlalchemy.engine import URL
+
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.metrics import (
+    average_precision_score, roc_auc_score, f1_score,
+    precision_recall_curve, confusion_matrix, ConfusionMatrixDisplay
+)
+
+from xgboost import XGBClassifier
+
+try:
+    import shap
+    SHAP_OK = True
+except ImportError:
+    SHAP_OK = False
+    print("SHAP non installé (pip install shap)")
+
+RANDOM_STATE = 42
+np.random.seed(RANDOM_STATE)
+print("Imports OK")
+--- CELL 3 markdown ---
+## 2. Chargement des données — `feature_row_id` exclu
+
+La seule différence avec TP8 : `feature_row_id` est ajouté à `LEAKAGE_COLS`.
+--- CELL 4 code ---
+url = URL.create(
+    drivername="postgresql+psycopg2",
+    username="indusense_user",
+    password="ThEP@ssW0rd",
+    host="localhost",
+    port=5432,
+    database="indusense_db",
+)
+engine = create_engine(url)
+
+df = pd.read_sql(
+    "SELECT * FROM gold_machine_hourly_feature ORDER BY machine_id, window_start",
+    engine
+)
+print(f"Dataset : {df.shape[0]:,} lignes x {df.shape[1]} colonnes")
+
+TARGET = "label_failure_next_24h"
+LEAKAGE_COLS = [
+    "machine_id", "ingestion_batch_id", "window_start", "window_end", "split_set",
+    "label_failure_next_6h", "label_failure_next_12h", "label_failure_next_48h",
+    TARGET,
+    "feature_row_id",  # ← correction : ID séquentiel = fuite temporelle
+]
+FEATURE_COLS = [c for c in df.columns if c not in LEAKAGE_COLS]
+
+train_df = df[df["split_set"] == "train"].copy()
+val_df   = df[df["split_set"] == "validation"].copy()
+test_df  = df[df["split_set"] == "test"].copy()
+
+X_train, y_train = train_df[FEATURE_COLS], train_df[TARGET]
+X_val,   y_val   = val_df[FEATURE_COLS],   val_df[TARGET]
+X_test,  y_test  = test_df[FEATURE_COLS],  test_df[TARGET]
+
+neg_count = (y_train == 0).sum()
+pos_count = (y_train == 1).sum()
+SPW = round(neg_count / pos_count, 2)
+
+pri
+--- CELL 5 markdown ---
+## 3. Fonction d'évaluation
+--- CELL 6 code ---
+def eval_pipeline(pipeline, X_tr, y_tr, X_v, y_v, label=""):
+    pipeline.fit(X_tr, y_tr)
+    res = {}
+    for name, X, y in [("train", X_tr, y_tr), ("val", X_v, y_v)]:
+        yp = pipeline.predict_proba(X)[:, 1]
+        res[name] = {
+            "pr_auc":  round(average_precision_score(y, yp), 4),
+            "roc_auc": round(roc_auc_score(y, yp), 4),
+            "f1":      round(f1_score(y, pipeline.predict(X), zero_division=0), 4),
+        }
+    delta = round(res["train"]["pr_auc"] - res["val"]["pr_auc"], 4)
+    flag = " ⚠️ overfitting" if delta > 0.10 else ""
+    print(f"[{label}] PR-AUC train={res['train']['pr_auc']:.4f} | val={res['val']['pr_auc']:.4f} | Δ={delta:.4f}{flag}")
+    return res
+--- CELL 7 markdown ---
+## 4. B5c — Baseline TP7 corrigé
+
+Même hyperparamètres que B5 (TP7), mais sans `feature_row_id`.
+--- CELL 8 code ---
+baseline_pipe = Pipeline([
+    ("imputer", SimpleImputer(strategy="median")),
+    ("model",   XGBClassifier(
+                    n_estimators=300, max_depth=6, learning_rate=0.1,
+                    subsample=0.8, colsample_bytree=0.8,
+                    scale_pos_weight=SPW, eval_metric="aucpr",
+                    random_state=RANDOM_STATE, verbosity=0))
+])
+baseline_metrics = eval_pipeline(baseline_pipe, X_train, y_train, X_val, y_val, "B5c (baseline corrigé)")
+--- CELL 9 markdown ---
+## 5. B7c — Modèle Optuna corrigé
+
+Meilleurs hyperparamètres trouvés par Optuna dans TP8 (60 trials), appliqués sans `feature_row_id`.
+--- CELL 10 code ---
+# Meilleurs paramètres issus de TP8 — Optuna 60 trials
+BEST_PARAMS = {
+    "n_estimators":      444,
+    "max_depth":         4,
+    "learning_rate":     0.060601749414854224,
+    "subsample":         0.9932019986450646,
+    "colsample_bytree":  0.8201549700237738,
+    "min_child_weight":  9,
+    "reg_alpha":         0.019528356561457128,
+    "reg_lambda":        7.876845619943834,
+    "scale_pos_weight":  SPW,
+    "eval_metric":       "aucpr",
+    "random_state":      RANDOM_STATE,
+    "verbosity":         0,
+}
+
+optim_pipe = Pipeline([
+    ("imputer", SimpleImputer(strategy="median")),
+    ("model",   XGBClassifier(**BEST_PARAMS))
+])
+optim_metrics = eval_pipeline(optim_pipe, X_train, y_train, X_val, y_val, "B7c (Optuna corrigé)")
+--- CELL 11 markdown ---
+## 6. Comparaison avant / après correction
+
+Mesure de l'impact de la suppression de `feature_row_id`.
+--- CELL 12 code ---
+# Métriques TP8 (avec fuite)
+AVANT = {
+    "B5": {"train": {"pr_auc": 0.9835}, "val": {"pr_auc": 0.8174, "roc_auc": 0.9923, "f1": 0.7351}},
+    "B7": {"train": {"pr_auc": 0.9981}, "val": {"pr_auc": 0.8617, "roc_auc": 0.9943, "f1": 0.7656}},
+}
+
+print("=" * 70)
+print(f"{'Modèle':<8} {'PR-AUC val':>12} {'Δ train/val':>12} {'ROC-AUC':>10} {'F1':>8}")
+print("-" * 70)
+
+results_apres = {
+    "B5c": baseline_metrics,
+    "B7c": optim_metrics,
+}
+labels_avant = {"B5c": "B5", "B7c": "B7"}
+
+for label, metrics in results_apres.items():
+    avant_label = labels_avant[label]
+    pr_val   = metrics["val"]["pr_auc"]
+    pr_tr    = metrics["train"]["pr_auc"]
+    delta    = round(pr_tr - pr_val, 4)
+    roc      = metrics["val"]["roc_auc"]
+    f1       = metrics["val"]["f1"]
+    pr_avant = AVANT[avant_label]["val"]["pr_auc"]
+    diff     = round(pr_val - pr_avant, 4)
+    arrow    = "↓" if diff < 0 else "↑"
+    flag     = " ⚠️" if delta > 0.10 else ""
+    print(f"{label:<8} {pr_val:>12.4f} {delta:>12.4f}{flag}   {roc:>8.4f}   {f1:>6.4f}")
+    print(f"         vs {avant_label}: {pr_avant:.4f} → {pr_val:.4f}  ({arrow}{abs(diff):.4f})")
+    print()
+
+print("=" * 70)
+print("\nInterprétation :")
+b7_avant = 0
+--- CELL 13 markdown ---
+## 6b. B8 — Optuna re-tuné sur le dataset corrigé
+
+Les hyperparamètres de B7 ont été optimisés **avec** `feature_row_id` présent.
+Ils ne sont donc pas optimaux pour le vrai signal. On relance Optuna 60 trials sur le dataset corrigé pour obtenir B8.
+
+Objectif : dépasser B5c (0.8349) avec des paramètres qui reflètent le signal réel.
+--- CELL 14 code ---
+import optuna
+optuna.logging.set_verbosity(optuna.logging.WARNING)
+from tqdm.auto import tqdm
+
+imputer_b8 = SimpleImputer(strategy="median").fit(X_train)
+X_train_imp = imputer_b8.transform(X_train)
+X_val_imp   = imputer_b8.transform(X_val)
+
+def objective(trial):
+    params = {
+        "n_estimators":      trial.suggest_int("n_estimators", 100, 600),
+        "max_depth":         trial.suggest_int("max_depth", 3, 8),
+        "learning_rate":     trial.suggest_float("learning_rate", 0.01, 0.3, log=True),
+        "subsample":         trial.suggest_float("subsample", 0.6, 1.0),
+        "colsample_bytree":  trial.suggest_float("colsample_bytree", 0.6, 1.0),
+        "min_child_weight":  trial.suggest_int("min_child_weight", 1, 20),
+        "reg_alpha":         trial.suggest_float("reg_alpha", 1e-4, 10.0, log=True),
+        "reg_lambda":        trial.suggest_float("reg_lambda", 1e-4, 10.0, log=True),
+        "scale_pos_weight":  SPW,
+        "eval_metric":       "aucpr",
+        "random_state":      RANDOM_STATE,
+        "verbosity":         0,
+    }
+    model = XGBClassifier(**params)
+    model.fit(X_train_imp, y_train)
+    return average_precision_score(y_val, model.predict_proba(X_val_i
+--- CELL 15 code ---
+best_b8 = study_b8.best_params.copy()
+best_b8.update({"scale_pos_weight": SPW, "eval_metric": "aucpr",
+                "random_state": RANDOM_STATE, "verbosity": 0})
+
+b8_pipe = Pipeline([
+    ("imputer", SimpleImputer(strategy="median")),
+    ("model",   XGBClassifier(**best_b8))
+])
+b8_metrics = eval_pipeline(b8_pipe, X_train, y_train, X_val, y_val, "B8 (Optuna corrigé)")
+
+print("\n=== Récapitulatif — progression après correction fuite ===")
+print(f"  {'Modèle':<10} {'PR-AUC val':>12} {'Δ overfitting':>14} {'Statut':>10}")
+print("  " + "-"*52)
+recap = [
+    ("B5",  0.8174, 0.1826, "avec fuite"),
+    ("B7",  0.8617, 0.1364, "avec fuite ⚠"),
+    ("B5c", baseline_metrics["val"]["pr_auc"],
+            baseline_metrics["train"]["pr_auc"] - baseline_metrics["val"]["pr_auc"], "corrigé"),
+    ("B7c", optim_metrics["val"]["pr_auc"],
+            optim_metrics["train"]["pr_auc"] - optim_metrics["val"]["pr_auc"],   "corrigé"),
+    ("B8",  b8_metrics["val"]["pr_auc"],
+            b8_metrics["train"]["pr_auc"] - b8_metrics["val"]["pr_auc"],         "✅ cible"),
+]
+for label, pr, delta, status in recap:
+    flag = " ⚠️" if delta > 0.15 else ""
+    print(f"  {label:<10} {pr:>12.4f} {delta:>14.4f}{fl
+--- CELL 16 markdown ---
+## 7. SHAP — Top features sans fuite
+--- CELL 17 code ---
+if not SHAP_OK:
+    print("pip install shap pour activer cette section")
+else:
+    imputer_s = optim_pipe.named_steps["imputer"]
+    model_s   = optim_pipe.named_steps["model"]
+
+    X_val_imp  = imputer_s.transform(X_val)
+    explainer  = shap.TreeExplainer(model_s)
+    shap_values = explainer.shap_values(X_val_imp)
+
+    # Normalise le format selon la version SHAP / XGBoost
+    if isinstance(shap_values, list):
+        shap_matrix = np.abs(shap_values[1])   # liste [class0, class1]
+    else:
+        arr = np.abs(shap_values)
+        if arr.ndim == 3:
+            shap_matrix = arr[:, :, 1]         # (n, features, classes)
+        else:
+            shap_matrix = arr                  # (n, features) — cas standard
+
+    mean_abs = shap_matrix.mean(axis=0)
+
+    n_shap = len(mean_abs)
+    if n_shap != len(FEATURE_COLS):
+        print(f"⚠️  Mismatch: SHAP={n_shap} features, FEATURE_COLS={len(FEATURE_COLS)} — {n_shap} premières utilisées")
+        feat_names = FEATURE_COLS[:n_shap]
+    else:
+        feat_names = FEATURE_COLS
+
+    mean_shap = pd.Series(mean_abs, index=feat_names).sort_values(ascending=False)
+
+    print("Top 10 features — SHAP moyen |val| (modèle corrigé B7c) :")
+    print(m
+--- CELL 18 markdown ---
+## 8. Évaluation sur le jeu de test
+
+Métriques finales sur `test_df` (données jamais vues pendant l'entraînement ni le tuning).
+--- CELL 19 code ---
+y_pred_proba = optim_pipe.predict_proba(X_test)[:, 1]
+y_pred       = optim_pipe.predict(X_test)
+
+pr_test  = average_precision_score(y_test, y_pred_proba)
+roc_test = roc_auc_score(y_test, y_pred_proba)
+f1_test  = f1_score(y_test, y_pred, zero_division=0)
+
+print("=== Métriques Test — B7c (corrigé) ===")
+print(f"  PR-AUC  : {pr_test:.4f}")
+print(f"  ROC-AUC : {roc_test:.4f}")
+print(f"  F1      : {f1_test:.4f}")
+
+# Matrice de confusion
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+# Courbe PR
+prec, rec, _ = precision_recall_curve(y_test, y_pred_proba)
+axes[0].plot(rec, prec, color="#2ecc71")
+axes[0].set_xlabel("Recall"); axes[0].set_ylabel("Precision")
+axes[0].set_title(f"Courbe PR — Test (AUC={pr_test:.4f})")
+axes[0].axhline(y=y_test.mean(), color="gray", linestyle="--", label="baseline")
+axes[0].legend()
+
+# Matrice confusion
+cm = confusion_matrix(y_test, y_pred)
+disp = ConfusionMatrixDisplay(cm)
+disp.plot(ax=axes[1], colorbar=False)
+axes[1].set_title("Matrice de confusion — Test")
+
+plt.tight_layout()
+plt.savefig("b7c_test_results.png", dpi=150)
+plt.show()
+--- CELL 20 code ---
+y_test_proba_b8 = b8_pipe.predict_proba(X_test)[:, 1]
+y_test_pred_b8  = b8_pipe.predict(X_test)
+
+print("=== Métriques Test — B8 (Optuna re-tuné corrigé) ===")
+print(f"  PR-AUC  : {average_precision_score(y_test, y_test_proba_b8):.4f}")
+print(f"  ROC-AUC : {roc_auc_score(y_test, y_test_proba_b8):.4f}")
+print(f"  F1      : {f1_score(y_test, y_test_pred_b8, zero_division=0):.4f}")
+
+--- CELL 21 markdown ---
+## 9. Out-of-entity test — MACH-13
+
+63.7% des vrais positifs sont concentrés sur 3 machines, dont MACH-13 seule = 36%.
+
+**Protocole** : exclure MACH-13 du train → réentraîner B8 → évaluer sur MACH-13 uniquement.
+- Chute forte de PR-AUC → mémorisation : le modèle reconnaissait MACH-13, pas un signal physique
+- Chute faible → signal généralisable ✅
+--- CELL 22 code ---
+MACHINE_CIBLE = "MACH-13"
+
+# Split train sans MACH-13 (machine_id est dans train_df, pas dans X_train)
+mask_train_sans = train_df["machine_id"] != MACHINE_CIBLE
+X_train_sans = train_df.loc[mask_train_sans, FEATURE_COLS]
+y_train_sans = train_df.loc[mask_train_sans, TARGET]
+
+print(f"Train complet   : {len(X_train):,} lignes")
+print(f"Train sans {MACHINE_CIBLE}: {len(X_train_sans):,} lignes ({len(X_train) - len(X_train_sans)} lignes retirées)")
+
+# Réentraîner B8 sans MACH-13
+b8_ooe_pipe = Pipeline([
+    ("imputer", SimpleImputer(strategy="median")),
+    ("model",   XGBClassifier(**best_b8))
+])
+b8_ooe_pipe.fit(X_train_sans, y_train_sans)
+print(f"\nModèle B8-OOE entraîné sans {MACHINE_CIBLE}")
+
+# Évaluation sur MACH-13 uniquement (dans val + test)
+mach13_val  = val_df[val_df["machine_id"] == MACHINE_CIBLE]
+mach13_test = test_df[test_df["machine_id"] == MACHINE_CIBLE]
+
+results = {}
+for name, df_m in [("val", mach13_val), ("test", mach13_test)]:
+    if len(df_m) == 0:
+        print(f"\n⚠️  {MACHINE_CIBLE} absent du {name} set")
+        continue
+    X_m, y_m = df_m[FEATURE_COLS], df_m[TARGET]
+    pos = y_m.sum()
+
+    pr_full = average_precision_score(y_m, b8_pipe.predict_proba(X_m)[:, 1])
+
+OUT: Train complet   : 93,079 lignes
+Train sans MACH-13: 86,879 lignes (6200 lignes retirées)
+
+Modèle B8-OOE entraîné sans MACH-13
+
+=== MACH-13 · val set (1331 lignes, 239 TP) ===
+  B8 complet (connaît MACH-13) : PR-AUC = 0.8025
+  B8-OOE   (jamais vu MACH-13) : PR-AUC = 0.6825
+  Δ = -0.1200  →  ⚠️ zone orange
+
+=== MACH-13 · test set (1332 lignes, 24 TP) ===
+  B8 complet (connaît MACH-13) : PR-AUC = 0.9911
+  B8-OOE   (jamais vu MACH-13) : PR-AUC = 1.0000
+  Δ = +0.0089  →  ✅ signal généralisable
+
+=== Interprétation ===
+  ✅ Chute faible (Δ=+0.0089) — B8 généralise sur MACH-13 sans l'avoir vue
+

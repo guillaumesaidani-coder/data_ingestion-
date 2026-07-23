@@ -1,0 +1,69 @@
+--- CELL 2 OUTPUT ---
+Imports OK
+--- CELL 4 OUTPUT ---
+Features : 69 | Machines : 15
+Train+val : 112,996 | Test : 19,944
+scale_pos_weight global : 27.12
+--- CELL 6 OUTPUT ---
+Lancement Optuna — 30 trials × 5 folds = 150 fits
+Patience...
+--- CELL 6 OUTPUT (data) ---
+  0%|          | 0/30 [00:00<?, ?it/s]--- CELL 6 OUTPUT ---
+
+Meilleur PR-AUC CV(5) : 0.7335
+Meilleurs params :
+  n_estimators           : 287
+  max_depth              : 9
+  learning_rate          : 0.02887139049912187
+  subsample              : 0.8252019146348859
+  colsample_bytree       : 0.5736306798333981
+  min_child_weight       : 11
+  reg_alpha              : 0.01918528344873483
+  reg_lambda             : 0.6228756133555158
+  scale_pos_weight       : 27.12
+  random_state           : 42
+  verbosity              : 0
+--- CELL 8 OUTPUT ---
+HP                        B8 (split temporel)   B11 (GroupKFold)
+------------------------------------------------------------------
+  n_estimators                            382                287 ←
+  max_depth                                 8                  9 ←
+  learning_rate                        0.1937 0.02887139049912187 ←
+  subsample                             0.987 0.8252019146348859 ←
+  colsample_bytree                      0.804 0.5736306798333981 ←
+  min_child_weight                          6                 11 ←
+  reg_alpha                           0.00144 0.01918528344873483 ←
+  reg_lambda                         0.000142 0.6228756133555158 ←
+--- CELL 10 OUTPUT ---
+Fold  1 | MACH-15    | n_pos=  71 | PR-AUC=1.0000
+Fold  2 | MACH-01    | n_pos= 491 | PR-AUC=0.9357
+Fold  3 | MACH-12    | n_pos= 213 | PR-AUC=0.7538
+Fold  4 | MACH-07    | n_pos=  71 | PR-AUC=0.3872
+Fold  5 | MACH-05    | n_pos= 189 | PR-AUC=0.6102
+Fold  6 | MACH-11    | n_pos=  48 | PR-AUC=1.0000
+Fold  7 | MACH-10    | n_pos= 292 | PR-AUC=0.7882
+Fold  8 | MACH-14    | n_pos= 314 | PR-AUC=0.7975
+Fold  9 | MACH-13    | n_pos= 809 | PR-AUC=0.7363
+Fold 10 | MACH-04    | n_pos= 190 | PR-AUC=0.8311
+Fold 11 | MACH-02    | n_pos=  72 | PR-AUC=0.4485
+Fold 12 | MACH-06    | n_pos= 338 | PR-AUC=0.9473
+Fold 13 | MACH-08    | n_pos=  48 | PR-AUC=1.0000
+Fold 14 | MACH-03    | n_pos= 632 | PR-AUC=0.7159
+Fold 15 | MACH-09    | n_pos= 240 | PR-AUC=0.8065
+
+PR-AUC CV moyen : 0.7839 ± 0.1891
+Δ vs B9-GKF     : +0.0047
+--- CELL 12 OUTPUT ---
+=== Modèle final B11-GKF ===
+  PR-AUC train    : 0.9997
+  PR-AUC CV moyen : 0.7839 ± 0.1891
+  PR-AUC test     : 0.8799
+  ROC-AUC test    : 0.9949
+  F1 test         : 0.7586
+  Overfitting Δ   : 0.2158
+
+=== Comparaison globale ===
+  Modèle         Optuna obj.           PR-AUC CV   PR-AUC test       F1
+  ----------------------------------------------------------------------
+  B8 (TP8b)      Split temporel           0.7792        0.8595   0.7908
+  B11-GKF        GroupKFold(5)            0.7839        0.8799   0.7586

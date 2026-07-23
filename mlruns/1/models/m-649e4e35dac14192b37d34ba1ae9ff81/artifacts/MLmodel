@@ -1,0 +1,22 @@
+artifact_path: file:c:/Users/Aelion/py-init/mlruns/1/models/m-649e4e35dac14192b37d34ba1ae9ff81/artifacts
+flavors:
+  python_function:
+    data: model.ubj
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.xgboost
+    python_version: 3.13.13
+  xgboost:
+    code: null
+    data: model.ubj
+    model_class: xgboost.sklearn.XGBClassifier
+    model_format: ubj
+    xgb_version: 3.3.0
+mlflow_version: 3.14.0
+model_id: m-649e4e35dac14192b37d34ba1ae9ff81
+model_size_bytes: 1179094
+model_uuid: m-649e4e35dac14192b37d34ba1ae9ff81
+prompts: null
+run_id: fa336bc0880b48bc849a4a6b1e6f412d
+utc_time_created: '2026-07-23 12:03:06.789680'

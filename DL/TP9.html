@@ -1,0 +1,312 @@
+<title>TP9 — Tracker B11-GKF dans MLflow | B8 suite</title>
+<style>
+  /* ── Tokens — thème violet/traçabilité ── */
+  :root {
+    --bg:        #f7f5fb;
+    --surface:   #ffffff;
+    --surface2:  #ede8f7;
+    --border:    #ddd3ee;
+    --accent:    #6d28d9;
+    --accent2:   #8b5cf6;
+    --ok:        #059669;
+    --warn:      #d97706;
+    --danger:    #dc2626;
+    --info:      #0284c7;
+    --text:      #211533;
+    --muted:     #5f5474;
+    --code-bg:   #1a1229;
+    --code-text: #d8c8f5;
+    --tag-bg:    #ede9fe;
+    --tag-text:  #5b21b6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:        #120e1c;
+      --surface:   #191426;
+      --surface2:  #211a33;
+      --border:    #332a4a;
+      --accent:    #a78bfa;
+      --accent2:   #8b5cf6;
+      --ok:        #34d399;
+      --warn:      #fbbf24;
+      --danger:    #f87171;
+      --info:      #38bdf8;
+      --text:      #e6def7;
+      --muted:     #9a8db8;
+      --code-bg:   #0e0a18;
+      --code-text: #d8c8f5;
+      --tag-bg:    #2d2060;
+      --tag-text:  #c4b5fd;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:#f7f5fb; --surface:#ffffff; --surface2:#ede8f7; --border:#ddd3ee;
+    --accent:#6d28d9; --accent2:#8b5cf6; --ok:#059669; --warn:#d97706;
+    --danger:#dc2626; --info:#0284c7; --text:#211533; --muted:#5f5474;
+    --code-bg:#1a1229; --code-text:#d8c8f5; --tag-bg:#ede9fe; --tag-text:#5b21b6;
+  }
+  :root[data-theme="dark"] {
+    --bg:#120e1c; --surface:#191426; --surface2:#211a33; --border:#332a4a;
+    --accent:#a78bfa; --accent2:#8b5cf6; --ok:#34d399; --warn:#fbbf24;
+    --danger:#f87171; --info:#38bdf8; --text:#e6def7; --muted:#9a8db8;
+    --code-bg:#0e0a18; --code-text:#d8c8f5; --tag-bg:#2d2060; --tag-text:#c4b5fd;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.7;
+    padding: 0 1rem 4rem;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .page { max-width: 900px; margin: 0 auto; }
+
+  .page-header { border-bottom: 2px solid var(--accent); padding: 2.5rem 0 1.5rem; margin-bottom: 2rem; }
+  .eyebrow { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: .5rem; }
+  .page-header h1 { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.2; text-wrap: balance; color: var(--text); }
+  .page-header p { margin-top: .75rem; color: var(--muted); font-size: .95rem; }
+  .prereq { display: inline-flex; align-items: center; gap: .4rem; background: var(--tag-bg); color: var(--tag-text); font-size: .78rem; font-weight: 600; letter-spacing: .04em; padding: .25rem .75rem; border-radius: 999px; margin-top: .75rem; }
+
+  .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .75rem; margin-bottom: 1.5rem; }
+  .overview-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: .9rem 1rem; }
+  .overview-card .label { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: .3rem; }
+  .overview-card .value { font-size: .95rem; font-weight: 600; color: var(--text); }
+  .overview-card .sub { font-size: .8rem; color: var(--muted); margin-top: .15rem; }
+
+  .section { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+  .section-title { font-family: Georgia, serif; font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; display: flex; align-items: baseline; gap: .6rem; }
+  .section-num { font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+
+  .callout { border-radius: 6px; padding: .9rem 1.1rem; margin: 1rem 0; font-size: .9rem; border-left: 3px solid; }
+  .callout.info  { background: #e0f2fe; border-color: var(--info);   color: #0c4a6e; }
+  .callout.warn  { background: #fef9c3; border-color: var(--warn);   color: #78350f; }
+  .callout.ok    { background: #d1fae5; border-color: var(--ok);     color: #064e3b; }
+  .callout.theory{ background: var(--tag-bg); border-color: var(--accent); color: var(--tag-text); }
+  @media (prefers-color-scheme: dark) {
+    .callout.info  { background: #0c2a3d; color: #7dd3fc; }
+    .callout.warn  { background: #2d1e00; color: #fde68a; }
+    .callout.ok    { background: #052e16; color: #6ee7b7; }
+    .callout.theory{ background: var(--tag-bg); color: var(--tag-text); }
+  }
+  :root[data-theme="dark"] .callout.info  { background:#0c2a3d; color:#7dd3fc; }
+  :root[data-theme="dark"] .callout.warn  { background:#2d1e00; color:#fde68a; }
+  :root[data-theme="dark"] .callout.ok    { background:#052e16; color:#6ee7b7; }
+  :root[data-theme="light"] .callout.info { background:#e0f2fe; color:#0c4a6e; }
+  :root[data-theme="light"] .callout.warn { background:#fef9c3; color:#78350f; }
+  :root[data-theme="light"] .callout.ok   { background:#d1fae5; color:#064e3b; }
+
+  pre { background: var(--code-bg); border-radius: 6px; padding: 1.1rem 1.25rem; overflow-x: auto; margin: 1rem 0; font-size: .82rem; line-height: 1.6; }
+  code { font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; color: var(--code-text); }
+  p code, li code, td code { background: var(--surface2); color: var(--accent); padding: .1em .35em; border-radius: 3px; font-size: .85em; }
+
+  .tbl-wrap { overflow-x: auto; margin: 1rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; font-variant-numeric: tabular-nums; }
+  th { background: var(--surface2); font-weight: 600; text-align: left; padding: .55rem .9rem; border-bottom: 2px solid var(--border); font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  td { padding: .5rem .9rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  tr.best td { background: var(--tag-bg); }
+  tr.leaky td { background: #fee2e2; }
+  :root[data-theme="dark"] tr.leaky td, @media (prefers-color-scheme: dark) { tr.leaky td { background: #2d0a0a; } }
+
+  .badge { display: inline-block; padding: .15em .55em; border-radius: 4px; font-size: .78rem; font-weight: 700; letter-spacing: .03em; }
+  .badge-ok      { background: #d1fae5; color: #065f46; }
+  .badge-warn    { background: #fef3c7; color: #92400e; }
+  .badge-danger  { background: #fee2e2; color: #991b1b; }
+  .badge-info    { background: #e0f2fe; color: #0c4a6e; }
+  @media (prefers-color-scheme: dark) {
+    .badge-ok    { background:#052e16; color:#6ee7b7; }
+    .badge-warn  { background:#2d1e00; color:#fde68a; }
+    .badge-danger{ background:#2d0a0a; color:#fca5a5; }
+    .badge-info  { background:#0c2a3d; color:#7dd3fc; }
+  }
+
+  .flow { display: flex; flex-direction: column; gap: .5rem; margin: 1rem 0; }
+  .flow-step { display: flex; gap: .9rem; align-items: flex-start; }
+  .flow-num { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .78rem; font-weight: 700; }
+  .flow-body strong { font-size: .87rem; }
+  .flow-body p { font-size: .82rem; margin: .1rem 0 0; color: var(--muted); }
+
+  .cross-repo { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin: 1rem 0; font-size: .85rem; }
+  .cross-chip { font-family: 'Cascadia Code', monospace; font-weight: 700; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: .2rem .65rem; color: var(--accent); }
+  .cross-arrow { color: var(--muted); }
+
+  ul, ol { padding-left: 1.4rem; }
+  li { margin-bottom: .3rem; }
+  p { margin-bottom: .8rem; }
+  p:last-child { margin-bottom: 0; }
+  h3 { font-family: Georgia, serif; font-size: 1.05rem; font-weight: 700; margin: 1.25rem 0 .5rem; color: var(--text); }
+  h4 { font-size: .9rem; font-weight: 600; margin: .9rem 0 .3rem; color: var(--text); }
+
+  .summary { background: #1e1433; color: #fff; border-radius: 8px; padding: 1.6rem 2rem; margin-top: 1rem; }
+  .summary-title { font-size: .65rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent2); margin-bottom: 1rem; }
+  .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .6rem; }
+  .sum-item { background: rgba(255,255,255,.08); border-radius: 5px; padding: .65rem .85rem; font-size: .83rem; }
+  .sum-item strong { display: block; color: var(--accent2); font-size: .78rem; margin-bottom: .2rem; }
+
+  @media (max-width: 640px) {
+    .section { padding: 1.25rem 1rem; }
+    .page-header { padding: 1.5rem 0 1rem; }
+    .summary-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="page">
+
+  <header class="page-header">
+    <p class="eyebrow">Suite du module B8 — combler un trou identifié en documentant</p>
+    <h1>TP9 — Tracker B11-GKF dans MLflow</h1>
+    <p>La model card ML (<code>ML/model_card.ipynb</code>) a révélé un trou en le
+       documentant honnêtement : le modèle retenu n'avait aucun artefact persisté.
+       Ce TP le comble.</p>
+    <span class="prereq">⚙ S'exécute contre <code>ML/.venv</code> + PostgreSQL, bien que rangé dans <code>DL/</code></span>
+  </header>
+
+  <div class="cross-repo">
+    <span class="cross-chip">DL/TP9.ipynb</span>
+    <span class="cross-arrow">— écrit dans →</span>
+    <span class="cross-chip">ML/mlflow_tp7.db</span>
+    <span class="cross-arrow">— lu par →</span>
+    <span class="cross-chip">ML/model_card.ipynb</span>
+  </div>
+
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="label">Constat de départ</div>
+      <div class="value">Aucun artefact pour B11-GKF</div>
+      <div class="sub">Signalé par la model card (TP8)</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Run enregistré</div>
+      <div class="value">XGBoost_GroupKFold_B11</div>
+      <div class="sub">Même store, même expérience que B7</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Vérification</div>
+      <div class="value">PR-AUC identique au rechargement</div>
+      <div class="sub">0.8799 avant/après persistance</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Empreinte</div>
+      <div class="value">0.0023 gCO2eq</div>
+      <div class="sub">4.5s, CodeCarbon, mix France</div>
+    </div>
+  </div>
+
+  <!-- §1 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§1</span> Reconstruire B11-GKF à l'identique</div>
+
+    <p>Mêmes données (requête PostgreSQL <code>gold_machine_hourly_feature</code>),
+    mêmes hyperparamètres figés — ceux trouvés par l'étude Optuna rejouée dans
+    <code>TP11.ipynb</code> et déjà vérifiés dans <code>ML/model_card.ipynb</code>.
+    Aucune redécouverte de hyperparamètres ici, juste une reproduction fidèle.</p>
+
+    <pre><code>BEST_PARAMS = {
+    "n_estimators": 287, "max_depth": 9,
+    "learning_rate": 0.02887, "subsample": 0.8252,
+    "colsample_bytree": 0.5736, "min_child_weight": 11,
+    "reg_alpha": 0.01919, "reg_lambda": 0.6229,
+    "scale_pos_weight": 27.12, "random_state": 42,
+}</code></pre>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Métrique</th><th>Valeur recalculée</th><th>vs model_card.ipynb</th></tr></thead>
+        <tbody>
+          <tr class="best"><td>PR-AUC test</td><td><strong>0.8799</strong></td><td><span class="badge badge-ok">✓ identique</span></td></tr>
+          <tr><td>ROC-AUC test</td><td>0.9949</td><td><span class="badge badge-ok">✓ identique</span></td></tr>
+          <tr><td>F1 test</td><td>0.7586</td><td><span class="badge badge-ok">✓ identique</span></td></tr>
+          <tr><td>Précision / Rappel</td><td>66.8% / 87.8%</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- §2 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§2</span> Logger dans MLflow — même store que B7</div>
+
+    <p>B7 (le modèle antérieur, révélé fuyant) est déjà tracké dans
+    <code>ML/mlflow_tp7.db</code>, expérience <code>TP7_maintenance_predictive</code>.
+    Plutôt que créer un nouveau store isolé, B11-GKF rejoint la <strong>même</strong>
+    expérience — comparaison directe possible, historique complet en un seul endroit.</p>
+
+    <div class="flow">
+      <div class="flow-step"><div class="flow-num">1</div><div class="flow-body"><strong>Tags explicites</strong><p><code>lineage=B11-GKF</code>, <code>supersedes=B7 (fuite corrigée)</code>, <code>leakage_status</code> — un lecteur du tracking store comprend sans relire l'historique des notebooks</p></div></div>
+      <div class="flow-step"><div class="flow-num">2</div><div class="flow-body"><strong>Params + métriques</strong><p>Hyperparamètres complets, PR-AUC/ROC-AUC/F1/precision/recall/TP/TN/FP/FN, émissions CodeCarbon</p></div></div>
+      <div class="flow-step"><div class="flow-num">3</div><div class="flow-body"><strong><code>mlflow.xgboost.log_model</code></strong><p>Premier artefact persisté de l'histoire de ce modèle</p></div></div>
+    </div>
+
+    <pre><code>mlflow.set_tracking_uri(f"sqlite:///{(ML_ROOT / 'mlflow_tp7.db').as_posix()}")
+mlflow.set_experiment("TP7_maintenance_predictive")
+
+with mlflow.start_run(run_name="XGBoost_GroupKFold_B11") as run:
+    mlflow.set_tags({"lineage": "B11-GKF",
+                      "supersedes": "XGBoost_Optuna_B7 (fuite corrigée)",
+                      "leakage_status": "corrigée — feature_row_id exclu"})
+    mlflow.log_params(BEST_PARAMS)
+    mlflow.log_metrics(metrics)
+    mlflow.xgboost.log_model(pipe_final.named_steps["model"], name="xgboost_b11_gkf")
+    run_id = run.info.run_id</code></pre>
+  </section>
+
+  <!-- §3 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§3</span> Vérifier : recharger depuis MLflow</div>
+
+    <p>Un artefact qu'on ne recharge jamais n'est pas vérifié. On recharge le modèle
+    <strong>depuis le tracking store</strong> (pas depuis l'objet Python en mémoire) et
+    on reproduit le score de test.</p>
+
+    <pre><code>loaded_model = mlflow.xgboost.load_model(f"runs:/{run_id}/xgboost_b11_gkf")
+y_prob = loaded_model.predict_proba(X_test_imputed)[:, 1]
+pr_auc_reloaded = average_precision_score(y_test, y_prob)
+# → 0.8799 — identique au run initial</code></pre>
+
+    <div class="callout ok">
+      <strong>PR-AUC identique avant/après rechargement (0.8799).</strong> L'artefact
+      MLflow reproduit exactement le modèle en mémoire — la persistance fonctionne,
+      ce n'est pas juste un log de métriques sans substance.
+    </div>
+  </section>
+
+  <!-- §4 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§4</span> B7 (fuyant) vs B11-GKF (corrigé), même tracking store</div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Run</th><th>PR-AUC test</th><th>ROC-AUC test</th><th>F1 test</th><th>Statut</th></tr></thead>
+        <tbody>
+          <tr class="leaky"><td>XGBoost_Optuna_B7</td><td>0.8437</td><td>0.9938</td><td>0.7730</td><td><span class="badge badge-danger">fuite (feature_row_id)</span></td></tr>
+          <tr class="best"><td>XGBoost_GroupKFold_B11</td><td>0.8799</td><td>0.9949</td><td>0.7586</td><td><span class="badge badge-ok">retenu, corrigé</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout theory">
+      <strong>Pourquoi garder les deux dans le même store ?</strong> Un tracking store
+      qui ne contiendrait que les « bons » runs effacerait la trace de l'erreur corrigée.
+      Garder B7 visible, explicitement tagué comme fuyant, documente la <em>démarche</em>
+      de correction — pas seulement son résultat.
+    </div>
+  </section>
+
+  <div class="summary">
+    <div class="summary-title">Récapitulatif — TP9</div>
+    <div class="summary-grid">
+      <div class="sum-item"><strong>§1-2 — Tracking</strong>B11-GKF loggé dans le même store MLflow que B7, tags de lignée explicites</div>
+      <div class="sum-item"><strong>§3 — Vérification</strong>Rechargement depuis MLflow → PR-AUC identique (0.8799)</div>
+      <div class="sum-item"><strong>§4 — Comparaison</strong>B7 (fuyant, 0.844) vs B11-GKF (corrigé, 0.880) côte à côte</div>
+      <div class="sum-item"><strong>Suite</strong><code>ML/model_card.ipynb</code> mis à jour pour référencer cet artefact</div>
+    </div>
+  </div>
+
+</div>

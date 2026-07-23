@@ -1,0 +1,354 @@
+<title>TP8 — Model Cards : DL & ML | B8</title>
+<style>
+  /* ── Tokens — thème ambre/or, documentation ── */
+  :root {
+    --bg:        #faf6ee;
+    --surface:   #ffffff;
+    --surface2:  #f5ecd9;
+    --border:    #e8dcc0;
+    --accent:    #b45309;
+    --accent2:   #d97706;
+    --ok:        #059669;
+    --warn:      #d97706;
+    --danger:    #dc2626;
+    --info:      #0284c7;
+    --text:      #2b1d0e;
+    --muted:     #6b5a41;
+    --code-bg:   #241a0d;
+    --code-text: #f0d9a8;
+    --tag-bg:    #fef3c7;
+    --tag-text:  #92400e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:        #16110a;
+      --surface:   #1e1710;
+      --surface2:  #271d12;
+      --border:    #3a2c18;
+      --accent:    #f0b155;
+      --accent2:   #d97706;
+      --ok:        #34d399;
+      --warn:      #fbbf24;
+      --danger:    #f87171;
+      --info:      #38bdf8;
+      --text:      #f3e6cf;
+      --muted:     #b39a72;
+      --code-bg:   #100c06;
+      --code-text: #f0d9a8;
+      --tag-bg:    #3a2c10;
+      --tag-text:  #fbbf24;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:#faf6ee; --surface:#ffffff; --surface2:#f5ecd9; --border:#e8dcc0;
+    --accent:#b45309; --accent2:#d97706; --ok:#059669; --warn:#d97706;
+    --danger:#dc2626; --info:#0284c7; --text:#2b1d0e; --muted:#6b5a41;
+    --code-bg:#241a0d; --code-text:#f0d9a8; --tag-bg:#fef3c7; --tag-text:#92400e;
+  }
+  :root[data-theme="dark"] {
+    --bg:#16110a; --surface:#1e1710; --surface2:#271d12; --border:#3a2c18;
+    --accent:#f0b155; --accent2:#d97706; --ok:#34d399; --warn:#fbbf24;
+    --danger:#f87171; --info:#38bdf8; --text:#f3e6cf; --muted:#b39a72;
+    --code-bg:#100c06; --code-text:#f0d9a8; --tag-bg:#3a2c10; --tag-text:#fbbf24;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.7;
+    padding: 0 1rem 4rem;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .page { max-width: 920px; margin: 0 auto; }
+
+  .page-header { border-bottom: 2px solid var(--accent); padding: 2.5rem 0 1.5rem; margin-bottom: 2rem; }
+  .eyebrow { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: .5rem; }
+  .page-header h1 { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.2; text-wrap: balance; color: var(--text); }
+  .page-header p { margin-top: .75rem; color: var(--muted); font-size: .95rem; }
+  .prereq { display: inline-flex; align-items: center; gap: .4rem; background: var(--tag-bg); color: var(--tag-text); font-size: .78rem; font-weight: 600; letter-spacing: .04em; padding: .25rem .75rem; border-radius: 999px; margin-top: .75rem; }
+
+  .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: .75rem; margin-bottom: 1.5rem; }
+  .overview-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: .9rem 1rem; }
+  .overview-card .label { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: .3rem; }
+  .overview-card .value { font-size: .95rem; font-weight: 600; color: var(--text); }
+  .overview-card .sub { font-size: .8rem; color: var(--muted); margin-top: .15rem; }
+
+  .section { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+  .section-title { font-family: Georgia, serif; font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; display: flex; align-items: baseline; gap: .6rem; }
+  .section-num { font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+
+  .model-header { display: flex; align-items: center; gap: .6rem; margin-bottom: .5rem; flex-wrap: wrap; }
+  .model-chip { font-family: 'Cascadia Code', monospace; font-size: .82rem; font-weight: 700; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: .15rem .6rem; color: var(--accent); }
+
+  .callout { border-radius: 6px; padding: .9rem 1.1rem; margin: 1rem 0; font-size: .9rem; border-left: 3px solid; }
+  .callout.info  { background: #e0f2fe; border-color: var(--info);   color: #0c4a6e; }
+  .callout.warn  { background: #fef9c3; border-color: var(--warn);   color: #78350f; }
+  .callout.ok    { background: #d1fae5; border-color: var(--ok);     color: #064e3b; }
+  .callout.theory{ background: var(--tag-bg); border-color: var(--accent); color: var(--tag-text); }
+  @media (prefers-color-scheme: dark) {
+    .callout.info  { background: #0c2a3d; color: #7dd3fc; }
+    .callout.warn  { background: #2d1e00; color: #fde68a; }
+    .callout.ok    { background: #052e16; color: #6ee7b7; }
+    .callout.theory{ background: var(--tag-bg); color: var(--tag-text); }
+  }
+  :root[data-theme="dark"] .callout.info  { background:#0c2a3d; color:#7dd3fc; }
+  :root[data-theme="dark"] .callout.warn  { background:#2d1e00; color:#fde68a; }
+  :root[data-theme="dark"] .callout.ok    { background:#052e16; color:#6ee7b7; }
+  :root[data-theme="light"] .callout.info { background:#e0f2fe; color:#0c4a6e; }
+  :root[data-theme="light"] .callout.warn { background:#fef9c3; color:#78350f; }
+  :root[data-theme="light"] .callout.ok   { background:#d1fae5; color:#064e3b; }
+
+  pre { background: var(--code-bg); border-radius: 6px; padding: 1.1rem 1.25rem; overflow-x: auto; margin: 1rem 0; font-size: .82rem; line-height: 1.6; }
+  code { font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; color: var(--code-text); }
+  p code, li code, td code { background: var(--surface2); color: var(--accent); padding: .1em .35em; border-radius: 3px; font-size: .85em; }
+
+  .tbl-wrap { overflow-x: auto; margin: 1rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; font-variant-numeric: tabular-nums; }
+  th { background: var(--surface2); font-weight: 600; text-align: left; padding: .55rem .9rem; border-bottom: 2px solid var(--border); font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  td { padding: .5rem .9rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  tr.diff td { background: var(--tag-bg); }
+
+  .badge { display: inline-block; padding: .15em .55em; border-radius: 4px; font-size: .78rem; font-weight: 700; letter-spacing: .03em; }
+  .badge-ok      { background: #d1fae5; color: #065f46; }
+  .badge-warn    { background: #fef3c7; color: #92400e; }
+  .badge-danger  { background: #fee2e2; color: #991b1b; }
+  .badge-info    { background: #e0f2fe; color: #0c4a6e; }
+  @media (prefers-color-scheme: dark) {
+    .badge-ok    { background:#052e16; color:#6ee7b7; }
+    .badge-warn  { background:#2d1e00; color:#fde68a; }
+    .badge-danger{ background:#2d0a0a; color:#fca5a5; }
+    .badge-info  { background:#0c2a3d; color:#7dd3fc; }
+  }
+
+  .uses-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin: 1rem 0; }
+  @media (max-width: 700px) { .uses-row { grid-template-columns: 1fr; } }
+  .use-card { border: 1px solid var(--border); border-top: 3px solid var(--accent2); border-radius: 6px; padding: .9rem 1rem; background: var(--surface2); }
+  .use-card.oos { border-top-color: var(--danger); }
+  .use-card h4 { font-size: .8rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; margin-bottom: .4rem; color: var(--text); }
+  .use-card p { font-size: .82rem; margin: 0; color: var(--muted); }
+
+  ul, ol { padding-left: 1.4rem; }
+  li { margin-bottom: .3rem; }
+  p { margin-bottom: .8rem; }
+  p:last-child { margin-bottom: 0; }
+  h3 { font-family: Georgia, serif; font-size: 1.05rem; font-weight: 700; margin: 1.25rem 0 .5rem; color: var(--text); }
+  h4 { font-size: .9rem; font-weight: 600; margin: .9rem 0 .3rem; color: var(--text); }
+
+  .summary { background: #2b1a06; color: #fff; border-radius: 8px; padding: 1.6rem 2rem; margin-top: 1rem; }
+  .summary-title { font-size: .65rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent2); margin-bottom: 1rem; }
+  .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .6rem; }
+  .sum-item { background: rgba(255,255,255,.08); border-radius: 5px; padding: .65rem .85rem; font-size: .83rem; }
+  .sum-item strong { display: block; color: var(--accent2); font-size: .78rem; margin-bottom: .2rem; }
+
+  @media (max-width: 640px) {
+    .section { padding: 1.25rem 1rem; }
+    .page-header { padding: 1.5rem 0 1rem; }
+    .summary-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="page">
+
+  <header class="page-header">
+    <p class="eyebrow">B8 — Documentation &amp; packaging, deux projets (DL + ML)</p>
+    <h1>TP8 — Model Cards : documenter deux modèles très différents</h1>
+    <p>Même template standard (Hugging Face), deux histoires opposées : un modèle avec
+       checkpoint versionné, l'autre reproductible uniquement par ré-entraînement.</p>
+    <span class="prereq">⚙ Sources : <code>DL/reports/model_card.md</code> · <code>ML/artifacts/model_card.md</code></span>
+  </header>
+
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="label">Modèle DL</div>
+      <div class="value">Auto-encodeur — AUROC 0.618</div>
+      <div class="sub">Checkpoint versionné (<code>ae_v3_best.keras</code>)</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Modèle ML</div>
+      <div class="value">XGBoost B11-GKF — PR-AUC 0.880</div>
+      <div class="sub">Aucun artefact — reproductible par seed figée</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Template</div>
+      <div class="value">Hugging Face officiel</div>
+      <div class="sub"><code>ModelCard.from_template</code>, 45 champs</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Point commun</div>
+      <div class="value">Honnêteté délibérée</div>
+      <div class="sub">Chaque card documente une alternative meilleure ou un historique de bug</div>
+    </div>
+  </div>
+
+  <!-- §1 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§1</span> Le principe : un template, pas une invention</div>
+
+    <p>Une model card répond, sur une page, à : <em>que fait ce modèle, sur quelles
+    données, avec quelle performance, dans quelles limites, et comment l'utiliser ?</em>
+    Plutôt qu'un format maison, on remplit le <strong>template standard Hugging Face</strong>
+    (<code>huggingface_hub.ModelCard.from_template</code>) — reconnu, structuré, avec
+    usage, données, métriques, limites et impact déjà prévus.</p>
+
+    <pre><code>from huggingface_hub import ModelCard, ModelCardData
+
+card_data = ModelCardData(model_name=..., license=..., tags=[...], eval_results=[...])
+card = ModelCard.from_template(card_data, **template_kwargs)  # 45 champs {{ }}
+card.validate()   # conformité du front-matter YAML
+card.save("model_card.md")</code></pre>
+
+    <div class="callout theory">
+      <strong>Méthode identique dans les deux cas</strong> : recharger/reconstruire le
+      modèle et <strong>recalculer les métriques en direct</strong> — jamais recopier un
+      chiffre d'un ancien run non vérifiable. Les deux notebooks (<code>DL/TP8.ipynb</code>,
+      <code>ML/model_card.ipynb</code>) confirment que leurs métriques recalculées sont
+      strictement identiques à celles déjà documentées ailleurs (TP4 pour le DL, TP11
+      pour le ML).
+    </div>
+  </section>
+
+  <!-- §2 DL -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§2</span> Model Card — Détection d'anomalies (DL)</div>
+    <div class="model-header"><span class="model-chip">indusense-ae-bottle-v3</span></div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Champ</th><th>Valeur</th></tr></thead>
+        <tbody>
+          <tr><td>Type</td><td>Auto-encodeur convolutionnel, perte MSE+SSIM</td></tr>
+          <tr><td>Données</td><td>MVTec AD · bottle — 168 train / 41 val / 83 test</td></tr>
+          <tr><td>AUROC (test)</td><td><strong>0.618</strong></td></tr>
+          <tr><td>Précision / Rappel</td><td>93.3% / 22.2%</td></tr>
+          <tr><td>Seuil</td><td>0.00081 (percentile 99, validation saine)</td></tr>
+          <tr><td>Impact carbone</td><td>0.0515 gCO2eq (run représentatif TP6 — pas le run exact du checkpoint)</td></tr>
+          <tr><td>Artefact</td><td><code>checkpoints/ae_v3_best.keras</code> — 4.1 Mo, versionné</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="uses-row">
+      <div class="use-card">
+        <h4>Direct Use</h4>
+        <p>Scorer une image bottle et comparer au seuil calibré — signal pour un opérateur humain.</p>
+      </div>
+      <div class="use-card">
+        <h4>Downstream Use</h4>
+        <p>Tableau de bord QA (score + heatmap), ou combiné à PatchCore-lite pour un score ensembliste.</p>
+      </div>
+      <div class="use-card oos">
+        <h4>Out-of-Scope</h4>
+        <p>Décision automatique sans supervision, autre catégorie MVTec sans recalibration, usage réglementaire.</p>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <strong>Honnêteté délibérée.</strong> La card documente un AUROC de 0.618 tout en
+      indiquant explicitement qu'une alternative interne — <strong>PatchCore-lite,
+      AUROC 0.859</strong> (TP4 §3) — surperforme et n'est pourtant pas celle
+      industrialisée par <code>scripts/run_vision_pipeline.py</code> (TP7).
+    </div>
+  </section>
+
+  <!-- §3 ML -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§3</span> Model Card — Maintenance prédictive (ML)</div>
+    <div class="model-header"><span class="model-chip">indusense-xgb-maintenance-b11-gkf</span></div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Champ</th><th>Valeur</th></tr></thead>
+        <tbody>
+          <tr><td>Type</td><td>XGBoost, pipeline scikit-learn (imputation médiane + classifieur)</td></tr>
+          <tr><td>Données</td><td>Gold PostgreSQL — 112 996 train+val / 19 944 test, 15 machines, 69 features</td></tr>
+          <tr><td>PR-AUC (test)</td><td><strong>0.8799</strong></td></tr>
+          <tr><td>ROC-AUC / F1</td><td>0.9949 / 0.7586</td></tr>
+          <tr><td>Précision / Rappel</td><td>66.8% / 87.8% (seuil 0.5)</td></tr>
+          <tr><td>Impact carbone</td><td>0.0027 gCO2eq — première mesure CodeCarbon jamais faite côté ML</td></tr>
+          <tr class="diff"><td>Artefact</td><td><strong>Aucun</strong> — reproductible par ré-entraînement (hyperparamètres + seed figés)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="uses-row">
+      <div class="use-card">
+        <h4>Direct Use</h4>
+        <p>Scorer un enregistrement horaire machine → probabilité de panne à 24h, seuil 0.5 à ajuster selon l'arbitrage métier.</p>
+      </div>
+      <div class="use-card">
+        <h4>Downstream Use</h4>
+        <p>Tableau de bord de maintenance classant les machines par risque — pas d'arrêt automatique.</p>
+      </div>
+      <div class="use-card oos">
+        <h4>Out-of-Scope</h4>
+        <p>Machine hors des 15 couvertes, <code>predict_proba</code> lu comme probabilité calibrée, décision automatique.</p>
+      </div>
+    </div>
+
+    <h3>Historique documenté sans filtre</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Lignée</th><th>Constat</th></tr></thead>
+        <tbody>
+          <tr><td>B7 (TP8)</td><td>PR-AUC val 0.8617 — <span class="badge badge-danger">fuite</span> via <code>feature_row_id</code> (ordre temporel)</td></tr>
+          <tr><td>B7c/B8 (TP8b)</td><td>Fuite corrigée — PR-AUC val 0.7504</td></tr>
+          <tr><td>B9→B11-GKF</td><td>GroupKFold introduit, re-tuné — <span class="badge badge-ok">retenu</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <strong>Performance très hétérogène par machine.</strong> PR-AUC en validation
+      croisée GroupKFold va de <strong>0.39 (MACH-07)</strong> à <strong>1.00
+      (MACH-11, MACH-15)</strong> — un score agrégé unique masque des machines où le
+      modèle est nettement moins fiable. Sur-ajustement structurel confirmé : PR-AUC
+      train = 1.000 contre ~0.78 en CV.
+    </div>
+  </section>
+
+  <!-- §4 Comparaison -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§4</span> Ce que la comparaison révèle</div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Dimension</th><th>DL — auto-encodeur</th><th>ML — XGBoost B11-GKF</th></tr></thead>
+        <tbody>
+          <tr><td>Artefact persisté</td><td><span class="badge badge-ok">Oui</span> — fichier <code>.keras</code></td><td><span class="badge badge-danger">Non</span> — seed + HP figés</td></tr>
+          <tr><td>Comment "recharger"</td><td><code>keras.models.load_model(...)</code></td><td>Ré-entraîner avec <code>BEST_PARAMS</code></td></tr>
+          <tr><td>Alternative interne meilleure</td><td>PatchCore-lite (AUROC 0.859)</td><td>Aucune connue à ce jour</td></tr>
+          <tr><td>Historique de bug documenté</td><td>Risque d'identité (goulot trop large, TP3)</td><td>Fuite de données (<code>feature_row_id</code>, corrigée)</td></tr>
+          <tr><td>Mesure carbone</td><td>Réutilisée (TP6), run non-identique noté</td><td>Mesurée pour la première fois ici</td></tr>
+          <tr><td>Homogénéité de performance</td><td>Un seul produit (bottle)</td><td>15 machines, PR-AUC 0.39 à 1.00</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout ok">
+      <strong>Le vrai test d'une model card</strong> n'est pas de couvrir tous les champs
+      du template — c'est de documenter ce qui rendrait un lecteur méfiant : un modèle
+      moins bon qu'une alternative connue, un historique de fuite, une performance qui
+      s'effondre sur un sous-groupe. Une card qui ne dit que du bien du modèle qu'elle
+      documente a raté son objet.
+    </div>
+  </section>
+
+  <div class="summary">
+    <div class="summary-title">Récapitulatif — TP8</div>
+    <div class="summary-grid">
+      <div class="sum-item"><strong>§2 — DL</strong>AUROC 0.618, checkpoint versionné, alternative PatchCore documentée</div>
+      <div class="sum-item"><strong>§3 — ML</strong>PR-AUC 0.880, aucun artefact, historique de fuite corrigée documenté</div>
+      <div class="sum-item"><strong>Méthode commune</strong>Recharger/ré-entraîner et recalculer en direct — jamais copier un chiffre</div>
+      <div class="sum-item"><strong>§4 — Comparaison</strong>Deux profils de risque opposés, une même exigence d'honnêteté</div>
+    </div>
+  </div>
+
+</div>
