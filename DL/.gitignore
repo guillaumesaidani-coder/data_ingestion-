@@ -14,5 +14,11 @@ checkpoints/
 # MLflow runs
 mlruns/
 
+# Traces CodeCarbon (émissions mesurées par run)
+emissions/
+
+# Rapports JSON générés par scripts/run_vision_pipeline.py
+reports/
+
 # Stats de normalisation générées (versionner norm_stats.json explicitement)
 # norm_stats.json  ← NE PAS ignorer — doit être commité avec le modèle
