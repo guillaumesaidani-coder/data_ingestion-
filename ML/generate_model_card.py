@@ -81,6 +81,10 @@ def load_data():
         "machine_id", "ingestion_batch_id", "window_start", "window_end", "split_set",
         "label_failure_next_6h", "label_failure_next_12h", "label_failure_next_48h",
         target, "feature_row_id",
+        # Compte brut d'incidents futurs — equivalent mathematique du label (fuite directe).
+        # Deja exclu dans TP9.ipynb / TP11.ipynb ; manquait ici (cf. diagnostic PR-AUC=1.0).
+        "future_incident_count_6h", "future_incident_count_12h",
+        "future_incident_count_24h", "future_incident_count_48h",
     ]
     feature_cols = [c for c in df.columns if c not in leakage_cols]
 
