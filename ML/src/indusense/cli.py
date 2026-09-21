@@ -13,12 +13,22 @@ import joblib
 import pandas as pd
 
 from indusense.config import get_engine
+from indusense.data import export_gold_dataset, hash_file
 from indusense.modeling.dataset import load_gold_dataset
+from indusense.modeling.tracking import log_training_run, write_metrics_and_params
 from indusense.modeling.train import (
     B11_PARAMS,
     compute_scale_pos_weight,
     train_and_evaluate,
 )
+
+
+def export_gold(args: argparse.Namespace) -> None:
+    out_path = export_gold_dataset(get_engine(), Path(args.output))
+    md5 = hash_file(out_path)
+    print(f"Export : {out_path}")
+    print(f"gold_md5 : {md5}")
+    print(f"Suite : dvc add {out_path}")
 
 
 def train(args: argparse.Namespace) -> None:
@@ -31,6 +41,25 @@ def train(args: argparse.Namespace) -> None:
         f"PR-AUC train={metrics['pr_auc_train']}  PR-AUC test={metrics['pr_auc_test']}  "
         f"ROC-AUC test={metrics['roc_auc_test']}  F1 test={metrics['f1_test']}"
     )
+
+    gold_md5 = hash_file(Path(args.gold_csv)) if args.gold_csv else None
+    if args.gold_csv and not gold_md5:
+        print(f"Attention : {args.gold_csv} introuvable, run tracé sans gold_md5")
+
+    run_id = log_training_run(
+        run_name="indusense-train-cli",
+        params=params,
+        metrics=metrics,
+        gold_md5=gold_md5,
+        gold_dataset_path=args.gold_csv,
+    )
+    print(f"Run MLflow : {run_id}" + (f"  (gold_md5={gold_md5})" if gold_md5 else ""))
+
+    if args.metrics_out:
+        metrics_path, params_path = write_metrics_and_params(
+            metrics, params, Path(args.metrics_out), gold_md5=gold_md5
+        )
+        print(f"Écrits : {metrics_path}, {params_path}")
 
     if args.output:
         output_path = Path(args.output)
@@ -60,11 +89,28 @@ def build_parser() -> argparse.ArgumentParser:
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
+    export_gold_parser = subparsers.add_parser(
+        "export-gold", help="Exporte gold_machine_hourly_feature en CSV versionnable par DVC"
+    )
+    export_gold_parser.add_argument(
+        "-o", "--output", default="data/gold/gold_dataset.csv", help="Chemin de sortie du CSV"
+    )
+    export_gold_parser.set_defaults(func=export_gold)
+
     train_parser = subparsers.add_parser(
         "train", help="Entraîne et évalue le modèle b11-gkf sur le Gold dataset"
     )
     train_parser.add_argument(
         "-o", "--output", help="Chemin de sauvegarde du modèle entraîné (.joblib)"
+    )
+    train_parser.add_argument(
+        "--gold-csv",
+        help="Export CSV du Gold dataset (produit par `export-gold`) : son hash MD5 est "
+        "tracé dans MLflow pour lier ce run à une version de données précise",
+    )
+    train_parser.add_argument(
+        "--metrics-out",
+        help="Répertoire où écrire metrics.json / params.yaml (versionnables par Git)",
     )
     train_parser.set_defaults(func=train)
 

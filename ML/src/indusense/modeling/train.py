@@ -36,7 +36,7 @@ B11_PARAMS = {
 
 
 def compute_scale_pos_weight(y) -> float:
-    return round((y == 0).sum() / (y == 1).sum(), 2)
+    return round(float((y == 0).sum() / (y == 1).sum()), 2)
 
 
 def train_and_evaluate(X_tv, y_tv, X_test, y_test, params: dict) -> tuple[Pipeline, dict]:

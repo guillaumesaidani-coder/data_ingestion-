@@ -21,6 +21,7 @@ dependencies = [
     "huggingface-hub>=1.24.0",
     "codecarbon>=3.2.9",
     "mlflow==3.14.0",
+    "pyyaml>=6.0.3",
 ]
 
 [project.scripts]

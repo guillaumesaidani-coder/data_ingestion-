@@ -1,0 +1,12 @@
+colsample_bytree: 0.5736306798333981
+gold_md5: 47f3185b0314adc00960476486f177fa
+learning_rate: 0.02887139049912187
+max_depth: 9
+min_child_weight: 11
+n_estimators: 287
+random_state: 42
+reg_alpha: 0.01918528344873483
+reg_lambda: 0.6228756133555158
+scale_pos_weight: 27.12
+subsample: 0.8252019146348859
+verbosity: 0

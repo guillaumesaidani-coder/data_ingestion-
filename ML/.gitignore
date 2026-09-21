@@ -19,5 +19,12 @@ releves_incidents.csv
 artifacts/*
 # ... sauf la model card — c'est un livrable de documentation, pas un artefact jetable
 !artifacts/model_card.md
+# ... et artifacts/models/ : metrics.json/params.yaml (petits, versionnés par Git) +
+# model.joblib.dvc (pointeur DVC) — le .joblib lui-même reste ignoré, DVC s'en charge.
+!artifacts/models/
+artifacts/models/*
+!artifacts/models/metrics.json
+!artifacts/models/params.yaml
+!artifacts/models/*.dvc
 /telemetry.csv
 /releves_incidents_anonymised.csv

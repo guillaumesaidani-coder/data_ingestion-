@@ -10,12 +10,15 @@ de les surcharger sans toucher au code.
 """
 
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL, Engine
 
 load_dotenv()
+
+ML_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 def get_db_url() -> URL:
@@ -31,3 +34,9 @@ def get_db_url() -> URL:
 
 def get_engine() -> Engine:
     return create_engine(get_db_url())
+
+
+def get_mlflow_tracking_uri() -> str:
+    """Reproduit l'URI utilisée par conftest.py et generate_model_card.py :
+    sqlite:///ML/mlflow_tp7.db (chemin absolu, résolu quel que soit le cwd)."""
+    return os.getenv("MLFLOW_TRACKING_URI", f"sqlite:///{ML_DIR / 'mlflow_tp7.db'}")

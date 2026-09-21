@@ -1,0 +1,13 @@
+{
+  "f1_test": 0.8054,
+  "fn": 65,
+  "fp": 255,
+  "pr_auc_test": 0.8945,
+  "pr_auc_train": 0.9998,
+  "precision_test": 0.7219,
+  "recall_test": 0.9106,
+  "roc_auc_test": 0.9957,
+  "threshold": 0.5,
+  "tn": 18962,
+  "tp": 662
+}
