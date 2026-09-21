@@ -14,26 +14,28 @@ Usage:
 from __future__ import annotations
 
 import json
+import sys
 import warnings
 from pathlib import Path
 
 warnings.filterwarnings("ignore")
 
-import pandas as pd
+sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
+
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
-from sklearn.impute import SimpleImputer
-from sklearn.pipeline import Pipeline
 from sklearn.metrics import (
     average_precision_score, roc_auc_score, f1_score,
     confusion_matrix, precision_score, recall_score,
 )
-from xgboost import XGBClassifier
 from codecarbon import EmissionsTracker
 import mlflow
 
 from huggingface_hub import ModelCard, ModelCardData
 from huggingface_hub.repocard_data import EvalResult
+
+from indusense.modeling.dataset import load_gold_dataset
+from indusense.modeling.pipeline import build_xgb_pipeline
 
 RANDOM_STATE = 42
 ARTIFACTS_DIR = Path("artifacts")
@@ -71,31 +73,10 @@ def load_data():
         host="localhost", port=5432, database="indusense_db",
     )
     engine = create_engine(url)
-    df = pd.read_sql(
-        "SELECT * FROM gold_machine_hourly_feature ORDER BY machine_id, window_start",
-        engine,
-    )
+    gold = load_gold_dataset(engine)
+    n_machines = gold.trainval_df["machine_id"].nunique()
 
-    target = "label_failure_next_24h"
-    leakage_cols = [
-        "machine_id", "ingestion_batch_id", "window_start", "window_end", "split_set",
-        "label_failure_next_6h", "label_failure_next_12h", "label_failure_next_48h",
-        target, "feature_row_id",
-        # Compte brut d'incidents futurs — equivalent mathematique du label (fuite directe).
-        # Deja exclu dans TP9.ipynb / TP11.ipynb ; manquait ici (cf. diagnostic PR-AUC=1.0).
-        "future_incident_count_6h", "future_incident_count_12h",
-        "future_incident_count_24h", "future_incident_count_48h",
-    ]
-    feature_cols = [c for c in df.columns if c not in leakage_cols]
-
-    trainval_df = df[df["split_set"].isin(["train", "validation"])].copy()
-    test_df = df[df["split_set"] == "test"].copy()
-
-    X_tv, y_tv = trainval_df[feature_cols], trainval_df[target]
-    X_test, y_test = test_df[feature_cols], test_df[target]
-    n_machines = trainval_df["machine_id"].nunique()
-
-    return X_tv, y_tv, X_test, y_test, feature_cols, n_machines
+    return gold.X_tv, gold.y_tv, gold.X_test, gold.y_test, gold.feature_cols, n_machines
 
 
 def refit_and_measure(X_tv, y_tv, X_test, y_test, spw_global):
@@ -110,10 +91,7 @@ def refit_and_measure(X_tv, y_tv, X_test, y_test, spw_global):
     )
     tracker.start()
 
-    pipe = Pipeline([
-        ("imputer", SimpleImputer(strategy="median")),
-        ("model", XGBClassifier(**best_params)),
-    ])
+    pipe = build_xgb_pipeline(best_params)
     pipe.fit(X_tv, y_tv)
 
     emissions_kg = tracker.stop()
