@@ -21,9 +21,7 @@ from indusense.modeling.tracking import log_training_run, write_metrics_and_para
 @pytest.fixture()
 def isolated_mlflow(tmp_path, monkeypatch):
     tracking_uri = f"sqlite:///{tmp_path / 'mlflow_test.db'}"
-    monkeypatch.setattr(
-        "indusense.modeling.tracking.get_mlflow_tracking_uri", lambda: tracking_uri
-    )
+    monkeypatch.setattr("indusense.modeling.tracking.get_mlflow_tracking_uri", lambda: tracking_uri)
     yield tracking_uri
     mlflow.end_run()
 
