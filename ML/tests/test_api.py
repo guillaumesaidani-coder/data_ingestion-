@@ -1,58 +1,11 @@
 """tests/test_api.py — /health, /ready, /predict-tabular, et le middleware
-X-Request-ID. N'utilise jamais le vrai modèle (artifacts/models/model.joblib,
-piloté par DVC, absent d'un checkout CI brut) : un petit pipeline synthétique
-est injecté à la place, ce qui rend ces tests indépendants de toute infra
-locale — aucun marker requires_local_infra nécessaire ici.
+X-Request-ID. Fixtures (client, fake_model, no_model, auth_headers) dans
+conftest.py, partagées avec tests/test_security.py.
 """
 
-import sys
 import uuid
-from pathlib import Path
 
-import numpy as np
-import pandas as pd
-import pytest
-from fastapi.testclient import TestClient
-from sklearn.impute import SimpleImputer
-from sklearn.pipeline import Pipeline
-from xgboost import XGBClassifier
-
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
-
-import indusense.api.main as api_main
-from indusense.config import get_api_key
-
-FEATURE_NAMES = ["temp_mean_24h", "pressure_mean_24h"]
-
-
-@pytest.fixture()
-def client():
-    return TestClient(api_main.app)
-
-
-@pytest.fixture()
-def fake_model(monkeypatch):
-    rng = np.random.default_rng(42)
-    X = pd.DataFrame({name: rng.normal(size=40) for name in FEATURE_NAMES})
-    y = (X[FEATURE_NAMES[0]] > 0).astype(int)
-    pipe = Pipeline(
-        [
-            ("imputer", SimpleImputer(strategy="median")),
-            ("model", XGBClassifier(n_estimators=10, max_depth=2, random_state=42)),
-        ]
-    )
-    pipe.fit(X, y)
-    monkeypatch.setattr(api_main, "_model", pipe)
-    return pipe
-
-
-@pytest.fixture()
-def no_model(monkeypatch):
-    monkeypatch.setattr(api_main, "_model", None)
-
-
-def auth_headers():
-    return {"X-API-Key": get_api_key()}
+from conftest import auth_headers
 
 
 # --------------------------------------------------------------------- health

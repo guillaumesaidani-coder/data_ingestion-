@@ -7,14 +7,18 @@ et TP9/TP11 (modèle b11), et vérifient des invariants contre ce qui est
 documenté (ANALYSE_ARTIFACTS.md, artifacts/model_card.md).
 """
 
+import sys
 from pathlib import Path
 
 import mlflow
+import numpy as np
+import pandas as pd
 import pytest
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import URL
 
 ML_DIR = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ML_DIR / "src"))
 
 DB_URL = URL.create(
     drivername="postgresql+psycopg2",
@@ -52,3 +56,60 @@ def db_engine():
 def mlflow_client():
     mlflow.set_tracking_uri(f"sqlite:///{ML_DIR / 'mlflow_tp7.db'}")
     return mlflow.tracking.MlflowClient()
+
+
+# --------------------------------------------------------------------------
+# API (tests/test_api.py, tests/test_security.py) : jamais le vrai modèle
+# (artifacts/models/model.joblib, piloté par DVC, absent d'un checkout CI
+# brut) — un petit pipeline synthétique est injecté à la place.
+# --------------------------------------------------------------------------
+
+API_FEATURE_NAMES = ["temp_mean_24h", "pressure_mean_24h"]
+
+
+@pytest.fixture()
+def client():
+    from fastapi.testclient import TestClient
+
+    import indusense.api.main as api_main
+
+    # Le rate limiter est un dict en mémoire, par IP : sans ce nettoyage,
+    # son état fuiterait d'un test à l'autre (résultat dépendant de l'ordre).
+    api_main._rate_limit_state.clear()
+    yield TestClient(api_main.app)
+    api_main._rate_limit_state.clear()
+
+
+@pytest.fixture()
+def fake_model(monkeypatch):
+    from sklearn.impute import SimpleImputer
+    from sklearn.pipeline import Pipeline
+    from xgboost import XGBClassifier
+
+    import indusense.api.main as api_main
+
+    rng = np.random.default_rng(42)
+    X = pd.DataFrame({name: rng.normal(size=40) for name in API_FEATURE_NAMES})
+    y = (X[API_FEATURE_NAMES[0]] > 0).astype(int)
+    pipe = Pipeline(
+        [
+            ("imputer", SimpleImputer(strategy="median")),
+            ("model", XGBClassifier(n_estimators=10, max_depth=2, random_state=42)),
+        ]
+    )
+    pipe.fit(X, y)
+    monkeypatch.setattr(api_main, "_model", pipe)
+    return pipe
+
+
+@pytest.fixture()
+def no_model(monkeypatch):
+    import indusense.api.main as api_main
+
+    monkeypatch.setattr(api_main, "_model", None)
+
+
+def auth_headers():
+    from indusense.config import get_api_key
+
+    return {"X-API-Key": get_api_key()}
