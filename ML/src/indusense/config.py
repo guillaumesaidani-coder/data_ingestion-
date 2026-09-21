@@ -40,3 +40,16 @@ def get_mlflow_tracking_uri() -> str:
     """Reproduit l'URI utilisée par conftest.py et generate_model_card.py :
     sqlite:///ML/mlflow_tp7.db (chemin absolu, résolu quel que soit le cwd)."""
     return os.getenv("MLFLOW_TRACKING_URI", f"sqlite:///{ML_DIR / 'mlflow_tp7.db'}")
+
+
+def get_api_key() -> str:
+    """Clé attendue dans l'en-tête X-API-Key de l'API. Valeur de dev par
+    défaut (même logique que les credentials DB ci-dessus) — à surcharger
+    par variable d'environnement pour tout usage au-delà du poste local."""
+    return os.getenv("API_KEY", "dev-local-key")
+
+
+def get_model_path() -> Path:
+    """Chemin du modèle entraîné servi par l'API (produit par `indusense train -o ...`,
+    versionné par DVC — voir artifacts/models/model.joblib.dvc)."""
+    return Path(os.getenv("MODEL_PATH", str(ML_DIR / "artifacts" / "models" / "model.joblib")))
