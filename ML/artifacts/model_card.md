@@ -132,7 +132,7 @@ Imputation des valeurs manquantes par médiane (`SimpleImputer`), aucune normali
 
 <!-- This section provides information about throughput, start/end time, checkpoint size if relevant, etc. -->
 
-4.8s pour un ré-entraînement complet sur 112,996 lignes (poste de travail local, CPU)
+5.9s pour un ré-entraînement complet sur 112,996 lignes (poste de travail local, CPU)
 
 ## Evaluation
 
@@ -179,10 +179,10 @@ Non réalisé — SHAP (TreeExplainer) recommandé en prochaine étape pour iden
 Carbon emissions can be estimated using the [Machine Learning Impact calculator](https://mlco2.github.io/impact#compute) presented in [Lacoste et al. (2019)](https://arxiv.org/abs/1910.09700).
 
 - **Hardware Type:** Intel Core i7-12700H (CPU) — entraînement XGBoost, pas de GPU requis
-- **Hours used:** 0.0013 h (ré-entraînement complet mesuré ci-dessus)
+- **Hours used:** 0.0016 h (ré-entraînement complet mesuré ci-dessus)
 - **Cloud Provider:** Aucun — poste de travail local
 - **Compute Region:** France (FRA)
-- **Carbon Emitted:** 0.0025 gCO2eq (0.044 Wh) — mesure CodeCarbon de ce ré-entraînement
+- **Carbon Emitted:** 0.0033 gCO2eq (0.060 Wh) — mesure CodeCarbon de ce ré-entraînement
 
 ## Technical Specifications [optional]
 

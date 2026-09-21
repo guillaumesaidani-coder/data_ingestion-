@@ -22,37 +22,18 @@ warnings.filterwarnings("ignore")
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
-from sqlalchemy import create_engine
-from sqlalchemy.engine import URL
-from sklearn.metrics import (
-    average_precision_score, roc_auc_score, f1_score,
-    confusion_matrix, precision_score, recall_score,
-)
 from codecarbon import EmissionsTracker
 import mlflow
 
 from huggingface_hub import ModelCard, ModelCardData
 from huggingface_hub.repocard_data import EvalResult
 
+from indusense.config import get_engine
 from indusense.modeling.dataset import load_gold_dataset
-from indusense.modeling.pipeline import build_xgb_pipeline
+from indusense.modeling.train import B11_PARAMS, train_and_evaluate
 
-RANDOM_STATE = 42
 ARTIFACTS_DIR = Path("artifacts")
 ARTIFACTS_DIR.mkdir(exist_ok=True)
-
-BEST_PARAMS_BASE = {
-    "n_estimators":     287,
-    "max_depth":        9,
-    "learning_rate":    0.02887139049912187,
-    "subsample":        0.8252019146348859,
-    "colsample_bytree": 0.5736306798333981,
-    "min_child_weight": 11,
-    "reg_alpha":        0.01918528344873483,
-    "reg_lambda":       0.6228756133555158,
-    "random_state":     RANDOM_STATE,
-    "verbosity":        0,
-}
 
 LINEAGE = [
     {"model": "B5 (TP7)",       "note": "Baseline LogReg/RF/XGBoost, comparaison initiale"},
@@ -66,21 +47,14 @@ LINEAGE = [
 
 
 def load_data():
-    url = URL.create(
-        drivername="postgresql+psycopg2",
-        username="indusense_user",
-        password="ThEP@ssW0rd",
-        host="localhost", port=5432, database="indusense_db",
-    )
-    engine = create_engine(url)
-    gold = load_gold_dataset(engine)
+    gold = load_gold_dataset(get_engine())
     n_machines = gold.trainval_df["machine_id"].nunique()
 
     return gold.X_tv, gold.y_tv, gold.X_test, gold.y_test, gold.feature_cols, n_machines
 
 
 def refit_and_measure(X_tv, y_tv, X_test, y_test, spw_global):
-    best_params = {**BEST_PARAMS_BASE, "scale_pos_weight": spw_global}
+    best_params = {**B11_PARAMS, "scale_pos_weight": spw_global}
 
     tracker = EmissionsTracker(
         project_name="ml_b11_gkf_refit",
@@ -90,29 +64,10 @@ def refit_and_measure(X_tv, y_tv, X_test, y_test, spw_global):
         save_to_file=True,
     )
     tracker.start()
-
-    pipe = build_xgb_pipeline(best_params)
-    pipe.fit(X_tv, y_tv)
-
+    _, metrics = train_and_evaluate(X_tv, y_tv, X_test, y_test, best_params)
     emissions_kg = tracker.stop()
     carbon_data = tracker.final_emissions_data
 
-    y_prob_test = pipe.predict_proba(X_test)[:, 1]
-    y_pred_test = pipe.predict(X_test)
-    y_prob_tv = pipe.predict_proba(X_tv)[:, 1]
-
-    tn, fp, fn, tp = confusion_matrix(y_test, y_pred_test).ravel()
-
-    metrics = {
-        "pr_auc_train":   round(float(average_precision_score(y_tv, y_prob_tv)), 4),
-        "pr_auc_test":    round(float(average_precision_score(y_test, y_prob_test)), 4),
-        "roc_auc_test":   round(float(roc_auc_score(y_test, y_prob_test)), 4),
-        "f1_test":        round(float(f1_score(y_test, y_pred_test, zero_division=0)), 4),
-        "precision_test": round(float(precision_score(y_test, y_pred_test, zero_division=0)), 4),
-        "recall_test":    round(float(recall_score(y_test, y_pred_test, zero_division=0)), 4),
-        "tp": int(tp), "tn": int(tn), "fp": int(fp), "fn": int(fn),
-        "threshold": 0.5,
-    }
     return best_params, metrics, emissions_kg, carbon_data
 
 
