@@ -2,6 +2,7 @@
 (copié-collé dans les deux, cf. pipeline_artifacts/ANALYSE_ARTIFACTS.md).
 Comportement figé : même signature, même format de dossier horodaté.
 """
+
 import sys
 from datetime import datetime
 from pathlib import Path

@@ -2,6 +2,7 @@
 câblage stdin/stdout/fichier de predict(), pas l'entraînement réel
 (déjà couvert par test_modeling_train.py et vérifié manuellement via
 `uv run indusense train`)."""
+
 import sys
 from pathlib import Path
 
@@ -40,6 +41,7 @@ def test_predict_subcommand_requires_model_and_input():
 class _StubPipe:
     def predict_proba(self, X):
         import numpy as np
+
         return np.tile([0.7, 0.3], (len(X), 1))
 
 

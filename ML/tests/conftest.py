@@ -6,6 +6,7 @@ Postgres et le tracking MLflow tels que produits par TP1/TP2/TP4/TP5/TP6 (ETL)
 et TP9/TP11 (modèle b11), et vérifient des invariants contre ce qui est
 documenté (ANALYSE_ARTIFACTS.md, artifacts/model_card.md).
 """
+
 from pathlib import Path
 
 import mlflow
@@ -25,7 +26,9 @@ DB_URL = URL.create(
 )
 
 B11_RUN_ID = "fa336bc0880b48bc849a4a6b1e6f412d"
-B11_MODEL_ARTIFACT_DIR = ML_DIR.parent / "mlruns" / "1" / "models" / "m-649e4e35dac14192b37d34ba1ae9ff81" / "artifacts"
+B11_MODEL_ARTIFACT_DIR = (
+    ML_DIR.parent / "mlruns" / "1" / "models" / "m-649e4e35dac14192b37d34ba1ae9ff81" / "artifacts"
+)
 
 
 @pytest.fixture(scope="session")

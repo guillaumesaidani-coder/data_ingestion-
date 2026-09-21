@@ -8,11 +8,12 @@ exactement ces valeurs — le comportement ne change pas tant qu'aucune
 variable d'environnement n'est définie ; un `.env` (non commité) permet
 de les surcharger sans toucher au code.
 """
+
 import os
 
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
-from sqlalchemy.engine import Engine, URL
+from sqlalchemy.engine import URL, Engine
 
 load_dotenv()
 

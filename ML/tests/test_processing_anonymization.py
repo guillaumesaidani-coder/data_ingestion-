@@ -2,6 +2,7 @@
 "Anonymisation — choix technique" dans le notebook : non réversible,
 déterministe, légère).
 """
+
 import sys
 from pathlib import Path
 
@@ -14,7 +15,7 @@ def test_anon_output_format():
     result = anon("Lucas Bernard")
     assert result.startswith("OP_ANON_")
     assert len(result) == len("OP_ANON_") + 8
-    assert result[len("OP_ANON_"):].isupper()
+    assert result[len("OP_ANON_") :].isupper()
 
 
 def test_anon_is_deterministic():

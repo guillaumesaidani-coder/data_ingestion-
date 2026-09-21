@@ -9,6 +9,7 @@ toutes colonnes, tolérance 1e-6) -> aucun écart.
 Ces tests couvrent chaque fonction isolément sur des fixtures
 synthétiques, rapides, pour verrouiller le comportement pièce par pièce.
 """
+
 import sys
 from pathlib import Path
 
@@ -32,23 +33,41 @@ from indusense.processing.gold_features import (
 )
 
 
-def _sensor_rows(machine_id, start, n_hours, temp=50.0, pressure=200.0, voltage=227.0, rotation=1590.0, pieces=10):
+def _sensor_rows(
+    machine_id, start, n_hours, temp=50.0, pressure=200.0, voltage=227.0, rotation=1590.0, pieces=10
+):
     rows = []
     for h in range(n_hours):
         ts = start + pd.Timedelta(hours=h)
         for sensor_type, val in [
-            ("temperature_c", temp), ("pressure_bar", pressure),
-            ("voltage_mean_v", voltage), ("rotation_mean_rpm", rotation),
+            ("temperature_c", temp),
+            ("pressure_bar", pressure),
+            ("voltage_mean_v", voltage),
+            ("rotation_mean_rpm", rotation),
             ("pieces_produced", pieces),
         ]:
-            rows.append({"machine_id": machine_id, "observed_at": ts, "sensor_type": sensor_type, "sensor_value": val})
+            rows.append(
+                {
+                    "machine_id": machine_id,
+                    "observed_at": ts,
+                    "sensor_type": sensor_type,
+                    "sensor_value": val,
+                }
+            )
     return rows
 
 
 def test_pivot_to_wide_fills_missing_sensor_columns_with_nan():
-    df_sensors = pd.DataFrame([
-        {"machine_id": "MACH-01", "observed_at": pd.Timestamp("2025-06-01"), "sensor_type": "temperature_c", "sensor_value": 50.0},
-    ])
+    df_sensors = pd.DataFrame(
+        [
+            {
+                "machine_id": "MACH-01",
+                "observed_at": pd.Timestamp("2025-06-01"),
+                "sensor_type": "temperature_c",
+                "sensor_value": 50.0,
+            },
+        ]
+    )
     wide = pivot_to_wide(df_sensors)
     for col in ["pressure_bar", "voltage_mean_v", "rotation_mean_rpm", "pieces_produced"]:
         assert col in wide.columns
@@ -90,10 +109,16 @@ def test_capacity_utilization_pct():
 
 
 def test_rolling_zscore_zero_std_gives_nan():
-    df = pd.DataFrame({
-        "temperature_c": [50.0], "temp_mean_24h": [50.0], "temp_std_24h": [0.0],
-        "pressure_bar": [200.0], "pressure_mean_24h": [200.0], "pressure_std_24h": [1.0],
-    })
+    df = pd.DataFrame(
+        {
+            "temperature_c": [50.0],
+            "temp_mean_24h": [50.0],
+            "temp_std_24h": [0.0],
+            "pressure_bar": [200.0],
+            "pressure_mean_24h": [200.0],
+            "pressure_std_24h": [1.0],
+        }
+    )
     out = compute_rolling_zscore(df)
     assert pd.isna(out["temp_zscore_24h"].iloc[0])
     assert out["pressure_zscore_24h"].iloc[0] == pytest.approx(0.0)
@@ -112,12 +137,14 @@ def test_assign_time_split_ratios():
 def test_machine_zscore_baseline_is_train_only():
     # Train : moyenne 10. Val/test : valeurs très différentes qui ne doivent
     # jamais influencer la baseline (anti-leakage).
-    df = pd.DataFrame({
-        "machine_id":  ["MACH-01"] * 3 + ["MACH-01"] * 2,
-        "temperature_c": [8.0, 10.0, 12.0, 1000.0, -1000.0],
-        "pressure_bar":  [200.0, 200.0, 200.0, 200.0, 200.0],
-        "split_set":   ["train", "train", "train", "test", "test"],
-    })
+    df = pd.DataFrame(
+        {
+            "machine_id": ["MACH-01"] * 3 + ["MACH-01"] * 2,
+            "temperature_c": [8.0, 10.0, 12.0, 1000.0, -1000.0],
+            "pressure_bar": [200.0, 200.0, 200.0, 200.0, 200.0],
+            "split_set": ["train", "train", "train", "test", "test"],
+        }
+    )
     out = compute_machine_zscore(df)
     train_mean, train_std = 10.0, np.std([8.0, 10.0, 12.0], ddof=1)
     expected_test_z = (1000.0 - train_mean) / train_std
@@ -126,49 +153,72 @@ def test_machine_zscore_baseline_is_train_only():
 
 
 def test_incident_lookback_window_is_strictly_past():
-    df = pd.DataFrame({
-        "machine_id":  ["MACH-01"],
-        "observed_at": [pd.Timestamp("2025-06-02 12:00:00", tz="UTC")],
-    })
-    df_inc = pd.DataFrame({
-        "machine_id":  ["MACH-01", "MACH-01"],
-        # Un incident exactement à h (doit être exclu, < h strict) et un à h-1h (inclus).
-        "occurred_at": [pd.Timestamp("2025-06-02 12:00:00", tz="UTC"), pd.Timestamp("2025-06-02 11:00:00", tz="UTC")],
-        "severity":    [5, 2],
-        "type_surchauffe": [1, 0], "type_baisse_pression": [0, 0], "type_vibration": [0, 0],
-        "type_bruit_mecanique": [0, 0], "type_surconsommation": [0, 0], "type_blocage_mecanique": [0, 0],
-        "type_alarme_capteur": [0, 0], "type_arret_urgence": [0, 0], "type_defaut_qualite": [0, 0],
-    })
+    df = pd.DataFrame(
+        {
+            "machine_id": ["MACH-01"],
+            "observed_at": [pd.Timestamp("2025-06-02 12:00:00", tz="UTC")],
+        }
+    )
+    df_inc = pd.DataFrame(
+        {
+            "machine_id": ["MACH-01", "MACH-01"],
+            # Un incident exactement à h (doit être exclu, < h strict) et un à h-1h (inclus).
+            "occurred_at": [
+                pd.Timestamp("2025-06-02 12:00:00", tz="UTC"),
+                pd.Timestamp("2025-06-02 11:00:00", tz="UTC"),
+            ],
+            "severity": [5, 2],
+            "type_surchauffe": [1, 0],
+            "type_baisse_pression": [0, 0],
+            "type_vibration": [0, 0],
+            "type_bruit_mecanique": [0, 0],
+            "type_surconsommation": [0, 0],
+            "type_blocage_mecanique": [0, 0],
+            "type_alarme_capteur": [0, 0],
+            "type_arret_urgence": [0, 0],
+            "type_defaut_qualite": [0, 0],
+        }
+    )
     out = compute_incident_lookback_features(df, df_inc)
     assert out["incident_count_prev_24h"].iloc[0] == 1
-    assert out["incident_max_severity_prev_24h"].iloc[0] == 2  # celui à h, exclu -> seul severity=2 compte
+    assert (
+        out["incident_max_severity_prev_24h"].iloc[0] == 2
+    )  # celui à h, exclu -> seul severity=2 compte
     assert out["hours_since_last_incident"].iloc[0] == pytest.approx(1.0)
 
 
 def test_maintenance_lookback_days_since_last():
-    df = pd.DataFrame({
-        "machine_id":  ["MACH-01"],
-        "observed_at": [pd.Timestamp("2025-06-10 00:00:00", tz="UTC")],
-    })
-    df_maint = pd.DataFrame({
-        "machine_id":   ["MACH-01"],
-        "performed_at": [pd.Timestamp("2025-06-08 00:00:00", tz="UTC")],
-    })
+    df = pd.DataFrame(
+        {
+            "machine_id": ["MACH-01"],
+            "observed_at": [pd.Timestamp("2025-06-10 00:00:00", tz="UTC")],
+        }
+    )
+    df_maint = pd.DataFrame(
+        {
+            "machine_id": ["MACH-01"],
+            "performed_at": [pd.Timestamp("2025-06-08 00:00:00", tz="UTC")],
+        }
+    )
     out = compute_maintenance_lookback_features(df, df_maint)
     assert out["days_since_last_maintenance"].iloc[0] == pytest.approx(2.0)
     assert out["maintenance_count_prev_30d"].iloc[0] == 1
 
 
 def test_multi_horizon_labels_lookahead_inverted():
-    df = pd.DataFrame({
-        "machine_id":  ["MACH-01"] * 3,
-        "observed_at": pd.date_range("2025-06-02 00:00:00", periods=3, freq="h", tz="UTC"),
-    })
-    df_inc = pd.DataFrame({
-        "machine_id":     ["MACH-01"],
-        "occurred_at":    [pd.Timestamp("2025-06-02 02:00:00", tz="UTC")],
-        "is_label_event": [True],
-    })
+    df = pd.DataFrame(
+        {
+            "machine_id": ["MACH-01"] * 3,
+            "observed_at": pd.date_range("2025-06-02 00:00:00", periods=3, freq="h", tz="UTC"),
+        }
+    )
+    df_inc = pd.DataFrame(
+        {
+            "machine_id": ["MACH-01"],
+            "occurred_at": [pd.Timestamp("2025-06-02 02:00:00", tz="UTC")],
+            "is_label_event": [True],
+        }
+    )
     out = compute_multi_horizon_labels(df, df_inc)
     # Horizon 6h : toutes les heures dans [evt-6h, evt) sont True -> les 3 lignes (00h,01h,02h< evt=02h donc 00h,01h True, 02h False)
     assert list(out.sort_values("observed_at")["label_failure_next_6h"]) == [True, True, False]
@@ -178,16 +228,27 @@ def test_multi_horizon_labels_lookahead_inverted():
 def test_build_gold_features_end_to_end_smoke():
     rows = _sensor_rows("MACH-01", pd.Timestamp("2025-06-01", tz="UTC"), 200)
     df_sensors = pd.DataFrame(rows)
-    df_inc = pd.DataFrame(columns=[
-        "machine_id", "occurred_at", "severity", "is_label_event",
-        "type_surchauffe", "type_baisse_pression", "type_vibration", "type_bruit_mecanique",
-        "type_surconsommation", "type_blocage_mecanique", "type_alarme_capteur",
-        "type_arret_urgence", "type_defaut_qualite",
-    ])
+    df_inc = pd.DataFrame(
+        columns=[
+            "machine_id",
+            "occurred_at",
+            "severity",
+            "is_label_event",
+            "type_surchauffe",
+            "type_baisse_pression",
+            "type_vibration",
+            "type_bruit_mecanique",
+            "type_surconsommation",
+            "type_blocage_mecanique",
+            "type_alarme_capteur",
+            "type_arret_urgence",
+            "type_defaut_qualite",
+        ]
+    )
     df_maint = pd.DataFrame(columns=["machine_id", "performed_at"])
     df_machine = pd.DataFrame({"machine_id": ["MACH-01"], "max_hourly_capacity_pieces": [100.0]})
 
     out = build_gold_features(df_sensors, df_inc, df_maint, df_machine)
     assert len(out) == 200
-    assert set(["train", "validation", "test"]) >= set(out["split_set"].unique())
+    assert {"train", "validation", "test"} >= set(out["split_set"].unique())
     assert not out["label_failure_next_24h"].any()  # aucun incident -> jamais de label

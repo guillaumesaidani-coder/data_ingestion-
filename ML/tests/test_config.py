@@ -2,6 +2,7 @@
 notebook/script : les valeurs par défaut DOIVENT reproduire exactement
 les credentials en dur historiques, sinon toute connexion existante casse.
 """
+
 import sys
 from pathlib import Path
 

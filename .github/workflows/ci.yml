@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+defaults:
+  run:
+    working-directory: ML
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: astral-sh/setup-uv@v3
+      - name: Install
+        run: uv sync --frozen
+      - name: Lint
+        run: uv run --frozen ruff check src tests
+      - name: Format
+        run: uv run --frozen black --check src tests
+      - name: Tests
+        # Les tests marqués requires_local_infra ont besoin du Postgres local
+        # (docker-db-1, peuplé du dataset du projet) et/ou des fichiers pilotés
+        # par DVC (telemetry.csv) : ni l'un ni l'autre n'existe sur ce runner.
+        # Ils tournent en local (`uv run pytest`, sans ce filtre), pas ici.
+        run: uv run --frozen pytest tests/ -q -m "not requires_local_infra"
+
+  build:
+    needs: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - name: Build wheel
+        run: uv build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: indusense-wheel
+          path: ML/dist/*.whl

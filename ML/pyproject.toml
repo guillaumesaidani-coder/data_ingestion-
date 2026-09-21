@@ -28,8 +28,10 @@ indusense = "indusense.cli:main"
 
 [dependency-groups]
 dev = [
+    "black>=26.5.1",
     "dvc>=3.67.1",
     "pytest>=9.1.1",
+    "ruff>=0.16.8",
 ]
 dl = [
     "albumentations>=1.3",
@@ -44,3 +46,18 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/indusense"]
+
+[tool.ruff.lint]
+# DTZ005 (datetime.now() sans tz) desactive : create_ingestion_dir() utilise
+# volontairement l'heure locale naive (comportement du notebook original,
+# jamais modifie lors de l'extraction) ; le corriger changerait le format
+# des dossiers d'ingestion deja produits.
+ignore = ["DTZ005"]
+
+[tool.black]
+line-length = 100
+
+[tool.pytest.ini_options]
+markers = [
+    "requires_local_infra: needs the live Postgres (docker-db-1) and/or DVC-pulled data files ; not available in CI, run locally only (deselect with -m 'not requires_local_infra')",
+]

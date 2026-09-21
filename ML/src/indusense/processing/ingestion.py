@@ -16,7 +16,7 @@ def create_ingestion_dir(base: str = "artifacts/ingestions", topic: str = "incid
     Path : chemin complet du répertoire créé
     """
     timestamp = datetime.now().strftime("%Y%m%d%H%M")
-    run_dir   = Path(base) / topic / timestamp
+    run_dir = Path(base) / topic / timestamp
     run_dir.mkdir(parents=True, exist_ok=True)
     print(f"Répertoire créé : {run_dir}")
     return run_dir

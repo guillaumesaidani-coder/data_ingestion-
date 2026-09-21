@@ -7,7 +7,11 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from indusense.modeling.train import B11_PARAMS, compute_scale_pos_weight, train_and_evaluate
+from indusense.modeling.train import (
+    B11_PARAMS,
+    compute_scale_pos_weight,
+    train_and_evaluate,
+)
 
 
 def test_b11_params_are_the_documented_values():

@@ -5,6 +5,7 @@ données, appelle train_and_evaluate() / un modèle sauvegardé, affiche ou
 écrit le résultat. Aucune nouvelle logique métier — tout est délégué aux
 modules déjà testés.
 """
+
 import argparse
 from pathlib import Path
 
@@ -13,7 +14,11 @@ import pandas as pd
 
 from indusense.config import get_engine
 from indusense.modeling.dataset import load_gold_dataset
-from indusense.modeling.train import B11_PARAMS, compute_scale_pos_weight, train_and_evaluate
+from indusense.modeling.train import (
+    B11_PARAMS,
+    compute_scale_pos_weight,
+    train_and_evaluate,
+)
 
 
 def train(args: argparse.Namespace) -> None:
@@ -22,8 +27,10 @@ def train(args: argparse.Namespace) -> None:
 
     pipe, metrics = train_and_evaluate(gold.X_tv, gold.y_tv, gold.X_test, gold.y_test, params)
 
-    print(f"PR-AUC train={metrics['pr_auc_train']}  PR-AUC test={metrics['pr_auc_test']}  "
-          f"ROC-AUC test={metrics['roc_auc_test']}  F1 test={metrics['f1_test']}")
+    print(
+        f"PR-AUC train={metrics['pr_auc_train']}  PR-AUC test={metrics['pr_auc_test']}  "
+        f"ROC-AUC test={metrics['roc_auc_test']}  F1 test={metrics['f1_test']}"
+    )
 
     if args.output:
         output_path = Path(args.output)
@@ -48,17 +55,31 @@ def predict(args: argparse.Namespace) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="indusense", description="Maintenance prédictive InduSense")
+    parser = argparse.ArgumentParser(
+        prog="indusense", description="Maintenance prédictive InduSense"
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    train_parser = subparsers.add_parser("train", help="Entraîne et évalue le modèle b11-gkf sur le Gold dataset")
-    train_parser.add_argument("-o", "--output", help="Chemin de sauvegarde du modèle entraîné (.joblib)")
+    train_parser = subparsers.add_parser(
+        "train", help="Entraîne et évalue le modèle b11-gkf sur le Gold dataset"
+    )
+    train_parser.add_argument(
+        "-o", "--output", help="Chemin de sauvegarde du modèle entraîné (.joblib)"
+    )
     train_parser.set_defaults(func=train)
 
-    predict_parser = subparsers.add_parser("predict", help="Score un CSV de features avec un modèle sauvegardé")
-    predict_parser.add_argument("model", help="Chemin du modèle sauvegardé (.joblib, produit par `train -o`)")
-    predict_parser.add_argument("input", help="CSV de features (mêmes colonnes que le Gold dataset)")
-    predict_parser.add_argument("-o", "--output", help="Chemin du CSV de sortie (sinon affiché sur stdout)")
+    predict_parser = subparsers.add_parser(
+        "predict", help="Score un CSV de features avec un modèle sauvegardé"
+    )
+    predict_parser.add_argument(
+        "model", help="Chemin du modèle sauvegardé (.joblib, produit par `train -o`)"
+    )
+    predict_parser.add_argument(
+        "input", help="CSV de features (mêmes colonnes que le Gold dataset)"
+    )
+    predict_parser.add_argument(
+        "-o", "--output", help="Chemin du CSV de sortie (sinon affiché sur stdout)"
+    )
     predict_parser.set_defaults(func=predict)
 
     return parser
