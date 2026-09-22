@@ -8,9 +8,9 @@ from pathlib import Path
 
 import numpy as np
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from arbitrate_challenger import arbitration_decision, arbitration_matrix
+from indusense.arbitration import arbitration_decision, arbitration_matrix
 
 
 def test_matrix_classifies_all_four_cases():

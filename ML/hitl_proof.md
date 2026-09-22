@@ -170,4 +170,66 @@ trop pour un gain de 9, la règle d'or de la feuille de route
 prévu. `challenger.joblib` sauvegardé mais **non activé** — la bascule
 reste un acte séparé (module 39).
 
-## M38-M39 — pas commencés
+## M38 — Prefect : quotas avant réentraînement
+
+Objectif : `ensure_model(..., retrain=True)` existe depuis les modules
+29-30 mais n'était jusqu'ici jamais piloté par un vrai critère. Quatre
+feux verts (feuille de route §6) doivent être réunis avant de dépenser
+un cycle d'arbitrage — jamais un déclenchement calendaire aveugle.
+
+| Contrôle | Statut | Preuve |
+|---|---|---|
+| Refactor `src/indusense/arbitration.py` | Implémenté | Logique du module 37 déplacée du script vers le paquet — `scripts/arbitrate_challenger.py` et `retrain_flow.py` partagent `run_arbitration()`/`persist_arbitration()` |
+| Feu vert 1 — quota validations | Implémenté | `>= 50` validations humaines |
+| Feu vert 2 — quota pannes confirmées | Implémenté | `>= 10` pannes confirmées/déclarées |
+| Feu vert 3 — qualité des données | Implémenté | `indusense.data_quality` (Pandera), bornes reprises du contrat DAT §5.4 |
+| Feu vert 4 — dérive constatée | Implémenté | PSI (`indusense.drift`, module 31) `trainval` vs période proposée, seuil 0.25 |
+| Cycle suspendu si feux non verts | Implémenté | Prouvé en conditions réelles (base vide) |
+| Cycle déclenché si 4 feux verts | Implémenté | Prouvé en conditions réelles (données du module 36) |
+| Non-régression | Implémenté | `uv run pytest -q` → 110 passed (+11) ; `ruff`/`black` OK |
+
+### 2 bugs réels rencontrés et corrigés
+
+1. `check_drift_signal` sur des fixtures de test à variance nulle :
+   PSI dégénère (tous les quantiles de bin s'effondrent en un seul
+   point) et ne détecte aucun écart, même avec une moyenne très
+   différente — pas un bug du code, un piège de conception de test
+   (fixture corrigée avec un vrai étalement, `rng.normal`).
+2. `_load_reviews` supposait que la table `predictions` existait déjà —
+   plante (`OperationalError: no such table`) sur un environnement neuf
+   (avant le premier backfill). Corrigé en exécutant `CREATE_TABLE_SQL`
+   avant la lecture, même garde que `predictions_store.py`.
+
+### Preuve en conditions réelles — les 4 feux verts, avec les vraies données
+
+```
+uv run --frozen python src/indusense/flows/retrain_flow.py
+Feu vert '1_quota_validations' : OK -- 982 validations humaines (seuil 50)
+Feu vert '2_quota_pannes_confirmees' : OK -- 727 pannes confirmées/déclarées (seuil 10)
+Feu vert '3_qualite_donnees' : OK -- aucune valeur hors bornes
+Feu vert '4_derive' : OK -- PSI max temp_mean_24h=0.3841 (seuil 0.25)
+4 feux verts réunis -- lancement de l'arbitrage champion/challenger
+Arbitrage terminé : décision=REJET_DU_MODELE_N (gains=9, régressions=7)
+```
+
+PSI réel de 0,38 entre `trainval` (juin 2025-mars 2026) et avril-mai
+2026 sur `temp_mean_24h` — dérive saisonnière authentique, pas
+fabriquée pour la démo. Décision d'arbitrage identique au module 37
+(même logique, appelée derrière les feux verts plutôt qu'à la demande).
+
+### Preuve en conditions réelles — cycle suspendu
+
+```
+PREDICTIONS_DB_URL="sqlite:///predictions_empty_test.db" \
+  uv run --frozen python src/indusense/flows/retrain_flow.py
+Feu vert '1_quota_validations' : SUSPENDU -- 0 validations humaines (seuil 50)
+Feu vert '2_quota_pannes_confirmees' : SUSPENDU -- 0 pannes confirmées/déclarées (seuil 10)
+Feu vert '3_qualite_donnees' : OK -- aucune valeur hors bornes
+Feu vert '4_derive' : OK -- PSI max temp_mean_24h=0.3841 (seuil 0.25)
+Cycle suspendu : feux non verts -> ['1_quota_validations', '2_quota_pannes_confirmees']
+```
+
+Base réellement vide (pas simulée en mémoire) — le cycle s'arrête avant
+de dépenser un entraînement, exactement comme prévu.
+
+## M39 — pas commencé

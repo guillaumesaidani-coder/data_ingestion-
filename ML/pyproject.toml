@@ -26,6 +26,7 @@ dependencies = [
     "uvicorn[standard]>=0.51.0",
     "prometheus-client>=0.25.0",
     "prefect>=3.8.6",
+    "pandera>=0.33.1",
 ]
 
 [project.scripts]
