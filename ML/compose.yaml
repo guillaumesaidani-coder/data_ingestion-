@@ -22,6 +22,9 @@ services:
       DB_PASSWORD: ThEP@ssW0rd
       DB_NAME: indusense_db
       DB_PORT: "5432"
+      # Mot de passe URL-encode (%40 = @) : ThEP@ssW0rd contient un @ litteral,
+      # que create_engine() interpreterait sinon comme separateur host.
+      PREDICTIONS_DB_URL: postgresql+psycopg2://indusense_user:ThEP%40ssW0rd@db:5432/indusense_db
     depends_on:
       db:
         condition: service_healthy

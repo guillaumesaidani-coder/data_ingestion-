@@ -25,7 +25,14 @@ COPY --from=build /app/.venv /app/.venv
 COPY artifacts/models/model.joblib /app/artifacts/models/model.joblib
 
 ENV PATH="/app/.venv/bin:${PATH}" \
-    MODEL_PATH="/app/artifacts/models/model.joblib"
+    MODEL_PATH="/app/artifacts/models/model.joblib" \
+    PREFECT_HOME="/app/data/.prefect"
+
+# /app est possede par root (COPY ci-dessus) : le flow (module 30) ecrit
+# data/gold/gold_dataset.csv et son etat Prefect (PREFECT_HOME) en cours de
+# route. Seuls ces sous-repertoires passent a appuser, pas /app entier -
+# .venv et le modele restent en lecture seule pour l'utilisateur applicatif.
+RUN mkdir -p /app/data /app/artifacts && chown -R appuser:appgroup /app/data /app/artifacts
 
 USER appuser
 EXPOSE 8000

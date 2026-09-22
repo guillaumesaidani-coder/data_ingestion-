@@ -53,3 +53,16 @@ def get_model_path() -> Path:
     """Chemin du modèle entraîné servi par l'API (produit par `indusense train -o ...`,
     versionné par DVC — voir artifacts/models/model.joblib.dvc)."""
     return Path(os.getenv("MODEL_PATH", str(ML_DIR / "artifacts" / "models" / "model.joblib")))
+
+
+def get_predictions_db_url() -> str:
+    """URL SQLAlchemy du stockage des prédictions (module 30) : une seule
+    URL, pas de branche if backend == "postgres". SQLite en local par
+    défaut ; `compose.yaml` la surcharge en Postgres pour le service api
+    (même base indusense_db que le Gold dataset)."""
+    default = f"sqlite:///{ML_DIR / 'artifacts' / 'predictions.db'}"
+    return os.getenv("PREDICTIONS_DB_URL", default)
+
+
+def get_predictions_engine() -> Engine:
+    return create_engine(get_predictions_db_url())
