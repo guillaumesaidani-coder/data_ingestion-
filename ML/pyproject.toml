@@ -39,6 +39,7 @@ dev = [
     "locust>=2.46.6",
     "pytest>=9.1.1",
     "ruff>=0.16.8",
+    "streamlit>=1.64.0",
 ]
 dl = [
     "albumentations>=1.3",

@@ -54,4 +54,71 @@ model_version= f550cff24814   review_status= PANNE_CONFIRMEE   ground_truth= 1  
 `model_version` reste identique (même modèle, pas de réentraînement) ;
 la revue a survécu au replay, comme le mécanisme le garantit.
 
-## M36-M39 — pas commencés
+## M36 — Simulateur de retour terrain + Streamlit réel
+
+Objectif : construire le mécanisme de revue (simulé + humain), et
+mesurer — pas affirmer — le biais de sélection que la feuille de route
+signale (§5) : un technicien n'inspecte que les alertes.
+
+| Contrôle | Statut | Preuve |
+|---|---|---|
+| Historique réel à réviser | Implémenté | `scripts/backfill_predictions.py` — 19 944 fenêtres du split test (avril-juin 2026, jamais vues à l'entraînement), scorées avec le vrai modèle |
+| Simulateur de retour terrain | Implémenté | `scripts/simulate_feedback.py` — vérité terrain réelle (`label_failure_next_24h`), pas inventée |
+| Biais de sélection mesuré | Implémenté | 65 vraies pannes invisibles dans les retours sans le bouton, 0 avec |
+| Streamlit réel (2 flux) | Implémenté | `scripts/streamlit_review.py` — affiner une fausse alerte, déclarer un incident non prédit |
+| Streamlit prouvé pour de vrai | Implémenté | `tests/test_streamlit_review.py`, `streamlit.testing.v1.AppTest` — clics réels, relecture en base après coup |
+| Non-régression | Implémenté | `uv run pytest -q` → 94 passed, 5 skipped, 1 xfailed (+3 tests) ; `ruff`/`black` OK |
+
+### `score_features()` mutualisé (module 35→36)
+
+`predict_flow.predict_latest` (scoring horaire) et
+`backfill_predictions.py` (historique) partagent maintenant
+`indusense.scoring.score_features()` — même colonnes attendues, même
+sérialisation NaN→null, une seule implémentation plutôt que deux qui
+auraient pu diverger (leçon du module 30 appliquée par anticipation).
+
+### Preuve en conditions réelles — backfill
+
+```
+uv run --frozen python scripts/backfill_predictions.py
+19944 fenêtres scorées (modèle f550cff24814)
+  dont 917 alertes (proba >= 0.5) sur 19944 (4.6%)
+```
+
+917 alertes = exactement `tp + fp` (662 + 255) du holdout mesuré au
+module 30 (`artifacts/models/metrics.json`) — cohérence croisée, pas une
+coïncidence : même modèle, même split test.
+
+### Preuve en conditions réelles — biais de sélection
+
+```
+uv run --frozen python scripts/simulate_feedback.py
+Alertes revues (biais de sélection, comme un vrai technicien) : 917
+  -> 662 PANNE_CONFIRMEE, 255 FAUSSE_ALERTE
+Pannes manquées par le modèle (faux négatifs) dans ce lot : 65
+Couverture des vraies pannes dans les retours : 662/727 (91.1%) sans le bouton
+BIAIS DE SÉLECTION MESURÉ : 65 vraies pannes restent invisibles dans les
+retours terrain tant que rien ne force leur remontée.
+
+uv run --frozen python scripts/simulate_feedback.py --incident-non-predit-rate 1.0
+Déclarées via 'incident non prédit' (taux 100%) : 65
+Couverture des vraies pannes dans les retours : 0/65 (0.0%) sans le bouton -> 65/65 (100.0%) avec
+```
+
+État final vérifié directement en base (`GROUP BY review_status`) :
+`PANNE_CONFIRMEE=662`, `FAUSSE_ALERTE=255`, `INCIDENT_NON_PREDIT=65`,
+`A_VALIDER=18962` — ce dernier chiffre est exactement `tn` (18962) du
+holdout : les vraies machines saines, jamais inspectées par un
+technicien, restent à juste titre non revues.
+
+### Preuve en conditions réelles — Streamlit (AppTest, pas un survol)
+
+`streamlit.testing.v1.AppTest` charge réellement `streamlit_review.py`,
+clique les widgets et relit la base après coup :
+- affiner une fausse alerte → `CAPTEUR_DEFAILLANT` + commentaire écrits ;
+- déclarer un incident non prédit → `INCIDENT_NON_PREDIT`,
+  `ground_truth=True` + commentaire écrits ;
+- les métriques affichées (`Température`, `Vibration`) viennent bien de
+  `features_payload` (module 35), pas de valeurs codées en dur dans la page.
+
+## M37-M39 — pas commencés

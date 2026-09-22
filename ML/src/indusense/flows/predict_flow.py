@@ -52,6 +52,7 @@ from indusense.modeling.train import (
     train_and_evaluate,
 )
 from indusense.predictions_store import upsert_predictions
+from indusense.scoring import score_features
 
 DEFAULT_GOLD_CSV = Path("data/gold/gold_dataset.csv")
 
@@ -108,25 +109,13 @@ def load_latest_features(gold_csv: Path) -> pd.DataFrame:
 
 @task(name="predict-latest")
 def predict_latest(model, latest: pd.DataFrame) -> pd.DataFrame:
-    imputer = model.named_steps.get("imputer")
-    feature_cols = (
-        list(imputer.feature_names_in_)
-        if imputer is not None and hasattr(imputer, "feature_names_in_")
-        else [c for c in latest.columns if c not in ("machine_id", "window_start")]
-    )
-    features = latest.reindex(columns=feature_cols)
-    proba = model.predict_proba(features)[:, 1]
+    proba, payloads = score_features(model, latest)
 
     out = latest[["machine_id", "window_start"]].copy()
     out["failure_proba_24h"] = proba
     out["scored_at"] = datetime.now(UTC).isoformat()
     out["model_version"] = get_model_version()
-    # Photo des features au moment du scoring (module 35) : NaN -> None,
-    # json.dumps ne produit pas de JSON valide sur un NaN brut.
-    out["features_payload"] = [
-        {k: (None if pd.isna(v) else v) for k, v in row.items()}
-        for row in features.to_dict(orient="records")
-    ]
+    out["features_payload"] = payloads
     return out
 
 
