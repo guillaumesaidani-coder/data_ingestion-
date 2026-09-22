@@ -1,0 +1,118 @@
+{
+  "title": "InduSense — dérive & métriques",
+  "uid": "indusense-drift",
+  "editable": true,
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "time": { "from": "now-1h", "to": "now" },
+  "refresh": "15s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "PSI par capteur — fenêtre 2 (capteur menteur)",
+      "type": "bargauge",
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        { "expr": "indusense_drift_psi{fenetre=\"2\"}", "legendFormat": "{{feature}}", "refId": "A" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 0.25 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 2,
+      "title": "Rappel du modèle par fenêtre",
+      "type": "bargauge",
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        { "expr": "indusense_drift_rappel", "legendFormat": "fenêtre {{fenetre}} / {{reference}}", "refId": "A" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "red", "value": null },
+              { "color": "green", "value": 0.7 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 3,
+      "title": "Taux d'alerte PSI (fenêtres actives)",
+      "type": "stat",
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 8 },
+      "targets": [{ "expr": "avg(indusense_drift_alerte)", "refId": "A" }],
+      "fieldConfig": { "defaults": { "unit": "percentunit" }, "overrides": [] }
+    },
+    {
+      "id": 4,
+      "title": "PSI dans le temps — température vs référence normale",
+      "type": "timeseries",
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 16, "x": 8, "y": 8 },
+      "targets": [
+        {
+          "expr": "indusense_drift_psi{feature=\"temp_mean_24h\", reference=\"normale\"}",
+          "legendFormat": "fenêtre {{fenetre}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "thresholdsStyle": { "mode": "line" }
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "red", "value": 0.25 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 5,
+      "title": "Précision du modèle par fenêtre",
+      "type": "bargauge",
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "targets": [
+        { "expr": "indusense_drift_precision", "legendFormat": "fenêtre {{fenetre}} / {{reference}}", "refId": "A" }
+      ],
+      "fieldConfig": { "defaults": { "max": 1, "min": 0 }, "overrides": [] }
+    },
+    {
+      "id": 6,
+      "title": "ROC-AUC par fenêtre",
+      "type": "bargauge",
+      "datasource": "Prometheus",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "targets": [
+        { "expr": "indusense_drift_roc_auc", "legendFormat": "fenêtre {{fenetre}} / {{reference}}", "refId": "A" }
+      ],
+      "fieldConfig": { "defaults": { "max": 1, "min": 0 }, "overrides": [] }
+    }
+  ]
+}

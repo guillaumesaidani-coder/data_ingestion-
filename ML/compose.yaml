@@ -1,0 +1,79 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: indusense_db
+      POSTGRES_USER: indusense_user
+      POSTGRES_PASSWORD: ThEP@ssW0rd
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U indusense_user"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    environment:
+      API_KEY: dev-local-key
+      DB_HOST: db
+      DB_USER: indusense_user
+      DB_PASSWORD: ThEP@ssW0rd
+      DB_NAME: indusense_db
+      DB_PORT: "5432"
+      # Mot de passe URL-encode (%40 = @) : ThEP@ssW0rd contient un @ litteral,
+      # que create_engine() interpreterait sinon comme separateur host.
+      PREDICTIONS_DB_URL: postgresql+psycopg2://indusense_user:ThEP%40ssW0rd@db:5432/indusense_db
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8010:8000"
+    # HEALTHCHECK deja defini dans le Dockerfile (GET /health) : rien a
+    # ajouter ici, c'est lui que service_healthy attendra plus bas.
+
+  prometheus:
+    image: prom/prometheus:v3.1.0
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./drift_alert_rules.yml:/etc/prometheus/drift_alert_rules.yml:ro
+      - prometheus_data:/prometheus
+    extra_hosts:
+      # host.docker.internal est natif sous Docker Desktop (Windows/Mac) ;
+      # cette ligne le rend explicite et porte le meme compose.yaml sous Linux.
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "9091:9090"
+    healthcheck:
+      # Image officielle sans HEALTHCHECK natif : on l'ecrit contre la
+      # propre readiness de Prometheus.
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:9090/-/ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    ports:
+      - "3010:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/etc/grafana/dashboards:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:3000/api/health || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
+  prometheus_data:
+  grafana_data:
