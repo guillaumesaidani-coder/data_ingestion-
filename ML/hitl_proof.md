@@ -232,4 +232,79 @@ Cycle suspendu : feux non verts -> ['1_quota_validations', '2_quota_pannes_confi
 Base réellement vide (pas simulée en mémoire) — le cycle s'arrête avant
 de dépenser un entraînement, exactement comme prévu.
 
-## M39 — pas commencé
+## M39 — Mode fantôme avant bascule
+
+Objectif : dernier filet avant la vraie production — le challenger
+accepté score en silence à côté du champion, et la bascule
+(`model.joblib`) ne s'exécute que si l'observation confirme, zéro
+tolérance à la régression.
+
+| Contrôle | Statut | Preuve |
+|---|---|---|
+| Journal séparé du fantôme | Implémenté | `reports/hitl/shadow_log.csv` — jamais mélangé à `predictions` (contrat : ce qui a été réellement servi) |
+| Zéro tolérance à la régression | Implémenté | `shadow_confirms()` — plus strict que l'arbitrage (qui tolère 1 régression sous dérogation) |
+| Bascule réelle et réversible | Implémenté | `promote_challenger()` — sauvegarde horodatée avant tout écrasement |
+| Cycle honnête sur l'arbitrage réel | Implémenté | Notre seul arbitrage réel (modules 37-38) a conclu `REJET_DU_MODELE_N` → le mode fantôme le respecte, `PAS_ELIGIBLE`, rien n'est promu |
+| Chemin mécanique de promotion prouvé séparément | Implémenté | `test_shadow_cycle_promotes_a_genuinely_accepted_challenger` — arbitrage accepté fabriqué pour l'occasion, bascule de fichier réelle vérifiée |
+| Non-régression | Implémenté | `uv run pytest -q` → 119 passed (+9) ; `ruff`/`black` OK |
+
+### Bug réel trouvé et corrigé
+
+`promote_challenger(challenger_path: Path = DEFAULT_CHALLENGER_PATH, ...)`
+— une valeur par défaut de signature est figée à la **définition** de
+la fonction, pas à son appel. Un test qui `monkeypatch` le module
+`DEFAULT_CHALLENGER_PATH` n'aurait donc aucun effet sur cette valeur par
+défaut déjà capturée. Corrigé en résolvant `challenger_path` à
+l'intérieur du corps de la fonction (même pattern déjà utilisé pour
+`model_path`), pas dans la signature.
+
+### Décision de conception : pourquoi pas la même table `predictions`
+
+Le mode fantôme score deux modèles sur la même fenêtre, mais un seul
+(le champion) est réellement vu par un technicien. Écrire les deux dans
+`predictions` casserait le contrat implicite de cette table (ce qui a
+été réellement servi, réellement examinable en Streamlit) — d'où un
+journal séparé (`shadow_log.csv`), pas une extension de la clé primaire
+comme envisagé dans le plan initial.
+
+### Preuve en conditions réelles — le vrai pipeline, honnête jusqu'au bout
+
+```
+uv run --frozen python scripts/run_shadow_mode.py
+Statut : PAS_ELIGIBLE
+dernière décision d'arbitrage = REJET_DU_MODELE_N, le mode fantôme
+n'observe que les challengers acceptés
+```
+
+`model.joblib` vérifié inchangé après coup (aucun `.backup-*` créé) —
+le pipeline M35→M39 a correctement refusé de toucher au modèle de
+production à chaque étape où c'était justifié : arbitrage (7
+régressions pour 9 gains) puis, par construction, mode fantôme. C'est
+le résultat honnête de ce projet, pas un aboutissement retouché pour la
+démo.
+
+### Preuve du chemin mécanique — arbitrage accepté fabriqué pour l'occasion
+
+```
+uv run --frozen python -m pytest tests/test_shadow.py -m requires_local_infra -v
+test_shadow_cycle_promotes_a_genuinely_accepted_challenger PASSED
+```
+
+Arbitrage `ACCEPTATION_DIRECTE` écrit dans un journal temporaire,
+`run_shadow_window` remplacé par une matrice fixe (gains=5,
+régressions=0) pour isoler le câblage de la performance ML — déjà
+prouvée ailleurs. Vérifié après coup : le fichier de sauvegarde contient
+l'ancien modèle, `model.joblib` contient le nouveau, `shadow_log.csv`
+écrit. Le mécanisme de bascule fonctionne réellement ; c'est
+l'arbitrage réel de nos données qui a décidé de ne pas l'utiliser.
+
+## Bilan M35-M39
+
+Boucle HITL complète, chaque étape prouvée en conditions réelles sur
+les vraies données InduSense (pas le jeu pédagogique de la feuille de
+route) : journal versionné → simulateur + Streamlit réel → arbitrage
+champion/challenger → 4 feux verts Prefect → mode fantôme. Résultat de
+bout en bout honnête : le modèle de production n'a jamais été touché,
+parce que rien dans les vraies données ne le justifiait encore — la
+boucle a fonctionné comme un garde-fou, pas comme une chaîne de
+validation automatique.
