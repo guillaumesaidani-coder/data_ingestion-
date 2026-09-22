@@ -121,4 +121,53 @@ clique les widgets et relit la base après coup :
 - les métriques affichées (`Température`, `Vibration`) viennent bien de
   `features_payload` (module 35), pas de valeurs codées en dur dans la page.
 
-## M37-M39 — pas commencés
+## M37 — Arbitrage champion vs challenger
+
+Objectif : entraîner un challenger sur des données que le champion n'a
+jamais vues (pas un réentraînement à l'identique — ça ne prouverait
+rien sur un modèle déjà fort, rappel 0,9106), puis arbitrer sur la
+matrice gain/stabilité/régression/angle mort de la feuille de route
+(§5), jamais sur un score global seul.
+
+| Contrôle | Statut | Preuve |
+|---|---|---|
+| Challenger entraîné sur données jamais vues | Implémenté | `trainval` (champion) + avril-mai 2026 revu par la boucle HITL (module 36) — juin 2026 réservé à l'arbitrage |
+| Matrice gain/stabilité/régression/angle mort | Implémenté | `scripts/arbitrate_challenger.py`, testée isolément (`tests/test_arbitration.py`, 5 tests) |
+| Règle d'or (jamais un score global seul) | Implémenté | `arbitration_decision()` — refuse un candidat en net positif si les régressions sont trop nombreuses |
+| Décision journalisée | Implémenté | `reports/hitl/arbitration_log.csv`, append à chaque run — équivalent léger de `model_promotions` (gap analysis §3) |
+| Non-régression | Implémenté | `uv run pytest -q` → 99 passed (+5) ; `ruff`/`black` OK |
+
+### Bug réel rencontré et corrigé
+
+`pd.concat([gold.y_tv, y_new])` — `y_tv` est `bool` (colonne Postgres
+`label_failure_next_24h`), `y_new` (vérité HITL) est `int` : la
+concaténation sans caster les deux au même type produit un `Series`
+`object`, que `sklearn` refuse (`ValueError: unknown format is not
+supported` sur `average_precision_score`). Corrigé en castant les deux
+en `int` avant `pd.concat`.
+
+### Preuve en conditions réelles — résultat mesuré, pas arrangé
+
+```
+uv run --frozen python scripts/arbitrate_challenger.py
+Entraînement augmenté : 112996 lignes (champion) + 17090 lignes avril-mai
+  (609 pannes confirmées/déclarées) = 130086 lignes
+Arbitrage sur juin 2026 : 2854 fenêtres, jamais vues par aucun des deux modèles
+Challenger (mesuré sur juin) : rappel=0.8898 précision=0.7554 ROC-AUC=0.9971
+
+Gain pur (champion faux, challenger juste)   : +9
+Stabilité (les deux justes)                  : 2798
+Régression (champion juste, challenger faux) : -7
+Angle mort (les deux faux)                   : 40
+Bilan net : +2
+Décision : REJET_DU_MODELE_N
+```
+
+Résultat honnête, pas retouché pour "réussir la démo" : bilan net
+positif (+2) mais **rejeté** — 7 régressions sur des pannes réelles est
+trop pour un gain de 9, la règle d'or de la feuille de route
+("un score global supérieur ne suffit pas") fonctionne exactement comme
+prévu. `challenger.joblib` sauvegardé mais **non activé** — la bascule
+reste un acte séparé (module 39).
+
+## M38-M39 — pas commencés
