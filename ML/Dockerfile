@@ -30,4 +30,9 @@ ENV PATH="/app/.venv/bin:${PATH}" \
 USER appuser
 EXPOSE 8000
 
+# Pas de curl/wget dans python:3.13-slim (les ajouter grossirait l'image) :
+# la sonde utilise le stdlib deja present dans .venv.
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=2)" || exit 1
+
 CMD ["uvicorn", "indusense.api.main:app", "--host", "0.0.0.0", "--port", "8000"]

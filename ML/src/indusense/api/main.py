@@ -21,9 +21,10 @@ from pathlib import Path
 
 import joblib
 import pandas as pd
-from fastapi import Depends, FastAPI, HTTPException, Request, Security
+from fastapi import Depends, FastAPI, HTTPException, Request, Response, Security
 from fastapi.responses import JSONResponse
 from fastapi.security import APIKeyHeader
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
 from pydantic import BaseModel
 
 from indusense.config import get_api_key, get_model_path
@@ -45,6 +46,18 @@ RATE_LIMIT_WINDOW_SECONDS = 60
 # process : suffisant pour une seule instance, pas pour un déploiement
 # multi-instance (cf. security_controls.md, risque résiduel du rate limit).
 _rate_limit_state: dict[str, list[float]] = defaultdict(list)
+
+# Instrumentation Prometheus (module 28) : scrapée sur /metrics.
+_http_requests_total = Counter(
+    "indusense_http_requests_total",
+    "Nombre de requêtes HTTP reçues",
+    ["method", "path", "status"],
+)
+_http_request_duration_seconds = Histogram(
+    "indusense_http_request_duration_seconds",
+    "Durée des requêtes HTTP",
+    ["method", "path"],
+)
 
 
 def load_model(path: Path | None = None):
@@ -78,7 +91,9 @@ async def limit_body_size(request: Request, call_next):
 @app.middleware("http")
 async def add_request_id(request: Request, call_next):
     request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
+    start = time.monotonic()
     response = await call_next(request)
+    duration = time.monotonic() - start
     response.headers["X-Request-ID"] = request_id
     # Volontairement limité à method/path/status/request_id : jamais les en-têtes
     # (donc jamais X-API-Key) ni le corps de la requête. Ne remplace pas un
@@ -89,6 +104,12 @@ async def add_request_id(request: Request, call_next):
         request.method,
         request.url.path,
         response.status_code,
+    )
+    _http_requests_total.labels(
+        method=request.method, path=request.url.path, status=response.status_code
+    ).inc()
+    _http_request_duration_seconds.labels(method=request.method, path=request.url.path).observe(
+        duration
     )
     return response
 
@@ -121,6 +142,12 @@ class PredictRequest(BaseModel):
 
 class PredictResponse(BaseModel):
     failure_proba_24h: float
+
+
+@app.get("/metrics")
+def metrics():
+    """Scrapé par Prometheus (voir prometheus.yml, job indusense-api)."""
+    return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
 @app.get("/health")
