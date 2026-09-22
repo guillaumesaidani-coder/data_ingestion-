@@ -1,0 +1,22 @@
+# Contexte de build minimal : seuls pyproject.toml, uv.lock, src/ et
+# artifacts/models/model.joblib sont COPY-és par le Dockerfile. Le reste
+# (notebooks, donnees, historique MLflow/DVC) ne doit jamais y entrer -
+# gros fichiers (data/gold/gold_dataset.csv fait 144 Mo) et non pertinent.
+
+*
+!pyproject.toml
+!uv.lock
+!README.md
+!src/
+!src/**
+
+!artifacts/
+artifacts/*
+!artifacts/models/
+artifacts/models/*
+!artifacts/models/model.joblib
+
+.venv/
+__pycache__/
+**/__pycache__/
+*.pyc

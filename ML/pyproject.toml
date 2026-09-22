@@ -24,7 +24,6 @@ dependencies = [
     "pyyaml>=6.0.3",
     "fastapi>=0.139.2",
     "uvicorn[standard]>=0.51.0",
-    "httpx>=0.28.1",
 ]
 
 [project.scripts]
@@ -34,6 +33,7 @@ indusense = "indusense.cli:main"
 dev = [
     "black>=26.5.1",
     "dvc>=3.67.1",
+    "httpx>=0.28.1",
     "pytest>=9.1.1",
     "ruff>=0.16.8",
 ]

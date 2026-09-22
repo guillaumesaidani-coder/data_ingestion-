@@ -2690,7 +2690,6 @@ dependencies = [
     { name = "alembic" },
     { name = "codecarbon" },
     { name = "fastapi" },
-    { name = "httpx" },
     { name = "huggingface-hub" },
     { name = "jupyter" },
     { name = "matplotlib" },
@@ -2713,6 +2712,7 @@ dependencies = [
 dev = [
     { name = "black" },
     { name = "dvc" },
+    { name = "httpx" },
     { name = "pytest" },
     { name = "ruff" },
 ]
@@ -2728,7 +2728,6 @@ requires-dist = [
     { name = "alembic", specifier = ">=1.13" },
     { name = "codecarbon", specifier = ">=3.2.9" },
     { name = "fastapi", specifier = ">=0.139.2" },
-    { name = "httpx", specifier = ">=0.28.1" },
     { name = "huggingface-hub", specifier = ">=1.24.0" },
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "matplotlib", specifier = ">=3.11.0" },
@@ -2751,6 +2750,7 @@ requires-dist = [
 dev = [
     { name = "black", specifier = ">=26.5.1" },
     { name = "dvc", specifier = ">=3.67.1" },
+    { name = "httpx", specifier = ">=0.28.1" },
     { name = "pytest", specifier = ">=9.1.1" },
     { name = "ruff", specifier = ">=0.16.8" },
 ]
