@@ -38,7 +38,12 @@ from prefect import flow, get_run_logger, task
 from prefect.cache_policies import NO_CACHE
 from sqlalchemy import text
 
-from indusense.config import get_engine, get_model_path, get_predictions_engine
+from indusense.config import (
+    get_engine,
+    get_model_path,
+    get_model_version,
+    get_predictions_engine,
+)
 from indusense.data import export_gold_dataset
 from indusense.modeling.dataset import load_gold_dataset
 from indusense.modeling.train import (
@@ -109,11 +114,19 @@ def predict_latest(model, latest: pd.DataFrame) -> pd.DataFrame:
         if imputer is not None and hasattr(imputer, "feature_names_in_")
         else [c for c in latest.columns if c not in ("machine_id", "window_start")]
     )
-    proba = model.predict_proba(latest.reindex(columns=feature_cols))[:, 1]
+    features = latest.reindex(columns=feature_cols)
+    proba = model.predict_proba(features)[:, 1]
 
     out = latest[["machine_id", "window_start"]].copy()
     out["failure_proba_24h"] = proba
     out["scored_at"] = datetime.now(UTC).isoformat()
+    out["model_version"] = get_model_version()
+    # Photo des features au moment du scoring (module 35) : NaN -> None,
+    # json.dumps ne produit pas de JSON valide sur un NaN brut.
+    out["features_payload"] = [
+        {k: (None if pd.isna(v) else v) for k, v in row.items()}
+        for row in features.to_dict(orient="records")
+    ]
     return out
 
 
@@ -132,6 +145,8 @@ def store_predictions(predictions: pd.DataFrame, engine=None) -> int:
             "window_start": row.window_start.isoformat(),
             "failure_proba_24h": float(row.failure_proba_24h),
             "scored_at": row.scored_at,
+            "model_version": row.model_version,
+            "features_payload": row.features_payload,
         }
         for row in predictions.itertuples()
     ]

@@ -9,6 +9,7 @@ variable d'environnement n'est définie ; un `.env` (non commité) permet
 de les surcharger sans toucher au code.
 """
 
+import hashlib
 import os
 from pathlib import Path
 
@@ -53,6 +54,18 @@ def get_model_path() -> Path:
     """Chemin du modèle entraîné servi par l'API (produit par `indusense train -o ...`,
     versionné par DVC — voir artifacts/models/model.joblib.dvc)."""
     return Path(os.getenv("MODEL_PATH", str(ML_DIR / "artifacts" / "models" / "model.joblib")))
+
+
+def get_model_version(path: Path | None = None) -> str:
+    """Identifiant du bundle modèle (module 35) : SHA-256 du fichier
+    .joblib, tronqué à 12 caractères hexadécimaux — assez pour distinguer
+    deux entraînements sans traîner un hash complet dans chaque ligne de
+    predictions/l'UI Streamlit. Recalculé à la volée (pas stocké à côté
+    du modèle) : il n'existe qu'un seul fichier model.joblib aujourd'hui,
+    donc aucun risque d'ambiguïté entre plusieurs bundles."""
+    model_path = Path(path) if path else get_model_path()
+    digest = hashlib.sha256(model_path.read_bytes()).hexdigest()
+    return digest[:12]
 
 
 def get_predictions_db_url() -> str:
