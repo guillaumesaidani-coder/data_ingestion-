@@ -25,6 +25,7 @@ dependencies = [
     "fastapi>=0.139.2",
     "uvicorn[standard]>=0.51.0",
     "prometheus-client>=0.25.0",
+    "prefect>=3.8.6",
 ]
 
 [project.scripts]
