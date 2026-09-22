@@ -37,7 +37,12 @@ services:
     image: prom/prometheus:v3.1.0
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./drift_alert_rules.yml:/etc/prometheus/drift_alert_rules.yml:ro
       - prometheus_data:/prometheus
+    extra_hosts:
+      # host.docker.internal est natif sous Docker Desktop (Windows/Mac) ;
+      # cette ligne le rend explicite et porte le meme compose.yaml sous Linux.
+      - "host.docker.internal:host-gateway"
     depends_on:
       api:
         condition: service_healthy
@@ -60,6 +65,8 @@ services:
       - "3010:3000"
     volumes:
       - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/etc/grafana/dashboards:ro
     healthcheck:
       test: ["CMD-SHELL", "wget --spider -q http://localhost:3000/api/health || exit 1"]
       interval: 5s

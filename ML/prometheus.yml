@@ -1,8 +1,20 @@
 global:
   scrape_interval: 15s
 
+rule_files:
+  - drift_alert_rules.yml
+
 scrape_configs:
   - job_name: indusense-api
     static_configs:
       - targets: ["api:8000"]
+    metrics_path: /metrics
+
+  # Exporteur de dérive (modules 31-34) : tourne sur l'hôte (scripts/export_drift_metrics.py,
+  # port 9110 — 9109 déjà occupé en permanence sur cette machine, voir export_drift_metrics.py),
+  # pas dans le conteneur. host.docker.internal fonctionne nativement avec Docker Desktop
+  # (Windows/Mac) ; sous Linux il faudrait ajouter extra_hosts au service prometheus.
+  - job_name: indusense-drift
+    static_configs:
+      - targets: ["host.docker.internal:9110"]
     metrics_path: /metrics

@@ -1,0 +1,7 @@
+horodatage,fenetre,label,reference,psi_max_feature,psi_max,ks_pvalue_min,alerte_psi,persistant,recall,precision,roc_auc,sous_plancher_rappel
+2026-09-22T08:54:29.727164+00:00,1,temoin,normale,temp_mean_24h,0.0406,0.0,False,False,0.948,0.9379,0.9987,False
+2026-09-22T08:54:32.330948+00:00,2,capteur,normale,temp_mean_24h,7.3845,0.0,True,False,0.8871,0.8746,0.9974,False
+2026-09-22T08:54:34.881852+00:00,3,concept_drift,normale,temp_mean_24h,0.1653,0.0,False,False,0.0433,0.0259,0.4977,True
+2026-09-22T08:54:37.428563+00:00,4,campagne,normale,temp_mean_24h,2.6149,0.0,True,False,1.0,0.8961,1.0,False
+2026-09-22T08:54:39.985407+00:00,4,campagne,haute_charge,pressure_std_24h,0.0259,0.0,False,False,1.0,0.8961,1.0,False
+2026-09-22T08:54:42.562587+00:00,2,capteur,normale,temp_mean_24h,7.3845,0.0,True,True,0.8871,0.8746,0.9974,False

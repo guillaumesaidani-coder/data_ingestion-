@@ -28,3 +28,11 @@ artifacts/models/*
 !artifacts/models/*.dvc
 /telemetry.csv
 /releves_incidents_anonymised.csv
+
+# Gold exporté par le flow (module 29/30) — régénéré depuis Postgres, pas une source
+/data/gold/*.csv
+
+# Dumps de fenêtres de dérive (module 31-34) — régénérés par scripts/drift_windows.py,
+# plusieurs Mo chacun ; seuls les résultats (spec, suivi, PSI par feature) sont versionnés.
+/reports/drift/reference_*.csv
+/reports/drift/window_*.csv
