@@ -366,7 +366,7 @@
               <div class="tl-bar bar-test">MACH 01–15</div>
             </div>
             <div class="warning-box" style="margin-top:0.5rem;">
-              Mêmes machines en train et val → le modèle mémorise les signatures machine. PR-AUC val = 0.8497 surestimé.
+              Mêmes machines en train et val → le modèle mémorise les signatures machine. PR-AUC val = 0.9208 surestimé.
             </div>
           </div>
         </div>
@@ -399,19 +399,19 @@
   <!-- §2 KPIs -->
   <div class="kpi-row">
     <div class="kpi">
-      <div class="kpi-val delta-down">0.7792</div>
+      <div class="kpi-val delta-down">0.8669</div>
       <div class="kpi-label">PR-AUC CV moyen</div>
     </div>
     <div class="kpi">
-      <div class="kpi-val" style="color:var(--orange);">±0.1772</div>
+      <div class="kpi-val" style="color:var(--orange);">±0.0969</div>
       <div class="kpi-label">Std inter-machines</div>
     </div>
     <div class="kpi">
-      <div class="kpi-val delta-up">0.8595</div>
+      <div class="kpi-val delta-up">0.8948</div>
       <div class="kpi-label">PR-AUC test final</div>
     </div>
     <div class="kpi">
-      <div class="kpi-val delta-up">0.7908</div>
+      <div class="kpi-val delta-up">0.7642</div>
       <div class="kpi-label">F1 test</div>
     </div>
   </div>
@@ -436,34 +436,34 @@
         <div class="fleet-card">
           <div class="fleet-card-head c-green">Fiables — ≥ 0.87</div>
           <div class="fleet-card-body">
-            <div class="fleet-machine"><span>MACH-11</span><span class="score" style="color:var(--green);">1.000</span></div>
-            <div class="fleet-machine"><span>MACH-15</span><span class="score" style="color:var(--green);">1.000</span></div>
-            <div class="fleet-machine"><span>MACH-08</span><span class="score" style="color:var(--green);">0.955</span></div>
-            <div class="fleet-machine"><span>MACH-06</span><span class="score" style="color:var(--green);">0.917</span></div>
-            <div class="fleet-machine"><span>MACH-01</span><span class="score" style="color:var(--green);">0.878</span></div>
-            <div class="fleet-machine"><span>MACH-04</span><span class="score" style="color:var(--green);">0.874</span></div>
+            <div class="fleet-machine"><span>MACH-11</span><span class="score" style="color:var(--green);">0.974</span></div>
+            <div class="fleet-machine"><span>MACH-02</span><span class="score" style="color:var(--green);">0.956</span></div>
+            <div class="fleet-machine"><span>MACH-06</span><span class="score" style="color:var(--green);">0.941</span></div>
+            <div class="fleet-machine"><span>MACH-01</span><span class="score" style="color:var(--green);">0.934</span></div>
+            <div class="fleet-machine"><span>MACH-15</span><span class="score" style="color:var(--green);">0.933</span></div>
+            <div class="fleet-machine"><span>MACH-04</span><span class="score" style="color:var(--green);">0.933</span></div>
+            <div class="fleet-machine"><span>MACH-10</span><span class="score" style="color:var(--green);">0.920</span></div>
+            <div class="fleet-machine"><span>MACH-14</span><span class="score" style="color:var(--green);">0.898</span></div>
+            <div class="fleet-machine"><span>MACH-08</span><span class="score" style="color:var(--green);">0.897</span></div>
             <div class="fleet-reco">Modèle global suffisant. Pannes transférables depuis les autres machines.</div>
           </div>
         </div>
         <div class="fleet-card">
           <div class="fleet-card-head c-orange">Fragiles — 0.70–0.87</div>
           <div class="fleet-card-body">
-            <div class="fleet-machine"><span>MACH-14</span><span class="score" style="color:var(--orange);">0.793</span></div>
-            <div class="fleet-machine"><span>MACH-09</span><span class="score" style="color:var(--orange);">0.784</span></div>
-            <div class="fleet-machine"><span>MACH-12</span><span class="score" style="color:var(--orange);">0.761</span></div>
-            <div class="fleet-machine"><span>MACH-10</span><span class="score" style="color:var(--orange);">0.760</span></div>
-            <div class="fleet-machine"><span>MACH-03</span><span class="score" style="color:var(--orange);">0.707</span></div>
+            <div class="fleet-machine"><span>MACH-07</span><span class="score" style="color:var(--orange);">0.869</span></div>
+            <div class="fleet-machine"><span>MACH-12</span><span class="score" style="color:var(--orange);">0.855</span></div>
+            <div class="fleet-machine"><span>MACH-09</span><span class="score" style="color:var(--orange);">0.759</span></div>
+            <div class="fleet-machine"><span>MACH-03</span><span class="score" style="color:var(--orange);">0.742</span></div>
+            <div class="fleet-machine"><span>MACH-13</span><span class="score" style="color:var(--orange);">0.739</span></div>
             <div class="fleet-reco">Monitoring renforcé. Abaisser le seuil d'alerte pour réduire les faux négatifs.</div>
           </div>
         </div>
         <div class="fleet-card">
           <div class="fleet-card-head c-red">Problématiques — &lt; 0.70</div>
           <div class="fleet-card-body">
-            <div class="fleet-machine"><span>MACH-02</span><span class="score" style="color:var(--red);">0.664</span></div>
-            <div class="fleet-machine"><span>MACH-13</span><span class="score" style="color:var(--red);">0.639</span></div>
-            <div class="fleet-machine"><span>MACH-05</span><span class="score" style="color:var(--red);">0.568</span></div>
-            <div class="fleet-machine"><span>MACH-07</span><span class="score" style="color:var(--red);">0.329</span></div>
-            <div class="fleet-reco">MACH-07 = artefact temporel (dégradation tardive, 0.8% pannes en train). MACH-02/05/13 nécessitent un modèle dédié ou features supplémentaires.</div>
+            <div class="fleet-machine"><span>MACH-05</span><span class="score" style="color:var(--red);">0.655</span></div>
+            <div class="fleet-reco">Ajout des features maintenance + hyperparamètres corrigés : la flotte problématique passe de 4 à 1 machine. MACH-05 reste à investiguer (peu de positifs, cf. §6).</div>
           </div>
         </div>
       </div>
@@ -491,23 +491,23 @@
           <tr>
             <td><strong>B8</strong></td>
             <td><span class="badge badge-orange">Split temporel</span></td>
-            <td>0.8497</td>
-            <td>0.8232</td>
-            <td>0.7672</td>
+            <td>0.9208</td>
+            <td>0.8693</td>
+            <td>0.7570</td>
             <td style="color:var(--orange);font-size:0.8rem;">Val surestimée (mêmes machines)</td>
           </tr>
           <tr class="highlight">
             <td><strong>B9-GKF</strong></td>
             <td><span class="badge badge-green">GroupKFold</span></td>
-            <td>0.7792 <span style="color:var(--text2);font-size:0.75rem;">± 0.18</span></td>
-            <td><strong>0.8595</strong></td>
-            <td><strong>0.7908</strong></td>
+            <td>0.8669 <span style="color:var(--text2);font-size:0.75rem;">± 0.10</span></td>
+            <td><strong>0.8948</strong></td>
+            <td><strong>0.7642</strong></td>
             <td style="color:var(--green);font-size:0.8rem;">Estimation honnête — meilleur test</td>
           </tr>
         </tbody>
       </table>
       <p style="margin-top:1rem;font-size:0.8rem;color:var(--text2);line-height:1.5;">
-        <strong style="color:var(--text);">Lecture :</strong> le CV moyen (0.7792) est l'estimation réaliste de la performance sur une machine inconnue. Le test (0.8595) est meilleur car le modèle final s'entraîne sur train+val (plus de données). La vraie limite est la <strong style="color:var(--orange);">std ±0.1772</strong> — certaines machines sont bien moins prédictibles que d'autres.
+        <strong style="color:var(--text);">Lecture :</strong> le CV moyen (0.8669) est l'estimation réaliste de la performance sur une machine inconnue. Le test (0.8948) est meilleur car le modèle final s'entraîne sur train+val (plus de données). La vraie limite est la <strong style="color:var(--orange);">std ±0.0969</strong> — certaines machines sont bien moins prédictibles que d'autres.
       </p>
     </div>
   </div>
@@ -520,15 +520,15 @@
     <div class="card-body" style="display:flex;flex-direction:column;gap:0.8rem;">
       <div class="info-box">
         <span>✓</span>
-        <span>Le modèle global est <strong>fiable sur 6 machines / 15</strong> (≥ 0.87). Sur ces machines, GroupKFold confirme que le signal est transférable.</span>
+        <span>Le modèle global est <strong>fiable sur 9 machines / 15</strong> (≥ 0.87). Sur ces machines, GroupKFold confirme que le signal est transférable.</span>
       </div>
       <div class="info-box">
         <span>🔍</span>
-        <span><strong>MACH-07 diagnostic (TP9 §6)</strong> — H1 confirmée : taux de panne train = 0.8% vs 3.6% flotte (dégradation tardive, burst en test). H2 rejetée : features non atypiques. H3 rejetée : le modèle détecte 93% des pannes (médiane score=0.961). PR-AUC=0.329 est un artefact statistique (24 positifs en val) — MACH-07 est learnable avec plus de données historiques.</span>
+        <span><strong>MACH-07 diagnostic (TP9 §6)</strong> — H1 confirmée (partielle) : seulement 24 positifs en validation temporelle (taux train 0.8% vs 3.6% flotte) → score peu fiable statistiquement. H2 rejetée : features non atypiques (3/71 seulement à |z|&gt;2). H3 rejetée : avec les hyperparamètres corrigés, le modèle détecte 98.6% des pannes de MACH-07 en fold GroupKFold (médiane score=0.951) — PR-AUC=0.869, machine désormais dans le tiers fragile, plus dans le tiers problématique.</span>
       </div>
       <div class="warning-box">
         <span>⚠</span>
-        <span><strong>MACH-13 confirmé atypique</strong> — cohérent avec OOE TP8b (val Δ = −0.120). MACH-02, MACH-05 nécessitent investigation.</span>
+        <span><strong>MACH-05 devient le cas le plus fragile</strong> (PR-AUC=0.655, seule machine sous 0.70) — à investiguer en priorité (même grille H1/H2/H3 que MACH-07).</span>
       </div>
       <table class="metrics-table" style="margin-top:0.5rem;">
         <thead>
@@ -537,11 +537,11 @@
         <tbody>
           <tr>
             <td><strong>TP10 — Normalisation intra-machine</strong></td>
-            <td>Z-score par machine → signal transférable, réduire variance ±0.1772</td>
+            <td>Z-score par machine → signal transférable, réduire variance ±0.0969</td>
             <td><span class="badge badge-red">Haute</span></td>
           </tr>
           <tr>
-            <td>Investiguer MACH-02/05/13</td>
+            <td>Investiguer MACH-05</td>
             <td>Même diagnostic H1/H2/H3 que MACH-07</td>
             <td><span class="badge badge-orange">Moyenne</span></td>
           </tr>
@@ -559,24 +559,24 @@
 
 <script>
 const MACHINES = [
-  { name: "MACH-07", score: 0.329 },
-  { name: "MACH-05", score: 0.568 },
-  { name: "MACH-13", score: 0.639 },
-  { name: "MACH-02", score: 0.664 },
-  { name: "MACH-03", score: 0.707 },
-  { name: "MACH-10", score: 0.760 },
-  { name: "MACH-12", score: 0.761 },
-  { name: "MACH-09", score: 0.784 },
-  { name: "MACH-14", score: 0.793 },
-  { name: "MACH-04", score: 0.874 },
-  { name: "MACH-01", score: 0.878 },
-  { name: "MACH-06", score: 0.917 },
-  { name: "MACH-08", score: 0.955 },
-  { name: "MACH-15", score: 1.000 },
-  { name: "MACH-11", score: 1.000 },
+  { name: "MACH-05", score: 0.655 },
+  { name: "MACH-13", score: 0.739 },
+  { name: "MACH-03", score: 0.742 },
+  { name: "MACH-09", score: 0.759 },
+  { name: "MACH-12", score: 0.855 },
+  { name: "MACH-07", score: 0.869 },
+  { name: "MACH-08", score: 0.897 },
+  { name: "MACH-14", score: 0.898 },
+  { name: "MACH-10", score: 0.920 },
+  { name: "MACH-04", score: 0.933 },
+  { name: "MACH-15", score: 0.933 },
+  { name: "MACH-01", score: 0.934 },
+  { name: "MACH-06", score: 0.941 },
+  { name: "MACH-02", score: 0.956 },
+  { name: "MACH-11", score: 0.974 },
 ];
 
-const B8_REF = 0.8497;
+const B8_REF = 0.9208;
 
 function getColor(score, dark) {
   if (score < 0.70) return dark ? "#E05A5A" : "#CC3A3A";

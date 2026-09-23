@@ -628,7 +628,7 @@ body {
     <h1 class="hero-title">Détecter la panne<br>avant qu'elle survienne</h1>
     <div class="hero-pills">
       <span class="hero-pill">Classification binaire</span>
-      <span class="hero-pill">78 features</span>
+      <span class="hero-pill">72 features</span>
       <span class="hero-pill">3 modèles</span>
       <span class="hero-pill">MLflow</span>
       <span class="hero-pill">132 940 observations</span>
@@ -744,7 +744,7 @@ body {
         <div class="model-kind">Linéaire · Baseline</div>
       </div>
       <div class="model-body">
-        <p class="model-desc">Combine linéairement les 78 features via une fonction sigmoïde. Nécessite une standardisation. Rapide, interprétable, révèle si le problème est linéairement séparable.</p>
+        <p class="model-desc">Combine linéairement les 72 features via une fonction sigmoïde. Nécessite une standardisation. Rapide, interprétable, révèle si le problème est linéairement séparable.</p>
         <div class="params">
           <div class="param"><span class="pkey">class_weight</span><span class="pval">"balanced"</span></div>
           <div class="param"><span class="pkey">max_iter</span><span class="pval">1000</span></div>
@@ -819,36 +819,36 @@ body {
           <td><span class="mval" style="color:var(--danger)">1.0000 ⚠️</span></td>
           <td>
             <div class="bar-wrap">
-              <span class="mval">0.8174</span>
-              <div class="bar bar-amber" style="width:163px"></div>
+              <span class="mval">0.8864</span>
+              <div class="bar bar-amber" style="width:177px"></div>
             </div>
           </td>
-          <td><span class="mval">0.9923</span></td>
-          <td><span class="mval">0.7351</span></td>
+          <td><span class="mval">0.9942</span></td>
+          <td><span class="mval">0.8150</span></td>
         </tr>
         <tr>
           <td>Random Forest</td>
-          <td><span class="mval" style="color:var(--danger)">0.9891 ⚠️</span></td>
+          <td><span class="mval" style="color:var(--danger)">0.9944 ⚠️</span></td>
           <td>
             <div class="bar-wrap">
-              <span class="mval">0.7682</span>
-              <div class="bar" style="width:154px"></div>
+              <span class="mval">0.7940</span>
+              <div class="bar" style="width:159px"></div>
             </div>
           </td>
-          <td><span class="mval">0.9902</span></td>
-          <td><span class="mval">0.5676</span></td>
+          <td><span class="mval">0.9910</span></td>
+          <td><span class="mval">0.5713</span></td>
         </tr>
         <tr>
           <td>Régression Logistique</td>
-          <td><span class="mval">0.5312</span></td>
+          <td><span class="mval">0.5427</span></td>
           <td>
             <div class="bar-wrap">
-              <span class="mval">0.3569</span>
-              <div class="bar bar-blue" style="width:71px"></div>
+              <span class="mval">0.3349</span>
+              <div class="bar bar-blue" style="width:67px"></div>
             </div>
           </td>
-          <td><span class="mval">0.9250</span></td>
-          <td><span class="mval">0.4174</span></td>
+          <td><span class="mval">0.9168</span></td>
+          <td><span class="mval">0.4209</span></td>
         </tr>
       </tbody>
     </table>
@@ -860,32 +860,32 @@ body {
       <p class="cm-axis-pred">Prédit →</p>
       <div class="cm-matrix">
         <div class="cm-cell c-tn">
-          <span class="cv">18 851</span>
+          <span class="cv">18 909</span>
           <span class="cl">Vrai Négatif</span>
           <span class="cd">OK détecté ✅</span>
         </div>
         <div class="cm-cell c-fp">
-          <span class="cv">366</span>
+          <span class="cv">308</span>
           <span class="cl">Faux Positif</span>
           <span class="cd">Fausse alerte ⚠️</span>
         </div>
         <div class="cm-cell c-fn">
-          <span class="cv">88</span>
+          <span class="cv">92</span>
           <span class="cl">Faux Négatif</span>
           <span class="cd">Panne manquée ❌</span>
         </div>
         <div class="cm-cell c-tp">
-          <span class="cv">639</span>
+          <span class="cv">635</span>
           <span class="cl">Vrai Positif</span>
           <span class="cd">Panne détectée ✅</span>
         </div>
       </div>
       <div style="margin-top:16px; display:flex; gap:16px; font-size:13px;">
         <div style="background:var(--ok-bg);color:var(--ok);padding:8px 14px;border-radius:8px;font-weight:700;">
-          Recall 87.9% — 639/727 pannes détectées
+          Recall 87.3% — 635/727 pannes détectées
         </div>
         <div style="background:var(--accent-bg);color:var(--accent-dark);padding:8px 14px;border-radius:8px;font-weight:700;">
-          Précision 63.6% — 366 fausses alertes
+          Précision 67.3% — 308 fausses alertes
         </div>
       </div>
     </div>
@@ -953,7 +953,7 @@ body {
 <div class="section container">
   <div class="conclusion">
     <h2>Récapitulatif et passage en B7</h2>
-    <p>XGBoost retenu avec PR-AUC val = <strong style="color:#FEF3C7">0.8174</strong> vs Random Forest 0.7682 vs Régression Logistique 0.3569. Les hyperparamètres restent sobres — l'optimisation complète est réservée au module B7.</p>
+    <p>XGBoost retenu avec PR-AUC val = <strong style="color:#FEF3C7">0.8864</strong> vs Random Forest 0.7940 vs Régression Logistique 0.3349. Les hyperparamètres restent sobres — l'optimisation complète est réservée au module B7.</p>
 
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px;margin-bottom:8px;">
       <div style="border:1px solid rgba(255,255,255,0.12);border-top:3px solid #3B82F6;border-radius:10px;padding:18px 20px;">

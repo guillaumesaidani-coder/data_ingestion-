@@ -111,23 +111,23 @@ code{font-family:var(--mono);font-size:.83em;background:var(--surf2);padding:.08
     <div class="hero-kpis">
       <div class="hkpi hkpi-bad">
         <div class="hkpi-l">PR-AUC CV</div>
-        <div class="hkpi-v">0,5580</div>
-        <div class="hkpi-n">B10-NRM · ± 0,23</div>
+        <div class="hkpi-v">0,6663</div>
+        <div class="hkpi-n">B10-NRM · ± 0,18</div>
       </div>
       <div class="hkpi hkpi-warn">
         <div class="hkpi-l">Δ vs B9-GKF</div>
-        <div class="hkpi-v">−0,221</div>
-        <div class="hkpi-n">régression −28 %</div>
+        <div class="hkpi-v">−0,201</div>
+        <div class="hkpi-n">régression −23 %</div>
       </div>
       <div class="hkpi hkpi-ok">
         <div class="hkpi-l">Référence B9</div>
-        <div class="hkpi-v">0,7792</div>
+        <div class="hkpi-v">0,8669</div>
         <div class="hkpi-n">GroupKFold sans normalisation</div>
       </div>
       <div class="hkpi">
         <div class="hkpi-l">Machines régressées</div>
-        <div class="hkpi-v" style="color:var(--bad)">13 / 15</div>
-        <div class="hkpi-n">dont MACH-06 : −0,483</div>
+        <div class="hkpi-v" style="color:var(--bad)">14 / 15</div>
+        <div class="hkpi-n">dont MACH-07 : −0,540</div>
       </div>
     </div>
   </div>
@@ -204,8 +204,8 @@ MACH-01 : z = (205 - µ_01) / σ_01 = <span class="cbad">+3.2</span> → label =
   <div class="tw"><table>
     <thead><tr><th>Modèle</th><th>Stratégie val</th><th>PR-AUC CV</th><th>Std</th><th>PR-AUC test</th></tr></thead>
     <tbody>
-      <tr class="r-ok"><td><code>B9-GKF</code></td><td>GroupKFold sans normalisation</td><td><strong>0,7792</strong></td><td>0,1772</td><td><strong>0,8595</strong></td></tr>
-      <tr class="r-bad"><td><code>B10-NRM</code></td><td>GroupKFold + z-score machine à l'entraînement</td><td>0,5580</td><td>0,2279</td><td>—</td></tr>
+      <tr class="r-ok"><td><code>B9-GKF</code></td><td>GroupKFold sans normalisation</td><td><strong>0,8669</strong></td><td>0,0969</td><td><strong>0,8948</strong></td></tr>
+      <tr class="r-bad"><td><code>B10-NRM</code></td><td>GroupKFold + z-score machine à l'entraînement</td><td>0,6663</td><td>0,1844</td><td>0,8442</td></tr>
     </tbody>
   </table></div>
 
@@ -218,11 +218,12 @@ MACH-01 : z = (205 - µ_01) / σ_01 = <span class="cbad">+3.2</span> → label =
   <div class="tw"><table>
     <thead><tr><th>Machine</th><th>B9-GKF</th><th>B10-NRM</th><th>Δ</th></tr></thead>
     <tbody>
-      <tr class="r-ok"><td>MACH-13</td><td>0,639</td><td>0,702</td><td><span class="b b-ok">+0,063</span></td></tr>
-      <tr class="r-ok"><td>MACH-01</td><td>0,878</td><td>0,927</td><td><span class="b b-ok">+0,049</span></td></tr>
-      <tr class="r-bad"><td>MACH-06</td><td>0,917</td><td>0,434</td><td><span class="b b-bad">−0,483</span></td></tr>
-      <tr class="r-bad"><td>MACH-14</td><td>0,793</td><td>0,463</td><td><span class="b b-bad">−0,330</span></td></tr>
-      <tr><td colspan="4" style="font-size:.8rem;color:var(--t3);padding:.6rem .8rem">13 machines sur 15 en régression — dont plusieurs massives</td></tr>
+      <tr class="r-bad"><td>MACH-07</td><td>0,869</td><td>0,329</td><td><span class="b b-bad">−0,540</span></td></tr>
+      <tr class="r-bad"><td>MACH-02</td><td>0,956</td><td>0,505</td><td><span class="b b-bad">−0,451</span></td></tr>
+      <tr class="r-bad"><td>MACH-06</td><td>0,941</td><td>0,691</td><td><span class="b b-bad">−0,250</span></td></tr>
+      <tr class="r-bad"><td>MACH-14</td><td>0,898</td><td>0,600</td><td><span class="b b-bad">−0,298</span></td></tr>
+      <tr class="r-ok"><td>MACH-11</td><td>0,974</td><td>1,000</td><td><span class="b b-ok">+0,026</span></td></tr>
+      <tr><td colspan="4" style="font-size:.8rem;color:var(--t3);padding:.6rem .8rem">14 machines sur 15 en régression — seule MACH-11 progresse</td></tr>
     </tbody>
   </table></div>
 </section>

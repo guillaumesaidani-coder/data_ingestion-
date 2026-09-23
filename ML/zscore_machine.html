@@ -124,29 +124,29 @@ code{font-family:var(--mono);font-size:.83em;background:var(--surf2);padding:.07
       <div class="model-card mc-ref">
         <div class="mc-label">Référence</div>
         <div class="mc-name">B9-GKF</div>
-        <div class="mc-row"><span class="mc-k">PR-AUC CV</span><span class="mc-v">0.7792</span></div>
-        <div class="mc-row"><span class="mc-k">± std</span><span class="mc-v">0.1772</span></div>
-        <div class="mc-row"><span class="mc-k">PR-AUC test</span><span class="mc-v">0.8595</span></div>
-        <div class="mc-row"><span class="mc-k">Features</span><span class="mc-v">69</span></div>
+        <div class="mc-row"><span class="mc-k">PR-AUC CV</span><span class="mc-v">0.8669</span></div>
+        <div class="mc-row"><span class="mc-k">± std</span><span class="mc-v">0.0969</span></div>
+        <div class="mc-row"><span class="mc-k">PR-AUC test</span><span class="mc-v">0.8948</span></div>
+        <div class="mc-row"><span class="mc-k">Features</span><span class="mc-v">71</span></div>
         <div class="mc-delta delta-ref" style="margin-top:.5rem">— référence</div>
       </div>
       <div class="model-card mc-mid">
         <div class="mc-label">Meilleur</div>
         <div class="mc-name">B11-GKF</div>
-        <div class="mc-row"><span class="mc-k">PR-AUC CV</span><span class="mc-v">0.7839</span></div>
-        <div class="mc-row"><span class="mc-k">± std</span><span class="mc-v">0.1891</span></div>
-        <div class="mc-row"><span class="mc-k">PR-AUC test</span><span class="mc-v">0.8799</span></div>
-        <div class="mc-row"><span class="mc-k">Features</span><span class="mc-v">69</span></div>
-        <div class="mc-delta delta-pos" style="margin-top:.5rem">CV +0.0047 · test +0.0204</div>
+        <div class="mc-row"><span class="mc-k">PR-AUC CV</span><span class="mc-v">0.8752</span></div>
+        <div class="mc-row"><span class="mc-k">± std</span><span class="mc-v">0.1010</span></div>
+        <div class="mc-row"><span class="mc-k">PR-AUC test</span><span class="mc-v">0.8993</span></div>
+        <div class="mc-row"><span class="mc-k">Features</span><span class="mc-v">71</span></div>
+        <div class="mc-delta delta-pos" style="margin-top:.5rem">CV +0.0083 · test +0.0045</div>
       </div>
       <div class="model-card mc-bad">
         <div class="mc-label">TP12 — Ce TP</div>
         <div class="mc-name">B12-GKF</div>
-        <div class="mc-row"><span class="mc-k">PR-AUC CV</span><span class="mc-v">0.7480</span></div>
-        <div class="mc-row"><span class="mc-k">± std</span><span class="mc-v">0.2300</span></div>
-        <div class="mc-row"><span class="mc-k">PR-AUC test</span><span class="mc-v">0.8487</span></div>
-        <div class="mc-row"><span class="mc-k">Features</span><span class="mc-v">136</span></div>
-        <div class="mc-delta delta-neg" style="margin-top:.5rem">CV −0.0312 · test −0.0312</div>
+        <div class="mc-row"><span class="mc-k">PR-AUC CV</span><span class="mc-v">0.8049</span></div>
+        <div class="mc-row"><span class="mc-k">± std</span><span class="mc-v">0.1215</span></div>
+        <div class="mc-row"><span class="mc-k">PR-AUC test</span><span class="mc-v">0.8839</span></div>
+        <div class="mc-row"><span class="mc-k">Features</span><span class="mc-v">140</span></div>
+        <div class="mc-delta delta-neg" style="margin-top:.5rem">CV −0.0620 · test −0.0154</div>
       </div>
     </div>
   </div>
@@ -158,10 +158,10 @@ code{font-family:var(--mono);font-size:.83em;background:var(--surf2);padding:.07
 <section>
   <div class="sn">01</div>
   <h2>Audit des features zscore_machine</h2>
-  <p>Sur 69 features disponibles, seulement <strong>2 features zscore_machine</strong> existaient dans la base. 67 features raw n'avaient aucun équivalent machine-normalisé.</p>
+  <p>Sur 71 features disponibles, seulement <strong>2 features zscore_machine</strong> existaient dans la base. 69 features raw n'avaient aucun équivalent machine-normalisé.</p>
 
   <div class="cw">
-    <div class="cw-title">Répartition des 69 features — avant TP12</div>
+    <div class="cw-title">Répartition des 71 features — avant TP12</div>
     <canvas id="auditChart" height="120"></canvas>
   </div>
 
@@ -171,11 +171,12 @@ code{font-family:var(--mono);font-size:.83em;background:var(--surf2);padding:.07
       <tr class="r-ok"><td><b>zscore_machine existantes</b></td><td>2</td><td><code>temp_zscore_machine</code>, <code>pressure_zscore_machine</code></td></tr>
       <tr><td>Agrégats temporels (1h/6h/24h)</td><td>~40</td><td><code>temp_mean_1h</code>, <code>pressure_std_24h</code>, <code>voltage_mean_1h</code>…</td></tr>
       <tr><td>Indicateurs d'incidents</td><td>~15</td><td><code>incident_count_prev_24h</code>, <code>incident_max_severity_prev_24h</code>…</td></tr>
+      <tr><td>Maintenance</td><td>2</td><td><code>days_since_last_maintenance</code>, <code>maintenance_count_prev_30d</code></td></tr>
       <tr><td>Types d'anomalie</td><td>~12</td><td><code>type_blocage_mecanique_count_prev_24h</code>…</td></tr>
     </tbody>
   </table></div>
 
-  <p>TP12 a pré-calculé un <code>_zmachine</code> pour chacune des 67 features raw → feature set augmenté à <strong>136 features</strong>.</p>
+  <p>TP12 a pré-calculé un <code>_zmachine</code> pour chacune des 69 features raw → feature set augmenté à <strong>140 features</strong>.</p>
 </section>
 
 <!-- §2 -->
@@ -205,8 +206,8 @@ code{font-family:var(--mono);font-size:.83em;background:var(--surf2);padding:.07
   <h2>Résultats &amp; Diagnostic</h2>
 
   <div class="alert alert-bad">
-    <strong>B12-GKF : CV = 0.7480 ± 0.23 — régression vs B11 (0.7839)</strong>
-    Doubler le feature set de 69 → 136 sans re-tuner les HP dégrade les performances. Variance inter-machine en hausse (std 0.19 → 0.23).
+    <strong>B12-GKF : CV = 0.8049 ± 0.12 — régression vs B11 (0.8752)</strong>
+    Doubler le feature set de 71 → 140 sans re-tuner les HP dégrade les performances. Variance inter-machine en hausse (std 0.10 → 0.12).
   </div>
 
   <h3>Trois hypothèses explicatives</h3>
@@ -218,12 +219,12 @@ code{font-family:var(--mono);font-size:.83em;background:var(--surf2);padding:.07
     </div>
     <div class="hyp">
       <div class="hyp-h">H2 — HP désalignés</div>
-      <p><code>colsample_bytree=0.574</code> → 69×0.574 ≈ 40 features/arbre en B11, mais 136×0.574 ≈ 78 en B12. Deux fois plus de features corrélées par arbre.</p>
+      <p><code>colsample_bytree=0.560</code> → 71×0.560 ≈ 40 features/arbre en B11, mais 140×0.560 ≈ 78 en B12. Deux fois plus de features corrélées par arbre.</p>
       <span class="hyp-verdict">Confirmée</span>
     </div>
     <div class="hyp">
       <div class="hyp-h">H3 — Stack vs Replace</div>
-      <p>Empiler zscore sur raw <em>au lieu de remplacer</em> crée une redondance inutile. HP B11 optimisés pour 69 features, pas 136.</p>
+      <p>Empiler zscore sur raw <em>au lieu de remplacer</em> crée une redondance inutile. HP B11 optimisés pour 71 features, pas 140.</p>
       <span class="hyp-verdict">Confirmée</span>
     </div>
   </div>
@@ -242,9 +243,9 @@ code{font-family:var(--mono);font-size:.83em;background:var(--surf2);padding:.07
   <div class="tw"><table>
     <thead><tr><th>Stratégie</th><th>Features</th><th>HP B11 applicables ?</th><th>Attente</th></tr></thead>
     <tbody>
-      <tr class="r-bad"><td><b>Stack (TP12 actuel)</b></td><td>136 (raw + zmachine)</td><td>Non — colsample_bytree désaligné</td><td>Redondance → dégradation</td></tr>
-      <tr class="r-ok"><td><b>Replace (B12b)</b></td><td>69 (zmachine uniquement)</td><td>Oui — même espace</td><td>Comparable ou mieux que B11</td></tr>
-      <tr><td><b>Optuna 136 (B12c)</b></td><td>136</td><td>Re-tuning complet</td><td>Potentiellement meilleur</td></tr>
+      <tr class="r-bad"><td><b>Stack (TP12 actuel)</b></td><td>140 (raw + zmachine)</td><td>Non — colsample_bytree désaligné</td><td>Redondance → dégradation</td></tr>
+      <tr class="r-ok"><td><b>Replace (B12b)</b></td><td>71 (zmachine uniquement)</td><td>Oui — même espace</td><td>Comparable ou mieux que B11</td></tr>
+      <tr><td><b>Optuna 140 (B12c)</b></td><td>140</td><td>Re-tuning complet</td><td>Potentiellement meilleur</td></tr>
       <tr><td><b>SHAP Select (B12d)</b></td><td>Top-N features</td><td>Re-tuning conseillé</td><td>Signal concentré</td></tr>
     </tbody>
   </table></div>
@@ -257,13 +258,13 @@ code{font-family:var(--mono);font-size:.83em;background:var(--surf2);padding:.07
     </div>
     <div class="step">
       <div class="step-tag step-tag-acc">Priorité 2</div>
-      <h4>B12c — Optuna 136</h4>
-      <p>Re-tuner Optuna GroupKFold sur le feature set 136. Coût : 150 fits × 2× temps. HP adaptés à l'espace augmenté.</p>
+      <h4>B12c — Optuna 140</h4>
+      <p>Re-tuner Optuna GroupKFold sur le feature set 140. Coût : 150 fits × 2× temps. HP adaptés à l'espace augmenté.</p>
     </div>
     <div class="step">
       <div class="step-tag step-tag-warn">Priorité 3</div>
       <h4>B12d — SHAP Select</h4>
-      <p>Entraîner B12, calculer les importances SHAP sur 136, retenir Top-N. Vérifie si les nouvelles zmachine apportent un signal réel.</p>
+      <p>Entraîner B12, calculer les importances SHAP sur 140, retenir Top-N. Vérifie si les nouvelles zmachine apportent un signal réel.</p>
     </div>
   </div>
 
@@ -277,7 +278,7 @@ FEATURE_COLS_REPLACE = (
     [c <span class="ck">for</span> c <span class="ck">in</span> FEATURE_COLS <span class="ck">if</span> c <span class="ck">not in</span> raw_bases]  <span class="cm"># raw sans zmachine</span>
     + zmachine_cols                                              <span class="cm"># zmachine</span>
 )
-<span class="cm"># → même N features ≈ 69, HP B11 applicables sans re-tuning</span></pre></div>
+<span class="cm"># → même N features ≈ 71, HP B11 applicables sans re-tuning</span></pre></div>
 </section>
 
 <!-- §5 -->
@@ -319,27 +320,27 @@ function drawAudit(){
   const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
 
   const barH=34,y0=20;
-  // Background bar (69 features)
+  // Background bar (71 features)
   ctx.fillStyle=C.surf2;ctx.fillRect(20,y0,W-40,barH);
-  // zscore portion (2/69)
-  const zw=(2/69)*(W-40);
+  // zscore portion (2/71)
+  const zw=(2/71)*(W-40);
   ctx.fillStyle=C.ok+'AA';ctx.fillRect(20,y0,zw,barH);
   // Border
   ctx.strokeStyle=C.bdr;ctx.lineWidth=1;ctx.strokeRect(20,y0,W-40,barH);
   // Labels
   ctx.fillStyle=C.t1;ctx.font=`bold 11px var(--sans,-apple-system,sans-serif)`;
   ctx.textAlign='left';ctx.fillText('2 zscore_machine',24,y0+21);
-  ctx.textAlign='right';ctx.fillText('67 features raw (sans équivalent zmachine)',W-24,y0+21);
+  ctx.textAlign='right';ctx.fillText('69 features raw (sans équivalent zmachine)',W-24,y0+21);
 
-  // After bar (136)
+  // After bar (140)
   const y1=y0+barH+22;
   ctx.fillStyle=C.surf2;ctx.fillRect(20,y1,(W-40)*0.5-2,barH);
   ctx.fillStyle=C.ok+'AA';ctx.fillRect(20+(W-40)*0.5+2,y1,(W-40)*0.5-2,barH);
   ctx.fillStyle=C.bdr;ctx.fillRect((W)/2-1,y1,2,barH);
   ctx.strokeStyle=C.bdr;ctx.strokeRect(20,y1,W-40,barH);
   ctx.fillStyle=C.t1;ctx.font=`bold 11px var(--sans,-apple-system,sans-serif)`;
-  ctx.textAlign='left';ctx.fillText('69 features originales',24,y1+21);
-  ctx.textAlign='right';ctx.fillText('+ 67 zmachine pré-calculées = 136 total',W-24,y1+21);
+  ctx.textAlign='left';ctx.fillText('71 features originales',24,y1+21);
+  ctx.textAlign='right';ctx.fillText('+ 69 zmachine pré-calculées = 140 total',W-24,y1+21);
 
   // Row labels
   ctx.fillStyle=C.t3;ctx.font=`9px var(--sans,-apple-system,sans-serif)`;
@@ -375,7 +376,7 @@ function drawConcept(){
   ctx.fillStyle=C.bad;ctx.font=`bold 9px var(--sans,-apple-system,sans-serif)`;
   ctx.textAlign='center';ctx.fillText('z_flotte ≠ z_machine',ax1,125);
   ctx.fillText('→ domain shift',ax1,138);
-  ctx.fillText('CV = 0.5580 ↓',ax1,155);
+  ctx.fillText('CV = 0.6663 ↓',ax1,155);
 
   // TP12 panel
   const x2=W/2+10;
@@ -392,9 +393,9 @@ function drawConcept(){
   ctx.beginPath();ctx.moveTo(ax2-8,104);ctx.lineTo(ax2,110);ctx.lineTo(ax2+8,104);ctx.stroke();
   ctx.fillStyle=C.ok;ctx.font=`bold 9px var(--sans,-apple-system,sans-serif)`;
   ctx.textAlign='center';ctx.fillText('référentiel cohérent ✓',ax2,125);
-  ctx.fillText('mais 136 features → HP désalignés',ax2,138);
+  ctx.fillText('mais 140 features → HP désalignés',ax2,138);
   ctx.fillStyle=C.warn;ctx.font=`bold 9px var(--sans,-apple-system,sans-serif)`;
-  ctx.fillText('CV = 0.7480 — concept ok, stack ko',ax2,155);
+  ctx.fillText('CV = 0.8049 — concept ok, stack ko',ax2,155);
 }
 
 // ── Colsample chart ──
@@ -408,11 +409,11 @@ function drawColsample(){
   const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
 
   const models=[
-    {label:'B11-GKF',features:69,color:C.ok},
-    {label:'B12-GKF',features:136,color:C.bad},
+    {label:'B11-GKF',features:71,color:C.ok},
+    {label:'B12-GKF',features:140,color:C.bad},
   ];
-  const cbt=0.574;
-  const maxF=136,barW=(W-80)/2-15,pad=40;
+  const cbt=0.560;
+  const maxF=140,barW=(W-80)/2-15,pad=40;
 
   models.forEach((m,i)=>{
     const x=pad+i*(barW+30);
@@ -447,7 +448,7 @@ function drawColsample(){
   ctx.fillStyle=C.t2+'66';ctx.fillRect(pad,H-12,12,8);
   ctx.fillStyle=C.t2;ctx.fillText('Total features',pad+16,H-5);
   ctx.fillStyle=C.acc+'AA';ctx.fillRect(pad+115,H-12,12,8);
-  ctx.fillStyle=C.t2;ctx.fillText(`Vues/arbre (colsample=0.574)`,pad+131,H-5);
+  ctx.fillStyle=C.t2;ctx.fillText(`Vues/arbre (colsample=0.560)`,pad+131,H-5);
 }
 
 function drawAll(){drawAudit();drawConcept();drawColsample();}

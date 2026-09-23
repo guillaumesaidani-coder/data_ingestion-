@@ -381,9 +381,9 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
     <p class="hd-sub">Chaque cellule de la matrice a un prix. Ce document traduit les chiffres en décisions terrain pour les 3 algorithmes comparés.</p>
   </div>
   <div class="hd-badge-stack">
-    <span class="hd-badge lr">LR · PR-AUC = 0.357</span>
-    <span class="hd-badge rf">RF · PR-AUC = 0.768</span>
-    <span class="hd-badge xgb">XGB · PR-AUC = 0.817 ★</span>
+    <span class="hd-badge lr">LR · PR-AUC = 0.284</span>
+    <span class="hd-badge rf">RF · PR-AUC = 0.860</span>
+    <span class="hd-badge xgb">XGB · PR-AUC = 0.886 ★</span>
   </div>
 </header>
 
@@ -395,8 +395,8 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
       <h2 class="sec-h">Les 4 cas de prédiction</h2>
     </div>
     <div class="cm-score-row">
-      <span class="cm-score val">PR-AUC = 0.8174</span>
-      <span class="cm-score val">Recall = 87.9 %</span>
+      <span class="cm-score val">PR-AUC = 0.8864</span>
+      <span class="cm-score val">Recall = 94.3 %</span>
       <span class="cm-score thresh">Seuil = 0.5 (défaut)</span>
     </div>
   </div>
@@ -413,16 +413,16 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
         <div class="cm-row-pair">
           <div class="cm-row-head">Panne réelle</div>
           <div class="cm-cells-pair">
-            <div class="cm-c tp" data-key="tp" tabindex="0" role="button" aria-label="Vrai Positif 639">
+            <div class="cm-c tp" data-key="tp" tabindex="0" role="button" aria-label="Vrai Positif 630">
               <span class="c-tag">TP</span>
-              <span class="c-num" data-target="639">0</span>
+              <span class="c-num" data-target="630">0</span>
               <span class="c-pct">3.2 %</span>
               <span class="c-label">Pannes<br>détectées</span>
             </div>
-            <div class="cm-c fn" data-key="fn" tabindex="0" role="button" aria-label="Faux Négatif 88">
+            <div class="cm-c fn" data-key="fn" tabindex="0" role="button" aria-label="Faux Négatif 38">
               <span class="c-tag">FN</span>
-              <span class="c-num" data-target="88">0</span>
-              <span class="c-pct">0.4 %</span>
+              <span class="c-num" data-target="38">0</span>
+              <span class="c-pct">0.2 %</span>
               <span class="c-label">Pannes<br>manquées</span>
             </div>
           </div>
@@ -430,16 +430,16 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
         <div class="cm-row-pair">
           <div class="cm-row-head">OK réel</div>
           <div class="cm-cells-pair">
-            <div class="cm-c fp" data-key="fp" tabindex="0" role="button" aria-label="Faux Positif 366">
+            <div class="cm-c fp" data-key="fp" tabindex="0" role="button" aria-label="Faux Positif 248">
               <span class="c-tag">FP</span>
-              <span class="c-num" data-target="366">0</span>
-              <span class="c-pct">1.8 %</span>
+              <span class="c-num" data-target="248">0</span>
+              <span class="c-pct">1.2 %</span>
               <span class="c-label">Fausses<br>alarmes</span>
             </div>
-            <div class="cm-c tn" data-key="tn" tabindex="0" role="button" aria-label="Vrai Négatif 18851">
+            <div class="cm-c tn" data-key="tn" tabindex="0" role="button" aria-label="Vrai Négatif 19001">
               <span class="c-tag">TN</span>
-              <span class="c-num" data-target="18851">0</span>
-              <span class="c-pct">94.5 %</span>
+              <span class="c-num" data-target="19001">0</span>
+              <span class="c-pct">95.4 %</span>
               <span class="c-label">OK<br>confirmés</span>
             </div>
           </div>
@@ -549,7 +549,7 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
     <div class="hz-reco-title">label_failure_next_24h — score pondéré 7.5 / 10</div>
     <div class="hz-reco-desc">
       Équilibre optimal : les features <code style="font-family:var(--mono);color:var(--ok);font-size:0.82rem;">_prev_24h</code> et <code style="font-family:var(--mono);color:var(--ok);font-size:0.82rem;">_rolling_24h</code> du gold dataset sont construites sur la même fenêtre, ce qui aligne le signal télémetrique sur la cible.
-      Un taux de positifs de 3.6 % (<code style="font-family:var(--mono);color:var(--ok);font-size:0.82rem;">scale_pos_weight ≈ 28</code>) est assez rare pour être prédictif, assez fréquent pour entraîner le modèle.
+      Un taux de positifs de 3.6 % (<code style="font-family:var(--mono);color:var(--ok);font-size:0.82rem;">scale_pos_weight ≈ 27</code>) est assez rare pour être prédictif, assez fréquent pour entraîner le modèle.
       Avec 24h de marge, l'équipe maintenance peut planifier l'intervention dans le quart de travail suivant — ce qui n'est pas possible à 6h ou 12h en organisation standard.
     </div>
   </div>
@@ -568,7 +568,7 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
         <span class="cost-label">Panne manquée</span>
       </div>
       <div>
-        <div class="cost-big fn">88</div>
+        <div class="cost-big fn">38</div>
         <div class="cost-unit">occurrences · XGBoost · seuil 0.5</div>
       </div>
       <ul class="cost-items">
@@ -582,7 +582,7 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
         <div class="cost-bar-label">Coût unitaire estimé : 5 000 €/FN</div>
         <div class="cost-bar"><div class="cost-bar-fill" style="width:100%;background:var(--danger);"></div></div>
       </div>
-      <div class="cost-big fn" style="font-size:1.5rem;">440 000 € <span style="font-size:0.8rem;color:var(--muted);">coût total FN</span></div>
+      <div class="cost-big fn" style="font-size:1.5rem;">190 000 € <span style="font-size:0.8rem;color:var(--muted);">coût total FN</span></div>
       <span class="cost-sev crit">Coût critique</span>
     </div>
 
@@ -592,7 +592,7 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
         <span class="cost-label">Fausse alarme</span>
       </div>
       <div>
-        <div class="cost-big fp">366</div>
+        <div class="cost-big fp">248</div>
         <div class="cost-unit">occurrences · XGBoost · seuil 0.5</div>
       </div>
       <ul class="cost-items">
@@ -605,7 +605,7 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
         <div class="cost-bar-label">Coût unitaire estimé : 150 €/FP</div>
         <div class="cost-bar"><div class="cost-bar-fill" style="width:3%;background:var(--accent);"></div></div>
       </div>
-      <div class="cost-big fp" style="font-size:1.5rem;">54 900 € <span style="font-size:0.8rem;color:var(--muted);">coût total FP</span></div>
+      <div class="cost-big fp" style="font-size:1.5rem;">37 200 € <span style="font-size:0.8rem;color:var(--muted);">coût total FP</span></div>
       <span class="cost-sev mod">Coût modéré</span>
     </div>
   </div>
@@ -632,23 +632,23 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
       <div class="model-rank">Baseline linéaire <span class="poor-tag">Insuffisant</span></div>
       <div>
         <div class="model-name">Régression Logistique</div>
-        <div class="model-prauc">PR-AUC val = 0.3569</div>
+        <div class="model-prauc">PR-AUC val = 0.2841</div>
       </div>
       <div class="model-cm-mini">
-        <div class="mini-cell tp"><div class="m-tag">TP</div><div class="m-val" style="color:var(--ok);">~low</div></div>
-        <div class="mini-cell fn"><div class="m-tag">FN</div><div class="m-val" style="color:var(--danger);">~high</div></div>
-        <div class="mini-cell fp"><div class="m-tag">FP</div><div class="m-val" style="color:var(--accent);">~mod</div></div>
-        <div class="mini-cell tn"><div class="m-tag">TN</div><div class="m-val">~18k</div></div>
+        <div class="mini-cell tp"><div class="m-tag">TP</div><div class="m-val" style="color:var(--ok);">633</div></div>
+        <div class="mini-cell fn"><div class="m-tag">FN</div><div class="m-val" style="color:var(--danger);">35</div></div>
+        <div class="mini-cell fp"><div class="m-tag">FP</div><div class="m-val" style="color:var(--accent);">2 425</div></div>
+        <div class="mini-cell tn"><div class="m-tag">TN</div><div class="m-val">~17k</div></div>
       </div>
       <div class="model-metrics">
-        <div class="mm-row"><span class="mm-key">PR-AUC</span><span class="mm-val bad">0.3569</span></div>
-        <div class="mm-row"><span class="mm-key">Recall</span><span class="mm-val warn">~55–65 %</span></div>
-        <div class="mm-row"><span class="mm-key">Hypothèse</span><span class="mm-val bad">Relation linéaire</span></div>
-        <div class="mm-row"><span class="mm-key">Pannes manquées</span><span class="mm-val bad">Élevé</span></div>
+        <div class="mm-row"><span class="mm-key">PR-AUC</span><span class="mm-val bad">0.2841</span></div>
+        <div class="mm-row"><span class="mm-key">Recall</span><span class="mm-val warn">94.8 %</span></div>
+        <div class="mm-row"><span class="mm-key">Precision</span><span class="mm-val bad">20.7 %</span></div>
+        <div class="mm-row"><span class="mm-key">Fausses alarmes</span><span class="mm-val bad">Très élevé (2 425)</span></div>
       </div>
       <div class="model-verdict">
         <span class="v-label">Verdict</span>
-        La relation feature → panne est non-linéaire. LR rate trop de pannes. Rôle : référence minimale pour confirmer que des modèles plus complexes sont justifiés.
+        La relation feature → panne est non-linéaire. LR compense en sur-alertant (2 425 FP, precision 20,7 %) plutôt qu'en manquant des pannes. Rôle : référence minimale pour confirmer que des modèles plus complexes sont justifiés.
       </div>
     </div>
 
@@ -657,23 +657,23 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
       <div class="model-rank">Ensemble — bagging</div>
       <div>
         <div class="model-name">Random Forest</div>
-        <div class="model-prauc">PR-AUC val = 0.7682</div>
+        <div class="model-prauc">PR-AUC val = 0.8604</div>
       </div>
       <div class="model-cm-mini">
-        <div class="mini-cell tp"><div class="m-tag">TP</div><div class="m-val" style="color:var(--ok);">~550+</div></div>
-        <div class="mini-cell fn"><div class="m-tag">FN</div><div class="m-val" style="color:var(--accent);">~170</div></div>
-        <div class="mini-cell fp"><div class="m-tag">FP</div><div class="m-val" style="color:var(--accent);">~300</div></div>
-        <div class="mini-cell tn"><div class="m-tag">TN</div><div class="m-val">~18k</div></div>
+        <div class="mini-cell tp"><div class="m-tag">TP</div><div class="m-val" style="color:var(--ok);">419</div></div>
+        <div class="mini-cell fn"><div class="m-tag">FN</div><div class="m-val" style="color:var(--accent);">249</div></div>
+        <div class="mini-cell fp"><div class="m-tag">FP</div><div class="m-val" style="color:var(--accent);">80</div></div>
+        <div class="mini-cell tn"><div class="m-tag">TN</div><div class="m-val">~19k</div></div>
       </div>
       <div class="model-metrics">
-        <div class="mm-row"><span class="mm-key">PR-AUC</span><span class="mm-val warn">0.7682</span></div>
-        <div class="mm-row"><span class="mm-key">Recall</span><span class="mm-val warn">~75–80 %</span></div>
-        <div class="mm-row"><span class="mm-key">Hypothèse</span><span class="mm-val warn">Non-linéaire</span></div>
-        <div class="mm-row"><span class="mm-key">Pannes manquées</span><span class="mm-val warn">Modéré</span></div>
+        <div class="mm-row"><span class="mm-key">PR-AUC</span><span class="mm-val warn">0.8604</span></div>
+        <div class="mm-row"><span class="mm-key">Recall</span><span class="mm-val warn">62.7 %</span></div>
+        <div class="mm-row"><span class="mm-key">Precision</span><span class="mm-val good">84.0 %</span></div>
+        <div class="mm-row"><span class="mm-key">Pannes manquées</span><span class="mm-val bad">Élevé (249)</span></div>
       </div>
       <div class="model-verdict">
         <span class="v-label">Verdict</span>
-        Bon candidat de transition. Le Recall est améliorable avec un seuil plus bas. Reste en dessous de XGBoost car le boosting est mieux adapté au déséquilibre de classes.
+        Profil inverse de LR : très peu de fausses alarmes (precision 84 %) mais 249 pannes manquées au seuil 0.5 — le seuil par défaut est mal calibré pour ce modèle sur ce coût métier (FN≫FP).
       </div>
     </div>
 
@@ -682,23 +682,23 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
       <div class="model-rank">Ensemble — boosting <span class="crown">Champion</span></div>
       <div>
         <div class="model-name">XGBoost</div>
-        <div class="model-prauc">PR-AUC val = 0.8174</div>
+        <div class="model-prauc">PR-AUC val = 0.8864</div>
       </div>
       <div class="model-cm-mini">
-        <div class="mini-cell tp"><div class="m-tag">TP</div><div class="m-val" style="color:var(--ok);">639</div></div>
-        <div class="mini-cell fn"><div class="m-tag">FN</div><div class="m-val" style="color:var(--danger);">88</div></div>
-        <div class="mini-cell fp"><div class="m-tag">FP</div><div class="m-val" style="color:var(--accent);">366</div></div>
-        <div class="mini-cell tn"><div class="m-tag">TN</div><div class="m-val">18 851</div></div>
+        <div class="mini-cell tp"><div class="m-tag">TP</div><div class="m-val" style="color:var(--ok);">630</div></div>
+        <div class="mini-cell fn"><div class="m-tag">FN</div><div class="m-val" style="color:var(--danger);">38</div></div>
+        <div class="mini-cell fp"><div class="m-tag">FP</div><div class="m-val" style="color:var(--accent);">248</div></div>
+        <div class="mini-cell tn"><div class="m-tag">TN</div><div class="m-val">19 001</div></div>
       </div>
       <div class="model-metrics">
-        <div class="mm-row"><span class="mm-key">PR-AUC</span><span class="mm-val good">0.8174</span></div>
-        <div class="mm-row"><span class="mm-key">Recall</span><span class="mm-val good">87.9 %</span></div>
-        <div class="mm-row"><span class="mm-key">Precision</span><span class="mm-val warn">63.6 %</span></div>
-        <div class="mm-row"><span class="mm-key">Pannes manquées</span><span class="mm-val good">88 / 727</span></div>
+        <div class="mm-row"><span class="mm-key">PR-AUC</span><span class="mm-val good">0.8864</span></div>
+        <div class="mm-row"><span class="mm-key">Recall</span><span class="mm-val good">94.3 %</span></div>
+        <div class="mm-row"><span class="mm-key">Precision</span><span class="mm-val warn">71.8 %</span></div>
+        <div class="mm-row"><span class="mm-key">Pannes manquées</span><span class="mm-val good">38 / 668</span></div>
       </div>
       <div class="model-verdict">
         <span class="v-label">Verdict</span>
-        <code style="font-family:var(--mono);font-size:0.75rem;color:var(--ok);">scale_pos_weight=28</code> compense nativement le déséquilibre. FN le plus bas des 3. Modèle retenu pour la production — optimisation en B7 (Optuna).
+        <code style="font-family:var(--mono);font-size:0.75rem;color:var(--ok);">scale_pos_weight=27</code> compense nativement le déséquilibre. Meilleur PR-AUC des 3, FN au niveau de LR sans son déluge de fausses alertes. Modèle retenu pour la production — optimisation en B7 (Optuna).
       </div>
     </div>
   </div>
@@ -715,64 +715,64 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
       <div class="thresh-label">Seuil très bas</div>
       <div class="thresh-val">0.10</div>
       <div class="thresh-mini">
-        <div class="tm tp"><div class="tm-l">TP</div><div class="tm-v" style="color:var(--ok);">≈ 720</div></div>
-        <div class="tm fn"><div class="tm-l">FN</div><div class="tm-v" style="color:var(--ok);">≈ 7</div></div>
-        <div class="tm fp"><div class="tm-l">FP</div><div class="tm-v" style="color:var(--danger);">&gt;2 000</div></div>
-        <div class="tm tn"><div class="tm-l">TN</div><div class="tm-v">~16k</div></div>
+        <div class="tm tp"><div class="tm-l">TP</div><div class="tm-v" style="color:var(--ok);">646</div></div>
+        <div class="tm fn"><div class="tm-l">FN</div><div class="tm-v" style="color:var(--ok);">22</div></div>
+        <div class="tm fp"><div class="tm-l">FP</div><div class="tm-v" style="color:var(--danger);">442</div></div>
+        <div class="tm tn"><div class="tm-l">TN</div><div class="tm-v">~19k</div></div>
       </div>
       <div class="thresh-stats">
-        <div class="ts-row"><span class="ts-key">Recall</span><span class="ts-val r">~99 %</span></div>
-        <div class="ts-row"><span class="ts-key">Precision</span><span class="ts-val p">~26 %</span></div>
+        <div class="ts-row"><span class="ts-key">Recall</span><span class="ts-val r">96.7 %</span></div>
+        <div class="ts-row"><span class="ts-key">Precision</span><span class="ts-val p">59.4 %</span></div>
       </div>
       <p class="thresh-note">Quasi-zéro panne manquée. Mais techniciens submergés par les fausses alarmes.</p>
     </div>
 
     <div class="thresh-card">
       <div class="thresh-label">Seuil optimal Recall ≥ 90%</div>
-      <div class="thresh-val">≈ 0.25–0.35</div>
+      <div class="thresh-val">0.709</div>
       <div class="thresh-mini">
-        <div class="tm tp"><div class="tm-l">TP</div><div class="tm-v" style="color:var(--ok);">≈ 660</div></div>
-        <div class="tm fn"><div class="tm-l">FN</div><div class="tm-v" style="color:var(--ok);">≈ 67</div></div>
-        <div class="tm fp"><div class="tm-l">FP</div><div class="tm-v" style="color:var(--accent);">≈ 550</div></div>
-        <div class="tm tn"><div class="tm-l">TN</div><div class="tm-v">~18k</div></div>
+        <div class="tm tp"><div class="tm-l">TP</div><div class="tm-v" style="color:var(--ok);">605</div></div>
+        <div class="tm fn"><div class="tm-l">FN</div><div class="tm-v" style="color:var(--ok);">63</div></div>
+        <div class="tm fp"><div class="tm-l">FP</div><div class="tm-v" style="color:var(--accent);">183</div></div>
+        <div class="tm tn"><div class="tm-l">TN</div><div class="tm-v">~19k</div></div>
       </div>
       <div class="thresh-stats">
-        <div class="ts-row"><span class="ts-key">Recall</span><span class="ts-val r">≥ 90 %</span></div>
-        <div class="ts-row"><span class="ts-key">Precision</span><span class="ts-val p">~55 %</span></div>
+        <div class="ts-row"><span class="ts-key">Recall</span><span class="ts-val r">90.6 %</span></div>
+        <div class="ts-row"><span class="ts-key">Precision</span><span class="ts-val p">76.8 %</span></div>
       </div>
-      <p class="thresh-note">Point d'équilibre recommandé. Le coût FN réduit compense les FP supplémentaires (ratio 33×).</p>
+      <p class="thresh-note">Seuil exact calculé (TP8b/TP8) pour Recall ≥ 90 %. Le coût FN réduit compense les FP supplémentaires (ratio 33×).</p>
     </div>
 
     <div class="thresh-card">
       <div class="thresh-label">Seuil par défaut</div>
       <div class="thresh-val default">0.50</div>
       <div class="thresh-mini">
-        <div class="tm tp"><div class="tm-l">TP</div><div class="tm-v" style="color:var(--ok);">639</div></div>
-        <div class="tm fn"><div class="tm-l">FN</div><div class="tm-v" style="color:var(--accent);">88</div></div>
-        <div class="tm fp"><div class="tm-l">FP</div><div class="tm-v" style="color:var(--accent);">366</div></div>
-        <div class="tm tn"><div class="tm-l">TN</div><div class="tm-v">18 851</div></div>
+        <div class="tm tp"><div class="tm-l">TP</div><div class="tm-v" style="color:var(--ok);">630</div></div>
+        <div class="tm fn"><div class="tm-l">FN</div><div class="tm-v" style="color:var(--accent);">38</div></div>
+        <div class="tm fp"><div class="tm-l">FP</div><div class="tm-v" style="color:var(--accent);">248</div></div>
+        <div class="tm tn"><div class="tm-l">TN</div><div class="tm-v">19 001</div></div>
       </div>
       <div class="thresh-stats">
-        <div class="ts-row"><span class="ts-key">Recall</span><span class="ts-val warn">87.9 %</span></div>
-        <div class="ts-row"><span class="ts-key">Precision</span><span class="ts-val warn">63.6 %</span></div>
+        <div class="ts-row"><span class="ts-key">Recall</span><span class="ts-val warn">94.3 %</span></div>
+        <div class="ts-row"><span class="ts-key">Precision</span><span class="ts-val warn">71.8 %</span></div>
       </div>
-      <p class="thresh-note">Résultats TP7. Bon Recall mais 88 pannes manquées. Seuil sous-optimal pour ce contexte.</p>
+      <p class="thresh-note">Résultats TP7. Bon Recall mais 38 pannes manquées. Seuil sous-optimal pour ce contexte.</p>
     </div>
 
     <div class="thresh-card">
       <div class="thresh-label">Seuil élevé</div>
-      <div class="thresh-val">0.70</div>
+      <div class="thresh-val">0.85</div>
       <div class="thresh-mini">
-        <div class="tm tp"><div class="tm-l">TP</div><div class="tm-v" style="color:var(--accent);">≈ 480</div></div>
-        <div class="tm fn"><div class="tm-l">FN</div><div class="tm-v" style="color:var(--danger);">≈ 247</div></div>
-        <div class="tm fp"><div class="tm-l">FP</div><div class="tm-v" style="color:var(--ok);">≈ 120</div></div>
+        <div class="tm tp"><div class="tm-l">TP</div><div class="tm-v" style="color:var(--accent);">533</div></div>
+        <div class="tm fn"><div class="tm-l">FN</div><div class="tm-v" style="color:var(--danger);">135</div></div>
+        <div class="tm fp"><div class="tm-l">FP</div><div class="tm-v" style="color:var(--ok);">123</div></div>
         <div class="tm tn"><div class="tm-l">TN</div><div class="tm-v">~19k</div></div>
       </div>
       <div class="thresh-stats">
-        <div class="ts-row"><span class="ts-key">Recall</span><span class="ts-val bad">~66 %</span></div>
-        <div class="ts-row"><span class="ts-key">Precision</span><span class="ts-val f">~80 %</span></div>
+        <div class="ts-row"><span class="ts-key">Recall</span><span class="ts-val bad">79.8 %</span></div>
+        <div class="ts-row"><span class="ts-key">Precision</span><span class="ts-val f">81.2 %</span></div>
       </div>
-      <p class="thresh-note">Peu de fausses alarmes, mais 247 pannes manquées. Inacceptable pour ce contexte (FN >> FP en coût).</p>
+      <p class="thresh-note">Peu de fausses alarmes, mais 135 pannes manquées. Inacceptable pour ce contexte (FN >> FP en coût).</p>
     </div>
   </div>
 
@@ -804,45 +804,45 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
       <tbody>
         <tr>
           <td>PR-AUC validation</td>
-          <td class="bad">0.3569</td>
-          <td class="warn">0.7682</td>
-          <td class="good">0.8174</td>
+          <td class="bad">0.2841</td>
+          <td class="warn">0.8604</td>
+          <td class="good">0.8864</td>
         </tr>
         <tr>
           <td>Recall (seuil 0.5)</td>
-          <td class="bad">~55–65 %</td>
-          <td class="warn">~75–80 %</td>
-          <td class="good">87.9 %</td>
+          <td class="warn">94.8 %</td>
+          <td class="bad">62.7 %</td>
+          <td class="good">94.3 %</td>
         </tr>
         <tr>
           <td>FN (pannes manquées)</td>
-          <td class="bad">Élevé</td>
-          <td class="warn">Modéré (~170)</td>
-          <td class="good">88</td>
+          <td class="good">35</td>
+          <td class="bad">Élevé (249)</td>
+          <td class="good">38</td>
         </tr>
         <tr>
-          <td>Coût FN estimé</td>
-          <td class="bad">&gt; 1 M €</td>
-          <td class="warn">~850 k €</td>
-          <td class="good">440 k €</td>
+          <td>Coût FN estimé (seuil 0.5)</td>
+          <td class="good">175 k €</td>
+          <td class="bad">1,25 M €</td>
+          <td class="good">190 k €</td>
         </tr>
         <tr>
           <td>Gestion déséquilibre</td>
           <td class="mono">class_weight=balanced</td>
           <td class="mono">class_weight=balanced</td>
-          <td class="good">scale_pos_weight=28</td>
+          <td class="good">scale_pos_weight=27</td>
         </tr>
         <tr>
           <td>Overfitting (Δ PR-AUC)</td>
           <td class="good">Faible</td>
           <td class="warn">Modéré</td>
-          <td class="bad">0.183 (fort)</td>
+          <td class="bad">0.114 (fort)</td>
         </tr>
         <tr>
-          <td>Seuil recommandé</td>
+          <td>Seuil recommandé (R≥90%)</td>
           <td class="bad">Non retenu</td>
-          <td class="warn">0.25–0.35</td>
-          <td class="good">0.25–0.35</td>
+          <td class="warn">0.325</td>
+          <td class="good">0.709</td>
         </tr>
         <tr>
           <td>Décision production</td>
@@ -857,7 +857,7 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
 
 <footer>
   <span>TP7bis · Matrices de confusion &amp; Coût métier</span>
-  <span>XGBoost · 19 944 obs · FN=5 000 € · FP=150 €</span>
+  <span>XGBoost · 19 917 obs (validation) · FN=5 000 € · FP=150 €</span>
 </footer>
 
 <script>
@@ -955,10 +955,10 @@ footer { padding: 1.25rem 4rem; border-top: 1px solid var(--border); display: fl
   var deft  = 'Survolez ou cliquez une cellule pour comprendre son impact sur le terrain.';
 
   var tips = {
-    tp: '<strong>Vrai Positif — 639</strong> · La machine allait tomber en panne et le modèle l\'a <span class="ok-w">correctement détecté</span>. Maintenance planifiée à temps, panne évitée. Aucun arrêt non planifié pour ces 639 cas.',
-    fn: '<span class="danger-w">Faux Négatif — 88 · LE CAS LE PLUS COÛTEUX</span> · La machine allait tomber en panne mais le modèle a dit «OK». Résultat : arrêt non planifié, intervention d\'urgence, production perdue. Avec 5 000 €/FN cela représente <span class="warn-w">440 000 €</span> de coût caché.',
-    fp: '<span class="warn-w">Faux Positif — 366</span> · Le modèle a déclenché une alerte alors que la machine fonctionnait correctement. Résultat : déplacement inutile d\'un technicien, ~150 €/cas → <span class="warn-w">54 900 €</span> au total. Coût modéré mais dégradant la confiance des équipes.',
-    tn: '<span class="ok-w">Vrai Négatif — 18 851</span> · La machine était OK et le modèle l\'a <span class="ok-w">confirmé silencieusement</span>. 94.5 % des observations. Aucune intervention, aucun coût. Le cas dominant — ce qui rend l\'Accuracy trompeuse ici.'
+    tp: '<strong>Vrai Positif — 630</strong> · La machine allait tomber en panne et le modèle l\'a <span class="ok-w">correctement détecté</span>. Maintenance planifiée à temps, panne évitée. Aucun arrêt non planifié pour ces 630 cas.',
+    fn: '<span class="danger-w">Faux Négatif — 38 · LE CAS LE PLUS COÛTEUX</span> · La machine allait tomber en panne mais le modèle a dit «OK». Résultat : arrêt non planifié, intervention d\'urgence, production perdue. Avec 5 000 €/FN cela représente <span class="warn-w">190 000 €</span> de coût caché.',
+    fp: '<span class="warn-w">Faux Positif — 248</span> · Le modèle a déclenché une alerte alors que la machine fonctionnait correctement. Résultat : déplacement inutile d\'un technicien, ~150 €/cas → <span class="warn-w">37 200 €</span> au total. Coût modéré mais dégradant la confiance des équipes.',
+    tn: '<span class="ok-w">Vrai Négatif — 19 001</span> · La machine était OK et le modèle l\'a <span class="ok-w">confirmé silencieusement</span>. 95.4 % des observations. Aucune intervention, aucun coût. Le cas dominant — ce qui rend l\'Accuracy trompeuse ici.'
   };
 
   cells.forEach(function (cell) {

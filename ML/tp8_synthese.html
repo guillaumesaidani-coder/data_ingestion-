@@ -761,7 +761,7 @@ footer {
       <div class="hero-eye">Convergence Optuna — TPE sampler</div>
       <h2 class="hero-h">60 trials pour battre le baseline</h2>
     </div>
-    <span class="hero-note">Baseline TP7 · PR-AUC val = 0.8174</span>
+    <span class="hero-note">Baseline TP7 · PR-AUC val = 0.8864</span>
   </div>
 
   <div class="canvas-wrap">
@@ -789,8 +789,8 @@ footer {
   <div class="stat-row">
     <div class="stat-chip">
       <span class="sc-label">Baseline TP7</span>
-      <span class="sc-val warn">0.8174</span>
-      <span class="sc-sub">PR-AUC val · Δ overfit = 0.183</span>
+      <span class="sc-val warn">0.8864</span>
+      <span class="sc-sub">PR-AUC val · Δ overfit = 0.114</span>
     </div>
     <div class="stat-chip active">
       <span class="sc-label">Meilleur trial</span>
@@ -898,16 +898,16 @@ study.optimize(objective, n_trials=60)</div>
     <div style="display:grid;grid-template-columns:160px 1fr 1fr 80px;gap:0.5rem 1rem;align-items:center;margin-bottom:0.6rem;">
       <div style="font-size:0.78rem;color:var(--muted);">PR-AUC val</div>
       <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
-        <div style="width:81.7%;height:100%;background:rgba(155,127,212,0.55);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
-          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.817</span>
+        <div style="width:88.6%;height:100%;background:rgba(155,127,212,0.55);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.886</span>
         </div>
       </div>
       <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
-        <div style="width:86.2%;height:100%;background:rgba(94,207,168,0.7);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
-          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.862</span>
+        <div style="width:91.0%;height:100%;background:rgba(94,207,168,0.7);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.910</span>
         </div>
       </div>
-      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);font-weight:700;">+0.045</div>
+      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);font-weight:700;">+0.024</div>
     </div>
 
     <!-- PR-AUC train -->
@@ -919,11 +919,11 @@ study.optimize(objective, n_trials=60)</div>
         </div>
       </div>
       <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
-        <div style="width:99.8%;height:100%;background:rgba(94,207,168,0.35);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
-          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--text);">0.998</span>
+        <div style="width:99.9%;height:100%;background:rgba(94,207,168,0.35);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--text);">0.999</span>
         </div>
       </div>
-      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);">−0.002</div>
+      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);">−0.001</div>
     </div>
 
     <!-- Overfitting -->
@@ -931,50 +931,50 @@ study.optimize(objective, n_trials=60)</div>
       <div style="font-size:0.78rem;color:var(--muted);">Overfitting Δ <span style="font-size:0.68rem;">(↓ mieux)</span></div>
       <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
         <div style="width:100%;height:100%;background:rgba(232,131,42,0.6);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
-          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.183</span>
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.114</span>
         </div>
       </div>
       <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
-        <div style="width:74.6%;height:100%;background:rgba(94,207,168,0.55);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
-          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.136</span>
+        <div style="width:78.2%;height:100%;background:rgba(94,207,168,0.55);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.089</span>
         </div>
       </div>
-      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);font-weight:700;">−0.047</div>
+      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);font-weight:700;">−0.025</div>
     </div>
 
     <!-- F1 val -->
     <div style="display:grid;grid-template-columns:160px 1fr 1fr 80px;gap:0.5rem 1rem;align-items:center;margin-bottom:0.6rem;">
       <div style="font-size:0.78rem;color:var(--muted);">F1 val</div>
       <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
-        <div style="width:73.5%;height:100%;background:rgba(155,127,212,0.55);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
-          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.735</span>
+        <div style="width:81.5%;height:100%;background:rgba(155,127,212,0.55);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.815</span>
         </div>
       </div>
       <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
-        <div style="width:76.6%;height:100%;background:rgba(94,207,168,0.7);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
-          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.766</span>
+        <div style="width:78.7%;height:100%;background:rgba(94,207,168,0.7);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.787</span>
         </div>
       </div>
-      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);">+0.031</div>
+      <div style="font-family:var(--mono);font-size:0.78rem;color:var(--danger);">−0.028</div>
     </div>
 
     <!-- ROC-AUC val -->
     <div style="display:grid;grid-template-columns:160px 1fr 1fr 80px;gap:0.5rem 1rem;align-items:center;">
       <div style="font-size:0.78rem;color:var(--muted);">ROC-AUC val</div>
       <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
-        <div style="width:99.2%;height:100%;background:rgba(155,127,212,0.45);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
-          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.992</span>
+        <div style="width:99.4%;height:100%;background:rgba(155,127,212,0.45);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.994</span>
         </div>
       </div>
       <div style="background:rgba(255,255,255,0.05);border-radius:2px;height:20px;overflow:hidden;">
-        <div style="width:99.4%;height:100%;background:rgba(94,207,168,0.45);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
-          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.994</span>
+        <div style="width:99.6%;height:100%;background:rgba(94,207,168,0.45);border-radius:2px;display:flex;align-items:center;padding-left:0.5rem;">
+          <span style="font-family:var(--mono);font-size:0.68rem;font-weight:700;color:var(--ground);">0.996</span>
         </div>
       </div>
       <div style="font-family:var(--mono);font-size:0.78rem;color:var(--muted);">+0.002</div>
     </div>
 
-    <div style="margin-top:1rem;font-size:0.78rem;color:var(--muted);font-style:italic;">Le ROC-AUC était déjà excellent en baseline — l'apport d'Optuna se mesure surtout sur le PR-AUC val (+0.045) et l'overfitting Δ (−0.047), les métriques pertinentes pour les classes déséquilibrées.</div>
+    <div style="margin-top:1rem;font-size:0.78rem;color:var(--muted);font-style:italic;">Le ROC-AUC était déjà excellent en baseline — l'apport d'Optuna se mesure surtout sur le PR-AUC val (+0.024) et l'overfitting Δ (−0.025), les métriques pertinentes pour les classes déséquilibrées. Le F1 recule légèrement (−0.028) : le modèle optimisé déplace le point de fonctionnement, à recalibrer via le seuil (§4).</div>
 
     <!-- Correction leakage feature_row_id — TP8b -->
     <div style="margin-top:1.2rem;padding:0.85rem 1rem;background:rgba(217,83,79,0.08);border:1px solid rgba(217,83,79,0.3);border-radius:3px;">
@@ -983,10 +983,10 @@ study.optimize(objective, n_trials=60)</div>
         <code style="font-family:var(--mono);font-size:0.8em;color:var(--danger);">feature_row_id</code> était présent dans <code style="font-family:var(--mono);font-size:0.8em;">FEATURE_COLS</code> de B7 : identifiant séquentiel = fuite temporelle implicite.
         Après correction dans <strong>TP8b</strong> :
         <span style="display:inline-flex;gap:1.2rem;margin-top:0.4rem;flex-wrap:wrap;">
-          <span style="font-family:var(--mono);font-size:0.78rem;">B5c = <strong style="color:var(--ok);">0.8349</strong></span>
-          <span style="font-family:var(--mono);font-size:0.78rem;">B7c = <strong style="color:var(--danger);">0.7504</strong> <span style="color:var(--muted);">(−0.111)</span></span>
+          <span style="font-family:var(--mono);font-size:0.78rem;">B5c = <strong style="color:var(--ok);">0.9053</strong></span>
+          <span style="font-family:var(--mono);font-size:0.78rem;">B7c = <strong style="color:var(--danger);">0.8891</strong> <span style="color:var(--muted);">(−0.0162)</span></span>
           <span style="font-family:var(--mono);font-size:0.78rem;color:var(--warn);">Optuna a sur-optimisé autour de la fuite → B7c &lt; B5c</span>
-          <span style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);">B8 (re-tuné) val=<strong>0.8497</strong> · test=<strong>0.8232</strong> · F1=<strong>0.7672</strong> — gain réel du tuning : +0.015</span>
+          <span style="font-family:var(--mono);font-size:0.78rem;color:var(--ok);">B8 (re-tuné) val=<strong>0.9208</strong> · test=<strong>0.8693</strong> · F1=<strong>0.7570</strong> — gain réel du tuning : +0.0317</span>
         </span>
       </div>
     </div>
@@ -1209,11 +1209,11 @@ study.optimize(objective, n_trials=60)</div>
         <strong>Correction appliquée (TP8b) :</strong> <code>"feature_row_id"</code> ajouté à <code>LEAKAGE_COLS</code>. Impact mesuré :<br>
         <div style="display:flex;gap:1.5rem;margin-top:0.5rem;flex-wrap:wrap;font-family:var(--mono);font-size:0.8rem;">
           <span>B7 (avec fuite) : <strong style="color:var(--warn);">0.8617</strong></span>
-          <span>B7c (corrigé) : <strong style="color:var(--danger);">0.7504</strong> <span style="color:var(--muted);">Δ = −0.111</span></span>
-          <span>B5c (baseline corrigé) : <strong style="color:var(--ok);">0.8349</strong></span>
+          <span>B7c (corrigé) : <strong style="color:var(--ok);">0.8891</strong> <span style="color:var(--muted);">Δ = +0.0274</span></span>
+          <span>B5c (baseline corrigé) : <strong style="color:var(--ok);">0.9053</strong></span>
         </div>
         <div style="margin-top:0.5rem;font-size:0.79rem;color:var(--warn);">
-          Optuna a sur-optimisé autour de la fuite : B7c (0.750) &lt; B5c (0.835). Le tuning a empiré les métriques réelles.
+          Avec les features maintenance (TP12+), retirer la fuite n'empire plus les métriques (B7c &gt; B7). Mais Optuna reste sur-optimisé pour la tâche corrigée : B7c (0.889) &lt; B5c (0.905) — le tuning n'a pas rattrapé la baseline corrigée.
         </div>
         <div style="margin-top:0.45rem;font-size:0.79rem;color:var(--ok);">
           SHAP corrigé : <code>pressure_zscore_machine</code> passe en #2 (2.253) — signal télémetrique per-machine déjà présent dans le gold dataset.
@@ -1248,8 +1248,8 @@ study.optimize(objective, n_trials=60)</div>
                 La fenêtre est définie avec <code style="font-family:var(--mono);color:var(--ok);font-size:0.8em;">occurred_at &lt; h</code> (strict) dans TP6 cell [16]. Les fenêtres <em>prev_24h</em> et <em>next_24h</em> sont disjointes par construction.
               </div>
               <div style="padding:0.6rem 0.75rem;background:rgba(232,131,42,0.07);border:1px solid rgba(232,131,42,0.2);border-radius:3px;">
-                <span style="font-family:var(--mono);font-size:0.62rem;color:var(--warn);display:block;margin-bottom:0.2rem;">Type B — Signal réactif ⚠️ Confirmé — Δ ablation = 0.170</span>
-                Ablation §7b : PR-AUC <strong style="color:var(--ok);">0.862</strong> → <strong style="color:var(--danger);">0.691</strong> sans la feature. Le modèle dépend quasi-exclusivement de ce signal. La feature reste légitime (fenêtres disjointes) mais <strong>réactive</strong> : elle encode "la machine vient d'avoir un incident" plutôt qu'une anticipation physique. Piste : enrichir les features télémétriques (température, vibration, pression) pour réduire cette dépendance.
+                <span style="font-family:var(--mono);font-size:0.62rem;color:var(--warn);display:block;margin-bottom:0.2rem;">Type B — Signal réactif ⚠️ Confirmé — Δ ablation = 0.157</span>
+                Ablation §7b : PR-AUC <strong style="color:var(--ok);">0.910</strong> → <strong style="color:var(--danger);">0.753</strong> sans la feature. Le modèle dépend quasi-exclusivement de ce signal. La feature reste légitime (fenêtres disjointes) mais <strong>réactive</strong> : elle encode "la machine vient d'avoir un incident" plutôt qu'une anticipation physique. Piste : enrichir les features télémétriques (température, vibration, pression) pour réduire cette dépendance.
               </div>
             </div>
           </div>
@@ -1287,7 +1287,7 @@ print(f"Sans  : {pr_sans:.4f}  |  Δ = {delta:.4f}")</div>
       <div style="background:var(--warn);"></div>
       <div style="padding:1.5rem 1.75rem;">
         <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--warn);margin-bottom:0.4rem;">Alerte 2 — Recall élevé</div>
-        <div style="font-size:1rem;font-weight:700;margin-bottom:0.75rem;">Recall = 87.9 % à seuil 0.5 — le modèle prédit-il tout positif ?</div>
+        <div style="font-size:1rem;font-weight:700;margin-bottom:0.75rem;">Recall = 94.3 % à seuil 0.5 — le modèle prédit-il tout positif ?</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;font-size:0.83rem;">
           <div>
             <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;">Réfutation par la précision</div>
@@ -1298,10 +1298,10 @@ print(f"Sans  : {pr_sans:.4f}  |  Δ = {delta:.4f}")</div>
               </div>
               <div style="padding:0.6rem 0.75rem;background:rgba(94,207,168,0.07);border:1px solid rgba(94,207,168,0.2);border-radius:3px;">
                 <span style="font-family:var(--mono);font-size:0.62rem;color:var(--ok);display:block;margin-bottom:0.2rem;">Notre modèle ✅ Écarté</span>
-                Precision = <strong style="color:var(--ok);">63.6 %</strong> >> 3.6 %<br>Recall = 87.9 %
+                Precision = <strong style="color:var(--ok);">71.8 %</strong> >> 3.6 %<br>Recall = 94.3 %
               </div>
             </div>
-            <div style="margin-top:0.6rem;font-size:0.79rem;color:var(--muted);line-height:1.5;">Une précision 17× supérieure au naïf prouve que le modèle discrimine réellement.</div>
+            <div style="margin-top:0.6rem;font-size:0.79rem;color:var(--muted);line-height:1.5;">Une précision 20× supérieure au naïf prouve que le modèle discrimine réellement.</div>
           </div>
           <div>
             <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;">Risque résiduel — mémorisation par machine</div>
@@ -1322,11 +1322,11 @@ top3 = tp_machine.head(3).sum()
 total = df_val['TP'].sum()
 print(f"Top 3 machines = {top3}/{total} TP")</div>
             <div style="margin-top:0.6rem;font-size:0.79rem;color:var(--muted);line-height:1.5;">
-              <strong style="color:var(--warn);">Résultat §7b :</strong> Top 3 machines = <strong style="color:var(--warn);">63.7 %</strong> des 601 TP (MACH-13 seule = 36 %).<br>
+              <strong style="color:var(--warn);">Résultat §7b :</strong> Top 3 machines = <strong style="color:var(--warn);">63.0 %</strong> des 543 TP (MACH-13 seule = 29 %).<br>
               Zone orange — sous le seuil critique de 70 % mais MACH-13 sur-représentée.<br>
               <strong style="color:var(--warn);">Out-of-entity test §9 (B8-OOE) :</strong> Entraîné sans MACH-13 → PR-AUC val
-              <strong style="color:var(--ok);">0.8025</strong> → <strong style="color:var(--danger);">0.6825</strong>
-              (Δ = −0.120, 239 TP)&nbsp;·&nbsp;⚠️ mémorisation partielle confirmée.<br>
+              <strong style="color:var(--ok);">0.9060</strong> → <strong style="color:var(--danger);">0.7333</strong>
+              (Δ = −0.173, 239 TP)&nbsp;·&nbsp;⚠️ mémorisation partielle confirmée.<br>
               <span style="color:var(--muted);">Test set (24 TP) non représentatif — val (239 TP) est la mesure fiable.</span>
             </div>
           </div>
@@ -1356,19 +1356,19 @@ print(f"Top 3 machines = {top3}/{total} TP")</div>
         <tr>
           <td>Feature proxy du target (signal réactif)</td>
           <td class="warn-m">⚠️ Confirmé</td>
-          <td style="font-size:0.81rem;color:var(--muted);">Ablation §7b — PR-AUC 0.862 → 0.691 sans la feature (<strong style="color:var(--danger);">Δ = 0.170</strong>)</td>
+          <td style="font-size:0.81rem;color:var(--muted);">Ablation §7b — PR-AUC 0.910 → 0.753 sans la feature (<strong style="color:var(--danger);">Δ = 0.157</strong>)</td>
           <td style="font-size:0.81rem;">Feature utile mais réactive — enrichir les features télémétriques pour réduire la dépendance</td>
         </tr>
         <tr>
           <td>Recall artificiel (tout positif)</td>
           <td class="good-m">✅ Écarté</td>
-          <td style="font-size:0.81rem;color:var(--muted);">Precision = 63.6 % vs 3.6 % naïf</td>
+          <td style="font-size:0.81rem;color:var(--muted);">Precision = 71.8 % vs 3.6 % naïf</td>
           <td style="font-size:0.81rem;">Montrer le calcul naïf au formateur</td>
         </tr>
         <tr>
           <td>Mémorisation par machine</td>
           <td class="warn-m">⚠️ Zone orange</td>
-          <td style="font-size:0.81rem;color:var(--muted);">Top 3 = 63.7 % des TP · OOE val Δ = −0.120 (239 TP) · mémorisation partielle confirmée</td>
+          <td style="font-size:0.81rem;color:var(--muted);">OOE val (MACH-13) : 0.906 → 0.733, Δ = −0.173 (239 TP) · mémorisation partielle confirmée</td>
           <td style="font-size:0.81rem;">GroupKFold par machine pour validation robuste — enrichir features pour réduire la dépendance aux entités</td>
         </tr>
       </tbody>
@@ -1444,27 +1444,27 @@ y_pred = (y_proba >= seuil_retenu).astype(int)</div>
   <div class="test-metrics">
     <div class="tm-box">
       <div class="tm-label">PR-AUC test</div>
-      <div class="tm-val pending">cf. notebook</div>
+      <div class="tm-val">0.8830</div>
     </div>
     <div class="tm-box">
       <div class="tm-label">ROC-AUC test</div>
-      <div class="tm-val pending">cf. notebook</div>
+      <div class="tm-val">0.9948</div>
     </div>
     <div class="tm-box">
       <div class="tm-label">Recall test</div>
-      <div class="tm-val pending">cf. notebook</div>
+      <div class="tm-val">86.0 %</div>
     </div>
     <div class="tm-box">
       <div class="tm-label">Seuil retenu</div>
-      <div class="tm-val pending">cf. notebook</div>
+      <div class="tm-val">0.78</div>
     </div>
     <div class="tm-box">
       <div class="tm-label">Overfitting Δ</div>
-      <div class="tm-val pending">cf. notebook</div>
+      <div class="tm-val">0.089</div>
     </div>
     <div class="tm-box">
       <div class="tm-label">F1 test</div>
-      <div class="tm-val pending">cf. notebook</div>
+      <div class="tm-val">0.7783</div>
     </div>
   </div>
 </section>
@@ -1551,9 +1551,9 @@ print(f"{emissions * 1000:.4f} g CO₂eq")</div>
       <tbody>
         <tr>
           <td class="run-name">Logistic_Regression<span class="run-tag tp7">TP7</span></td>
-          <td class="bad-m">0.3569</td>
-          <td class="bad-m">0.5312</td>
-          <td class="warn-m">0.174</td>
+          <td class="bad-m">0.3349</td>
+          <td class="bad-m">0.5427</td>
+          <td class="warn-m">0.208</td>
           <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
           <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
           <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
@@ -1562,9 +1562,9 @@ print(f"{emissions * 1000:.4f} g CO₂eq")</div>
         </tr>
         <tr>
           <td class="run-name">Random_Forest<span class="run-tag tp7">TP7</span></td>
-          <td class="warn-m">0.7682</td>
-          <td class="bad-m">0.9891</td>
-          <td class="bad-m">0.221</td>
+          <td class="warn-m">0.7940</td>
+          <td class="bad-m">0.9944</td>
+          <td class="bad-m">0.200</td>
           <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
           <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
           <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
@@ -1573,24 +1573,24 @@ print(f"{emissions * 1000:.4f} g CO₂eq")</div>
         </tr>
         <tr>
           <td class="run-name">XGBoost<span class="run-tag tp7">TP7</span></td>
-          <td class="warn-m">0.8174</td>
+          <td class="warn-m">0.8864</td>
           <td class="bad-m">1.0000</td>
-          <td class="bad-m">0.183</td>
+          <td class="bad-m">0.114</td>
           <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
-          <td class="warn-m">87.9 %</td>
+          <td class="warn-m">94.3 %</td>
           <td class="pend">— <span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);">non évalué</span></td>
           <td class="pend">0.5</td>
           <td class="pend">—</td>
         </tr>
         <tr style="background:rgba(155,127,212,0.04);">
           <td class="run-name">XGBoost_Optuna_B7<span class="run-tag tp8">TP8</span><span class="run-tag best">Best</span></td>
-          <td class="good-m">0.862 <span style="font-family:var(--mono);font-size:0.65rem;color:var(--ok);">+0.045</span></td>
-          <td class="warn-m">0.998</td>
-          <td class="warn-m">0.136 <span style="font-family:var(--mono);font-size:0.65rem;color:var(--ok);">−0.047</span></td>
-          <td class="warn-m">0.735</td>
-          <td class="warn-m">83.6 %</td>
-          <td class="good-m">0.773</td>
-          <td class="good-m">0.84</td>
+          <td class="good-m">0.910 <span style="font-family:var(--mono);font-size:0.65rem;color:var(--ok);">+0.024</span></td>
+          <td class="warn-m">0.999</td>
+          <td class="warn-m">0.089 <span style="font-family:var(--mono);font-size:0.65rem;color:var(--ok);">−0.025</span></td>
+          <td class="warn-m">0.883</td>
+          <td class="warn-m">86.0 %</td>
+          <td class="good-m">0.778</td>
+          <td class="good-m">0.78</td>
           <td class="good-m">60</td>
         </tr>
       </tbody>
@@ -1600,11 +1600,11 @@ print(f"{emissions * 1000:.4f} g CO₂eq")</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;">
     <div style="background:var(--surf);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:0 4px 4px 0;padding:1rem 1.25rem;font-size:0.83rem;line-height:1.6;">
       <span style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:0.35rem;">Note — PR-AUC test vs val</span>
-      L'écart <strong style="color:var(--text);">0.862 val → 0.735 test</strong> est attendu : le test set est temporellement le plus éloigné du train. Ce n'est pas du surapprentissage sur val — c'est la variance naturelle entre périodes.
+      L'écart <strong style="color:var(--text);">0.910 val → 0.883 test</strong> est attendu : le test set est temporellement le plus éloigné du train. Ce n'est pas du surapprentissage sur val — c'est la variance naturelle entre périodes.
     </div>
     <div style="background:var(--surf);border:1px solid var(--border);border-left:3px solid var(--ok);border-radius:0 4px 4px 0;padding:1rem 1.25rem;font-size:0.83rem;line-height:1.6;">
-      <span style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--ok);display:block;margin-bottom:0.35rem;">Seuil 0.84 — lecture</span>
-      Un seuil de <strong style="color:var(--text);">0.84</strong> signifie que le modèle n'alerte que lorsqu'il est très confiant. Recall = 83.6 % avec ce seuil confirme que les vraies pannes obtiennent des probabilités élevées.
+      <span style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--ok);display:block;margin-bottom:0.35rem;">Seuil 0.78 — lecture</span>
+      Un seuil de <strong style="color:var(--text);">0.78</strong> (issu de la courbe precision-recall sur validation) signifie que le modèle n'alerte que lorsqu'il est confiant. Recall = 86.0 % avec ce seuil confirme que les vraies pannes obtiennent des probabilités élevées.
     </div>
   </div>
 
@@ -1630,16 +1630,16 @@ print(f"{emissions * 1000:.4f} g CO₂eq")</div>
         <div class="rfxgb-metric">
           <div class="rfxgb-metric-label">PR-AUC val</div>
           <div class="rfxgb-metric-bar-track">
-            <div class="rfxgb-metric-bar-fill" style="width:76.8%;background:rgba(155,127,212,0.6)">
-              <span>0.768</span>
+            <div class="rfxgb-metric-bar-fill" style="width:79.4%;background:rgba(155,127,212,0.6)">
+              <span>0.794</span>
             </div>
           </div>
         </div>
         <div class="rfxgb-metric">
           <div class="rfxgb-metric-label">PR-AUC train</div>
           <div class="rfxgb-metric-bar-track">
-            <div class="rfxgb-metric-bar-fill" style="width:98.9%;background:rgba(155,127,212,0.4)">
-              <span>0.989</span>
+            <div class="rfxgb-metric-bar-fill" style="width:99.4%;background:rgba(155,127,212,0.4)">
+              <span>0.994</span>
             </div>
           </div>
         </div>
@@ -1647,7 +1647,7 @@ print(f"{emissions * 1000:.4f} g CO₂eq")</div>
           <div class="rfxgb-metric-label">Overfitting Δ — plus bas = mieux</div>
           <div class="rfxgb-metric-bar-track">
             <div class="rfxgb-metric-bar-fill" style="width:100%;background:rgba(217,83,79,0.55)">
-              <span>0.221 ← pire des 3</span>
+              <span>0.200 ← pire des 3</span>
             </div>
           </div>
         </div>
@@ -1655,7 +1655,7 @@ print(f"{emissions * 1000:.4f} g CO₂eq")</div>
       <div style="display:flex;flex-direction:column;gap:0.35rem;">
         <div class="rfxgb-pro">Robuste sans réglage fin</div>
         <div class="rfxgb-pro">Stable sur données tabulaires</div>
-        <div class="rfxgb-con">Surapprentissage le plus élevé (Δ=0.221)</div>
+        <div class="rfxgb-con">Surapprentissage le plus élevé (Δ=0.200)</div>
         <div class="rfxgb-con">Probabilités mal calibrées sur données déséquilibrées</div>
         <div class="rfxgb-con">Pas de mécanisme natif pour classes déséquilibrées</div>
       </div>
@@ -1673,46 +1673,46 @@ print(f"{emissions * 1000:.4f} g CO₂eq")</div>
         <div class="rfxgb-metric">
           <div class="rfxgb-metric-label">PR-AUC val — baseline / optimisé</div>
           <div class="rfxgb-metric-bar-track">
-            <div class="rfxgb-metric-bar-fill" style="width:86.2%;background:rgba(94,207,168,0.7)">
-              <span>0.817 → 0.862</span>
+            <div class="rfxgb-metric-bar-fill" style="width:91.0%;background:rgba(94,207,168,0.7)">
+              <span>0.886 → 0.910</span>
             </div>
           </div>
         </div>
         <div class="rfxgb-metric">
           <div class="rfxgb-metric-label">PR-AUC train — baseline / optimisé</div>
           <div class="rfxgb-metric-bar-track">
-            <div class="rfxgb-metric-bar-fill" style="width:99.8%;background:rgba(94,207,168,0.35)">
-              <span>1.000 → 0.998</span>
+            <div class="rfxgb-metric-bar-fill" style="width:99.9%;background:rgba(94,207,168,0.35)">
+              <span>1.000 → 0.999</span>
             </div>
           </div>
         </div>
         <div class="rfxgb-metric">
           <div class="rfxgb-metric-label">Overfitting Δ — baseline / optimisé</div>
           <div class="rfxgb-metric-bar-track">
-            <div class="rfxgb-metric-bar-fill" style="width:61.6%;background:rgba(94,207,168,0.55)">
-              <span>0.183 → 0.136 ✓</span>
+            <div class="rfxgb-metric-bar-fill" style="width:78.2%;background:rgba(94,207,168,0.55)">
+              <span>0.114 → 0.089 ✓</span>
             </div>
           </div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:0.35rem;">
-        <div class="rfxgb-pro">Meilleur PR-AUC val dès la baseline (+6.4%)</div>
+        <div class="rfxgb-pro">Meilleur PR-AUC val dès la baseline (+11.6%)</div>
         <div class="rfxgb-pro"><code style="font-family:var(--mono);font-size:0.8em;">scale_pos_weight</code> compense le déséquilibre nativement</div>
-        <div class="rfxgb-pro">Overfitting réductible par Optuna (Δ 0.221→0.136)</div>
-        <div class="rfxgb-pro">Probabilités mieux calibrées → seuil élevé possible (0.84)</div>
+        <div class="rfxgb-pro">Overfitting réductible par Optuna (Δ 0.114→0.089, vs RF Δ=0.200)</div>
+        <div class="rfxgb-pro">Probabilités mieux calibrées → seuil élevé possible (0.78)</div>
       </div>
     </div>
   </div>
 
   <div class="rfxgb-verdict">
     <strong>Pourquoi XGBoost sur ce problème ?</strong><br>
-    Le déséquilibre de classes (3.6 % positifs) est la contrainte principale. XGBoost le gère directement via <code style="font-family:var(--mono);">scale_pos_weight=27</code> — le modèle pondère les pannes 27× plus que les cas normaux pendant l'entraînement. Random Forest n'a pas d'équivalent natif : il faut recourir à <code style="font-family:var(--mono);">class_weight</code> ou du suréchantillonnage (SMOTE), ce qui dégrade souvent la calibration des probabilités. C'est pour cette raison que l'autre étudiant, dont le RF retient un seuil de 0.083, doit abaisser drastiquement son seuil pour compenser — là où XGBoost optimisé maintient un bon recall à seuil 0.84.
+    Le déséquilibre de classes (3.6 % positifs) est la contrainte principale. XGBoost le gère directement via <code style="font-family:var(--mono);">scale_pos_weight=27</code> — le modèle pondère les pannes 27× plus que les cas normaux pendant l'entraînement. Random Forest n'a pas d'équivalent natif : il faut recourir à <code style="font-family:var(--mono);">class_weight</code> ou du suréchantillonnage (SMOTE), ce qui dégrade souvent la calibration des probabilités. C'est pour cette raison que l'autre étudiant, dont le RF retient un seuil de 0.083, doit abaisser drastiquement son seuil pour compenser — là où XGBoost optimisé maintient un bon recall (86.0 %) à seuil 0.78.
   </div>
 </section>
 
 <footer>
   <span>TP8 · Optimisation Optuna · XGBoost · maintenance prédictive</span>
-  <span>Baseline PR-AUC = 0.8174 · 60 trials TPE · Green AI</span>
+  <span>Baseline PR-AUC = 0.8864 · 60 trials TPE · Green AI</span>
 </footer>
 
 <!-- ══ CANVAS ANIMATION ══ -->
@@ -1721,7 +1721,7 @@ print(f"{emissions * 1000:.4f} g CO₂eq")</div>
   var canvas = document.getElementById('optuna-canvas');
   var ctx    = canvas.getContext('2d');
   var dpr    = window.devicePixelRatio || 1;
-  var BASELINE = 0.8174;
+  var BASELINE = 0.8864;
   var N = 60;
 
   /* Palette */
@@ -1742,19 +1742,20 @@ print(f"{emissions * 1000:.4f} g CO₂eq")</div>
     var arr = [];
     for (var i = 0; i < N; i++) {
       var base, spread;
-      if      (i < 12) { base = 0.755; spread = 0.14; }
-      else if (i < 30) { base = 0.790; spread = 0.09; }
-      else             { base = 0.818; spread = 0.055; }
+      if      (i < 12) { base = 0.830; spread = 0.10; }
+      else if (i < 30) { base = 0.870; spread = 0.06; }
+      else             { base = 0.895; spread = 0.035; }
       var v = base + (rand() - 0.5) * 2 * spread;
       arr.push(Math.max(0.52, Math.min(0.92, v)));
     }
     /* Plant key milestones */
-    arr[2]  = 0.614;
-    arr[7]  = 0.819;
-    arr[18] = 0.823;
-    arr[35] = 0.831;
-    arr[48] = 0.838;
-    arr[55] = 0.835;
+    arr[2]  = 0.750;
+    arr[7]  = 0.860;
+    arr[18] = 0.885;
+    arr[35] = 0.900;
+    arr[48] = 0.905;
+    arr[55] = 0.902;
+    arr[59] = 0.9102;
     return arr;
   }());
 
