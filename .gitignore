@@ -8,3 +8,6 @@ __pycache__/
 # Fichiers temporaires / sauvegardes d'Office et d'éditeurs
 ~$*
 *.bak
+
+# Sauvegardes automatiques de Jupyter
+.ipynb_checkpoints/
