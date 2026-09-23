@@ -1,0 +1,218 @@
+<title>Versioning DVC & MLflow</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink: #16211f; --muted: #4f5d55; --paper: #eef0ea; --raised: #ffffff;
+    --line: #ccd3c8; --accent: #0f6e5c; --accent-ink: #084537; --accent-soft: #d7ece5;
+    --warn: #a8551f; --warn-soft: #f3e2d1;
+    --code-bg: #101917; --code-ink: #d9ffe9; --code-dim: #7fa694;
+    --font-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+    --font-body: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+      --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+      --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+    --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+    --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+  }
+  *{ box-sizing: border-box; }
+  body{ margin:0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  ::selection{ background: var(--accent-soft); color: var(--accent-ink); }
+  a{ color: var(--accent-ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+
+  .page{ max-width: 760px; margin: 0 auto; padding: clamp(28px,6vw,64px) 24px 96px; }
+
+  .eyebrow{ font-family: var(--font-display); font-weight:600; font-size:.78rem; letter-spacing:.11em; text-transform:uppercase; color: var(--accent-ink); display:flex; align-items:center; gap:.6em; }
+  .eyebrow::before{ content:""; width:20px; height:2px; background: var(--accent); display:inline-block; }
+
+  header.masthead{ border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:40px; }
+  .breadcrumb{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); margin:0 0 18px; }
+  .breadcrumb span{ color: var(--ink); }
+  h1{ font-family: var(--font-display); font-weight:700; font-size: clamp(2rem,5vw,2.7rem); line-height:1.06; letter-spacing:-.01em; margin:0 0 12px; text-wrap: balance; }
+  .lede{ font-size:1.08rem; color: var(--muted); max-width:58ch; margin:0 0 20px; }
+  .status-row{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+  .status-chip{ display:inline-flex; align-items:center; gap:8px; font-family: var(--font-display); font-weight:600; font-size:.82rem; letter-spacing:.03em; padding:7px 14px 7px 10px; border-radius:999px; background: var(--accent-soft); color: var(--accent-ink); }
+  .status-chip svg{ width:15px; height:15px; flex:none; }
+  .meta-line{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); }
+
+  section{ margin:52px 0; }
+  section > h2{ font-family: var(--font-body); font-weight:600; font-style:italic; font-size:1.5rem; margin:8px 0 16px; text-wrap: balance; }
+  section > p{ max-width:66ch; }
+  section > p + p{ margin-top:1em; }
+
+  .callout{ border-left:3px solid var(--accent); background: var(--accent-soft); color: var(--ink); padding:14px 18px; border-radius:4px; font-size:.96rem; margin:20px 0; }
+  .callout.warn{ border-color: var(--warn); background: var(--warn-soft); }
+  .callout strong{ font-family: var(--font-display); font-weight:600; }
+
+  .terminal{ background: var(--code-bg); border-radius:8px; overflow:hidden; margin:20px 0; box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+  .terminal-bar{ display:flex; align-items:center; gap:8px; padding:9px 14px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .terminal-bar .dot{ width:8px; height:8px; border-radius:50%; background: var(--code-dim); opacity:.6; }
+  .terminal-bar .label{ font-family: var(--font-mono); font-size:.76rem; color: var(--code-dim); margin-left:6px; }
+  .terminal pre{ margin:0; padding:16px; overflow-x:auto; font-family: var(--font-mono); font-size:.85rem; line-height:1.55; color: var(--code-ink); }
+  .terminal .ok{ color:#8fe8bd; }
+  .terminal .dim{ color: var(--code-dim); }
+  .terminal .cmd::before{ content:"❯ "; color: var(--code-dim); }
+
+  .compare{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0; }
+  @media (max-width:620px){ .compare{ grid-template-columns:1fr; } }
+  .compare figure{ margin:0; }
+  .compare figcaption{ font-family: var(--font-display); font-weight:600; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color: var(--muted); margin-bottom:8px; }
+  .compare.before figcaption{ color: var(--warn); }
+  .compare.after figcaption{ color: var(--accent-ink); }
+  .compare pre{ margin:0; background: var(--raised); border:1px solid var(--line); border-radius:8px; padding:14px; font-family: var(--font-mono); font-size:.78rem; line-height:1.55; overflow-x:auto; }
+
+  code{ font-family: var(--font-mono); font-size:.88em; background: var(--accent-soft); color: var(--accent-ink); padding:.1em .35em; border-radius:4px; }
+
+  .flow{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:20px 0; font-family: var(--font-mono); font-size:.86rem; }
+  .flow .node{ background: var(--raised); border:1px solid var(--line); border-radius:8px; padding:10px 14px; }
+  .flow .node.job{ border-color: var(--accent); color: var(--accent-ink); font-weight:600; }
+  .flow .arrow{ color: var(--muted); font-size:1.1rem; }
+
+  .steps{ margin:16px 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:14px; }
+  .steps li{ display:flex; gap:14px; align-items:flex-start; }
+  .steps .n{ font-family: var(--font-mono); font-size:.78rem; color: var(--accent-ink); background: var(--accent-soft); border-radius:50%; width:22px; height:22px; flex:none; display:flex; align-items:center; justify-content:center; margin-top:2px; }
+
+  table.contract{ width:100%; border-collapse:collapse; font-size:.92rem; margin:14px 0; }
+  table.contract th, table.contract td{ text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); font-family: var(--font-mono); font-size:.84rem; }
+  table.contract th{ font-family: var(--font-display); font-size:.74rem; letter-spacing:.06em; text-transform:uppercase; color: var(--muted); font-weight:600; }
+
+  dl.glossary{ margin:16px 0; }
+  dl.glossary div{ display:grid; grid-template-columns:160px 1fr; gap:16px; padding:12px 0; border-bottom:1px solid var(--line); }
+  @media (max-width:560px){ dl.glossary div{ grid-template-columns:1fr; gap:4px; } }
+  dl.glossary dt{ font-family: var(--font-display); font-weight:600; font-size:.86rem; color: var(--accent-ink); }
+  dl.glossary dd{ margin:0; color: var(--ink); }
+
+  footer{ margin-top:64px; padding-top:24px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; font-family: var(--font-mono); font-size:.8rem; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto !important; } }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="breadcrumb">CISIA · Sprint 3 · J1 après-midi · <span>Module 24 — TP3</span></p>
+    <h1>Versionner données et modèle avec DVC</h1>
+    <p class="lede">Un CSV et un <code>.joblib</code> ne rentrent pas dans git comme du code — DVC leur donne un pointeur léger versionné, pendant que le vrai fichier part vers un remote.</p>
+    <div class="status-row">
+      <span class="status-chip">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        TP validé — data + modèle migrés vers DVC
+      </span>
+      <span class="meta-line">jalon 02 · branche guillaume-saidani</span>
+    </div>
+  </header>
+
+  <section>
+    <p class="eyebrow">Pourquoi</p>
+    <h2>Git versionne du texte, pas des gigaoctets</h2>
+    <p>Un <code>gold_dataset.csv</code> ou un <code>rf.joblib</code> committé directement dans git grossit l'historique à chaque ré-entraînement, sans que <code>git diff</code> n'apporte rien sur un contenu binaire. DVC déplace le <em>poids</em> du fichier vers un <strong>remote</strong> (ici un dossier local, <code>../../dvc-store</code>), et ne laisse dans git qu'un petit pointeur texte : un hash MD5, une taille, un chemin.</p>
+    <div class="flow">
+      <span class="node">gold_dataset.csv (281 Ko)</span>
+      <span class="arrow">dvc add →</span>
+      <span class="node job">gold_dataset.csv.dvc</span>
+      <span class="arrow">→ suivi par</span>
+      <span class="node">git</span>
+    </div>
+    <div class="callout">
+      <strong>Séparation des rôles.</strong> Git suit le pointeur (petit, diffable, versionné pour toujours). DVC déplace le fichier réel vers le remote et le restaure via <code>dvc checkout</code> — le poids sort de l'historique git.
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Le pointeur</p>
+    <h2>Ce que contient un fichier <code style="font-size:1em">.dvc</code></h2>
+    <p>Deux pointeurs ont été créés par <code>dvc add data/gold/gold_dataset.csv artifacts/models/rf.joblib</code> :</p>
+    <div class="compare">
+      <figure class="before">
+        <figcaption>data/gold/gold_dataset.csv.dvc</figcaption>
+        <pre>outs:
+- md5: 637be8d3825023160d...
+  size: 287704
+  hash: md5
+  path: gold_dataset.csv</pre>
+      </figure>
+      <figure class="after">
+        <figcaption>artifacts/models/rf.joblib.dvc</figcaption>
+        <pre>outs:
+- md5: 27798900618706d0a08d...
+  size: 4965817
+  hash: md5
+  path: rf.joblib</pre>
+      </figure>
+    </div>
+    <p>Un <code>.gitignore</code> a été généré automatiquement dans chaque dossier (<code>/gold_dataset.csv</code>, <code>/rf.joblib</code>) : le fichier réel reste sur disque pour travailler localement, mais git ne le voit plus — seul le <code>.dvc</code> à côté est suivi.</p>
+    <div class="callout warn">
+      <strong>Migration, pas ajout à neuf.</strong> Les deux fichiers étaient déjà suivis par git (héritage du socle Sprint 2/3). <code>dvc add</code> refuse un fichier encore indexé par git : il a fallu d'abord <code>git rm -r --cached</code> chacun avant de le confier à DVC — c'est ce que trace le diff (suppression de <code>rf.joblib</code> et <code>gold_dataset.csv</code> côté git, apparition des <code>.dvc</code> côté non-suivi).
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Traçabilité</p>
+    <h2>Une empreinte = une version des données</h2>
+    <p>Le script <code>scripts/demo_versioning.py</code> calcule le MD5 du gold (<code>gold_md5</code>) et l'inscrit dans <code>artifacts/models/model_metadata.json</code>, dans le nom du run MLflow, et dans le tag git suggéré en fin de script. Si le CSV change d'un seul octet, cette empreinte change — on sait immédiatement quelle version de données a produit quel modèle.</p>
+    <table class="contract">
+      <thead><tr><th>Champ</th><th>Valeur (ce run)</th></tr></thead>
+      <tbody>
+        <tr><td>gold_md5</td><td>637be8d38250</td></tr>
+        <tr><td>dataset</td><td>data/gold/gold_dataset.csv</td></tr>
+        <tr><td>split</td><td>temporel/machine</td></tr>
+        <tr><td>threshold</td><td>0.975</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <p class="eyebrow">MLflow</p>
+    <h2>Params, métriques et registre, en parallèle de DVC</h2>
+    <p>MLflow trace ce que DVC ne trace pas : les <em>réglages</em> et les <em>résultats</em> d'un entraînement, pas le poids d'un fichier. Le backend est SQLite (<code>mlflow.db</code>) plutôt qu'un simple dossier <code>mlruns/</code>, parce que le <strong>Model Registry</strong> — qui nomme et numérote les versions de modèle (<code>indusense-rf</code> v1, v2…) — en a besoin.</p>
+    <div class="terminal">
+      <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv run python scripts/demo_versioning.py</span></div>
+      <pre>== 1. Entrainement ==
+   split=temporel/machine | train=1516 test=380 | PR-AUC=0.1036 ROC-AUC=0.2475 seuil=0.975 recall=0.0
+== 2. MLflow (params + metriques + modele + registre) ==
+   modele enregistre au registre : 'indusense-rf'
+== 3. DVC (versionner data + modele) ==
+   -&gt; 2 pointeurs crees : data/gold/gold_dataset.csv.dvc + artifacts/models/rf.joblib.dvc</pre>
+    </div>
+    <p><code>metrics.json</code> et <code>params.yaml</code> sont écrits <strong>en clair et versionnés par git</strong> (pas par DVC — ils sont petits et lisibles) : c'est ce que lisent <code>dvc metrics show</code> et <code>dvc params diff</code> pour comparer deux commits sans rouvrir MLflow.</p>
+    <div class="callout warn">
+      <strong>Signal à ne pas ignorer.</strong> Le seuil <code>0.975</code> a été calibré pour maximiser le F1 <em>sur le train</em> — et donne <code>recall=0</code> et <code>precision=0</code> sur le test : le modèle ne détecte plus aucune panne. Un seuil optimisé sur le train qui s'effondre sur le test est le même symptôme que la fuite de données du module 23 : ce qui marche à l'entraînement ne garantit rien en conditions réelles. La démo verse ce résultat imparfait dans MLflow tel quel — c'est la traçabilité qui est évaluée ici, pas la performance du modèle.
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Figer la version</p>
+    <h2>Ce que le script propose de lancer ensuite</h2>
+    <p>Le script n'exécute pas <code>git commit</code> à la place de l'apprenant : il affiche les commandes à copier-coller pour figer cette version de données+modèle.</p>
+    <ol class="steps">
+      <li><span class="n">1</span><span><code>git add data/gold/gold_dataset.csv.dvc artifacts/models/rf.joblib.dvc .gitignore metrics.json params.yaml</code> — seuls les pointeurs et les fichiers texte entrent dans git.</span></li>
+      <li><span class="n">2</span><span><code>git commit -m "data+model 637be8d38250 | PR-AUC 0.1036"</code> — le message embarque directement l'empreinte et la métrique clé.</span></li>
+      <li><span class="n">3</span><span><code>git tag data-637be8d38250</code> — une étiquette lisible pour revenir exactement à cette version de données+modèle plus tard.</span></li>
+      <li><span class="n">4</span><span><code>dvc push</code> puis <code>git switch --detach data-637be8d38250 &amp;&amp; dvc checkout</code> — envoie le fichier réel vers le remote, puis prouve qu'on peut le restaurer depuis n'importe quel commit tagué.</span></li>
+    </ol>
+  </section>
+
+  <section>
+    <p class="eyebrow">Repères</p>
+    <h2>Vocabulaire DVC / MLflow</h2>
+    <dl class="glossary">
+      <div><dt>Pointeur <code>.dvc</code></dt><dd>Fichier texte versionné par git à la place du gros fichier — contient hash, taille et chemin.</dd></div>
+      <div><dt>Remote DVC</dt><dd>Où part le contenu réel des fichiers suivis — ici un dossier local <code>../../dvc-store</code>, configuré dans <code>.dvc/config</code>.</dd></div>
+      <div><dt><code>dvc checkout</code></dt><dd>Restaure les fichiers réels correspondant aux pointeurs du commit courant.</dd></div>
+      <div><dt>Model Registry</dt><dd>Côté MLflow : nomme et numérote les versions successives d'un modèle enregistré (<code>indusense-rf</code>).</dd></div>
+      <div><dt><code>gold_md5</code></dt><dd>Empreinte du jeu de données au moment de l'entraînement — relie un modèle à sa version exacte de données.</dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <span>Prochaine étape : jalon 03 (M25) — exposer le modèle via une API FastAPI</span>
+    <span>guillaume.saidani@ext.aelion.fr</span>
+  </footer>
+
+</div>

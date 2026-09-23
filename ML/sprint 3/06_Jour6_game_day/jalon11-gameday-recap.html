@@ -1,0 +1,498 @@
+<title>Jalon 11 — Démarrage Game Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f8f7;
+    --surface:#ffffff;
+    --surface-2:#eef2f0;
+    --ink:#16211d;
+    --ink-dim:#55645d;
+    --line:#ccd6d0;
+    --accent:#276b57;
+    --accent-soft:#dbeee7;
+    --accent-ink:#0f4a3a;
+    --host:#9a5a1f;
+    --host-soft:#f3e6d6;
+    --host-ink:#7a4517;
+    --critical:#a13f38;
+    --critical-soft:#f5ded9;
+    --critical-ink:#7c2e28;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#101513;
+      --surface:#171f1c;
+      --surface-2:#1e2926;
+      --ink:#e7efec;
+      --ink-dim:#9db0a8;
+      --line:#2c3a35;
+      --accent:#5fcaa8;
+      --accent-soft:#1d3931;
+      --accent-ink:#bdf0dd;
+      --host:#e0a25c;
+      --host-soft:#3a2a17;
+      --host-ink:#f0c08e;
+      --critical:#e0796f;
+      --critical-soft:#3a201d;
+      --critical-ink:#f5b8b0;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#101513;
+    --surface:#171f1c;
+    --surface-2:#1e2926;
+    --ink:#e7efec;
+    --ink-dim:#9db0a8;
+    --line:#2c3a35;
+    --accent:#5fcaa8;
+    --accent-soft:#1d3931;
+    --accent-ink:#bdf0dd;
+    --host:#e0a25c;
+    --host-soft:#3a2a17;
+    --host-ink:#f0c08e;
+    --critical:#e0796f;
+    --critical-soft:#3a201d;
+    --critical-ink:#f5b8b0;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    padding:48px 24px 64px;
+  }
+  main{
+    max-width:920px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    gap:36px;
+  }
+  header{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:24px;
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--accent-ink);
+    background:var(--accent-soft);
+    display:inline-block;
+    width:fit-content;
+    padding:3px 9px;
+    border-radius:4px;
+  }
+  h1{
+    margin:0;
+    font-size:clamp(22px,3.2vw,30px);
+    font-weight:700;
+    text-wrap:balance;
+    letter-spacing:-.01em;
+  }
+  header p{
+    margin:0;
+    max-width:70ch;
+    color:var(--ink-dim);
+    font-size:15px;
+    line-height:1.55;
+  }
+  code{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:12.5px;
+    background:var(--surface-2);
+    padding:1px 5px;
+    border-radius:4px;
+  }
+
+  section{display:flex;flex-direction:column;gap:14px;}
+  section > h2{
+    margin:0;font-size:14px;font-weight:600;letter-spacing:.04em;
+    text-transform:uppercase;color:var(--ink-dim);
+  }
+
+  .steps{display:flex;flex-direction:column;gap:0;border-left:2px solid var(--line);margin-left:9px;padding-left:26px;}
+  .step{position:relative;padding:0 0 26px;}
+  .step:last-child{padding-bottom:2px;}
+  .step::before{
+    content:"";position:absolute;left:-32px;top:3px;width:12px;height:12px;border-radius:50%;
+    background:var(--accent);border:2px solid var(--surface);box-shadow:0 0 0 2px var(--accent);
+  }
+  .step.warn::before{background:var(--host);box-shadow:0 0 0 2px var(--host);}
+  .step h3{margin:0 0 6px;font-size:15.5px;font-weight:700;}
+  .step p{margin:0 0 8px;font-size:13.5px;color:var(--ink-dim);line-height:1.6;}
+  .cmd{
+    display:block;font-family:"IBM Plex Mono", ui-monospace, monospace;font-size:12.5px;
+    background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;
+    color:var(--ink);white-space:pre-wrap;margin-bottom:8px;
+  }
+  .outcome{
+    display:inline-flex;align-items:center;gap:6px;font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:12px;font-weight:600;padding:3px 9px;border-radius:5px;
+  }
+  .outcome.ok{background:var(--accent-soft);color:var(--accent-ink);}
+  .outcome.retry{background:var(--host-soft);color:var(--host-ink);}
+
+  .diagnostic-box.fixed{background:var(--accent-soft);border-color:var(--accent);}
+  .diagnostic-box.fixed .tag{color:var(--accent-ink);}
+  .diagnostic-box.fixed code{background:var(--surface);}
+
+  .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;display:flex;flex-direction:column;gap:6px;
+  }
+  .card-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .card-head h3{margin:0;font-size:14.5px;font-weight:700;}
+  .card-head .commit{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;font-size:11.5px;font-weight:600;
+    color:var(--accent-ink);background:var(--accent-soft);padding:2px 7px;border-radius:5px;white-space:nowrap;
+  }
+  .card p{margin:0;font-size:13px;line-height:1.6;color:var(--ink-dim);}
+  .card p b{color:var(--ink);font-weight:600;}
+  .card p code{background:var(--surface-2);}
+  .card .masked{
+    display:inline-block;margin-top:2px;font-size:11.5px;font-weight:600;color:var(--host-ink);
+    background:var(--host-soft);padding:2px 7px;border-radius:5px;
+  }
+  .cards{display:flex;flex-direction:column;gap:12px;}
+
+  blockquote{
+    margin:0;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--host);
+    border-radius:0 10px 10px 0;padding:14px 18px;font-size:13.5px;line-height:1.65;color:var(--ink);
+  }
+  blockquote p{margin:0 0 8px;}
+  blockquote p:last-child{margin-bottom:0;}
+  .callout{
+    background:var(--host-soft);border:1px solid var(--host);border-radius:10px;padding:12px 16px;
+    font-size:13px;color:var(--host-ink);line-height:1.6;
+  }
+  .callout b{color:var(--host-ink);}
+
+  .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface);}
+  table{border-collapse:collapse;width:100%;min-width:560px;font-size:13.5px;}
+  th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top;}
+  thead th{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;font-size:11px;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--ink-dim);background:var(--surface-2);white-space:nowrap;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  td.dim{color:var(--ink-dim);}
+  td code{white-space:nowrap;}
+
+  .diagnostic-box{
+    background:var(--critical-soft);border:1px solid var(--critical);border-radius:10px;
+    padding:16px 18px;display:flex;flex-direction:column;gap:8px;
+  }
+  .diagnostic-box .tag{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;font-size:11px;font-weight:700;
+    letter-spacing:.05em;text-transform:uppercase;color:var(--critical-ink);
+  }
+  .diagnostic-box p{margin:0;font-size:13.5px;line-height:1.6;color:var(--ink);}
+  .diagnostic-box code{background:var(--surface);}
+  .diff{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;font-size:12.5px;line-height:1.7;
+    background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 14px;
+  }
+  .diff .rm{color:var(--critical-ink);}
+  .diff .add{color:var(--accent-ink);}
+
+  footer{
+    border-top:1px solid var(--line);padding-top:20px;font-size:13px;color:var(--ink-dim);line-height:1.6;
+  }
+  footer b{color:var(--ink);font-weight:600;}
+</style>
+
+<main>
+  <header>
+    <span class="eyebrow">FORMATION/JALONS/11-j6-matin-gameday.md · Game Day phases 0–2</span>
+    <h1>Jalon 11 — intégration, démarrage du Game Day et premier diagnostic</h1>
+    <p>Récapitulatif des actions menées pour passer du jalon 10 (drift stabilisé) au jalon 11 (stack cassée volontairement), puis des 15 pannes diagnostiquées et corrigées — code, dépendances, configuration Docker/Prometheus, CI et documentation — toutes issues de la même « maintenance du week-end », jusqu'à la conformité complète du pipeline aux chiffres certifiés.</p>
+  </header>
+
+  <section>
+    <h2>1 · Ce qui a été fait</h2>
+    <div class="steps">
+      <div class="step">
+        <h3>Nettoyage avant intégration</h3>
+        <p>Arbre de travail assaini avant fusion : livrables pédagogiques du jalon 10 commités, cache DVC local et verrou Office exclus via <code>.gitignore</code>.</p>
+        <span class="cmd">git add .gitignore *.pptx *.html &amp;&amp; git commit</span>
+        <span class="outcome ok">commit 221e4e7 · arbre propre</span>
+      </div>
+
+      <div class="step warn">
+        <h3>Intégration du jalon 11</h3>
+        <p>Fusion directe dans <code>rattrapage/04/20260825-160030</code> : trop divergente, conflits sur 15+ fichiers (CI, tests, pyproject, artefacts). Fusion annulée automatiquement par le script.</p>
+        <span class="cmd">mettre_a_niveau.ps1 -Jalon 11 → CONFLICT ×15 → merge abort</span>
+        <p>Relance en mode rattrapage : nouvelle branche créée directement depuis <code>origin/jalon/11</code>, ancien travail préservé.</p>
+        <span class="cmd">mettre_a_niveau.ps1 -Jalon 11 -Rattrapage</span>
+        <span class="outcome ok">branche rattrapage/11/20260904-095542 · travail précédent conservé (+ sauvegarde)</span>
+      </div>
+
+      <div class="step warn">
+        <h3>Vérification du socle</h3>
+        <p>Premier essai en échec : <code>ruff</code> lint un dossier résiduel non suivi (<code>PACK_APPRENANTS_SPRINT3_CISIA_20260824/</code>), ignoré sur <code>main</code> mais absent du <code>.gitignore</code> de <code>jalon/11</code>. Règle réappliquée localement.</p>
+        <span class="cmd">verifier_jalon.ps1 -Jalon 11 → ruff : 5 erreurs E501 hors périmètre</span>
+        <span class="cmd">verifier_jalon.ps1 -Jalon 11 (après correction .gitignore)</span>
+        <span class="outcome ok">30 passed, 1 skipped · ruff : All checks passed</span>
+      </div>
+
+      <div class="step">
+        <h3>Démarrage du Game Day</h3>
+        <p>Clone isolé du bundle Game Day, séparé du dépôt InduSense habituel — à ne jamais y fusionner.</p>
+        <span class="cmd">demarrer_gameday.ps1 -Binome guigui</span>
+        <span class="outcome ok">C:\Users\Aelion\CISIA_J6_GAMEDAY_guigui · branche reparation-guigui · tag v1.0-sain vérifié · remote bundle-local (lecture seule)</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>2 · Briefing reçu</h2>
+    <blockquote>
+      <p><b>Contexte :</b> une « maintenance » du week-end sur le dépôt de production InduSense a cassé l'installation, fait perdre des mesures au pipeline et rendu Grafana injoignable. Une affirmation d'astreinte dit que l'API refuse des clés valides — à vérifier, pas à croire.</p>
+      <p><b>Mission, par priorité :</b> réinstallation propre → suite de tests verte (contrat identique à <code>v1.1-sain</code>) → API/pipeline conformes aux chiffres certifiés (~65 625 lignes, 1,76 % résidu) → API/Prometheus/Grafana en service → contrôle CI honnête restauré → branche de réparation + PR draft + post-mortem.</p>
+      <p><b>Protocole imposé :</b> diagnostiquer → corriger → prouver → commiter, une panne à la fois.</p>
+    </blockquote>
+    <div class="callout">
+      <b>Écart relevé dès la lecture :</b> le briefing cite <code>v1.1-sain</code> comme dernier état certifié, mais le dépôt cloné ne contient que le tag <code>v1.0-sain</code> (<code>88d5af5</code>). HEAD (<code>4f78a52</code>) est 3 commits après ce tag. Noté comme symptôme, pas encore comme cause — cohérent avec la consigne du briefing de ne pas prendre les affirmations pour acquises.
+    </div>
+  </section>
+
+  <section>
+    <h2>3 · Diagnostic — panne n°1 (baseline phase 0)</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Élément</th><th>Détail</th></tr></thead>
+        <tbody>
+          <tr><td class="dim">Horodatage</td><td>2026-09-04 10:06:54</td></tr>
+          <tr><td class="dim">Symptôme</td><td>installation impossible dans le clone Game Day</td></tr>
+          <tr><td class="dim">Commande</td><td><code>uv sync --frozen --extra dev</code></td></tr>
+          <tr><td class="dim">Sortie utile</td><td><code>error: No interpreter found for Python &gt;=3.99, &lt;4.0</code></td></tr>
+          <tr><td class="dim">Localisation</td><td><code>pyproject.toml:33</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diagnostic-box fixed">
+      <span class="tag">Cause confirmée et corrigée</span>
+      <p>Le commentaire au-dessus de la ligne dit toujours « Version de Python IMPOSEE : au minimum 3.13, mais strictement avant 3.14 » — contredit par la valeur réelle. <code>git log -S</code> désigne le commit responsable.</p>
+      <div class="diff"><span class="rm">- requires-python = "&gt;=3.13,&lt;3.14"</span>  <span style="color:var(--ink-dim)">(v1.0-sain, 88d5af5)</span><br><span class="add">+ requires-python = "&gt;=3.99,&lt;4.0"</span>  <span style="color:var(--ink-dim)">(b2711eb « maintenance du week-end »)</span></div>
+      <p><b>Correctif appliqué :</b> restauration de <code>&gt;=3.13,&lt;3.14</code>.</p>
+      <p><b>Preuve avant :</b> <code>uv sync --frozen --extra dev</code> → <code>error: No interpreter found</code> (10:06:54)<br><b>Preuve après :</b> <code>uv sync --frozen --extra dev</code> → installation OK (10:17:07)</p>
+      <p><b>Commit :</b> <code>01d2a12</code> sur <code>reparation-guigui</code>.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>4 · Diagnostic — panne n°2</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Élément</th><th>Détail</th></tr></thead>
+        <tbody>
+          <tr><td class="dim">Symptôme</td><td>collecte pytest en échec sur <code>test_api.py</code> et <code>test_security.py</code></td></tr>
+          <tr><td class="dim">Commande</td><td><code>uv run pytest -q</code></td></tr>
+          <tr><td class="dim">Sortie utile</td><td><code>RuntimeError: The starlette.testclient module requires the httpx2 package</code></td></tr>
+          <tr><td class="dim">Localisation</td><td><code>pyproject.toml</code> — <code>dependencies</code> / <code>[project.optional-dependencies].mlops</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diagnostic-box fixed">
+      <span class="tag">Cause confirmée et corrigée</span>
+      <p><code>git diff v1.0-sain HEAD -- pyproject.toml</code> : le commit <code>2871686</code> (« CI: durcir l'image et actualiser les dependances ») a déplacé <code>dvc</code>, <code>prefect</code>, <code>sqlalchemy</code>, <code>psycopg[binary]</code>, <code>scipy</code> et <code>evidently</code> de la liste <code>dependencies</code> (base, toujours installée) vers l'extra optionnel <code>mlops</code>, non couvert par <code>uv sync --frozen --extra dev</code>. Or <code>evidently</code> entraîne transitivement <code>litestar</code> → <code>httpx</code>, requis par <code>starlette.testclient</code>.</p>
+      <p><b>Correctif appliqué :</b> les 6 paquets remis en base <code>dependencies</code> ; doublon retiré de <code>mlops</code> (ne garde que <code>mlflow&gt;=2.14</code>) ; <code>uv.lock</code> régénéré (<code>uv lock</code>, car <code>--frozen</code> utilisait l'ancien lock).</p>
+      <p><b>Preuve avant :</b> <code>uv sync --frozen --extra dev &amp;&amp; pytest -q</code> → <code>RuntimeError</code> à la collecte, 0 test exécuté<br><b>Preuve après :</b> <code>uv lock &amp;&amp; uv sync --frozen --extra dev &amp;&amp; pytest -q</code> → collecte OK, <code>httpx</code> s'importe (warning de dépréciation seulement)</p>
+      <p><b>Commit :</b> <code>b3c198c</code> sur <code>reparation-guigui</code>.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>5 · Diagnostic — pannes n°3 à n°8, toutes issues de <code>b2711eb</code></h2>
+    <p style="margin:0;font-size:13.5px;color:var(--ink-dim);">Les 8 tests en échec provenaient de 6 causes distinctes (4 échecs API partageaient une seule cause, puis une seconde s'est révélée une fois la première levée). Chaque correctif a été prouvé puis commité isolément.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-head"><h3>#3 — fuite temporelle réintroduite</h3><span class="commit">d0c85a1</span></div>
+        <p><b>Fichier :</b> <code>src/indusense/features/temporal.py</code> — <code>series.shift(1).rolling(window).mean()</code> → le <code>.shift(1)</code> anti-fuite avait été retiré ; la moyenne glissante incluait la valeur courante.</p>
+        <p><b>Preuve :</b> <code>test_temporal.py</code> 1 failed → <b>3 passed</b>.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>#4 — zero-padding perdu sur les IDs machine</h3><span class="commit">ab7bf80</span></div>
+        <p><b>Fichier :</b> <code>src/indusense/data/loaders.py</code> — <code>f"MACH-{int(...):02d}"</code> restauré (était <code>f"MACH-{...}"</code> sans padding) ; <code>"M-2"</code> redevient <code>"MACH-02"</code>.</p>
+        <p><b>Preuve :</b> <code>test_normalize_machine_id_variants</code> 1 failed / 5 → <b>5 passed</b>.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>#5 — dates naïves vs tz-aware</h3><span class="commit">5cbcdf0</span></div>
+        <p><b>Fichier :</b> <code>src/indusense/data/loaders.py</code> — <code>utc=True</code> + <code>.dt.tz_localize(None)</code> restaurés dans <code>load_pressure</code>, retirés par la maintenance.</p>
+        <p><b>Preuve :</b> <code>test_build_dataset_has_binary_target</code> — <code>TypeError</code> → <b>8 passed</b> (test_loaders.py complet).</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>#6 — seuils PSI inversés</h3><span class="commit">eaf68b1</span></div>
+        <p><b>Fichier :</b> <code>src/indusense/monitoring/drift.py</code> — <code>SEUIL_PSI_SURVEILLER</code>/<code>SEUIL_PSI_FORT</code> (0.10/0.25) avaient été échangés, cassant la logique d'alerte drift (travail M31-M34).</p>
+        <p><b>Preuve :</b> <code>test_verdicts_suivent_les_seuils_du_cours</code> 1 failed / 8 → <b>8 passed</b>.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>#7 — en-tête d'authentification renommé</h3><span class="commit">a4af6a4</span></div>
+        <p><b>Fichier :</b> <code>src/indusense/api/main.py</code> — alias <code>Header(..., alias=...)</code> remis sur <code>X-API-Key</code> (avait été changé en <code>X-Api-Token</code>). Confirme l'affirmation du briefing : l'API refusait bien des clés valides.</p>
+        <p><b>Preuve :</b> 4 tests en 401 → 2 passent immédiatement, 2 basculent en <b>429</b> — panne suivante démasquée.</p>
+        <span class="masked">démasque la panne #8</span>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>#8 — limite anti-flood réduite à 2 req/60s</h3><span class="commit">c6bf549</span></div>
+        <p><b>Fichier :</b> <code>src/indusense/api/security.py</code> — <code>rate_limit(..., limit: int = 2, ...)</code> restauré à <code>60</code>, en contradiction avec le commentaire du code resté sur « 60 ». Invisible tant que #7 bloquait les requêtes en amont.</p>
+        <p><b>Preuve :</b> <code>test_api.py</code> 2 failed (429) / 6 → <b>6 passed</b>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>6 · Remise en service — API / Prometheus / Grafana (priorité 4 du briefing)</h2>
+    <p style="margin:0;font-size:13.5px;color:var(--ink-dim);">Le code corrigé (pannes #1-8) ne suffisait pas : 3 pannes distinctes dans la configuration Docker/Prometheus, toujours issues de <code>b2711eb</code>, empêchaient la stack de tourner.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-head"><h3>#9 — port API mal publié</h3><span class="commit">cff8d62</span></div>
+        <p><b>Fichier :</b> <code>docker-compose.yml</code> — <code>api.ports</code> <code>["8000:8000"]</code> → <code>["8000:80"]</code>. Or uvicorn écoute sur <b>8000</b> en interne (<code>EXPOSE 8000</code>, <code>--port 8000</code>) : rien n'écoutait sur 80, API inaccessible depuis l'hôte.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>#10 — port Grafana tronqué</h3><span class="commit">cff8d62</span></div>
+        <p><b>Fichier :</b> <code>docker-compose.yml</code> — <code>grafana.ports</code> <code>["3000:3000"]</code> → <code>["300:3000"]</code>.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>#11 — cible drift mal adressée depuis Prometheus</h3><span class="commit">e32d4ad</span></div>
+        <p><b>Fichier :</b> <code>monitoring/prometheus.yml</code> — <code>host.docker.internal:9109</code> → <code>localhost:9109</code>. Depuis le conteneur Prometheus, <code>localhost</code> se désigne lui-même, pas l'hôte qui fait tourner l'exporteur drift — contredit le commentaire du fichier juste au-dessus.</p>
+      </div>
+    </div>
+    <div class="callout" style="background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink);margin-top:4px;">
+      <b>Preuve après correctifs</b> (conflit de port résolu en arrêtant temporairement le stack du dépôt principal, qui occupait déjà 3000/8000/9090) :<br>
+      <code>docker compose up -d</code> → 4 conteneurs <code>Up</code>, ports publiés (<code>0.0.0.0:8000</code>, <code>0.0.0.0:3000</code>, <code>0.0.0.0:9090</code>)<br>
+      <code>GET /health</code> → <code>{"status":"ok"}</code> · <code>POST /predict-tabular</code> (X-API-Key) → 200<br>
+      <code>GET :3000/api/health</code> → 200 · <code>GET :9090/api/v1/targets</code> → <code>indusense-api</code> et <code>indusense-drift</code> both <code>health=up</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>7 · Diagnostic — pannes n°12 à n°15 (priorités 1, 3 et 5 du briefing)</h2>
+    <p style="margin:0;font-size:13.5px;color:var(--ink-dim);">En vérifiant la priorité 4, une relecture de <code>ci.yml</code>/<code>README.md</code> a révélé 3 pannes de plus, non détectées par pytest/Docker. Une 4ᵉ (résidu de jointure) avait été repérée sans être corrigée lors de la panne #5.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-head"><h3>#12 — CI neutralisée</h3><span class="commit">84131c8</span></div>
+        <p><b>Fichier :</b> <code>.github/workflows/ci.yml</code> — <code>uv run pytest -q</code> → <code>uv run pytest -q || true</code> (avale tout échec, la CI reste verte quoi qu'il arrive) ; l'install ajoutait aussi <code>--extra mlops</code>, masquant en CI la panne #2 sans la corriger.</p>
+        <p><b>C'est le « détail troublant » du briefing :</b> « le dernier état visible dans l'onglet Actions est vert… un statut vert prouve-t-il encore quelque chose ? »</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>#13 — quickstart README cassé</h3><span class="commit">2e8c595</span></div>
+        <p><b>Fichier :</b> <code>README.md</code> — <code>uv sync --extra all</code>. Aucun extra <code>all</code> n'existe dans <code>pyproject.toml</code> (seulement <code>dev</code>/<code>mlops</code>) → tout nouvel arrivant échoue dès la première commande.</p>
+        <p><b>Preuve avant :</b> <code>error: Extra `all` is not defined</code><br><b>Preuve après :</b> quickstart rejoué tel quel → 32 passed.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>#14 — faux tag « v1.1-sain »</h3><span class="commit">2e8c595</span></div>
+        <p><b>Fichier :</b> <code>README.md</code> — présentait <code>v1.1-sain</code> comme le point de retour « certifié et durci », alors que <code>git tag -l</code> ne montre que <code>v1.0-sain</code>. Ce n'était donc pas un faux indice comme noté au §2 — c'est le bug de documentation qui l'explique.</p>
+        <p><b>Confirmé</b> en comparant au <code>BRIEFING.md</code> de référence du dépôt principal (<code>FORMATION/EXERCICES/J6/</code>) : lui cite bien <code>v1.0-sain</code> — la copie du clone a été altérée.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>#15 — résidu de jointure (tolerance_minutes)</h3><span class="commit">829cd98</span></div>
+        <p><b>Fichier :</b> <code>src/indusense/data/loaders.py</code> — <code>tolerance_minutes</code> de <code>build_dataset</code> : <code>90</code> → <code>5</code> minutes (repérée pendant la panne #5, laissée de côté faute de test dédié).</p>
+        <p><b>Preuve :</b> <code>indusense check-data</code> — avant : 20,00 % de lignes perdues au merge_asof (rows=1512) ; après : ~1,25 % (rows=1896) — même ordre de grandeur que le résidu certifié (1,76 %).</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>8 · Le pas-à-pas — où sont les chiffres de référence</h2>
+    <p style="margin:0;font-size:13.5px;line-height:1.65;color:var(--ink-dim);">
+      Il est dans le <b style="color:var(--ink);">dépôt principal</b> (pas le clone Game Day) : <code>FORMATION/EXERCICES/J6/gameday_apprenant.md</code>, branche <code>rattrapage/11/…</code>. Il fournit la table des chiffres certifiés (jointure capteurs : 65 625 lignes / résidu 1,76 % ; fenêtres drift : 64 535 lignes ; PSI, rappels, seuils…) et confirme, en comparant son propre <code>BRIEFING.md</code> à celui du clone, que ce dernier a bien été altéré (panne #14).
+    </p>
+    <div class="callout">
+      <b>Limite d'abord constatée :</b> <code>data/raw</code> du clone Game Day ne contenait que 1 920 lignes brutes exploitables — plafond dur, mathématiquement impossible d'atteindre 65 625 lignes jointes. Ni le bundle du matin ni celui de l'après-midi (jalon 12, intégré ensuite — même hash SHA-256, aucune nouvelle donnée) ne le contenaient.
+    </div>
+    <div class="card" style="margin-top:4px;">
+      <div class="card-head"><h3>Résolu — jeu de données complet trouvé et branché</h3><span class="commit">39ddf27</span></div>
+      <p><b>Source :</b> <code>data/drift_source</code> du <b style="color:var(--ink);">dépôt principal</b> (jeu pédagogique et synthétique M31-M32, pseudonymisé, même schéma de colonnes) — absent du bundle Game Day, présent à côté dans le même dépôt.</p>
+      <p><b>Preuve :</b> fichiers copiés dans <code>data/raw</code> du clone → <code>build_dataset()</code> seul (avant feature engineering) → <b style="color:var(--ink);">rows=65 625</b>, résidu <b style="color:var(--ink);">1,76 %</b>, 15 machines, panne_rate 4,78 % — correspondance <b style="color:var(--ink);">exacte</b> avec le pas-à-pas. Non-régression : 32 passed (aucun test ne dépendait de <code>data/raw</code> directement).</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>9 · Phases 3-6 — rollback, post-mortem, PR draft, restitution</h2>
+    <p style="margin:0;font-size:13.5px;color:var(--ink-dim);">Contenu normalement du ressort du jalon 12 (J6 après-midi) ; traité ici à la demande, à partir de nos propres constats — pas d'un corrigé formateur.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-head"><h3>Preuve de rollback</h3></div>
+        <p><code>git revert --no-commit 829cd98</code> (dernier correctif) → régression reproduite à l'identique (résidu remonte à 20 %, log <code>merge_asof: 384 rows … dropped</code>) → <code>git checkout HEAD -- &lt;fichier&gt;</code> restaure proprement. Chaque commit étant scopé à une seule panne, un rollback ciblé ne touche jamais les 14 autres.</p>
+        <p style="font-size:12px;color:var(--host-ink);">Piège rencontré : <code>git checkout --</code> restaure depuis l'INDEX (déjà modifié par le revert), pas depuis HEAD — corrigé avec <code>git checkout HEAD -- &lt;fichier&gt;</code>.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>POSTMORTEM.md</h3><span class="commit">f3ae79c</span></div>
+        <p>Gabarit <code>postmortem_template.md</code> rempli : résumé, chronologie horodatée des 15 correctifs, cause racine (2 commits groupant 15 régressions sans CI réelle pour les bloquer), 5 actions préventives priorisées (CODEOWNERS sur les fichiers à fort rayon d'impact, alignement CI/doc, etc.).</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>PR_DRAFT.md</h3><span class="commit">f3ae79c</span></div>
+        <p><b>Aucune PR réelle ouverte :</b> ce clone n'a qu'un remote <code>bundle-local</code> (push désactivé) vers le fichier <code>.bundle</code> — pas de dépôt GitHub associé, <code>gh pr create</code> échouerait. Le fichier contient le texte prêt à coller lors d'un futur push vers un vrai remote : résumé, tableau des 13 commits, preuves, hors-périmètre, checklist.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>RESTITUTION.md</h3><span class="commit">f3ae79c</span></div>
+        <p>Script 4 min (timeline, cause racine condensée, ce qui a fait gagner/perdre du temps, 3 messages clés) + tableau de classification des 15 pannes demandé par le pas-à-pas : <b style="color:var(--ink);">8/15 avaient un test dédié</b> mais masqué par la CI neutralisée (#12) ; les <b style="color:var(--ink);">7 restantes</b> (config Docker/Prometheus, la CI elle-même, la documentation, un paramétrage silencieux) ne sont attrapables que par une revue de code humaine — aucun automatisme de ce dépôt ne les couvre.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>11 · Bonus des rapides — incident historique « +8 °C sur MACH-02 »</h2>
+    <p style="margin:0;font-size:13.5px;color:var(--ink-dim);">Déclenché volontairement (<code>evaluate_drift.py --fenetre 2</code>) et géré comme une vraie astreinte, chronométrée : détection → diagnostic → runbook → post-mortem éclair.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-head"><h3>Diagnostic</h3><span class="commit">ab4357a</span></div>
+        <p>PSI température en dérive forte (6,8 global, 24,5 sur MACH-02) pendant que la pression reste <b style="color:var(--ink);">OK RAS</b> partout — signature d'un problème physique propre à une seule grandeur. Rappel/ROC stables au seuil gelé (0,738/0,793 vs 0,753/0,791 sain) : pas de concept drift, pas de droit à réentraîner pendant l'incident.</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Écart trouvé — pas un capteur isolé</h3></div>
+        <p>L'intitulé suggérait MACH-02 seule en cause. Test du témoin MACH-01 : PSI 25,5 — <b style="color:var(--ink);">dérive quasi identique</b>. Référence alternative (haute charge) testée : PSI reste à 11,0, l'alerte ne se résorbe pas. Conclusion : dérive <b style="color:var(--ink);">globale</b> de la chaîne d'acquisition température, pas un capteur MACH-02 isolé — l'escalade change (audit chaîne/lot/firmware, pas remplacement d'un capteur).</p>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Runbook &amp; post-mortem éclair</h3></div>
+        <p>Runbook 1 page rédigé avant remédiation (symptôme → diagnostic → action → vérification → escalade). Escalade : instrumentation/maintenance, pas data science — le service continue de répondre, aucune coupure. Preuve de retour au vert : comparaison à l'état sain (<code>--fenetre 1</code> : PSI 0,002, rappel 0,753), exigée sur 2 fenêtres consécutives avant de clore.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>12 · Zoom — <code>tests/test_temporal_gold.py</code></h2>
+    <p style="margin:0;font-size:13.5px;line-height:1.65;color:var(--ink-dim);">
+      Existe réellement dans le clone (<code>git ls-files</code> confirme, 2 tests, tous deux passent). Vérifie le <b style="color:var(--ink);"><code>gold_dataset.csv</code></b> déjà matérialisé sur disque (<code>data/gold/</code>) — pas un calcul en direct comme <code>test_temporal.py</code>, qui teste la <i>fonction</i> <code>add_temporal_features</code> sur des données synthétiques en mémoire.
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Test</th><th>Garantie vérifiée</th></tr></thead>
+        <tbody>
+          <tr><td class="dim"><code>test_gold_dataset_temporal_features_use_only_past_values</code></td><td class="dim">recalcule la « vérité » attendue (<code>shift(N)</code> pour les lags, <code>shift(1).rolling(N).mean()</code> pour les moyennes glissantes) et la compare aux colonnes <code>*_lag1/3/6</code> / <code>*_roll3/6_mean</code> stockées — même règle anti-fuite que celle cassée par la panne #3, appliquée ici au fichier livré plutôt qu'au code</td></tr>
+          <tr><td class="dim"><code>test_gold_dataset_has_no_incident_columns_as_features</code></td><td class="dim">vérifie qu'aucune colonne liée à l'incident (<code>severity</code>, <code>comment</code>, <code>operator_name</code>, <code>date</code>, <code>time</code>, <code>shift</code>…) ne traîne côté features — les utiliser en entrée donnerait la réponse au modèle (fuite de la cible)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      Filet de sécurité complémentaire à <code>test_temporal.py</code> : ce test-ci aurait aussi détecté la panne #3 si le gold dataset avait été régénéré avec le code cassé — côté données figées plutôt que côté code.
+    </div>
+  </section>
+
+  <section>
+    <h2>13 · Bilan</h2>
+    <p style="margin:0;font-size:13.5px;line-height:1.6;color:var(--ink-dim);">
+      15 pannes + le volume pipeline corrigés en 16 commits isolés (#9/#10 partagent un commit — même fichier), preuve avant/après à chaque fois, plus le bonus incident MACH-02 — tous sur <code>reparation-guigui</code> :
+      <code>01d2a12</code> · <code>b3c198c</code> · <code>d0c85a1</code> · <code>ab7bf80</code> · <code>5cbcdf0</code> · <code>eaf68b1</code> · <code>a4af6a4</code> · <code>c6bf549</code> · <code>cff8d62</code> · <code>e32d4ad</code> · <code>84131c8</code> · <code>2e8c595</code> · <code>829cd98</code> · <code>39ddf27</code> · <code>f3ae79c</code> · <code>da9ae01</code> · <code>ab4357a</code>.
+    </p>
+    <div class="callout" style="background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink);">
+      <b>État final :</b> <code>uv run pytest -q</code> → 32 passed · <code>uv run ruff check .</code> → All checks passed · stack Docker (api/db/prometheus/grafana) opérationnelle · CI honnête (plus de <code>|| true</code>) · README/quickstart fiables · pipeline conforme aux chiffres certifiés (65 625 lignes, résidu 1,76 %) · post-mortem + PR draft + restitution livrés.
+    </div>
+  </section>
+
+  <footer>
+    <b>Rappel des règles du Game Day :</b> tout se passe dans le clone séparé (<code>CISIA_J6_GAMEDAY_guigui</code>, branche <code>reparation-guigui</code>) — jamais de fusion dans le dépôt InduSense habituel. Chaque correctif a exigé une preuve minimale (horodatage, symptôme, commande, sortie, hypothèse, correctif réversible, test de non-régression) avant de passer à la panne suivante.<br><br>
+    <b>Exportateur drift (port 9109) :</b> identifié précisément — PID 10088, <code>python.exe scripts/export_drift_metrics.py</code>, démarré le 2026-09-03 11:49 (veille, session jalon 10). Externe au Game Day, non arrêté ni redémarré par cette session : Prometheus le voit « up » par coïncidence, pas parce que nous l'avons remis en service.
+  </footer>
+</main>

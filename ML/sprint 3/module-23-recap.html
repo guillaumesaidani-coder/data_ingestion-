@@ -1,0 +1,641 @@
+<title>Refactoring & Structure Projet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink: #16211f;
+    --muted: #4f5d55;
+    --paper: #eef0ea;
+    --raised: #ffffff;
+    --line: #ccd3c8;
+    --accent: #0f6e5c;
+    --accent-ink: #084537;
+    --accent-soft: #d7ece5;
+    --warn: #a8551f;
+    --warn-soft: #f3e2d1;
+    --code-bg: #101917;
+    --code-ink: #d9ffe9;
+    --code-dim: #7fa694;
+    --font-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+    --font-body: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink: #e7efe9;
+      --muted: #9fb2a7;
+      --paper: #0f1613;
+      --raised: #161f1b;
+      --line: #29352f;
+      --accent: #52d3af;
+      --accent-ink: #bdf3dd;
+      --accent-soft: #17332b;
+      --warn: #f0a35f;
+      --warn-soft: #37281a;
+      --code-bg: #0a0f0d;
+      --code-ink: #baffd9;
+      --code-dim: #5c7d6d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink: #e7efe9;
+    --muted: #9fb2a7;
+    --paper: #0f1613;
+    --raised: #161f1b;
+    --line: #29352f;
+    --accent: #52d3af;
+    --accent-ink: #bdf3dd;
+    --accent-soft: #17332b;
+    --warn: #f0a35f;
+    --warn-soft: #37281a;
+    --code-bg: #0a0f0d;
+    --code-ink: #baffd9;
+    --code-dim: #5c7d6d;
+  }
+
+  *{ box-sizing: border-box; }
+  body{
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--accent-soft); color: var(--accent-ink); }
+
+  a{ color: var(--accent-ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .page{
+    max-width: 760px;
+    margin: 0 auto;
+    padding: clamp(28px, 6vw, 64px) 24px 96px;
+  }
+
+  .eyebrow{
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+  }
+  .eyebrow::before{
+    content: "";
+    width: 20px;
+    height: 2px;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  header.masthead{
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+  }
+  .breadcrumb{
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin: 0 0 18px;
+  }
+  .breadcrumb span{ color: var(--ink); }
+  h1{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 2.7rem);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  .lede{
+    font-size: 1.08rem;
+    color: var(--muted);
+    max-width: 58ch;
+    margin: 0 0 20px;
+  }
+  .status-row{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+  .status-chip{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+    padding: 7px 14px 7px 10px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+  }
+  .status-chip svg{ width: 15px; height: 15px; flex: none; }
+  .meta-line{
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+
+  section{ margin: 52px 0; }
+  section > h2{
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-style: italic;
+    font-size: 1.5rem;
+    margin: 8px 0 16px;
+    text-wrap: balance;
+  }
+  section > p{ max-width: 66ch; }
+  section > p + p{ margin-top: 1em; }
+
+  .callout{
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    color: var(--ink);
+    padding: 14px 18px;
+    border-radius: 4px;
+    font-size: 0.96rem;
+    margin: 20px 0;
+  }
+  .callout.warn{ border-color: var(--warn); background: var(--warn-soft); }
+  .callout strong{ font-family: var(--font-display); font-weight: 600; }
+
+  /* terminal panels */
+  .terminal{
+    background: var(--code-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 20px 0;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+  }
+  .terminal-bar{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .terminal-bar .dot{
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--code-dim);
+    opacity: 0.6;
+  }
+  .terminal-bar .label{
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--code-dim);
+    margin-left: 6px;
+  }
+  .terminal pre{
+    margin: 0;
+    padding: 16px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--code-ink);
+  }
+  .terminal .ok{ color: #8fe8bd; }
+  .terminal .dim{ color: var(--code-dim); }
+  .terminal .cmd::before{ content: "❯ "; color: var(--code-dim); }
+
+  /* before/after comparison */
+  .compare{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+  }
+  @media (max-width: 620px){ .compare{ grid-template-columns: 1fr; } }
+  .compare figure{ margin: 0; }
+  .compare figcaption{
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .compare.before figcaption{ color: var(--warn); }
+  .compare.after figcaption{ color: var(--accent-ink); }
+  .compare pre{
+    margin: 0;
+    background: var(--raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    line-height: 1.55;
+    overflow-x: auto;
+  }
+
+  /* TP structure blocks */
+  .tp{
+    border: 1px solid var(--line);
+    background: var(--raised);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin: 22px 0;
+  }
+  .tp-head{
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .tp-num{
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+    padding: 2px 8px;
+    border-radius: 4px;
+    flex: none;
+  }
+  .tp-title{
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.12rem;
+  }
+  .tp p{ margin: 0.7em 0; }
+  code{
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+  }
+
+  table.contract{
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    margin: 14px 0;
+  }
+  table.contract th, table.contract td{
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 0.84rem;
+  }
+  table.contract th{
+    font-family: var(--font-display);
+    font-size: 0.74rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  table.contract td:first-child, table.contract th:first-child{ font-family: var(--font-mono); }
+
+  .norm-map{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 16px 0;
+    font-family: var(--font-mono);
+    font-size: 0.86rem;
+  }
+  .norm-map .pair{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--raised);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 10px;
+  }
+  .norm-map .arrow{ color: var(--muted); }
+  .norm-map .out{ color: var(--accent-ink); font-weight: 600; }
+
+  /* final proof checklist */
+  .checklist{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .check-item{
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .check-item svg{ width: 18px; height: 18px; flex: none; margin-top: 2px; color: var(--accent); }
+  .check-item .cmd{
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--ink);
+    display: block;
+  }
+  .check-item .result{
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: block;
+    margin-top: 2px;
+  }
+
+  dl.glossary{ margin: 16px 0; }
+  dl.glossary div{
+    display: grid;
+    grid-template-columns: 148px 1fr;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  @media (max-width: 560px){
+    dl.glossary div{ grid-template-columns: 1fr; gap: 4px; }
+  }
+  dl.glossary dt{
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 0.86rem;
+    color: var(--accent-ink);
+  }
+  dl.glossary dd{ margin: 0; color: var(--ink); }
+
+  .qcm-row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.95rem;
+  }
+  .qcm-row .answer{
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--accent-ink);
+    background: var(--accent-soft);
+    padding: 2px 9px;
+    border-radius: 4px;
+  }
+
+  footer{
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ scroll-behavior: auto !important; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="breadcrumb">CISIA · Sprint 3 · J1 matin · <span>Module 23</span></p>
+    <h1>Refactoring &amp; structure projet</h1>
+    <p class="lede">Sortir la logique du notebook, l'installer dans un package testé — et prouver, avec les outils, que rien n'a régressé au passage.</p>
+    <div class="status-row">
+      <span class="status-chip">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Module validé
+      </span>
+      <span class="meta-line">jalon 01 · branche guillaume-saidani</span>
+    </div>
+  </header>
+
+  <section>
+    <p class="eyebrow">Nature du module</p>
+    <h2>Un contrôle, pas une production</h2>
+    <p>L'objectif n'est pas d'écrire du code nouveau, mais de <strong>prouver, avec les outils</strong>, que le socle transmis pour le Sprint 3 fonctionne déjà correctement — avant de bâtir le module suivant dessus. TP1 audite, TP2 et TP3 relisent et rejouent des tests existants, la preuve finale vérifie l'ensemble. Aucune étape n'écrit de code de production.</p>
+    <div class="callout">
+      <strong>Vérifié.</strong> Comparaison entre l'état au chargement du jalon 01 et l'état actuel :
+      <div class="terminal" style="margin-top:10px">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">git diff fca6866..HEAD -- src/ tests/ pyproject.toml uv.lock</span></div>
+        <pre><span class="dim">(aucune sortie — 0 fichier de code modifié)</span></pre>
+      </div>
+      Les deux seuls commits de la séance (<code>a2b87ac</code>, <code>6b36ca4</code>) ne touchent que le dossier de matériel de cours <code>PACK_APPRENANTS_SPRINT3…</code> et <code>.gitignore</code> — rien qui relève du projet InduSense.
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Pourquoi</p>
+    <h2>On sort du notebook</h2>
+    <p>Une cellule qui calcule une feature une fois n'est testée par personne et n'est réutilisée nulle part. Le module 23 déplace cette logique dans <code>src/indusense/</code>, où elle devient une fonction nommée, important­ée, et couverte par des tests.</p>
+    <div class="compare">
+      <figure class="before">
+        <figcaption>Avant — cellule de notebook</figcaption>
+        <pre>df["temp_lag1"] = (
+    df.groupby("machine_id")["temperature"]
+      .shift(1)
+)</pre>
+      </figure>
+      <figure class="after">
+        <figcaption>Après — package testé</figcaption>
+        <pre>from indusense.features.temporal import (
+    add_temporal_features,
+)
+df = add_temporal_features(df)</pre>
+      </figure>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">TP1</p>
+    <h2>Structure &amp; contrat <code>pyproject.toml</code></h2>
+
+    <div class="tp">
+      <div class="tp-head">
+        <span class="tp-num">TP 1</span>
+        <span class="tp-title">Classement du code par responsabilité</span>
+      </div>
+      <p>Exploration de <code>src/indusense/</code> : chaque module a été rangé selon son rôle. Pas de dossier <code>api/</code> pour l'instant — il arrivera avec l'API REST (module 25).</p>
+      <table class="contract">
+        <thead><tr><th>Fichier</th><th>Rôle</th></tr></thead>
+        <tbody>
+          <tr><td>data/loaders.py</td><td>chargement &amp; normalisation des identifiants machine</td></tr>
+          <tr><td>features/temporal.py</td><td>features temporelles (lag, rolling) anti-fuite</td></tr>
+          <tr><td>models/tabular.py</td><td>modèle tabulaire</td></tr>
+          <tr><td>cli.py</td><td>commandes <code>indusense</code> — train / predict</td></tr>
+          <tr><td>config.py</td><td>configuration transverse</td></tr>
+        </tbody>
+      </table>
+      <p>Chaque ligne du tableau est un <strong>module</strong> Python distinct — au sens strict, un fichier <code>.py</code> importable individuellement (<code>from indusense.data.loaders import normalize_machine_id</code>). <code>data/</code> et <code>features/</code> sont eux-mêmes des <strong>sous-packages</strong> : des dossiers avec leur propre <code>__init__.py</code>, qui regroupent chacun d'autres modules.</p>
+
+      <p>Le contrat <code>pyproject.toml</code> a été audité <strong>sans être modifié</strong> :</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">powershell</span></div>
+        <pre><span class="cmd">Select-String -Path .\pyproject.toml -Pattern 'requires-python','optional-dependencies','indusense\s*='</span>
+requires-python = "&gt;=3.13,&lt;3.14"
+[project.optional-dependencies]
+indusense = "indusense.cli:main"
+
+<span class="cmd">git diff -- pyproject.toml uv.lock</span>
+<span class="dim">(aucune sortie — contrat intact)</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">TP2</p>
+    <h2>Anti-fuite temporelle</h2>
+    <div class="tp">
+      <div class="tp-head">
+        <span class="tp-num">TP 2</span>
+        <span class="tp-title"><code>features/temporal.py</code></span>
+      </div>
+      <p><strong>Le problème résolu</strong> — pour prédire une panne future, un modèle ne doit apprendre qu'à partir de données passées. Si une feature d'entraînement contient, même involontairement, une info du futur ou la valeur courante au temps t, le modèle « triche » à l'entraînement — score excellent — puis s'effondre en production, où cette info n'existe pas encore au moment de prédire.</p>
+      <p><strong>Tri</strong> — <code>df.sort_values([machine, timestamp])</code> avant tout <code>groupby().shift()</code>. Sans lui, <code>shift(1)</code> récupérerait la ligne juste au-dessus dans le tableau — qui peut appartenir à une autre machine, ou être dans le désordre chronologique — pas la vraie valeur précédente.</p>
+      <p><strong>Ordre des opérations</strong> — <code>series.shift(1).rolling(window).mean()</code> calcule la moyenne des <em>N valeurs précédentes</em>, en excluant la valeur courante. Inverser l'ordre (<code>rolling</code> puis <code>shift</code>) ferait entrer la valeur du temps t dans le calcul de sa propre moyenne — fuite.</p>
+      <p><strong>L'exercice</strong> — lire le fichier, comprendre ces deux points, puis rejouer la suite anti-fuite qui vérifie noir sur blanc ces garanties (ex. la première ligne d'un lag doit être <code>NaN</code>, faute de passé disponible en début de série).</p>
+      <div class="callout warn">
+        <strong>Fuite de données</strong> — une info du futur qui entre dans l'entraînement produit un score faussement excellent. Un score trop beau doit inquiéter.
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv run pytest tests/test_temporal.py -q</span></div>
+        <pre>...                                                            [100%]
+<span class="ok">3 passed in 0.45s</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">TP3</p>
+    <h2>Normalisation des identifiants machine</h2>
+    <div class="tp">
+      <div class="tp-head">
+        <span class="tp-num">TP 3</span>
+        <span class="tp-title"><code>normalize_machine_id</code></span>
+      </div>
+      <p><strong>Le problème résolu</strong> — les données arrivent de sources différentes (CSV température, TSV pression, dump SQL des machines) qui n'écrivent pas l'identifiant machine de la même façon. Sans normalisation, la jointure entre ces sources (<code>merge_asof</code> dans <code>build_dataset</code>) ne reconnaîtrait pas que <code>MACH-01</code> et <code>MACH_01</code> désignent la même machine — les données se retrouveraient mal appariées, silencieusement.</p>
+      <p><strong>Ce que fait la fonction</strong> — extrait le premier nombre trouvé dans la chaîne brute, quel que soit le séparateur (<code>-</code> ou <code>_</code>), et le reformate toujours en <code>MACH-0N</code> (2 chiffres) :</p>
+      <div class="norm-map">
+        <span class="pair">MACH-01 <span class="arrow">→</span> <span class="out">MACH-01</span></span>
+        <span class="pair">MACH_01 <span class="arrow">→</span> <span class="out">MACH-01</span></span>
+        <span class="pair">M-06 <span class="arrow">→</span> <span class="out">MACH-06</span></span>
+        <span class="pair">M-2 <span class="arrow">→</span> <span class="out">MACH-02</span></span>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv run pytest tests/test_loaders.py -k normalize_machine_id -q</span></div>
+        <pre>......                                                          [100%]
+<span class="ok">6 passed, 2 deselected in 0.36s</span></pre>
+      </div>
+      <p><strong>L'exercice</strong> — prédire le résultat de la fonction <em>avant</em> de l'exécuter (donc lire et comprendre la regex et le format de sortie), vérifier en lançant réellement le code, puis confirmer avec le test unitaire ciblé.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Preuve finale</p>
+    <h2>Quatre vérifications, zéro échec</h2>
+    <p>Pas un TP sur une portion de code précise comme les trois précédents : c'est le contrôle global qui clôt le module — une <em>definition of done</em>. Le code produit en TP1-3, et le reste du projet, doit passer ces 4 vérifications indépendantes <strong>en même temps</strong> — un refactoring n'est « fini » que si elles passent ensemble, pas une par une pendant qu'on travaille dessus :</p>
+    <div class="checklist">
+      <div class="check-item">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>
+          <span class="cmd">uv run pytest -q</span>
+          <span class="result">12 passed</span>
+        </span>
+      </div>
+      <div class="check-item">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>
+          <span class="cmd">uv run ruff check .</span>
+          <span class="result">All checks passed!</span>
+        </span>
+      </div>
+      <div class="check-item">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>
+          <span class="cmd">uv run indusense --help</span>
+          <span class="result">train / predict répondent</span>
+        </span>
+      </div>
+      <div class="check-item">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>
+          <span class="cmd">uv run python --version</span>
+          <span class="result">Python 3.13.13</span>
+        </span>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Aparté technique.</strong> Le dossier de matériel pédagogique <code>PACK_APPRENANTS_SPRINT3…</code> avait été committé par erreur pendant la mise à niveau du jalon et faisait échouer <code>ruff check .</code> (46 erreurs de style dans des kits d'exercices annexes). Retiré du suivi git via <code>.gitignore</code> — il reste sur le disque, simplement plus versionné ni linté.
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Retour formateur</p>
+    <h2>Le correctif restait local, pas livré</h2>
+    <p>Preuve rejouée par le formateur sur un clone propre du <strong>dépôt de rendu</strong> (<code>industrialisation</code>, branche <code>jalon-01</code>) — pas sur cette branche de travail. Ce clone pointait encore sur <code>fca6866</code>, <strong>avant</strong> le retrait du pack : les mêmes 46 erreurs Ruff et 8 fichiers à reformater pour Black, confirmés à l'identique en rejouant la preuve en local sur ce commit.</p>
+    <div class="callout warn">
+      <strong>Cause.</strong> Le commit <code>6b36ca4</code> qui retire le pack existe depuis le 24/08 sur <code>guillaume-saidani</code>, mais n'avait jamais été poussé vers <code>industrialisation/jalon-01</code> — le dépôt réellement évalué par le formateur.
+    </div>
+    <p>Correctif : avancer <code>industrialisation/jalon-01</code> de <code>fca6866</code> à <code>6b36ca4</code> — un <em>fast-forward</em>, sans nouveau commit ni risque de conflit, puisque <code>6b36ca4</code> est déjà le commit suivant immédiat sur cette lignée.</p>
+    <div class="terminal">
+      <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">git push industrialisation 6b36ca4:jalon-01</span></div>
+      <pre><span class="dim">en attente — bloqué par la politique d'auto-exécution locale ; à rejouer manuellement</span></pre>
+    </div>
+    <p><code>clean_sensor_data</code> et son test, également signalés absents par le formateur, restent hors scope : l'exercice était explicitement facultatif.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Repères</p>
+    <h2>À ne pas oublier</h2>
+    <dl class="glossary">
+      <div>
+        <dt>Package</dt>
+        <dd>Un dossier importable — <code>src/indusense/</code> devient <code>import indusense</code>.</dd>
+      </div>
+      <div>
+        <dt>Module</dt>
+        <dd>Un fichier <code>.py</code> pris individuellement — un package en contient généralement plusieurs. À ne pas confondre avec « module 23 », le nom de cette unité de formation.</dd>
+      </div>
+      <div>
+        <dt>Refactoring</dt>
+        <dd>Réorganiser le code sans changer son comportement observable.</dd>
+      </div>
+      <div>
+        <dt>Layout <code>src/</code></dt>
+        <dd>Les tests s'exécutent contre le package <em>installé</em>, comme en production — les erreurs de packaging sont détectées tôt.</dd>
+      </div>
+      <div>
+        <dt><code>uv</code> plutôt que <code>pip</code></dt>
+        <dd>Plus rapide, et un <code>uv.lock</code> qui fige les versions exactes pour des environnements identiques partout.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section>
+    <p class="eyebrow">QCM express — correction</p>
+    <h2>Thèmes couverts</h2>
+    <p class="lede" style="max-width:66ch">Les questions elles-mêmes ne sont pas dans les supports consultables : le QCM de fin de journée est tenu et dévoilé par le formateur en séance. Seule la clé de correction est connue à l'avance.</p>
+    <div class="qcm-row"><span>Package <code>src/</code></span><span class="answer">1 · B</span></div>
+    <div class="qcm-row"><span>Rôle de <code>pyproject.toml</code></span><span class="answer">2 · C</span></div>
+    <div class="qcm-row"><span>Fuite par split non temporel</span><span class="answer">3 · A</span></div>
+  </section>
+
+  <footer>
+    <span>Prochaine étape : module 24 (CI/CD, tests, versioning) — jalon 02 au signal du formateur</span>
+    <span>guillaume.saidani@ext.aelion.fr</span>
+  </footer>
+
+</div>

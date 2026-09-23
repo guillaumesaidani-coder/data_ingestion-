@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dérive &amp; Observabilité — Jalon 10</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink:#10201f;
+    --ink-soft:#3b524f;
+    --paper:#eef3f1;
+    --panel:#ffffff;
+    --panel-2:#e2eae6;
+    --line:#c3d0cb;
+    --accent:#b5501c;
+    --accent-ink:#7c3510;
+    --signal:#1f6478;
+    --ok:#2f7a53;
+    --ok-bg:#e3f1e7;
+    --watch:#9a6c0a;
+    --watch-bg:#f6ecd6;
+    --crit:#b23a2f;
+    --crit-bg:#f7e2de;
+    --shadow: 0 1px 0 rgba(16,32,31,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e7efec;
+      --ink-soft:#a9bdb8;
+      --paper:#0b1414;
+      --panel:#12201f;
+      --panel-2:#182927;
+      --line:#294140;
+      --accent:#e08a52;
+      --accent-ink:#f4c19b;
+      --signal:#6fb6cb;
+      --ok:#6fbf93;
+      --ok-bg:#173226;
+      --watch:#d8ac4c;
+      --watch-bg:#332a11;
+      --crit:#e08479;
+      --crit-bg:#3a1f1c;
+      --shadow: 0 1px 0 rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e7efec;
+    --ink-soft:#a9bdb8;
+    --paper:#0b1414;
+    --panel:#12201f;
+    --panel-2:#182927;
+    --line:#294140;
+    --accent:#e08a52;
+    --accent-ink:#f4c19b;
+    --signal:#6fb6cb;
+    --ok:#6fbf93;
+    --ok-bg:#173226;
+    --watch:#d8ac4c;
+    --watch-bg:#332a11;
+    --crit:#e08479;
+    --crit-bg:#3a1f1c;
+    --shadow: 0 1px 0 rgba(0,0,0,.4);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+    line-height:1.55;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:2.5rem 1.25rem 5rem;}
+  h1,h2,h3{
+    font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;
+    text-wrap:balance;
+    letter-spacing:.01em;
+    color:var(--ink);
+  }
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;}
+  code, .promql{
+    font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+    font-size:.86em;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:.1em .4em;
+  }
+  a{color:var(--signal);}
+
+  /* ---------- nameplate header ---------- */
+  .plate{
+    border:1px solid var(--line);
+    background:var(--panel);
+    border-radius:10px;
+    box-shadow:var(--shadow);
+    padding:1.6rem 1.8rem;
+    display:flex;
+    flex-direction:column;
+    gap:.9rem;
+  }
+  .plate-eyebrow{
+    display:flex; align-items:center; gap:.6rem;
+    font-family:"IBM Plex Mono",monospace;
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .plate-eyebrow .dot{
+    width:.5rem;height:.5rem;border-radius:50%;
+    background:var(--ok);
+    box-shadow:0 0 0 3px var(--ok-bg);
+    flex:none;
+  }
+  .plate h1{font-size:clamp(1.9rem,4vw,2.6rem); font-weight:700; margin:0; line-height:1.05;}
+  .plate .sub{color:var(--ink-soft); font-size:1.05rem; max-width:60ch;}
+  .plate-meta{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:8px;
+    overflow:hidden;
+    margin-top:.4rem;
+  }
+  .plate-meta div{
+    background:var(--panel);
+    padding:.6rem .8rem;
+  }
+  .plate-meta .k{
+    display:block; font-size:.66rem; text-transform:uppercase; letter-spacing:.1em;
+    color:var(--ink-soft); margin-bottom:.15rem;
+  }
+  .plate-meta .v{font-family:"IBM Plex Mono",monospace; font-size:.92rem; font-variant-numeric:tabular-nums;}
+
+  /* ---------- generic section rhythm ---------- */
+  section{margin-top:3rem;}
+  .section-head{display:flex; align-items:baseline; gap:.6rem; margin-bottom:1rem;}
+  .section-head .idx{
+    font-family:"IBM Plex Mono",monospace; color:var(--signal); font-size:.85rem;
+  }
+  .section-head h2{font-size:1.4rem; margin:0;}
+  .lede{color:var(--ink-soft); max-width:68ch; margin:0 0 1.2rem;}
+
+  /* ---------- recu / a faire ---------- */
+  .split{display:grid; grid-template-columns:1fr 1fr; gap:1rem;}
+  @media (max-width:640px){.split{grid-template-columns:1fr;}}
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:10px;
+    padding:1.1rem 1.25rem; box-shadow:var(--shadow);
+  }
+  .card h3{font-size:.98rem; margin:0 0 .6rem; text-transform:uppercase; letter-spacing:.06em; font-weight:600;}
+  .card ul{margin:0; padding-left:1.1rem;}
+  .card li{margin-bottom:.4rem;}
+  .card.recu h3{color:var(--ink-soft);}
+  .card.afaire h3{color:var(--accent-ink);}
+  .card.afaire{border-left:3px solid var(--accent);}
+
+  /* ---------- steps strip ---------- */
+  .steps{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden;
+  }
+  @media (max-width:760px){.steps{grid-template-columns:1fr;}}
+  .step{background:var(--panel); padding:1.1rem 1.1rem 1.3rem;}
+  .step .n{
+    font-family:"IBM Plex Mono",monospace; font-size:.75rem; color:var(--signal);
+    display:block; margin-bottom:.5rem;
+  }
+  .step h4{margin:0 0 .4rem; font-size:1rem; font-family:"IBM Plex Sans"; font-weight:600;}
+  .step p{margin:0; font-size:.86rem; color:var(--ink-soft);}
+  .step code{display:inline-block; margin-top:.5rem; font-size:.72rem;}
+
+  /* ---------- chart ---------- */
+  .chart-card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:1.2rem 1.4rem 1rem; box-shadow:var(--shadow);}
+  .chart-card svg{width:100%; height:auto; display:block;}
+  .chart-caption{font-size:.8rem; color:var(--ink-soft); margin-top:.5rem;}
+
+  /* ---------- table ---------- */
+  .table-scroll{overflow-x:auto; border:1px solid var(--line); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:640px; background:var(--panel);}
+  th,td{padding:.65rem .85rem; text-align:left; border-bottom:1px solid var(--line); font-size:.88rem; vertical-align:top;}
+  thead th{
+    font-family:"IBM Plex Mono",monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--ink-soft); background:var(--panel-2); border-bottom:1px solid var(--line);
+  }
+  td.num{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  tr:last-child td{border-bottom:none;}
+  .chip{
+    display:inline-block; padding:.15rem .55rem; border-radius:999px; font-size:.72rem;
+    font-weight:600; white-space:nowrap;
+  }
+  .chip.ok{background:var(--ok-bg); color:var(--ok);}
+  .chip.watch{background:var(--watch-bg); color:var(--watch);}
+  .chip.crit{background:var(--crit-bg); color:var(--crit);}
+
+  /* ---------- stack status ---------- */
+  .stack{display:grid; grid-template-columns:repeat(3,1fr); gap:1rem;}
+  @media (max-width:700px){.stack{grid-template-columns:1fr;}}
+  .stack .tile{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:1rem 1.1rem; box-shadow:var(--shadow);}
+  .tile .label{font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); display:flex; justify-content:space-between; align-items:center;}
+  .tile .value{font-family:"IBM Plex Mono",monospace; font-size:1.5rem; margin-top:.3rem; font-variant-numeric:tabular-nums;}
+  .tile .detail{font-size:.8rem; color:var(--ink-soft); margin-top:.35rem;}
+  .up{color:var(--ok); font-family:"IBM Plex Mono",monospace; font-size:.72rem;}
+  .up::before{content:"● "; }
+
+  /* ---------- SLO cards ---------- */
+  .slo{display:grid; grid-template-columns:repeat(3,1fr); gap:1rem;}
+  @media (max-width:760px){.slo{grid-template-columns:1fr;}}
+  .slo .card{display:flex; flex-direction:column; gap:.5rem;}
+  .slo .goal{font-family:"IBM Plex Mono",monospace; font-size:1.05rem; color:var(--signal);}
+  .slo .promql{display:block; white-space:pre-wrap; word-break:break-word; line-height:1.4; margin-top:.2rem;}
+
+  /* ---------- runbook ticket ---------- */
+  .ticket{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-top:3px solid var(--accent);
+    border-radius:10px;
+    padding:1.3rem 1.4rem 1.4rem;
+    box-shadow:var(--shadow);
+  }
+  .ticket-head{display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap; margin-bottom:.9rem;}
+  .ticket-head h3{margin:0; font-size:1.15rem;}
+  .sev{
+    font-family:"IBM Plex Mono",monospace; font-size:.7rem; text-transform:uppercase; letter-spacing:.08em;
+    background:var(--accent); color:#fff8f3; padding:.25rem .6rem; border-radius:5px; flex:none;
+  }
+  .ticket .cond{font-family:"IBM Plex Mono",monospace; font-size:.85rem; background:var(--panel-2); border:1px solid var(--line); border-radius:6px; padding:.6rem .8rem; margin-bottom:1rem;}
+  .ticket ol{margin:0 0 1rem; padding-left:1.2rem;}
+  .ticket ol li{margin-bottom:.5rem; font-size:.92rem;}
+  .ticket .action{display:grid; grid-template-columns:auto 1fr; gap:.3rem 1rem; font-size:.88rem;}
+  .ticket .action dt{color:var(--ink-soft); font-family:"IBM Plex Mono",monospace; font-size:.72rem; text-transform:uppercase; letter-spacing:.06em; padding-top:.15rem;}
+  .ticket .action dd{margin:0;}
+
+  /* ---------- proof footer ---------- */
+  .proof{background:var(--ink); color:var(--paper); border-radius:10px; padding:1.3rem 1.5rem;}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .proof{background:var(--panel-2); color:var(--ink);}}
+  :root[data-theme="dark"] .proof{background:var(--panel-2); color:var(--ink);}
+  .proof h3{color:inherit; margin:0 0 .7rem; font-size:1rem; text-transform:uppercase; letter-spacing:.08em;}
+  .proof pre{margin:0; font-family:"IBM Plex Mono",monospace; font-size:.82rem; line-height:1.7; overflow-x:auto; white-space:pre;}
+  .proof .result{opacity:.7;}
+
+  footer{margin-top:3.5rem; padding-top:1.2rem; border-top:1px solid var(--line); font-size:.8rem; color:var(--ink-soft); display:flex; justify-content:space-between; flex-wrap:wrap; gap:.5rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="plate">
+    <div class="plate-eyebrow"><span class="dot"></span> Parcours CISIA — Sprint 3 — J5 après-midi</div>
+    <h1>Jalon 10 — Dérive stabilisée &amp; observabilité</h1>
+    <p class="sub">Le modèle de dérive InduSense (m31–32) est déjà stabilisé et livré avec ce jalon. Le travail propre à cette demi-journée consiste à le rendre <em>visible</em> : exposer les métriques, brancher Prometheus et Grafana, déclencher une alerte réelle, puis la faire vivre dans un runbook (m33–34).</p>
+    <div class="plate-meta">
+      <div><span class="k">Modules</span><span class="v">M31–M32 → M33–M34</span></div>
+      <div><span class="k">Reçu</span><span class="v">drift + exporteur + dashboard</span></div>
+      <div><span class="k">Livré</span><span class="v">SLO · runbook · drift_spec</span></div>
+      <div><span class="k">Game Day</span><span class="v">aucun (réservé J6)</span></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="section-head"><span class="idx">01</span><h2>Reçu vs. à faire</h2></div>
+    <p class="lede">Le jalon distingue nettement ce qui arrive déjà « prouvé » dans le dépôt de ce qu'il reste à démontrer soi-même sur sa propre machine.</p>
+    <div class="split">
+      <div class="card recu">
+        <h3>Reçu par le jalon</h3>
+        <ul>
+          <li>Données capteurs, fenêtres et références « normale » / « haute charge » figées</li>
+          <li>Module <code>drift.py</code> (PSI + KS), modèle entraîné, seuil gelé</li>
+          <li>Exporteur Prometheus du TP (port <code>9109</code>)</li>
+          <li>Provisioning Grafana + dashboard <em>InduSense — dérive &amp; métriques</em></li>
+        </ul>
+      </div>
+      <div class="card afaire">
+        <h3>À faire soi-même</h3>
+        <ul>
+          <li>Exposer <code>/metrics</code> et vérifier les <strong>deux</strong> cibles Prometheus</li>
+          <li>Lire au moins un panneau du dashboard en conditions réelles</li>
+          <li>Déclencher une alerte contrôlée et l'observer se propager</li>
+          <li>Écrire et exécuter une action de runbook sur cette alerte</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="idx">02</span><h2>La ronde de surveillance</h2></div>
+    <p class="lede">Quatre commandes, quatre leçons différentes sur ce que le PSI voit — et surtout sur ce qu'il ne voit pas.</p>
+    <div class="steps">
+      <div class="step">
+        <span class="n">1 · fenêtres</span>
+        <h4>Construire les jointures</h4>
+        <p>Capteurs + incidents → 64&nbsp;535 lignes, panne_v1 ≈ 5,2&nbsp;%. Split <strong>temporel</strong> (déc.), jamais aléatoire.</p>
+        <code>uv run python scripts/drift_windows.py</code>
+      </div>
+      <div class="step">
+        <span class="n">2 · modèle</span>
+        <h4>Geler le seuil</h4>
+        <p>Validation décembre : ROC 0,815 · PR-AUC 0,257. Seuil gelé sur le coût métier, pas sur la précision seule.</p>
+        <code>uv run python scripts/train_drift_model.py</code>
+      </div>
+      <div class="step">
+        <span class="n">3 · dérive</span>
+        <h4>Rejouer 4 fenêtres</h4>
+        <p>Témoin, capteur menteur, concept drift, campagne planifiée — chacune contre <em>une</em> référence figée.</p>
+        <code>uv run python scripts/evaluate_drift.py --fenetre …</code>
+      </div>
+      <div class="step">
+        <span class="n">4 · spec</span>
+        <h4>Figer la règle</h4>
+        <p>Bins sur la référence, alerte si PSI &gt; 0,25 sur 2 fenêtres, réactions écrites avant l'incident.</p>
+        <code>reports/drift/drift_spec.md</code>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="idx">03</span><h2>Ce que le PSI voit — et ce qu'il rate</h2></div>
+    <p class="lede">Échelle logarithmique : le PSI varie de 0,001 à 6,8 selon la fenêtre. La ligne pointillée marque le seuil d'alerte (0,25).</p>
+    <div class="chart-card">
+      <svg viewBox="0 0 760 250" role="img" aria-labelledby="chart-title chart-desc">
+        <title id="chart-title">PSI de la température par fenêtre de surveillance, échelle logarithmique</title>
+        <desc id="chart-desc">Cinq mesures de PSI allant de 0,001 à 6,8, avec un seuil d'alerte à 0,25</desc>
+        <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--ink-soft)">
+          <line x1="190" y1="14" x2="190" y2="206" stroke="var(--line)"/>
+          <line x1="325" y1="14" x2="325" y2="206" stroke="var(--line)"/>
+          <line x1="460" y1="14" x2="460" y2="206" stroke="var(--line)"/>
+          <line x1="595" y1="14" x2="595" y2="206" stroke="var(--line)"/>
+          <line x1="730" y1="14" x2="730" y2="206" stroke="var(--line)"/>
+          <text x="190" y="222" text-anchor="middle">0,001</text>
+          <text x="325" y="222" text-anchor="middle">0,01</text>
+          <text x="460" y="222" text-anchor="middle">0,1</text>
+          <text x="595" y="222" text-anchor="middle">1</text>
+          <text x="730" y="222" text-anchor="middle">10</text>
+        </g>
+        <line x1="513.7" y1="8" x2="513.7" y2="206" stroke="var(--crit)" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text x="513.7" y="10" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--crit)">seuil 0,25</text>
+
+        <g font-family="IBM Plex Sans, sans-serif" font-size="12">
+          <text x="0" y="46" fill="var(--ink)">F1 témoin</text>
+          <rect x="190" y="34" width="40.6" height="16" rx="2" fill="var(--ok)"/>
+          <text x="236" y="46" font-family="IBM Plex Mono, monospace" fill="var(--ink-soft)" font-size="11">0,002 · RAS</text>
+
+          <text x="0" y="90" fill="var(--ink)">F2 capteur +8°C</text>
+          <rect x="190" y="78" width="517.7" height="16" rx="2" fill="var(--accent)"/>
+          <text x="715" y="90" font-family="IBM Plex Mono, monospace" fill="var(--ink)" font-weight="600" font-size="11">6,834</text>
+
+          <text x="0" y="134" fill="var(--ink)">F3 concept drift</text>
+          <rect x="190" y="122" width="40.6" height="16" rx="2" fill="var(--ok)"/>
+          <text x="236" y="134" font-family="IBM Plex Mono, monospace" fill="var(--ink-soft)" font-size="11">0,002 · PSI muet</text>
+          <text x="236" y="150" font-family="IBM Plex Mono, monospace" fill="var(--crit)" font-size="11">↳ rappel 0,051 · ROC 0,209</text>
+
+          <text x="0" y="182" fill="var(--ink)">Janv. vs réf. normale</text>
+          <rect x="190" y="170" width="511.9" height="16" rx="2" fill="var(--watch)"/>
+          <text x="708" y="182" font-family="IBM Plex Mono, monospace" fill="var(--ink)" font-weight="600" font-size="11">6,203</text>
+
+          <text x="0" y="215" fill="var(--ink)">Janv. vs réf. haute</text>
+          <rect x="190" y="203" width="6" height="16" rx="2" fill="var(--ok)"/>
+          <text x="204" y="215" font-family="IBM Plex Mono, monospace" fill="var(--ink-soft)" font-size="11">0,001 · contre-épreuve</text>
+        </g>
+      </svg>
+      <p class="chart-caption">F3 illustre l'angle mort du PSI : distribution d'entrée quasi identique à la référence, mais rappel effondré (0,867 → 0,051) — seul un KPI avec labels métier voit ce type de dérive.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="idx">04</span><h2>Résultat complet des quatre fenêtres</h2></div>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Fenêtre</th><th>Référence</th><th>PSI temp.</th><th>Rappel</th><th>ROC</th><th>Verdict</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1 · témoin (fév. 2026)</td><td>normale</td><td class="num">0,002</td><td class="num">0,753</td><td class="num">0,791</td><td><span class="chip ok">OK RAS</span></td></tr>
+          <tr><td>2 · capteur +8&nbsp;°C</td><td>normale</td><td class="num">6,834</td><td class="num">0,738</td><td class="num">0,793</td><td><span class="chip crit">Dérive forte</span></td></tr>
+          <tr><td>3 · concept drift</td><td>normale</td><td class="num">0,002</td><td class="num">0,051</td><td class="num">0,209</td><td><span class="chip ok">PSI OK</span> <span class="chip crit">modèle KO</span></td></tr>
+          <tr><td>4 · campagne janvier</td><td>normale</td><td class="num">6,203</td><td class="num">0,802</td><td class="num">0,816</td><td><span class="chip watch">Fausse alerte</span></td></tr>
+          <tr><td>4 · campagne janvier</td><td>haute charge</td><td class="num">0,001</td><td class="num">0,802</td><td class="num">0,816</td><td><span class="chip ok">Contre-épreuve OK</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="idx">05</span><h2>La pile en conditions réelles</h2></div>
+    <p class="lede">Vérifié sur <code>docker compose up -d --build</code> + exporteur lancé sur l'hôte, ce jour.</p>
+    <div class="stack">
+      <div class="tile">
+        <div class="label">Prometheus <span class="up">2/2 UP</span></div>
+        <div class="value" style="font-size:1.05rem;">indusense-api</div>
+        <div class="detail"><code>api:8000/metrics</code></div>
+        <div class="value" style="font-size:1.05rem; margin-top:.6rem;">indusense-drift</div>
+        <div class="detail"><code>host.docker.internal:9109</code></div>
+      </div>
+      <div class="tile">
+        <div class="label">Grafana</div>
+        <div class="value">6</div>
+        <div class="detail">panneaux provisionnés automatiquement — PSI par capteur, rappel, taux d'alerte, PSI dans le temps, précision, ROC-AUC.</div>
+      </div>
+      <div class="tile">
+        <div class="label">Tests</div>
+        <div class="value">8 / 8</div>
+        <div class="detail"><code>test_drift_monitoring.py</code> — suite complète : 34 passed, ruff clean.</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="idx">06</span><h2>SLO — sur les métriques réellement exposées</h2></div>
+    <p class="lede">Grondé sur <code>http_requests_total</code> et <code>http_request_duration_seconds_bucket</code>, les deux séries que <code>prometheus-fastapi-instrumentator</code> expose déjà sur <code>/metrics</code>.</p>
+    <div class="slo">
+      <div class="card">
+        <h3>Disponibilité</h3>
+        <div class="goal">≥ 99&nbsp;% sur 30&nbsp;j</div>
+        <code class="promql">1 - increase(…status=~"5.."[30d]) / increase(…[30d])</code>
+      </div>
+      <div class="card">
+        <h3>Latence</h3>
+        <div class="goal">p95 ≤ 0,5&nbsp;s</div>
+        <code class="promql">histogram_quantile(0.95, rate(…_bucket[5m]))</code>
+      </div>
+      <div class="card">
+        <h3>Erreurs</h3>
+        <div class="goal">taux 5xx &lt; 1&nbsp;%</div>
+        <code class="promql">rate(…status=~"5.."[5m]) / rate(…[5m])</code>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="idx">07</span><h2>Le runbook, joué pour de vrai</h2></div>
+    <p class="lede">Pas un gabarit rempli à froid : l'alerte ci-dessous a été réellement déclenchée en rejouant la fenêtre 2 pendant que l'exporteur tournait.</p>
+    <div class="ticket">
+      <div class="ticket-head">
+        <h3>IndusenseDriftPSIEleve</h3>
+        <span class="sev">Majeure</span>
+      </div>
+      <div class="cond">indusense_drift_psi{feature="temperature", reference="normale"} = 6,83 &gt; 0,25</div>
+      <ol>
+        <li><strong>Isoler le capteur.</strong> Seul <code>temperature</code> dérive ; <code>pressure_bar</code> reste à 0,025. Le rappel modèle (0,738) est dans la norme — ce n'est pas un effondrement du modèle, contrairement à la fenêtre 3.</li>
+        <li><strong>Exclure un changement de régime.</strong> Rejouer contre la référence haute charge : si le PSI retombe, c'est une campagne planifiée à re-référencer, pas une panne.</li>
+        <li><strong>Confirmer la cause physique.</strong> Ici le PSI reste fort quelle que soit la référence testée → capteur hors service ou mal étalonné.</li>
+      </ol>
+      <dl class="action">
+        <dt>Action</dt><dd>Étalonnage physique du capteur <em>avant</em> toute action sur le modèle — ne pas réentraîner, ne pas toucher au seuil gelé.</dd>
+        <dt>Retour arrière</dt><dd>Si l'étalonnage échoue, isoler la machine (segmentation <code>--machine</code>) en mode dégradé, sans impacter les autres.</dd>
+        <dt>Preuve</dt><dd>Relancer <code>evaluate_drift --fenetre 2</code> : le PSI température doit repasser sous 0,10.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="idx">08</span><h2>Preuve rejouable</h2></div>
+    <div class="proof">
+      <h3>Terminal</h3>
+      <pre><span class="result"># stack + metriques</span>
+docker compose config -q
+docker compose up -d --build
+curl -fsS http://127.0.0.1:8000/metrics | head
+docker compose ps
+
+<span class="result"># derive</span>
+uv run python scripts/drift_windows.py
+uv run python scripts/train_drift_model.py
+uv run python scripts/evaluate_drift.py --fenetre 2
+uv run python scripts/export_drift_metrics.py   <span class="result">&amp; # :9109/metrics</span>
+
+<span class="result"># tests</span>
+uv run pytest tests/test_drift_monitoring.py -q  <span class="result">→ 8 passed</span></pre>
+    </div>
+  </section>
+
+  <footer>
+    <span>Jalon 10 · J5 après-midi · M33–M34</span>
+    <span>Rattrapage minimal : /metrics + 1 cible UP + 1 panneau + 1 action de runbook</span>
+  </footer>
+
+</div>
+</body>
+</html>

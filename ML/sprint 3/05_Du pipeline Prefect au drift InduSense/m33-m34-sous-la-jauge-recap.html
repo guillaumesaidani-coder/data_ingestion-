@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sous la Jauge — Jalon 10</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink:#10201f; --ink-soft:#3b524f;
+    --paper:#eef3f1; --panel:#ffffff; --panel-2:#e2eae6; --line:#c3d0cb;
+    --accent:#b5501c; --accent-ink:#7c3510;
+    --signal:#1f6478; --signal-soft:#5b8b98;
+    --ok:#2f7a53; --ok-bg:#e3f1e7;
+    --watch:#9a6c0a; --watch-bg:#f6ecd6;
+    --crit:#b23a2f; --crit-bg:#f7e2de;
+    --shadow: 0 1px 0 rgba(16,32,31,.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#e7efec; --ink-soft:#a9bdb8;
+      --paper:#0b1414; --panel:#12201f; --panel-2:#182927; --line:#294140;
+      --accent:#e08a52; --accent-ink:#f4c19b;
+      --signal:#6fb6cb; --signal-soft:#4a8494;
+      --ok:#6fbf93; --ok-bg:#173226;
+      --watch:#d8ac4c; --watch-bg:#332a11;
+      --crit:#e08479; --crit-bg:#3a1f1c;
+      --shadow: 0 1px 0 rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e7efec; --ink-soft:#a9bdb8;
+    --paper:#0b1414; --panel:#12201f; --panel-2:#182927; --line:#294140;
+    --accent:#e08a52; --accent-ink:#f4c19b;
+    --signal:#6fb6cb; --signal-soft:#4a8494;
+    --ok:#6fbf93; --ok-bg:#173226;
+    --watch:#d8ac4c; --watch-bg:#332a11;
+    --crit:#e08479; --crit-bg:#3a1f1c;
+    --shadow: 0 1px 0 rgba(0,0,0,.4);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{background:var(--paper); color:var(--ink); font-family:"IBM Plex Sans",system-ui,Segoe UI,Arial,sans-serif; line-height:1.55;}
+  .wrap{max-width:940px; margin:0 auto; padding:2.5rem 1.25rem 5rem;}
+  h1,h2,h3{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif; text-wrap:balance; letter-spacing:.01em; color:var(--ink);}
+  code{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace; font-size:.86em; background:var(--panel-2); border:1px solid var(--line); border-radius:4px; padding:.1em .4em;}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;}
+
+  .plate{border:1px solid var(--line); background:var(--panel); border-radius:10px; box-shadow:var(--shadow); padding:1.6rem 1.8rem; display:flex; flex-direction:column; gap:.9rem;}
+  .plate-eyebrow{display:flex; align-items:center; gap:.6rem; font-family:"IBM Plex Mono",monospace; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft);}
+  .plate-eyebrow .dot{width:.5rem;height:.5rem;border-radius:50%; background:var(--ok); box-shadow:0 0 0 3px var(--ok-bg); flex:none;}
+  .plate h1{font-size:clamp(1.7rem,4vw,2.3rem); font-weight:700; margin:0; line-height:1.1;}
+  .plate .sub{color:var(--ink-soft); font-size:1.02rem; max-width:66ch;}
+  .plate-meta{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-top:.4rem;}
+  .plate-meta div{background:var(--panel); padding:.6rem .8rem;}
+  .plate-meta .k{display:block; font-size:.64rem; text-transform:uppercase; letter-spacing:.1em; color:var(--ink-soft); margin-bottom:.15rem;}
+  .plate-meta .v{font-family:"IBM Plex Mono",monospace; font-size:.88rem;}
+
+  section{margin-top:3.2rem;}
+  .section-head{display:flex; align-items:baseline; gap:.6rem; margin-bottom:.3rem;}
+  .section-head .idx{font-family:"IBM Plex Mono",monospace; color:var(--signal); font-size:.85rem;}
+  .section-head h2{font-size:1.35rem; margin:0;}
+  .lede{color:var(--ink-soft); max-width:70ch; margin:.4rem 0 1.1rem; font-size:.95rem;}
+
+  .did{display:flex; gap:.6rem; align-items:flex-start; background:var(--panel-2); border-radius:8px; padding:.7rem .9rem; margin-bottom:1rem; font-size:.86rem;}
+  .did .tag{font-family:"IBM Plex Mono",monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; color:var(--signal); font-weight:600; flex:none; padding-top:.1rem;}
+
+  .chart-card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:1.1rem 1.3rem 1rem; box-shadow:var(--shadow);}
+  .chart-card + .chart-card{margin-top:.7rem;}
+  .chart-card svg{width:100%; height:auto; display:block; overflow:visible;}
+  .chart-title{font-size:.82rem; font-weight:600; margin:0 0 .3rem; display:flex; justify-content:space-between; align-items:baseline;}
+  .chart-title .now{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:.85rem;}
+
+  .finding{border-left:3px solid var(--accent); background:var(--panel); border:1px solid var(--line); border-radius:0 8px 8px 0; border-left-width:3px; padding:.85rem 1.1rem; margin-top:.9rem;}
+  .finding .k{font-family:"IBM Plex Mono",monospace; font-size:.68rem; text-transform:uppercase; letter-spacing:.1em; color:var(--accent-ink); font-weight:700; display:block; margin-bottom:.35rem;}
+  .finding p{margin:0; font-size:.9rem;}
+
+  .tiles3{display:grid; grid-template-columns:1fr auto 1fr; gap:1rem; align-items:stretch;}
+  @media (max-width:600px){.tiles3{grid-template-columns:1fr;}}
+  .tile-big{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:1.3rem 1.4rem; box-shadow:var(--shadow); display:flex; flex-direction:column; gap:.4rem;}
+  .tile-big .label{font-size:.72rem; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); font-weight:600;}
+  .tile-big .value{font-family:"IBM Plex Mono",monospace; font-size:2.6rem; font-weight:600; line-height:1;}
+  .tile-big .sub{font-size:.85rem; color:var(--ink-soft);}
+  .vs{display:flex; align-items:center; justify-content:center; font-family:"IBM Plex Mono",monospace; font-size:.85rem; color:var(--ink-soft); font-weight:600;}
+
+  .proof{background:var(--ink); color:var(--paper); border-radius:10px; padding:1.2rem 1.4rem;}
+  :root[data-theme="dark"] .proof{background:var(--panel-2); color:var(--ink);}
+  @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .proof{background:var(--panel-2); color:var(--ink);}}
+  .proof h3{color:inherit; margin:0 0 .6rem; font-size:.92rem; text-transform:uppercase; letter-spacing:.08em;}
+  .proof pre{margin:0; font-family:"IBM Plex Mono",monospace; font-size:.78rem; line-height:1.65; overflow-x:auto;}
+  .proof .c{opacity:.65;}
+
+  footer{margin-top:3.2rem; padding-top:1.1rem; border-top:1px solid var(--line); font-size:.78rem; color:var(--ink-soft); display:flex; justify-content:space-between; flex-wrap:wrap; gap:.5rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="plate">
+    <div class="plate-eyebrow"><span class="dot"></span> Jalon 10 · Prometheus &amp; Grafana · lecture de panneaux</div>
+    <h1>Sous la jauge</h1>
+    <p class="sub">Quatre panneaux imaginés en discussion, construits pour de vrai sur cette machine — trafic Locust réel, erreurs injectées volontairement, requêtes PromQL rejouées sur Prometheus. Deux surprises authentiques sont apparues en cours de route ; elles sont documentées telles quelles, pas gommées.</p>
+    <div class="plate-meta">
+      <div><span class="k">Cible</span><span class="v">/predict-tabular</span></div>
+      <div><span class="k">Générateur</span><span class="v">Locust, 3 users, 10 min bornées</span></div>
+      <div><span class="k">Fenêtre observée</span><span class="v">20 min glissantes</span></div>
+    </div>
+  </header>
+
+  <section>
+    <div class="section-head"><span class="idx">01</span><h2>Compteur brut vs <code>rate()</code></h2></div>
+    <p class="lede">Un compteur Prometheus ne fait que monter. Pour lire un débit, il faut sa dérivée — <code>rate()</code>.</p>
+    <div class="did"><span class="tag">Fait</span> Locust a tapé <code>/predict-tabular</code> pendant 10 minutes ; on lit <code>http_requests_total</code> brut, puis <code>rate(...[2m])</code>, sur la même fenêtre de 20 minutes.</div>
+
+    <div class="chart-card">
+      <div class="chart-title"><span>http_requests_total{handler="/predict-tabular"}</span><span class="now mono" style="color:var(--signal)">57 → 115</span></div>
+      <svg viewBox="0 0 740 120">
+        <rect x="222.8" y="6" width="302.2" height="106" fill="var(--panel-2)" opacity="0.6"/>
+        <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--ink-soft)">
+          <text x="55" y="18" text-anchor="end">115</text>
+          <text x="55" y="107" text-anchor="end">57</text>
+          <text x="60" y="118" text-anchor="start">-20 min</text>
+          <text x="680" y="118" text-anchor="end">maintenant</text>
+        </g>
+        <polyline points="60.0,100.6 67.8,100.6 75.5,96.2 83.2,94.0 91.0,87.4 98.8,80.9 106.5,76.5 114.2,74.3 122.0,67.7 129.8,61.1 137.5,56.7 145.2,54.5 153.0,47.9 160.8,41.3 168.5,39.1 176.2,39.1 184.0,39.1 191.8,39.1 199.5,39.1 207.2,39.1 215.0,39.1 222.8,39.1 230.5,39.1 238.2,39.1 246.0,39.1 253.8,39.1 261.5,39.1 269.2,39.1 277.0,39.1 284.8,39.1 292.5,39.1 300.2,39.1 308.0,39.1 315.8,39.1 323.5,39.1 331.2,39.1 339.0,39.1 346.8,39.1 354.5,39.1 362.2,39.1 370.0,39.1 377.8,39.1 385.5,39.1 393.2,39.1 401.0,39.1 408.8,39.1 416.5,39.1 424.2,39.1 432.0,39.1 439.8,39.1 447.5,39.1 455.2,39.1 463.0,39.1 470.8,39.1 478.5,39.1 486.2,39.1 494.0,39.1 501.8,39.1 509.5,39.1 517.2,39.1 525.0,39.1 532.8,32.6 540.5,23.8 548.2,23.8 556.0,23.8 563.8,23.8 571.5,23.8 579.2,23.8 587.0,23.8 594.8,21.6 602.5,19.4 610.2,19.4 618.0,19.4 625.8,19.4 633.5,19.4 641.2,19.4 649.0,19.4 656.8,19.4 664.5,19.4 672.2,19.4 680.0,19.4"
+          fill="none" stroke="var(--signal)" stroke-width="2.2" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title"><span>rate(http_requests_total{handler="/predict-tabular"}[2m])</span><span class="now mono" style="color:var(--accent-ink)">req/s</span></div>
+      <svg viewBox="0 0 740 120">
+        <rect x="222.8" y="6" width="302.2" height="106" fill="var(--panel-2)" opacity="0.6"/>
+        <text x="374" y="20" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--ink-soft)">Locust arrêté — rate() retombe à 0</text>
+        <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--ink-soft)">
+          <text x="55" y="18" text-anchor="end">0,18</text>
+          <text x="55" y="107" text-anchor="end">0</text>
+        </g>
+        <polyline points="60.0,28.8 67.8,28.8 75.5,28.8 83.2,33.6 91.0,28.8 98.8,24.0 106.5,24.0 114.2,33.6 122.0,33.6 129.8,28.8 137.5,24.0 145.2,33.6 153.0,33.6 160.8,28.8 168.5,28.8 176.2,43.1 184.0,57.4 191.8,66.9 199.5,71.7 207.2,86.0 215.0,100.2 222.8,105.0 230.5,105.0 238.2,105.0 246.0,105.0 253.8,105.0 261.5,105.0 269.2,105.0 277.0,105.0 284.8,105.0 292.5,105.0 300.2,105.0 308.0,105.0 315.8,105.0 323.5,105.0 331.2,105.0 339.0,105.0 346.8,105.0 354.5,105.0 362.2,105.0 370.0,105.0 377.8,105.0 385.5,105.0 393.2,105.0 401.0,105.0 408.8,105.0 416.5,105.0 424.2,105.0 432.0,105.0 439.8,105.0 447.5,105.0 455.2,105.0 463.0,105.0 470.8,105.0 478.5,105.0 486.2,105.0 494.0,105.0 501.8,105.0 509.5,105.0 517.2,105.0 525.0,105.0 532.8,90.7 540.5,81.2 548.2,81.2 556.0,81.2 563.8,81.2 571.5,81.2 579.2,81.2 587.0,95.5 594.8,100.2 602.5,95.5 610.2,95.5 618.0,95.5 625.8,95.5 633.5,95.5 641.2,95.5 649.0,100.2 656.8,105.0 664.5,105.0 672.2,105.0 680.0,105.0"
+          fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="finding">
+      <span class="k">Ce que ça montre</span>
+      <p>Le compteur ne fait QUE monter, même à l'arrêt (palier plat, jamais de redescente) — il est illisible tel quel comme mesure de charge. <code>rate()</code> seul répond à « combien de requêtes par seconde, là, maintenant ? » — et redescend honnêtement à 0 dès que Locust s'arrête, la zone grisée sur les deux graphes.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="idx">02</span><h2>p50, p95, p99 — presque la même ligne</h2></div>
+    <p class="lede">L'hypothèse de départ : avec un trafic uniforme, les trois quantiles se confondraient. La vraie raison de leur superposition s'est révélée différente.</p>
+    <div class="did"><span class="tag">Fait</span> <code>histogram_quantile(0.5|0.95|0.99, sum by (le) (rate(http_request_duration_seconds_bucket{handler="/predict-tabular"}[2m])))</code>, rejouées sur la même fenêtre de 20 minutes.</div>
+
+    <div class="chart-card">
+      <div class="chart-title"><span>Trois quantiles, un seul faisceau</span></div>
+      <svg viewBox="0 0 740 190">
+        <rect x="222.8" y="6" width="302.2" height="176" fill="var(--panel-2)" opacity="0.6"/>
+        <line x1="60" y1="41.7" x2="680" y2="41.7" stroke="var(--crit)" stroke-width="1.2" stroke-dasharray="4 3"/>
+        <text x="65" y="36" font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--crit)">le=0,1 — limite du 1er bucket</text>
+        <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--ink-soft)">
+          <text x="55" y="18" text-anchor="end">0,12s</text>
+          <text x="55" y="177" text-anchor="end">0</text>
+        </g>
+        <polyline points="60.0,108.3 67.8,108.3 75.5,108.3 83.2,108.3 91.0,108.3 98.8,108.3 106.5,108.3 114.2,108.3 122.0,108.3 129.8,108.3 137.5,108.3 145.2,108.3 153.0,108.3 160.8,108.3 168.5,108.3 176.2,108.3 184.0,108.3 191.8,108.3 199.5,108.3 207.2,108.3 215.0,108.3" fill="none" stroke="var(--ok)" stroke-width="2.2"/>
+        <polyline points="532.8,108.3 540.5,108.3 548.2,108.3 556.0,108.3 563.8,108.3 571.5,108.3 579.2,108.3 587.0,108.3 594.8,108.3 602.5,108.3 610.2,108.3 618.0,108.3 625.8,108.3 633.5,108.3 641.2,108.3 649.0,108.3" fill="none" stroke="var(--ok)" stroke-width="2.2"/>
+        <polyline points="60.0,48.3 67.8,48.3 75.5,48.3 83.2,48.3 91.0,48.3 98.8,48.3 106.5,48.3 114.2,48.3 122.0,48.3 129.8,48.3 137.5,48.3 145.2,48.3 153.0,48.3 160.8,48.3 168.5,48.3 176.2,48.3 184.0,48.3 191.8,48.3 199.5,48.3 207.2,48.3 215.0,48.3" fill="none" stroke="var(--signal)" stroke-width="2.2"/>
+        <polyline points="532.8,48.3 540.5,48.3 548.2,48.3 556.0,48.3 563.8,48.3 571.5,48.3 579.2,48.3 587.0,48.3 594.8,48.3 602.5,48.3 610.2,48.3 618.0,48.3 625.8,48.3 633.5,48.3 641.2,48.3 649.0,48.3" fill="none" stroke="var(--signal)" stroke-width="2.2"/>
+        <polyline points="60.0,43.0 67.8,43.0 75.5,43.0 83.2,43.0 91.0,43.0 98.8,43.0 106.5,43.0 114.2,43.0 122.0,43.0 129.8,43.0 137.5,43.0 145.2,43.0 153.0,43.0 160.8,43.0 168.5,43.0 176.2,43.0 184.0,43.0 191.8,43.0 199.5,43.0 207.2,43.0 215.0,43.0" fill="none" stroke="var(--accent)" stroke-width="2.2"/>
+        <polyline points="532.8,43.0 540.5,43.0 548.2,43.0 556.0,43.0 563.8,43.0 571.5,43.0 579.2,43.0 587.0,43.0 594.8,43.0 602.5,43.0 610.2,43.0 618.0,43.0 625.8,43.0 633.5,43.0 641.2,43.0 649.0,43.0" fill="none" stroke="var(--accent)" stroke-width="2.2"/>
+        <text x="374" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--ink-soft)">rate() = 0 ⇒ NaN</text>
+        <text x="374" y="93" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="var(--ink-soft)">(aucune donnée)</text>
+        <g font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" text-anchor="middle">
+          <circle cx="340" cy="130" r="3.5" fill="var(--accent)"/><text x="352" y="133.5" text-anchor="start" fill="var(--accent)">p99 = 0,099</text>
+          <circle cx="340" cy="150" r="3.5" fill="var(--signal)"/><text x="352" y="153.5" text-anchor="start" fill="var(--signal)">p95 = 0,095</text>
+          <circle cx="340" cy="170" r="3.5" fill="var(--ok)"/><text x="352" y="173.5" text-anchor="start" fill="var(--ok)">p50 = 0,050</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="finding">
+      <span class="k">Surprise n°1 — vérifiée en direct</span>
+      <p>Ce n'est pas que le trafic soit parfaitement régulier : c'est que <strong>toutes les requêtes tombent sous le premier seuil du histogramme (le=0,1s)</strong>. Prometheus n'a alors aucun moyen de savoir OÙ elles se situent dans ce bucket — il <em>suppose</em> une répartition uniforme et interpole : p50 = 50&nbsp;% de 0,1, p95 = 95&nbsp;% de 0,1, p99 = 99&nbsp;% de 0,1. Ces trois chiffres ne sont pas mesurés, ils sont <em>devinés</em>. Pour distinguer une requête à 20&nbsp;ms d'une à 90&nbsp;ms, il faudrait des buckets plus fins sous la barre des 100&nbsp;ms (ex. 0,01 / 0,03 / 0,05 / 0,1) — un histogramme n'est précis qu'à la résolution de ses propres seuils.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="idx">03</span><h2>PSI vs rappel — fenêtre 3, même instant</h2></div>
+    <p class="lede">Aucune nouvelle requête ici : on relit deux métriques déjà calculées par le TP drift, côte à côte plutôt que dans un tableau.</p>
+    <div class="did"><span class="tag">Fait</span> <code>indusense_drift_psi{feature="temperature", fenetre="3"}</code> et <code>indusense_drift_rappel{fenetre="3"}</code>, interrogées à l'instant.</div>
+
+    <div class="tiles3">
+      <div class="tile-big">
+        <span class="label">PSI température</span>
+        <span class="value" style="color:var(--ok)">0,002</span>
+        <span class="sub">très en dessous du seuil 0,10 — RAS</span>
+      </div>
+      <div class="vs">vs</div>
+      <div class="tile-big">
+        <span class="label">Rappel du modèle</span>
+        <span class="value" style="color:var(--crit)">0,051</span>
+        <span class="sub">effondré (0,867 attendu en régime normal)</span>
+      </div>
+    </div>
+
+    <div class="finding">
+      <span class="k">Ce que ça montre</span>
+      <p>Placés côte à côte, le contraste EST la démonstration : un panneau de dérive d'entrée peut rester au vert pendant qu'un panneau de performance métier hurle. C'est le concept drift du TP (docs/TP_drift.md, fenêtre 3) — la seule fenêtre où le PSI ne voit rien.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="idx">04</span><h2>Répartition par code HTTP — un incident sans alerte</h2></div>
+    <p class="lede">Aucun seuil configuré ici : c'est la forme du graphique elle-même qui révèle le problème.</p>
+    <div class="did"><span class="tag">Fait</span> pendant que Locust tournait en <code>2xx</code>, on a envoyé 4 requêtes invalides (moins de 7 relevés → 422) et une requête surdimensionnée (98&nbsp;439 octets → 413, limite 65&nbsp;536).</div>
+
+    <div class="chart-card">
+      <div class="chart-title"><span>rate(...{status="2xx"}[3m])</span></div>
+      <svg viewBox="0 0 740 120">
+        <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--ink-soft)">
+          <text x="55" y="18" text-anchor="end">0,16</text>
+          <text x="55" y="107" text-anchor="end">0</text>
+        </g>
+        <polygon points="60.0,105.0 60.0,29.2 67.8,29.2 75.5,26.2 83.2,32.3 91.0,32.3 98.8,29.2 106.5,29.2 114.2,32.3 122.0,29.2 129.8,26.2 137.5,26.2 145.2,32.3 153.0,32.3 160.8,29.2 168.5,29.2 176.2,38.3 184.0,47.4 191.8,53.5 199.5,56.5 207.2,65.6 215.0,74.7 222.8,80.8 230.5,83.8 238.2,92.9 246.0,102.0 253.8,105.0 261.5,105.0 269.2,105.0 277.0,105.0 284.8,105.0 292.5,105.0 300.2,105.0 308.0,105.0 315.8,105.0 323.5,105.0 331.2,105.0 339.0,105.0 346.8,105.0 354.5,105.0 362.2,105.0 370.0,105.0 377.8,105.0 385.5,105.0 393.2,105.0 401.0,105.0 408.8,105.0 416.5,105.0 424.2,105.0 432.0,105.0 439.8,105.0 447.5,105.0 455.2,105.0 463.0,105.0 470.8,105.0 478.5,105.0 486.2,105.0 494.0,105.0 501.8,105.0 509.5,105.0 517.2,105.0 525.0,105.0 532.8,95.9 540.5,89.8 548.2,89.8 556.0,89.8 563.8,89.8 571.5,89.8 579.2,89.8 587.0,89.8 594.8,89.8 602.5,89.8 610.2,89.8 618.0,98.9 625.8,105.0 633.5,105.0 641.2,105.0 649.0,105.0 656.8,105.0 664.5,105.0 672.2,105.0 680.0,105.0 680.0,105.0"
+          fill="var(--ok)" opacity="0.16" stroke="none"/>
+        <polyline points="60.0,29.2 67.8,29.2 75.5,26.2 83.2,32.3 91.0,32.3 98.8,29.2 106.5,29.2 114.2,32.3 122.0,29.2 129.8,26.2 137.5,26.2 145.2,32.3 153.0,32.3 160.8,29.2 168.5,29.2 176.2,38.3 184.0,47.4 191.8,53.5 199.5,56.5 207.2,65.6 215.0,74.7 222.8,80.8 230.5,83.8 238.2,92.9 246.0,102.0 253.8,105.0 261.5,105.0 269.2,105.0 277.0,105.0 284.8,105.0 292.5,105.0 300.2,105.0 308.0,105.0 315.8,105.0 323.5,105.0 331.2,105.0 339.0,105.0 346.8,105.0 354.5,105.0 362.2,105.0 370.0,105.0 377.8,105.0 385.5,105.0 393.2,105.0 401.0,105.0 408.8,105.0 416.5,105.0 424.2,105.0 432.0,105.0 439.8,105.0 447.5,105.0 455.2,105.0 463.0,105.0 470.8,105.0 478.5,105.0 486.2,105.0 494.0,105.0 501.8,105.0 509.5,105.0 517.2,105.0 525.0,105.0 532.8,95.9 540.5,89.8 548.2,89.8 556.0,89.8 563.8,89.8 571.5,89.8 579.2,89.8 587.0,89.8 594.8,89.8 602.5,89.8 610.2,89.8 618.0,98.9 625.8,105.0 633.5,105.0 641.2,105.0 649.0,105.0 656.8,105.0 664.5,105.0 672.2,105.0 680.0,105.0"
+          fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title"><span>rate(...{status="4xx"}[3m])</span><span class="now mono" style="color:var(--crit)">422 seulement</span></div>
+      <svg viewBox="0 0 740 90">
+        <g font-family="IBM Plex Mono, monospace" font-size="9.5" fill="var(--ink-soft)">
+          <text x="55" y="18" text-anchor="end">0,02</text>
+          <text x="55" y="77" text-anchor="end">0</text>
+        </g>
+        <polyline points="60.0,77.0 67.8,77.0 75.5,77.0 83.2,77.0 91.0,77.0 98.8,77.0 106.5,77.0 114.2,77.0 122.0,77.0 129.8,77.0 137.5,77.0 145.2,77.0 153.0,77.0 160.8,77.0 168.5,77.0 176.2,77.0 184.0,77.0 191.8,77.0 199.5,77.0 207.2,77.0 215.0,77.0 222.8,77.0 230.5,77.0 238.2,77.0 246.0,77.0 253.8,77.0 261.5,77.0 269.2,77.0 277.0,77.0 284.8,77.0 292.5,77.0 300.2,77.0 308.0,77.0 315.8,77.0 323.5,77.0 331.2,77.0 339.0,77.0 346.8,77.0 354.5,77.0 362.2,77.0 370.0,77.0 377.8,77.0 385.5,77.0 393.2,77.0 401.0,77.0 408.8,77.0 416.5,77.0 424.2,77.0 432.0,77.0 439.8,77.0 447.5,77.0 455.2,77.0 463.0,77.0 470.8,77.0 478.5,77.0 486.2,77.0 494.0,77.0 501.8,77.0 509.5,77.0 517.2,77.0 525.0,77.0 532.8,77.0 540.5,77.0 548.2,77.0 556.0,77.0 563.8,77.0 571.5,77.0 579.2,77.0 587.0,77.0 594.8,57.6 602.5,38.7 610.2,39.2 618.0,39.5 625.8,39.4 633.5,39.4 641.2,39.4 649.0,39.4 656.8,39.4 664.5,39.4 672.2,39.4 680.0,58.2"
+          fill="none" stroke="var(--crit)" stroke-width="2.4" stroke-linejoin="round"/>
+        <text x="612" y="30" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="600" fill="var(--crit)">4 × 422 injectés ici</text>
+      </svg>
+    </div>
+
+    <div class="finding">
+      <span class="k">Surprise n°2 — le 413 est invisible</span>
+      <p>Le bandeau rouge ci-dessus ne montre QUE le 422 (payload invalide, rejeté par la validation Pydantic). La requête surdimensionnée (413) n'apparaît nulle part dans <code>/metrics</code> : son middleware anti-payload-géant (<code>MAX_BODY_BYTES</code>, <code>src/indusense/api/security.py</code>) coupe la requête <em>avant</em> qu'elle n'atteigne le middleware d'instrumentation Prometheus. Une protection de sécurité bien réelle (module 26) reste donc un angle mort total pour ce dashboard (module 33) — deux couches du même projet qui ne se voient pas.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head"><span class="idx">05</span><h2>Preuve rejouable</h2></div>
+    <div class="proof">
+      <h3>Terminal</h3>
+      <pre><span class="c"># generer du trafic continu (borne a 10 min)</span>
+uv run locust -f perf/locustfile.py --host http://127.0.0.1:8000 --headless -u 3 -r 1 -t 10m
+
+<span class="c"># injecter une erreur de validation (422)</span>
+curl -X POST http://127.0.0.1:8000/predict-tabular -H "X-API-Key: $INDUSENSE_API_KEY" \
+  -d '{"machine_id":"MACH-07","readings":[{"timestamp":"2025-02-01T00:00:00","temperature":50,"pressure_bar":195.0}]}'
+
+<span class="c"># interroger les 4 panneaux</span>
+curl -G http://127.0.0.1:9090/api/v1/query_range \
+  --data-urlencode 'query=rate(http_requests_total{handler="/predict-tabular"}[2m])' \
+  --data-urlencode "start=$(($(date +%s)-1200))" --data-urlencode "end=$(date +%s)" --data-urlencode step=15s</pre>
+    </div>
+  </section>
+
+  <footer>
+    <span>Jalon 10 · Prometheus &amp; Grafana</span>
+    <span>Données réelles, capturées le 2026-09-03</span>
+  </footer>
+
+</div>
+</body>
+</html>

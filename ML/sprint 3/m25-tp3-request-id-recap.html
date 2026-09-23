@@ -1,0 +1,183 @@
+<title>Request-id & normalisation au bord — API</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink: #16211f; --muted: #4f5d55; --paper: #eef0ea; --raised: #ffffff;
+    --line: #ccd3c8; --accent: #0f6e5c; --accent-ink: #084537; --accent-soft: #d7ece5;
+    --warn: #a8551f; --warn-soft: #f3e2d1;
+    --code-bg: #101917; --code-ink: #d9ffe9; --code-dim: #7fa694;
+    --font-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+    --font-body: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+      --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+      --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+    --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+    --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+  }
+  *{ box-sizing: border-box; }
+  body{ margin:0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  ::selection{ background: var(--accent-soft); color: var(--accent-ink); }
+  a{ color: var(--accent-ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+
+  .page{ max-width: 760px; margin: 0 auto; padding: clamp(28px,6vw,64px) 24px 96px; }
+
+  .eyebrow{ font-family: var(--font-display); font-weight:600; font-size:.78rem; letter-spacing:.11em; text-transform:uppercase; color: var(--accent-ink); display:flex; align-items:center; gap:.6em; }
+  .eyebrow::before{ content:""; width:20px; height:2px; background: var(--accent); display:inline-block; }
+
+  header.masthead{ border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:40px; }
+  .breadcrumb{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); margin:0 0 18px; }
+  .breadcrumb span{ color: var(--ink); }
+  h1{ font-family: var(--font-display); font-weight:700; font-size: clamp(2rem,5vw,2.7rem); line-height:1.06; letter-spacing:-.01em; margin:0 0 12px; text-wrap: balance; }
+  .lede{ font-size:1.08rem; color: var(--muted); max-width:58ch; margin:0 0 20px; }
+  .status-row{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+  .status-chip{ display:inline-flex; align-items:center; gap:8px; font-family: var(--font-display); font-weight:600; font-size:.82rem; letter-spacing:.03em; padding:7px 14px 7px 10px; border-radius:999px; background: var(--accent-soft); color: var(--accent-ink); }
+  .status-chip.partial{ background: var(--warn-soft); color: var(--warn); }
+  .status-chip svg{ width:15px; height:15px; flex:none; }
+  .meta-line{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); }
+
+  section{ margin:52px 0; }
+  section > h2{ font-family: var(--font-body); font-weight:600; font-style:italic; font-size:1.5rem; margin:8px 0 16px; text-wrap: balance; }
+  section > p{ max-width:66ch; }
+  section > p + p{ margin-top:1em; }
+
+  .callout{ border-left:3px solid var(--accent); background: var(--accent-soft); color: var(--ink); padding:14px 18px; border-radius:4px; font-size:.96rem; margin:20px 0; }
+  .callout.warn{ border-color: var(--warn); background: var(--warn-soft); }
+  .callout strong{ font-family: var(--font-display); font-weight:600; }
+
+  .terminal{ background: var(--code-bg); border-radius:8px; overflow:hidden; margin:20px 0; box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+  .terminal-bar{ display:flex; align-items:center; gap:8px; padding:9px 14px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .terminal-bar .dot{ width:8px; height:8px; border-radius:50%; background: var(--code-dim); opacity:.6; }
+  .terminal-bar .label{ font-family: var(--font-mono); font-size:.76rem; color: var(--code-dim); margin-left:6px; }
+  .terminal pre{ margin:0; padding:16px; overflow-x:auto; font-family: var(--font-mono); font-size:.85rem; line-height:1.55; color: var(--code-ink); }
+  .terminal .ok{ color:#8fe8bd; }
+  .terminal .fail{ color:#ff9f8f; }
+  .terminal .dim{ color: var(--code-dim); }
+
+  .tp{ border:1px solid var(--line); background: var(--raised); border-radius:10px; padding:22px 24px; margin:22px 0; }
+  .tp-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:10px; }
+  .tp-num{ font-family: var(--font-mono); font-size:.82rem; color: var(--accent-ink); background: var(--accent-soft); padding:2px 8px; border-radius:4px; flex:none; }
+  .tp-title{ font-family: var(--font-display); font-weight:600; font-size:1.12rem; }
+  .tp p{ margin:.7em 0; }
+  code{ font-family: var(--font-mono); font-size:.88em; background: var(--accent-soft); color: var(--accent-ink); padding:.1em .35em; border-radius:4px; }
+
+  .flow{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:20px 0; font-family: var(--font-mono); font-size:.86rem; }
+  .flow .node{ background: var(--raised); border:1px solid var(--line); border-radius:8px; padding:10px 14px; }
+  .flow .node.job{ border-color: var(--accent); color: var(--accent-ink); font-weight:600; }
+  .flow .arrow{ color: var(--muted); font-size:1.1rem; }
+
+  dl.glossary{ margin:16px 0; }
+  dl.glossary div{ display:grid; grid-template-columns:160px 1fr; gap:16px; padding:12px 0; border-bottom:1px solid var(--line); }
+  @media (max-width:560px){ dl.glossary div{ grid-template-columns:1fr; gap:4px; } }
+  dl.glossary dt{ font-family: var(--font-display); font-weight:600; font-size:.86rem; color: var(--accent-ink); }
+  dl.glossary dd{ margin:0; color: var(--ink); }
+
+  footer{ margin-top:64px; padding-top:24px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; font-family: var(--font-mono); font-size:.8rem; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto !important; } }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="breadcrumb">CISIA · Sprint 3 · J2 matin · <span>Module 25 — TP3</span></p>
+    <h1>Une trace qui traverse toute la requête</h1>
+    <p class="lede">Un middleware attribue un identifiant unique à chaque requête HTTP — client ou serveur, l'un des deux le fournit toujours, et il revient dans la réponse pour corréler logs et incidents.</p>
+    <div class="status-row">
+      <span class="status-chip">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Middleware request-id opérationnel
+      </span>
+      <span class="status-chip partial">
+        <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="2"/><path d="M10 6v4M10 13.5v.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        /predict-image — extension facultative non implémentée
+      </span>
+      <span class="meta-line">jalon 03 · branche guillaume-saidani</span>
+    </div>
+  </header>
+
+  <section>
+    <p class="eyebrow">Pourquoi</p>
+    <h2>Retrouver une requête précise dans les logs</h2>
+    <p>Sur un service qui reçoit des centaines d'appels, savoir <em>quelle</em> requête a échoué exige un identifiant qui traverse toute la chaîne — de l'entrée de l'API jusqu'à la ligne de log correspondante. C'est le rôle d'un <strong>request-id</strong> : soit le client en fournit un (pour corréler avec son propre système), soit l'API en génère un (un <code>uuid4</code>), mais dans tous les cas la réponse le porte dans l'en-tête <code>X-Request-ID</code>.</p>
+    <div class="callout">
+      <strong>Ce n'est pas de l'audit logging.</strong> Le request-id corrèle les requêtes entre elles ; il ne constitue ni un événement d'audit structuré, ni sa preuve. L'audit logging reste un chantier <strong>Planifié v0</strong>, traité au module 26.
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Le code</p>
+    <h2>Un middleware de 4 lignes</h2>
+    <p><code>src/indusense/api/main.py</code>, fonction <code>add_request_id</code> — appelée pour <strong>chaque</strong> requête, avant même l'authentification :</p>
+    <div class="terminal">
+      <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">src/indusense/api/main.py</span></div>
+      <pre>@app.middleware("http")
+async def add_request_id(request: Request, call_next):
+    request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
+    response = await call_next(request)
+    response.headers["X-Request-ID"] = request_id
+    return response</pre>
+    </div>
+    <p><code>request.headers.get("X-Request-ID", str(uuid.uuid4()))</code> lit l'en-tête envoyé par le client ; s'il est absent, un nouvel identifiant est généré à la volée. Dans les deux cas, il est réinjecté dans les en-têtes de la réponse.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">TP 3</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 3</span><span class="tp-title">Vérifier <code>X-Request-ID</code> dans la réponse</span></div>
+      <p>Deux appels réels à <code>/predict-tabular</code>, l'un sans en-tête côté client, l'autre avec un identifiant fourni :</p>
+      <div class="flow">
+        <span class="node">requête sans X-Request-ID</span>
+        <span class="arrow">→</span>
+        <span class="node job">uuid.uuid4() généré</span>
+        <span class="arrow">→ réponse :</span>
+        <span class="node">X-Request-ID: 52cbc50a-ad1d-4290-9c5e-a0f38a33b0da</span>
+      </div>
+      <div class="flow">
+        <span class="node">requête avec X-Request-ID: demo-trace-42</span>
+        <span class="arrow">→</span>
+        <span class="node job">valeur client conservée</span>
+        <span class="arrow">→ réponse :</span>
+        <span class="node">X-Request-ID: demo-trace-42</span>
+      </div>
+      <p>Le client garde la main s'il a déjà son propre système de traçage ; sinon l'API garantit qu'un identifiant existe toujours.</p>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Retour formateur</p>
+    <h2>Vérifié manuellement, mais sans test dédié</h2>
+    <p>Les deux scénarios ci-dessus étaient réels — rejoués à la main contre l'API — mais <code>tests/test_api.py</code> ne contenait aucun test qui les fige en contrat de non-régression. Sur la livraison observée (<code>industrialisation/jalon-03</code>), <code>X-Request-ID</code> reposait donc uniquement sur une vérification manuelle, à côté des tests 401/422/503 eux bien automatisés.</p>
+    <div class="callout warn">
+      <strong>Écart.</strong> Le tableau « Obligatoire, fait » ci-dessous listait déjà request-id comme « testé et vert » — c'était vrai du comportement, pas de la preuve automatisée.
+    </div>
+    <p>Corrigé : deux tests ajoutés à <code>tests/test_api.py</code>, sur <code>/health</code> (aucune clé API requise, isole le middleware du reste) :</p>
+    <div class="terminal">
+      <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv run pytest tests/test_api.py -q</span></div>
+      <pre><span class="ok">........                                                                 [100%]</span>
+<span class="ok">8 passed in 1.74s</span>  <span class="dim"># 6 existants + test_response_has_generated_request_id + test_response_echoes_client_request_id</span></pre>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Extension facultative</p>
+    <h2>Ce qui n'a pas été fait — et pourquoi ce n'est pas bloquant</h2>
+    <p>Le pas-à-pas propose, <em>« si le groupe avance »</em>, de gérer un endpoint <code>/predict-image</code> renvoyant 422 si le fichier reçu n'est pas une image. Cette route n'existe pas dans <code>src/indusense/api/</code> : elle reste explicitement une extension facultative, non requise par la preuve finale du module 25 (12 tests verts + validateur Model Card), et non implémentée à ce stade.</p>
+    <dl class="glossary">
+      <div><dt>Obligatoire, fait</dt><dd>/health, /ready, /predict-tabular, request-id — les 4 codes et le middleware sont testés et verts.</dd></div>
+      <div><dt>Facultatif, non fait</dt><dd>/predict-image — aucun code, aucun test ; à traiter seulement si le temps le permet.</dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <span>Transition → module 26 : sécuriser l'API (401/422/429/413) avant la conteneurisation</span>
+    <span>guillaume.saidani@ext.aelion.fr</span>
+  </footer>
+
+</div>

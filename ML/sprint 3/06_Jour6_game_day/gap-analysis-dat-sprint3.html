@@ -1,0 +1,464 @@
+<title>Gap Analysis InduSense</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f8f7;
+    --surface:#ffffff;
+    --surface-2:#eef2f0;
+    --ink:#16211d;
+    --ink-dim:#55645d;
+    --line:#ccd6d0;
+    --accent:#276b57;
+    --accent-soft:#dbeee7;
+    --accent-ink:#0f4a3a;
+    --gap:#9a5a1f;
+    --gap-soft:#f3e6d6;
+    --gap-ink:#7a4517;
+    --critical:#a13f38;
+    --critical-soft:#f5ded9;
+    --critical-ink:#7c2e28;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#101513;
+      --surface:#171f1c;
+      --surface-2:#1e2926;
+      --ink:#e7efec;
+      --ink-dim:#9db0a8;
+      --line:#2c3a35;
+      --accent:#5fcaa8;
+      --accent-soft:#1d3931;
+      --accent-ink:#bdf0dd;
+      --gap:#e0a25c;
+      --gap-soft:#3a2a17;
+      --gap-ink:#f0c08e;
+      --critical:#e0796f;
+      --critical-soft:#3a201d;
+      --critical-ink:#f5b8b0;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#101513;
+    --surface:#171f1c;
+    --surface-2:#1e2926;
+    --ink:#e7efec;
+    --ink-dim:#9db0a8;
+    --line:#2c3a35;
+    --accent:#5fcaa8;
+    --accent-soft:#1d3931;
+    --accent-ink:#bdf0dd;
+    --gap:#e0a25c;
+    --gap-soft:#3a2a17;
+    --gap-ink:#f0c08e;
+    --critical:#e0796f;
+    --critical-soft:#3a201d;
+    --critical-ink:#f5b8b0;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    padding:48px 24px 72px;
+  }
+  main{
+    max-width:960px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    gap:40px;
+  }
+  header{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:28px;
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--accent-ink);
+    background:var(--accent-soft);
+    display:inline-block;
+    width:fit-content;
+    padding:3px 9px;
+    border-radius:4px;
+  }
+  h1{
+    margin:0;
+    font-size:clamp(26px,3.6vw,34px);
+    font-weight:700;
+    text-wrap:balance;
+    letter-spacing:-.01em;
+  }
+  .meta{
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:12px;
+    color:var(--ink-dim);
+  }
+  .meta b{color:var(--ink);font-weight:600;}
+  header p.lede{
+    margin:4px 0 0;
+    max-width:74ch;
+    color:var(--ink-dim);
+    font-size:15.5px;
+    line-height:1.6;
+  }
+  header p.lede code{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:13px;
+    background:var(--surface-2);
+    padding:1px 5px;
+    border-radius:4px;
+  }
+
+  section{display:flex;flex-direction:column;gap:16px;}
+  section h2{
+    margin:0;
+    font-size:19px;
+    font-weight:700;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  section h2 .num{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:13px;
+    font-weight:600;
+    color:var(--accent-ink);
+    background:var(--accent-soft);
+    border-radius:5px;
+    padding:2px 7px;
+  }
+  section > p{
+    margin:0;
+    max-width:76ch;
+    font-size:14.5px;
+    color:var(--ink-dim);
+    line-height:1.65;
+  }
+  section > p code, td code, li code{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:12.5px;
+    background:var(--surface-2);
+    padding:1px 5px;
+    border-radius:4px;
+    color:var(--ink);
+  }
+
+  .stat-row{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+  }
+  @media (max-width:680px){ .stat-row{grid-template-columns:1fr 1fr;} }
+  .stat{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+  }
+  .stat .n{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:26px;
+    font-weight:700;
+    font-variant-numeric:tabular-nums;
+    color:var(--ink);
+  }
+  .stat.critical .n{color:var(--critical-ink);}
+  .stat .l{
+    font-size:12px;
+    color:var(--ink-dim);
+    line-height:1.4;
+  }
+
+  .table-wrap{
+    overflow-x:auto;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:var(--surface);
+  }
+  table{
+    border-collapse:collapse;
+    width:100%;
+    min-width:760px;
+    font-size:13.5px;
+  }
+  th,td{
+    text-align:left;
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  thead th{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    background:var(--surface-2);
+    white-space:nowrap;
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  td.comp{font-family:"IBM Plex Mono", ui-monospace, monospace;font-weight:600;white-space:nowrap;}
+  td.dim{color:var(--ink-dim);font-size:13px;line-height:1.5;}
+
+  .badge{
+    display:inline-block;
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:11px;
+    font-weight:600;
+    padding:2px 8px;
+    border-radius:20px;
+    white-space:nowrap;
+  }
+  .badge.missing{color:var(--critical-ink);background:var(--critical-soft);}
+  .badge.partial{color:var(--gap-ink);background:var(--gap-soft);}
+  .badge.aligned{color:var(--accent-ink);background:var(--accent-soft);}
+
+  .align-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  @media (max-width:680px){ .align-grid{grid-template-columns:1fr;} }
+  .align-card{
+    background:var(--accent-soft);
+    border:1px solid var(--accent);
+    border-radius:10px;
+    padding:16px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .align-card h3{
+    margin:0;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--accent-ink);
+  }
+  .align-card blockquote{
+    margin:0;
+    font-size:13px;
+    font-style:italic;
+    color:var(--ink);
+    border-left:2px solid var(--accent);
+    padding-left:10px;
+    line-height:1.5;
+  }
+  .align-card p{margin:0;font-size:12.5px;color:var(--ink-dim);line-height:1.5;}
+
+  .callout{
+    background:var(--critical-soft);
+    border:1px solid var(--critical);
+    border-radius:10px;
+    padding:18px 20px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .callout h3{
+    margin:0;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--critical-ink);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+  .callout p{margin:0;font-size:13.5px;color:var(--ink);line-height:1.6;}
+  .callout blockquote{
+    margin:0;
+    font-size:13px;
+    font-style:italic;
+    color:var(--ink-dim);
+    border-left:2px solid var(--critical);
+    padding-left:10px;
+    line-height:1.5;
+  }
+
+  footer{
+    border-top:1px solid var(--line);
+    padding-top:22px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  footer h2{margin:0;font-size:14px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-dim);}
+  .sources{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .sources span{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:11.5px;
+    color:var(--ink-dim);
+    background:var(--surface-2);
+    border-radius:5px;
+    padding:3px 8px;
+  }
+</style>
+
+<main>
+  <header>
+    <span class="eyebrow">rapport d'analyse</span>
+    <h1>Gap analysis — DAT InduSense 4.0 Sprint 3 vs implémentation réelle</h1>
+    <div class="meta">
+      <span><b>Référence</b> DAT_InduSense_Sprint3_v1.0.pdf, v1.0, 04/09/2026</span>
+      <span><b>Comparé à</b> compose.yaml (module 28)</span>
+      <span><b>Date d'analyse</b> 04/09/2026</span>
+    </div>
+    <p class="lede">Le DAT décrit l'architecture de référence fonctionnelle attendue pour l'ensemble du Sprint 3 (modules 23 à 34) : API, persistance, orchestration Prefect, CI/CD, sécurité et observabilité. Ce rapport compare ce socle cible à ce qui tourne réellement dans <code>compose.yaml</code> aujourd'hui.</p>
+  </header>
+
+  <section>
+    <h2><span class="num">1</span> Périmètre comparé</h2>
+    <p>Le DAT couvre l'intégralité du Sprint 3 : chaîne CI/CD signée, gouvernance de release, persistance à trois tables avec idempotence stricte, sécurité applicative, SLO chiffrés et douze services d'exploitation. L'implémentation réelle analysée ici se limite à <code>compose.yaml</code> — la stack locale du module 28. La comparaison porte donc sur un sous-ensemble volontairement restreint : la couche conteneurs.</p>
+    <div class="stat-row">
+      <div class="stat critical">
+        <div class="n">4 / 15</div>
+        <div class="l">services du socle DAT effectivement présents dans compose.yaml</div>
+      </div>
+      <div class="stat critical">
+        <div class="n">1</div>
+        <div class="l">service mal placé — l'exporteur de drift tourne hors réseau Compose, sur l'hôte</div>
+      </div>
+      <div class="stat critical">
+        <div class="n">0</div>
+        <div class="l">mécanisme de release signée / CD implémenté (pas de manifeste, pas de pointeur ACTIVE)</div>
+      </div>
+      <div class="stat critical">
+        <div class="n">0</div>
+        <div class="l">brique d'alerting — pas d'Alertmanager, pas de Blackbox exporter</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">2</span> Écarts sur la couche Compose</h2>
+    <p>Composant par composant, ce que le DAT définit comme socle obligatoire face à ce que <code>compose.yaml</code> déclare réellement.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Composant du socle DAT</th><th>État réel</th><th>Écart</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="comp">edge-proxy (NGINX)</td>
+            <td><span class="badge missing">absent</span></td>
+            <td class="dim">API exposée directement sur :8000, sans TLS ni quota partagé entre workers.</td>
+          </tr>
+          <tr>
+            <td class="comp">prefect-server + train/score workers</td>
+            <td><span class="badge missing">absent</span></td>
+            <td class="dim">Prefect en exécution directe ou éphémère (<code>uv run</code> / <code>docker compose run</code> ponctuel), aucun serveur durable ni worker dédié.</td>
+          </tr>
+          <tr>
+            <td class="comp">prefect-migrate (job)</td>
+            <td><span class="badge missing">absent</span></td>
+            <td class="dim">Pas de base de métadonnées Prefect à migrer — il n'y a pas de serveur Prefect.</td>
+          </tr>
+          <tr>
+            <td class="comp">migrate-expand / migrate-contract</td>
+            <td><span class="badge missing">absent</span></td>
+            <td class="dim">Aucune migration de schéma gouvernée par un pattern expand/contract.</td>
+          </tr>
+          <tr>
+            <td class="comp">release-manager (CD)</td>
+            <td><span class="badge missing">absent</span></td>
+            <td class="dim">Pas de manifeste de release signé, pas de pointeur <code>ACTIVE</code>, pas d'activation atomique.</td>
+          </tr>
+          <tr>
+            <td class="comp">drift-exporter</td>
+            <td><span class="badge partial">partiel</span></td>
+            <td class="dim">Présent, mais hors réseau Compose — lancé à la main sur l'hôte, scrapé via <code>host.docker.internal</code>. Le DAT le place comme service interne conteneurisé sur :9109.</td>
+          </tr>
+          <tr>
+            <td class="comp">prefect-exporter (:9110)</td>
+            <td><span class="badge missing">absent</span></td>
+            <td class="dim">Aucun SLI Prefect exposé — conséquence directe de l'absence de serveur Prefect.</td>
+          </tr>
+          <tr>
+            <td class="comp">blackbox-exporter (:9115)</td>
+            <td><span class="badge missing">absent</span></td>
+            <td class="dim">Pas de sonde <code>/ready</code> indépendante du scrape <code>/metrics</code>.</td>
+          </tr>
+          <tr>
+            <td class="comp">alertmanager (:9093)</td>
+            <td><span class="badge missing">absent</span></td>
+            <td class="dim">Prometheus scrape sans routage d'alertes ; aucun runbook déclenché automatiquement.</td>
+          </tr>
+          <tr>
+            <td class="comp">db</td>
+            <td><span class="badge partial">partiel</span></td>
+            <td class="dim">Postgres 16 présent, mais une seule base et un seul rôle. Le DAT exige deux bases logiques (<code>indusense</code>/<code>prefect</code>) avec rôles séparés au moindre privilège.</td>
+          </tr>
+          <tr>
+            <td class="comp">api — chargement du modèle</td>
+            <td><span class="badge partial">partiel</span></td>
+            <td class="dim">Modèle chargé simplement (<code>rf.joblib</code> / <code>model_dir</code>). Le DAT exige un bundle signé, un <code>release_id</code>, une vérification SHA-256/signature au lifespan, et un <code>/ready</code> qui expose la release chargée.</td>
+          </tr>
+          <tr>
+            <td class="comp">persistance</td>
+            <td><span class="badge partial">partiel</span></td>
+            <td class="dim">Table <code>predictions</code> unique, upsert simple. Le DAT sépare <code>predictions</code> (batch), <code>api_predictions</code> (API) et <code>prediction_attempts</code> (journal), avec deux clés d'idempotence distinctes.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span> Points d'alignement</h2>
+    <p>Deux décisions de <code>m28-compose-topology-recap.html</code> correspondent exactement à ce que le DAT prescrit — ce ne sont pas des écarts.</p>
+    <div class="align-grid">
+      <div class="align-card">
+        <h3>Kubernetes hors socle</h3>
+        <blockquote>« Exploitation Kubernetes/Helm, qui constitue une variante de plateforme » — DAT §3.2, confirmé §8.5 et ADR-009/010.</blockquote>
+        <p>Correspond à la section « Ce qu'apporterait Kubernetes » du recap compose : extension optionnelle, pas un manque du socle.</p>
+      </div>
+      <div class="align-card">
+        <h3>MLflow optionnel</h3>
+        <blockquote>« MLflow peut remplacer cette implémentation via un adaptateur, mais n'est pas une dépendance du socle Compose de référence » — DAT §8.2, §12.2.</blockquote>
+        <p>Correspond au badge « optionnel » attribué à MLflow dans le tableau des bonnes pratiques.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">4</span> Correction de cadrage</h2>
+    <div class="callout">
+      <h3>Le socle, pas une hypothèse de prod future</h3>
+      <p>Le recap compose présentait la conteneurisation de l'exporteur et un vrai serveur Prefect comme des « bonnes pratiques de production réelle » — une amélioration hypothétique, à envisager plus tard. Le DAT ne laisse pas ce choix ouvert : ces éléments font partie de la définition même de « tout est fonctionnel » pour le Sprint 3.</p>
+      <blockquote>« Le mode éphémère reste réservé aux tests. Le Sprint 3 complet utilise un serveur Prefect durable, une base de métadonnées sauvegardée et des workers indépendants du poste de développement. » — DAT, décision d'architecture §6.3</blockquote>
+      <p><b>Conséquence :</b> l'écart documenté n'est pas repo-vs-prod-hypothétique, c'est repo-vs-cible-du-sprint-lui-même. Le mode d'exécution actuel (<code>PREFECT_PROFILE=ephemeral</code>, exporteur lancé à la main) est littéralement le mode que le DAT réserve aux tests — pas le socle à livrer.</p>
+    </div>
+  </section>
+
+  <footer>
+    <h2>Sources</h2>
+    <div class="sources">
+      <span>DAT_InduSense_Sprint3_v1.0.pdf §3.2</span>
+      <span>§4.3</span>
+      <span>§6.3</span>
+      <span>§8.2</span>
+      <span>§8.5</span>
+      <span>§12.2</span>
+      <span>compose.yaml</span>
+      <span>m28-compose-topology-recap.html</span>
+    </div>
+  </footer>
+</main>

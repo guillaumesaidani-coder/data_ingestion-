@@ -1,0 +1,258 @@
+<title>Le même flow, deux bases — sans branche dans le code</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink: #16211f; --muted: #4f5d55; --paper: #eef0ea; --raised: #ffffff;
+    --line: #ccd3c8; --accent: #0f6e5c; --accent-ink: #084537; --accent-soft: #d7ece5;
+    --warn: #a8551f; --warn-soft: #f3e2d1;
+    --code-bg: #101917; --code-ink: #d9ffe9; --code-dim: #7fa694;
+    --font-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+    --font-body: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+      --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+      --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+    --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+    --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+  }
+  *{ box-sizing: border-box; }
+  body{ margin:0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  ::selection{ background: var(--accent-soft); color: var(--accent-ink); }
+  a{ color: var(--accent-ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+
+  .page{ max-width: 780px; margin: 0 auto; padding: clamp(28px,6vw,64px) 24px 96px; }
+
+  .eyebrow{ font-family: var(--font-display); font-weight:600; font-size:.78rem; letter-spacing:.11em; text-transform:uppercase; color: var(--accent-ink); display:flex; align-items:center; gap:.6em; }
+  .eyebrow::before{ content:""; width:20px; height:2px; background: var(--accent); display:inline-block; }
+
+  header.masthead{ border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:40px; }
+  .breadcrumb{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); margin:0 0 18px; }
+  .breadcrumb span{ color: var(--ink); }
+  h1{ font-family: var(--font-display); font-weight:700; font-size: clamp(2rem,5vw,2.7rem); line-height:1.06; letter-spacing:-.01em; margin:0 0 12px; text-wrap: balance; }
+  .lede{ font-size:1.08rem; color: var(--muted); max-width:60ch; margin:0 0 20px; }
+  .status-row{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+  .status-chip{ display:inline-flex; align-items:center; gap:8px; font-family: var(--font-display); font-weight:600; font-size:.82rem; letter-spacing:.03em; padding:7px 14px 7px 10px; border-radius:999px; background: var(--accent-soft); color: var(--accent-ink); }
+  .status-chip svg{ width:15px; height:15px; flex:none; }
+  .status-chip.warn{ background: var(--warn-soft); color: var(--warn); }
+  .meta-line{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); }
+
+  nav.toc{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  nav.toc a{ font-family: var(--font-mono); font-size:.8rem; padding:6px 12px; border:1px solid var(--line); border-radius:999px; text-decoration:none; color: var(--ink); }
+  nav.toc a:hover{ border-color: var(--accent); color: var(--accent-ink); }
+
+  section{ margin:52px 0; }
+  section > h2{ font-family: var(--font-body); font-weight:600; font-style:italic; font-size:1.5rem; margin:8px 0 16px; text-wrap: balance; }
+  section > p{ max-width:66ch; }
+  section > p + p{ margin-top:1em; }
+
+  .callout{ border-left:3px solid var(--accent); background: var(--accent-soft); color: var(--ink); padding:14px 18px; border-radius:4px; font-size:.96rem; margin:20px 0; }
+  .callout.warn{ border-color: var(--warn); background: var(--warn-soft); }
+  .callout strong{ font-family: var(--font-display); font-weight:600; }
+
+  .terminal{ background: var(--code-bg); border-radius:8px; overflow:hidden; margin:20px 0; box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+  .terminal-bar{ display:flex; align-items:center; gap:8px; padding:9px 14px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .terminal-bar .dot{ width:8px; height:8px; border-radius:50%; background: var(--code-dim); opacity:.6; }
+  .terminal-bar .label{ font-family: var(--font-mono); font-size:.76rem; color: var(--code-dim); margin-left:6px; }
+  .terminal pre{ margin:0; padding:16px; overflow-x:auto; font-family: var(--font-mono); font-size:.85rem; line-height:1.55; color: var(--code-ink); }
+  .terminal .ok{ color:#8fe8bd; }
+  .terminal .fail{ color:#ff9f8f; }
+  .terminal .dim{ color: var(--code-dim); }
+
+  .tp{ border:1px solid var(--line); background: var(--raised); border-radius:10px; padding:22px 24px; margin:22px 0; scroll-margin-top: 20px; }
+  .tp-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
+  .tp-num{ font-family: var(--font-mono); font-size:.82rem; color: var(--accent-ink); background: var(--accent-soft); padding:2px 8px; border-radius:4px; flex:none; }
+  .tp-title{ font-family: var(--font-display); font-weight:600; font-size:1.12rem; }
+  .tp p{ margin:.7em 0; }
+  code{ font-family: var(--font-mono); font-size:.88em; background: var(--accent-soft); color: var(--accent-ink); padding:.1em .35em; border-radius:4px; }
+
+  table.contract{ width:100%; border-collapse:collapse; font-size:.88rem; margin:14px 0; }
+  table.contract th, table.contract td{ text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.contract th{ font-family: var(--font-display); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color: var(--muted); font-weight:600; }
+  table.contract td.mono, table.contract td code{ font-family: var(--font-mono); }
+  .pill{ display:inline-block; font-family: var(--font-display); font-weight:600; font-size:.72rem; letter-spacing:.03em; padding:2px 9px; border-radius:999px; background: var(--accent-soft); color: var(--accent-ink); white-space:nowrap; }
+  .pill.warn{ background: var(--warn-soft); color: var(--warn); }
+
+  .split{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:20px 0; }
+  @media (max-width:620px){ .split{ grid-template-columns:1fr; } }
+  .split-card{ background: var(--raised); border:1px solid var(--line); border-radius:8px; padding:16px 18px; }
+  .split-card h3{ font-family: var(--font-display); font-size:.86rem; font-weight:600; margin:0 0 8px; color: var(--accent-ink); }
+  .split-card p{ margin:0; font-size:.92rem; color: var(--muted); }
+
+  .checklist{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin:20px 0; }
+  .check-item{ display:flex; align-items:flex-start; gap:10px; background: var(--raised); border:1px solid var(--line); border-radius:8px; padding:14px 16px; }
+  .check-item svg{ width:18px; height:18px; flex:none; margin-top:2px; color: var(--accent); }
+  .check-item .cmd{ font-family: var(--font-mono); font-size:.82rem; color: var(--ink); display:block; }
+  .check-item .result{ font-family: var(--font-mono); font-size:.78rem; color: var(--muted); display:block; margin-top:2px; }
+
+  dl.glossary{ margin:16px 0; }
+  dl.glossary div{ display:grid; grid-template-columns:170px 1fr; gap:16px; padding:12px 0; border-bottom:1px solid var(--line); }
+  @media (max-width:560px){ dl.glossary div{ grid-template-columns:1fr; gap:4px; } }
+  dl.glossary dt{ font-family: var(--font-display); font-weight:600; font-size:.86rem; color: var(--accent-ink); }
+  dl.glossary dd{ margin:0; color: var(--ink); }
+
+  ol.steps{ margin:16px 0; padding-left:0; list-style:none; counter-reset:step; }
+  ol.steps li{ position:relative; padding:0 0 16px 34px; counter-increment:step; }
+  ol.steps li::before{ content:counter(step); position:absolute; left:0; top:0; width:22px; height:22px; border-radius:50%; background: var(--accent-soft); color: var(--accent-ink); font-family: var(--font-mono); font-size:.76rem; font-weight:600; display:flex; align-items:center; justify-content:center; }
+  ol.steps li:last-child{ padding-bottom:0; }
+
+  footer{ margin-top:64px; padding-top:24px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; font-family: var(--font-mono); font-size:.8rem; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto !important; } }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="breadcrumb">CISIA · Sprint 3 · J4 matin · <span>Module 30 — Empaqueter le flow, brancher Postgres</span></p>
+    <h1>Le même code, deux bases, aucune branche <code>if</code></h1>
+    <p class="lede">Le flow du module 29 tournait très bien... tant qu'on restait sur son poste. Ce module le fait sortir de <code>flows/pipeline.py</code> pour vivre dans le paquet <code>indusense</code>, exécutable aussi bien en local qu'à l'intérieur du conteneur API — et le fait écrire dans PostgreSQL, le vrai backend de production, sans dupliquer une ligne de logique SQL pour ça.</p>
+    <div class="status-row">
+      <span class="status-chip">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Flow lancé 2× dans le conteneur — Postgres reste à 4 lignes
+      </span>
+      <span class="meta-line">jalon 07 · checkpoint M30</span>
+    </div>
+    <nav class="toc">
+      <a href="#tp1">TP1 · Empaqueter le flow</a>
+      <a href="#tp2">TP2 · Stockage portable SQLAlchemy</a>
+      <a href="#tp3">TP3 · Preuve contre un vrai Postgres</a>
+      <a href="#glossaire">Glossaire</a>
+    </nav>
+  </header>
+
+  <section>
+    <p class="eyebrow">Pourquoi</p>
+    <h2>Un script racine ne rentre pas dans une image Docker</h2>
+    <p>Le <code>Dockerfile</code> ne copie que <code>src/</code> dans l'image finale (<code>COPY src ./src</code>) — c'est la logique même du build multi-stage du module 27 : rien de superflu dans l'image livrée. Le fichier <code>flows/pipeline.py</code> du module 29, à la racine du dépôt, n'existe donc <strong>pas</strong> dans le conteneur. Pour lancer le pipeline via <code>docker compose run ... api python -m indusense.flows.predict_flow</code> comme le demande le guide, la logique doit vivre <em>dans</em> le paquet <code>indusense</code>, au même titre que l'API ou les loaders.</p>
+    <div class="callout">
+      <strong>La règle du module.</strong> Le paquet est la source de vérité ; le script racine n'est plus qu'une façade. <code>flows/pipeline.py</code> ne contient désormais que trois lignes utiles : un import depuis <code>indusense.flows.predict_flow</code> et un appel à <code>main()</code>. Zéro logique dupliquée entre les deux points d'entrée.
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Le registre</p>
+    <h2>Huit preuves, un seul statut par ligne</h2>
+    <table class="contract">
+      <tr><th>Contrôle</th><th>Statut</th><th>Preuve</th></tr>
+      <tr><td>Flow empaqueté</td><td><span class="pill">Implémenté</span></td><td class="mono">src/indusense/flows/predict_flow.py</td></tr>
+      <tr><td>Point d'entrée conteneur</td><td><span class="pill">Implémenté</span></td><td class="mono">python -m indusense.flows.predict_flow</td></tr>
+      <tr><td>Stockage portable</td><td><span class="pill">Implémenté</span></td><td class="mono">même SQL upsert sur SQLite et Postgres</td></tr>
+      <tr><td>Idempotence sur Postgres réel</td><td><span class="pill">Implémenté</span></td><td class="mono">SELECT COUNT(*) → 4 après 2 exécutions</td></tr>
+      <tr><td>Modèle embarqué réutilisé</td><td><span class="pill">Implémenté</span></td><td class="mono">Reprise : modele existant reutilise</td></tr>
+      <tr><td>Non-régression</td><td><span class="pill">Implémenté</span></td><td class="mono">pytest -q → 26 passed, 5 skipped</td></tr>
+    </table>
+    <p>Ce tableau reprend le registre de <code>pipeline_proof.md</code> — la trace de preuve du checkpoint M30.</p>
+  </section>
+
+  <section id="tp1">
+    <p class="eyebrow">TP 1</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 1</span><span class="tp-title">Déplacer le flow dans le paquet, garder une seule logique</span></div>
+      <p>Objectif : que <code>uv run python flows/pipeline.py</code> (la commande de preuve du jalon) et <code>python -m indusense.flows.predict_flow</code> (la commande du conteneur) lancent <strong>exactement</strong> le même code.</p>
+      <div class="split">
+        <div class="split-card">
+          <h3>src/indusense/flows/predict_flow.py</h3>
+          <p>Les 5 <code>@task</code>, le <code>@flow indusense_pipeline</code>, la fonction de nom de run. Installé dans le <code>.venv</code> par <code>uv sync</code> comme n'importe quel autre module du paquet — donc présent dans l'image Docker.</p>
+        </div>
+        <div class="split-card">
+          <h3>flows/pipeline.py</h3>
+          <p><code>from indusense.flows.predict_flow import indusense_pipeline, main</code> puis <code>if __name__ == "__main__": main()</code>. Rien d'autre — une façade, pas une deuxième implémentation.</p>
+        </div>
+      </div>
+      <div class="callout warn">
+        <strong>Piège évité.</strong> Dupliquer le flow (une version racine « pour le jalon », une version paquet « pour Docker ») aurait fonctionné à court terme, mais aurait créé deux vérités à maintenir en parallèle — la première divergence serait passée inaperçue jusqu'au jour où un correctif appliqué d'un seul côté casse la reproductibilité entre local et conteneur.
+      </div>
+    </div>
+  </section>
+
+  <section id="tp2">
+    <p class="eyebrow">TP 2</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 2</span><span class="tp-title">Stocker via SQLAlchemy, sans brancher SQLite vs Postgres</span></div>
+      <p>Objectif : remplacer le <code>sqlite3</code> brut du module 29 par un accès qui fonctionne aussi contre PostgreSQL — sans <code>if backend == "postgres": ... else: ...</code> dans le code.</p>
+      <ol class="steps">
+        <li><strong>Une seule URL</strong> — <code>INDUSENSE_DB_URL</code>, lue par <code>create_engine(db_url)</code>. En local : <code>sqlite:///artifacts/predictions.db</code>. Sous Compose : <code>postgresql+psycopg://postgres:...@db:5432/postgres</code>, injectée par <code>compose.yaml</code> pour le service <code>api</code>.</li>
+        <li><strong>Un seul SQL</strong> — <code>INSERT INTO predictions (...) VALUES (...) ON CONFLICT (machine, observed_at) DO UPDATE SET ... = excluded....</code>. Ce n'est pas une coïncidence : Postgres et SQLite (≥ 3.24) partagent la même syntaxe d'upsert standard, ce qui rend le code portable sans dialecte à gérer.</li>
+        <li><strong>Types portables</strong> — <code>TEXT</code> et <code>DOUBLE PRECISION</code> : valides nativement en Postgres, et acceptés par le typage dynamique de SQLite (affinité de type) sans erreur.</li>
+      </ol>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">src/indusense/flows/predict_flow.py</span></div>
+        <pre>_UPSERT_SQL = """
+INSERT INTO predictions (machine, observed_at, score, decision, model_version, scored_at)
+VALUES (:machine, :observed_at, :score, :decision, :model_version, :scored_at)
+ON CONFLICT (machine, observed_at) DO UPDATE SET
+    score = excluded.score,
+    decision = excluded.decision,
+    model_version = excluded.model_version,
+    scored_at = excluded.scored_at
+"""</pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="tp3">
+    <p class="eyebrow">TP 3</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 3</span><span class="tp-title">Prouver l'idempotence contre un vrai Postgres, dans le vrai conteneur</span></div>
+      <p>Objectif : ne pas se contenter du succès en local — lancer le flow packagé <strong>dans le conteneur API</strong>, contre le service <code>db</code> réellement démarré par Compose, deux fois de suite.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">docker compose up -d --wait db  →  docker compose run ... api python -m indusense.flows.predict_flow</span></div>
+        <pre>Container cisia_m30_test-db-1  <span class="ok">Healthy</span>
+Flow run 'indusense-pipeline-run-...' - Beginning flow run
+Task run 'ensure-model-...' - Reprise : modele existant reutilise -> artifacts/models/rf.joblib
+Task run 'store-predictions-...' - Predictions upsertees : 4 lignes ecrites, 4 lignes totales en base
+Pipeline termine : {'rows_scored': 4, 'rows_in_db': 4, 'db_url': 'postgresql+psycopg://postgres:***@db:5432/postgres'}</pre>
+      </div>
+      <p>Relancé une seconde fois (même volume monté, mêmes données), puis vérifié indépendamment dans Postgres :</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">docker compose exec db psql -U postgres -c "SELECT COUNT(*) FROM predictions;"</span></div>
+        <pre> count
+-------
+     <span class="ok">4</span>
+(1 row)</pre>
+      </div>
+      <div class="checklist">
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">--no-deps</span><span class="result">ne redémarre pas prometheus/grafana pour un simple run</span></span>
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">--volume ...:/app/data/run:ro</span><span class="result">données montées, jamais copiées dans l'image</span></span>
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">modèle Variante A</span><span class="result">déjà dans l'image (module 27) → reprise immédiate</span></span>
+        </div>
+      </div>
+      <div class="callout warn">
+        <strong>Piège rencontré, corrigé pour de vrai.</strong> Sous Git Bash sur Windows, tout argument ressemblant à un chemin absolu Unix (<code>-e INDUSENSE_DATA_DIR=/app/data/run</code>) est réécrit en chemin Windows par la conversion automatique MSYS <em>avant</em> d'atteindre Docker — le conteneur recevait littéralement <code>C:/Program Files/Git/app/data/run</code> et échouait avec <code>FileNotFoundError</code>. Corrigé en exportant <code>MSYS_NO_PATHCONV=1</code> autour de la commande : rien à changer côté pipeline, c'est une particularité du shell, pas du code.
+      </div>
+    </div>
+  </section>
+
+  <section id="glossaire">
+    <p class="eyebrow">Repères</p>
+    <h2>Glossaire du module</h2>
+    <dl class="glossary">
+      <div><dt>Engine SQLAlchemy</dt><dd>objet créé par <code>create_engine(url)</code> qui gère la connexion et le pool ; change de backend en changeant seulement l'URL, pas le code SQL.</dd></div>
+      <div><dt>Upsert portable</dt><dd><code>INSERT ... ON CONFLICT ... DO UPDATE</code> : syntaxe supportée nativement par SQLite (≥3.24) et PostgreSQL — un seul jeu de requêtes pour les deux backends.</dd></div>
+      <div><dt>docker compose run --no-deps</dt><dd>exécute une commande ponctuelle dans un nouveau conteneur du service donné, sans démarrer les services dont il dépend (utile si <code>db</code> tourne déjà).</dd></div>
+      <div><dt>Volume en lecture seule</dt><dd><code>:ro</code> sur un montage <code>--volume</code> : le conteneur peut lire les données hôte mais jamais les modifier — la source reste intacte.</dd></div>
+      <div><dt>MSYS_NO_PATHCONV</dt><dd>variable qui désactive la conversion automatique des chemins Unix en chemins Windows par Git Bash — nécessaire dès qu'on passe un chemin destiné à l'intérieur d'un conteneur.</dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <span>Prochaine étape : jalon 08 (masqué) — M31-M32, PayGuard &amp; drift InduSense</span>
+    <span>guillaume.saidani@ext.aelion.fr</span>
+  </footer>
+
+</div>

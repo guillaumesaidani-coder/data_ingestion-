@@ -1,0 +1,285 @@
+<title>Pre-commit & Secrets</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink: #16211f;
+    --muted: #4f5d55;
+    --paper: #eef0ea;
+    --raised: #ffffff;
+    --line: #ccd3c8;
+    --accent: #0f6e5c;
+    --accent-ink: #084537;
+    --accent-soft: #d7ece5;
+    --warn: #a8551f;
+    --warn-soft: #f3e2d1;
+    --code-bg: #101917;
+    --code-ink: #d9ffe9;
+    --code-dim: #7fa694;
+    --font-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+    --font-body: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+      --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+      --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+    --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+    --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+  }
+  *{ box-sizing: border-box; }
+  body{ margin:0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  ::selection{ background: var(--accent-soft); color: var(--accent-ink); }
+  a{ color: var(--accent-ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+
+  .page{ max-width: 760px; margin: 0 auto; padding: clamp(28px,6vw,64px) 24px 96px; }
+
+  .eyebrow{ font-family: var(--font-display); font-weight:600; font-size:.78rem; letter-spacing:.11em; text-transform:uppercase; color: var(--accent-ink); display:flex; align-items:center; gap:.6em; }
+  .eyebrow::before{ content:""; width:20px; height:2px; background: var(--accent); display:inline-block; }
+
+  header.masthead{ border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:40px; }
+  .breadcrumb{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); margin:0 0 18px; }
+  .breadcrumb span{ color: var(--ink); }
+  h1{ font-family: var(--font-display); font-weight:700; font-size: clamp(2rem,5vw,2.7rem); line-height:1.06; letter-spacing:-.01em; margin:0 0 12px; text-wrap: balance; }
+  .lede{ font-size:1.08rem; color: var(--muted); max-width:58ch; margin:0 0 20px; }
+  .status-row{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+  .status-chip{ display:inline-flex; align-items:center; gap:8px; font-family: var(--font-display); font-weight:600; font-size:.82rem; letter-spacing:.03em; padding:7px 14px 7px 10px; border-radius:999px; background: var(--accent-soft); color: var(--accent-ink); }
+  .status-chip svg{ width:15px; height:15px; flex:none; }
+  .meta-line{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); }
+
+  section{ margin:52px 0; }
+  section > h2{ font-family: var(--font-body); font-weight:600; font-style:italic; font-size:1.5rem; margin:8px 0 16px; text-wrap: balance; }
+  section > p{ max-width:66ch; }
+  section > p + p{ margin-top:1em; }
+
+  .callout{ border-left:3px solid var(--accent); background: var(--accent-soft); color: var(--ink); padding:14px 18px; border-radius:4px; font-size:.96rem; margin:20px 0; }
+  .callout.warn{ border-color: var(--warn); background: var(--warn-soft); }
+  .callout strong{ font-family: var(--font-display); font-weight:600; }
+
+  .terminal{ background: var(--code-bg); border-radius:8px; overflow:hidden; margin:20px 0; box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+  .terminal-bar{ display:flex; align-items:center; gap:8px; padding:9px 14px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .terminal-bar .dot{ width:8px; height:8px; border-radius:50%; background: var(--code-dim); opacity:.6; }
+  .terminal-bar .label{ font-family: var(--font-mono); font-size:.76rem; color: var(--code-dim); margin-left:6px; }
+  .terminal pre{ margin:0; padding:16px; overflow-x:auto; font-family: var(--font-mono); font-size:.85rem; line-height:1.55; color: var(--code-ink); }
+  .terminal .ok{ color:#8fe8bd; }
+  .terminal .fail{ color:#ff9f8f; }
+  .terminal .dim{ color: var(--code-dim); }
+
+  .compare{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0; }
+  @media (max-width:620px){ .compare{ grid-template-columns:1fr; } }
+  .compare figure{ margin:0; }
+  .compare figcaption{ font-family: var(--font-display); font-weight:600; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color: var(--muted); margin-bottom:8px; }
+  .compare.before figcaption{ color: var(--warn); }
+  .compare.after figcaption{ color: var(--accent-ink); }
+  .compare pre{ margin:0; background: var(--raised); border:1px solid var(--line); border-radius:8px; padding:14px; font-family: var(--font-mono); font-size:.82rem; line-height:1.55; overflow-x:auto; }
+
+  .tp{ border:1px solid var(--line); background: var(--raised); border-radius:10px; padding:22px 24px; margin:22px 0; }
+  .tp-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:10px; }
+  .tp-num{ font-family: var(--font-mono); font-size:.82rem; color: var(--accent-ink); background: var(--accent-soft); padding:2px 8px; border-radius:4px; flex:none; }
+  .tp-title{ font-family: var(--font-display); font-weight:600; font-size:1.12rem; }
+  .tp p{ margin:.7em 0; }
+  code{ font-family: var(--font-mono); font-size:.88em; background: var(--accent-soft); color: var(--accent-ink); padding:.1em .35em; border-radius:4px; }
+
+  .checklist{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin:20px 0; }
+  .check-item{ display:flex; align-items:flex-start; gap:10px; background: var(--raised); border:1px solid var(--line); border-radius:8px; padding:14px 16px; }
+  .check-item svg{ width:18px; height:18px; flex:none; margin-top:2px; color: var(--accent); }
+  .check-item .cmd{ font-family: var(--font-mono); font-size:.82rem; color: var(--ink); display:block; }
+  .check-item .result{ font-family: var(--font-mono); font-size:.78rem; color: var(--muted); display:block; margin-top:2px; }
+
+  dl.glossary{ margin:16px 0; }
+  dl.glossary div{ display:grid; grid-template-columns:160px 1fr; gap:16px; padding:12px 0; border-bottom:1px solid var(--line); }
+  @media (max-width:560px){ dl.glossary div{ grid-template-columns:1fr; gap:4px; } }
+  dl.glossary dt{ font-family: var(--font-display); font-weight:600; font-size:.86rem; color: var(--accent-ink); }
+  dl.glossary dd{ margin:0; color: var(--ink); }
+
+  .timeline{ margin:20px 0; border-left:2px solid var(--line); padding-left:20px; display:flex; flex-direction:column; gap:22px; }
+  .timeline-step{ position:relative; }
+  .timeline-step::before{ content:""; position:absolute; left:-26px; top:4px; width:10px; height:10px; border-radius:50%; background: var(--accent); }
+  .timeline-step .step-label{ font-family: var(--font-display); font-weight:600; font-size:.8rem; letter-spacing:.04em; text-transform:uppercase; color: var(--muted); margin-bottom:4px; }
+  .timeline-step.fail::before{ background: var(--warn); }
+  .timeline-step.fail .step-label{ color: var(--warn); }
+
+  footer{ margin-top:64px; padding-top:24px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; font-family: var(--font-mono); font-size:.8rem; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto !important; } }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="breadcrumb">CISIA · Sprint 3 · J1 après-midi · <span>Module 24 — TP1</span></p>
+    <h1>Pre-commit &amp; secrets</h1>
+    <p class="lede">Installer des gardiens qui tournent avant chaque commit — pour attraper le style, le formatage et les secrets avant qu'ils n'entrent dans l'historique Git.</p>
+    <div class="status-row">
+      <span class="status-chip">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        TP validé — 3 hooks verts
+      </span>
+      <span class="meta-line">jalon 02 · branche guillaume-saidani</span>
+    </div>
+  </header>
+
+  <section>
+    <p class="eyebrow">Pourquoi</p>
+    <h2>Un gardien avant le commit, pas après</h2>
+    <p>La CI (<code>.github/workflows/ci.yml</code>) détecte un problème <em>après</em> le push — trop tard, le mauvais code est déjà dans l'historique partagé. <strong>Pre-commit</strong> installe les mêmes contrôles en local, déclenchés automatiquement à chaque <code>git commit</code> : le problème est bloqué avant même de quitter ta machine.</p>
+    <div class="callout">
+      <strong>Un « gardien », c'est quoi ?</strong> Un hook pre-commit : un contrôle automatique qui s'exécute à chaque tentative de commit, avant que le code n'entre dans l'historique Git. S'il échoue, le commit est refusé — le problème reste sur ta machine, jamais partagé.
+    </div>
+    <p><code>.pre-commit-config.yaml</code> définit trois gardiens :</p>
+    <dl class="glossary">
+      <div><dt>ruff <code>--fix</code></dt><dd>lint et corrige automatiquement ce qui peut l'être — contrairement à la CI qui ne fait que signaler</dd></div>
+      <div><dt>black</dt><dd>reformate le code directement — pas de <code>--check</code> ici, ce hook corrige plutôt que de constater</dd></div>
+      <div><dt>gitleaks</dt><dd>scanne le contenu à committer et <strong>bloque</strong> le commit si un secret (clé API, token…) est détecté</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <p class="eyebrow">Étape 1</p>
+    <h2>Installer les hooks</h2>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 1</span><span class="tp-title">Deux points d'accroche : <code>pre-commit</code> et <code>pre-push</code></span></div>
+      <p><code>pre-commit</code> se déclenche à chaque commit local ; <code>pre-push</code> se déclenche juste avant l'envoi vers <code>origin</code> — une deuxième chance d'attraper un oubli.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv run pre-commit install --hook-type pre-commit --hook-type pre-push</span></div>
+        <pre>pre-commit installed at .git\hooks\pre-commit
+pre-commit installed at .git\hooks\pre-push</pre>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Étape 2</p>
+    <h2>Premier passage : un vrai échec</h2>
+    <p>Contrairement au module 23 (audit seul), ce TP <strong>modifie réellement le code</strong> quand les outils le peuvent. Le premier <code>pre-commit run --all-files</code> sur l'ensemble du dépôt a trouvé un problème dans <code>scripts/demo_versioning.py</code> — un fichier du socle transmis par le jalon 02, pas du code écrit pendant ce TP.</p>
+    <div class="terminal">
+      <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv run pre-commit run --all-files</span></div>
+      <pre>ruff.....................................................................<span class="fail">Failed</span>
+- hook id: ruff
+- exit code: 1
+
+scripts\demo_versioning.py:296:58: UP038 Use `X | Y` in `isinstance` call instead of `(X, Y)`
+    |
+296 |     {k: v for k, v in metrics.items() if isinstance(v, (int, float))}
+    |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^ UP038
+    = help: Convert to `X | Y`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+
+black....................................................................<span class="ok">Passed</span>
+Detect hardcoded secrets.................................................<span class="ok">Passed</span></pre>
+    </div>
+    <div class="callout warn">
+      <strong>Pourquoi ruff n'a pas corrigé seul.</strong> La config n'active que <code>--fix</code>, pas <code>--unsafe-fixes</code> — cette modernisation-là est volontairement laissée à une décision humaine plutôt qu'automatisée à l'aveugle.
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Étape 3</p>
+    <h2>Correction manuelle, puis reformatage automatique</h2>
+    <div class="compare">
+      <figure class="before">
+        <figcaption>Avant — syntaxe tuple</figcaption>
+        <pre>isinstance(v, (int, float))</pre>
+      </figure>
+      <figure class="after">
+        <figcaption>Après — union moderne (py ≥ 3.10)</figcaption>
+        <pre>isinstance(v, int | float)</pre>
+      </figure>
+    </div>
+    <p>Une fois la ligne corrigée à la main, on relance — <strong>ruff passe</strong>, mais <strong>black reformate</strong> le fichier de lui-même (espacement, retours à la ligne) :</p>
+    <div class="terminal">
+      <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv run pre-commit run --all-files</span></div>
+      <pre>ruff.....................................................................<span class="ok">Passed</span>
+black....................................................................<span class="fail">Failed</span>
+- hook id: black
+- files were modified by this hook
+
+reformatted scripts\demo_versioning.py
+<span class="dim">1 file reformatted, 12 files left unchanged.</span>
+
+Detect hardcoded secrets.................................................<span class="ok">Passed</span></pre>
+    </div>
+    <p>Un hook qui « échoue » parce qu'il vient de corriger le fichier n'est pas un vrai problème — c'est son travail. On relance une dernière fois pour confirmer que plus rien ne bouge :</p>
+    <div class="checklist">
+      <div class="check-item"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><span class="cmd">ruff</span><span class="result">Passed</span></span></div>
+      <div class="check-item"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><span class="cmd">black</span><span class="result">Passed</span></span></div>
+      <div class="check-item"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><span class="cmd">gitleaks</span><span class="result">Passed</span></span></div>
+      <div class="check-item"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><span class="cmd">uv run pytest -q</span><span class="result">12 passed</span></span></div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Étape 4</p>
+    <h2>Démo secret bloqué — réversible</h2>
+    <p>Un fichier avec une <strong>clé AWS d'exemple, publique et invalide</strong> (documentation officielle AWS, jamais une vraie clé même révoquée) est ajouté à l'index, puis scanné par gitleaks seul — sans jamais tenter un vrai commit :</p>
+    <div class="terminal">
+      <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv run pre-commit run gitleaks --files fuite_demo.txt</span></div>
+      <pre>Detect hardcoded secrets.................................................<span class="fail">Failed</span>
+- hook id: gitleaks
+- exit code: 1
+
+Finding:     AWS_ACCESS_KEY_ID=REDACTED
+RuleID:      aws-access-token
+Entropy:     3.684184
+File:        fuite_demo.txt
+Line:        2
+
+<span class="fail">leaks found: 1</span></pre>
+    </div>
+    <p><strong>Résultat exact attendu, obtenu à l'identique</strong> : <code>RuleID: aws-access-token</code>, <code>leaks found: 1</code>. Un vrai <code>git commit</code> aurait été bloqué net.</p>
+    <div class="callout warn">
+      <strong>Pourquoi le secret n'atteint jamais un commit réel.</strong> Le hook <code>pre-commit</code> s'exécute <em>avant</em> que Git ne crée l'objet commit dans <code>.git</code>. gitleaks a rendu un code de sortie non nul (<code>exit code: 1</code>) — Git interprète ça comme un refus et interrompt le commit : aucun objet n'est écrit dans l'historique, le fichier reste seulement dans l'index (staging area), à l'état de simple ajout réversible. Ici, ni même un vrai <code>git commit</code> n'a été tenté : le TP invoque directement <code>pre-commit run gitleaks</code> sur le fichier indexé, pour tester le hook sans aucun risque d'écrire quoi que ce soit dans l'historique.
+    </div>
+    <div class="timeline">
+      <div class="timeline-step fail">
+        <div class="step-label">Détecté</div>
+        gitleaks refuse le fichier — le secret n'entre jamais dans un commit
+      </div>
+      <div class="timeline-step">
+        <div class="step-label">Nettoyage</div>
+        <code>git restore --staged -- fuite_demo.txt</code> puis suppression du fichier
+      </div>
+      <div class="timeline-step">
+        <div class="step-label">Vérifié</div>
+        <code>git status --short</code> ne montre plus rien — dépôt propre, rien committé
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Retour formateur</p>
+    <h2>Un vrai faux positif, cette fois dans un fichier livré</h2>
+    <p>La démo ci-dessus utilise un fichier jetable (<code>fuite_demo.txt</code>), jamais committé. Mais <code>pre-commit run --all-files</code> sur l'ensemble du dépôt bloquait réellement sur <code>FORMATION/GUIDE_MULTIPLATEFORME_APPRENANT.md</code> : gitleaks y détecte la même paire de clés AWS d'exemple (<code>AKIAIOSFODNN7EXAMPLE…</code>, documentation officielle AWS, jamais une clé active) — un fichier livré, pas un exercice.</p>
+    <div class="callout warn">
+      <strong>Pourquoi ce n'est pas la même chose.</strong> Retirer le fichier n'aurait aucun sens ici (guide multiplateforme réellement utile) ; désactiver gitleaks masquerait un vrai risque futur. La bonne réponse est un allowlist <strong>ciblé sur les deux valeurs exactes</strong>, pas sur le chemin du fichier — pour que gitleaks continue d'alerter si un vrai secret apparaît un jour au même endroit.
+    </div>
+    <p>Corrigé : nouveau <code>.gitleaks.toml</code> à la racine (<code>[extend] useDefault = true</code> + <code>[allowlist]</code> avec les deux regex exactes). Rejoué :</p>
+    <div class="terminal">
+      <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv run pre-commit run --all-files</span></div>
+      <pre>ruff.....................................................................<span class="ok">Passed</span>
+black....................................................................<span class="ok">Passed</span>
+Detect hardcoded secrets.................................................<span class="ok">Passed</span></pre>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Repères</p>
+    <h2>Local vs CI — même règles, deux moments</h2>
+    <dl class="glossary">
+      <div><dt>Hook</dt><dd>Un script déclenché automatiquement par Git à un moment précis (<code>pre-commit</code>, <code>pre-push</code>…).</dd></div>
+      <div><dt>Local corrige, CI constate</dt><dd>En local, <code>ruff --fix</code> et <code>black</code> (sans <code>--check</code>) réparent. En CI, <code>black --check</code> et <code>ruff check</code> ne font que signaler — la CI ne doit jamais modifier le code à ta place.</dd></div>
+      <div><dt>Pourquoi révoquer, pas juste supprimer</dt><dd>Un secret committé reste dans l'historique Git même après suppression du fichier — exploitable jusqu'à révocation côté fournisseur.</dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <span>Prochaine étape : TP2 — ajouter le job <code>build</code> au workflow CI</span>
+    <span>guillaume.saidani@ext.aelion.fr</span>
+  </footer>
+
+</div>

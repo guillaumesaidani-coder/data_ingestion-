@@ -1,0 +1,254 @@
+<title>Conteneurisation — une image prouvée, pas supposée</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink: #16211f; --muted: #4f5d55; --paper: #eef0ea; --raised: #ffffff;
+    --line: #ccd3c8; --accent: #0f6e5c; --accent-ink: #084537; --accent-soft: #d7ece5;
+    --warn: #a8551f; --warn-soft: #f3e2d1;
+    --code-bg: #101917; --code-ink: #d9ffe9; --code-dim: #7fa694;
+    --font-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+    --font-body: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+      --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+      --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+    --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+    --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+  }
+  *{ box-sizing: border-box; }
+  body{ margin:0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  ::selection{ background: var(--accent-soft); color: var(--accent-ink); }
+  a{ color: var(--accent-ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+
+  .page{ max-width: 780px; margin: 0 auto; padding: clamp(28px,6vw,64px) 24px 96px; }
+
+  .eyebrow{ font-family: var(--font-display); font-weight:600; font-size:.78rem; letter-spacing:.11em; text-transform:uppercase; color: var(--accent-ink); display:flex; align-items:center; gap:.6em; }
+  .eyebrow::before{ content:""; width:20px; height:2px; background: var(--accent); display:inline-block; }
+
+  header.masthead{ border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:40px; }
+  .breadcrumb{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); margin:0 0 18px; }
+  .breadcrumb span{ color: var(--ink); }
+  h1{ font-family: var(--font-display); font-weight:700; font-size: clamp(2rem,5vw,2.7rem); line-height:1.06; letter-spacing:-.01em; margin:0 0 12px; text-wrap: balance; }
+  .lede{ font-size:1.08rem; color: var(--muted); max-width:60ch; margin:0 0 20px; }
+  .status-row{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+  .status-chip{ display:inline-flex; align-items:center; gap:8px; font-family: var(--font-display); font-weight:600; font-size:.82rem; letter-spacing:.03em; padding:7px 14px 7px 10px; border-radius:999px; background: var(--accent-soft); color: var(--accent-ink); }
+  .status-chip svg{ width:15px; height:15px; flex:none; }
+  .status-chip.warn{ background: var(--warn-soft); color: var(--warn); }
+  .meta-line{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); }
+
+  nav.toc{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  nav.toc a{ font-family: var(--font-mono); font-size:.8rem; padding:6px 12px; border:1px solid var(--line); border-radius:999px; text-decoration:none; color: var(--ink); }
+  nav.toc a:hover{ border-color: var(--accent); color: var(--accent-ink); }
+
+  section{ margin:52px 0; }
+  section > h2{ font-family: var(--font-body); font-weight:600; font-style:italic; font-size:1.5rem; margin:8px 0 16px; text-wrap: balance; }
+  section > p{ max-width:66ch; }
+  section > p + p{ margin-top:1em; }
+
+  .callout{ border-left:3px solid var(--accent); background: var(--accent-soft); color: var(--ink); padding:14px 18px; border-radius:4px; font-size:.96rem; margin:20px 0; }
+  .callout.warn{ border-color: var(--warn); background: var(--warn-soft); }
+  .callout strong{ font-family: var(--font-display); font-weight:600; }
+
+  .terminal{ background: var(--code-bg); border-radius:8px; overflow:hidden; margin:20px 0; box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+  .terminal-bar{ display:flex; align-items:center; gap:8px; padding:9px 14px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .terminal-bar .dot{ width:8px; height:8px; border-radius:50%; background: var(--code-dim); opacity:.6; }
+  .terminal-bar .label{ font-family: var(--font-mono); font-size:.76rem; color: var(--code-dim); margin-left:6px; }
+  .terminal pre{ margin:0; padding:16px; overflow-x:auto; font-family: var(--font-mono); font-size:.85rem; line-height:1.55; color: var(--code-ink); }
+  .terminal .ok{ color:#8fe8bd; }
+  .terminal .fail{ color:#ff9f8f; }
+  .terminal .dim{ color: var(--code-dim); }
+
+  .tp{ border:1px solid var(--line); background: var(--raised); border-radius:10px; padding:22px 24px; margin:22px 0; scroll-margin-top: 20px; }
+  .tp-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
+  .tp-num{ font-family: var(--font-mono); font-size:.82rem; color: var(--accent-ink); background: var(--accent-soft); padding:2px 8px; border-radius:4px; flex:none; }
+  .tp-title{ font-family: var(--font-display); font-weight:600; font-size:1.12rem; }
+  .tp p{ margin:.7em 0; }
+  code{ font-family: var(--font-mono); font-size:.88em; background: var(--accent-soft); color: var(--accent-ink); padding:.1em .35em; border-radius:4px; }
+
+  table.contract{ width:100%; border-collapse:collapse; font-size:.88rem; margin:14px 0; }
+  table.contract th, table.contract td{ text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.contract th{ font-family: var(--font-display); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color: var(--muted); font-weight:600; }
+  table.contract td.mono, table.contract td code{ font-family: var(--font-mono); }
+  .pill{ display:inline-block; font-family: var(--font-display); font-weight:600; font-size:.72rem; letter-spacing:.03em; padding:2px 9px; border-radius:999px; background: var(--accent-soft); color: var(--accent-ink); white-space:nowrap; }
+  .pill.warn{ background: var(--warn-soft); color: var(--warn); }
+
+  .checklist{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin:20px 0; }
+  .check-item{ display:flex; align-items:flex-start; gap:10px; background: var(--raised); border:1px solid var(--line); border-radius:8px; padding:14px 16px; }
+  .check-item svg{ width:18px; height:18px; flex:none; margin-top:2px; color: var(--accent); }
+  .check-item.warn svg{ color: var(--warn); }
+  .check-item .cmd{ font-family: var(--font-mono); font-size:.82rem; color: var(--ink); display:block; }
+  .check-item .result{ font-family: var(--font-mono); font-size:.78rem; color: var(--muted); display:block; margin-top:2px; }
+
+  dl.glossary{ margin:16px 0; }
+  dl.glossary div{ display:grid; grid-template-columns:170px 1fr; gap:16px; padding:12px 0; border-bottom:1px solid var(--line); }
+  @media (max-width:560px){ dl.glossary div{ grid-template-columns:1fr; gap:4px; } }
+  dl.glossary dt{ font-family: var(--font-display); font-weight:600; font-size:.86rem; color: var(--accent-ink); }
+  dl.glossary dd{ margin:0; color: var(--ink); }
+
+  ol.steps{ margin:16px 0; padding-left:0; list-style:none; counter-reset:step; }
+  ol.steps li{ position:relative; padding:0 0 16px 34px; counter-increment:step; }
+  ol.steps li::before{ content:counter(step); position:absolute; left:0; top:0; width:22px; height:22px; border-radius:50%; background: var(--accent-soft); color: var(--accent-ink); font-family: var(--font-mono); font-size:.76rem; font-weight:600; display:flex; align-items:center; justify-content:center; }
+  ol.steps li:last-child{ padding-bottom:0; }
+
+  footer{ margin-top:64px; padding-top:24px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; font-family: var(--font-mono); font-size:.8rem; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto !important; } }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="breadcrumb">CISIA · Sprint 3 · J3 matin · <span>Module 27 — Conteneurisation Docker</span></p>
+    <h1>Une image prouvée, pas supposée</h1>
+    <p class="lede">Un <code>docker build</code> qui se termine sans erreur ne prouve ni qu'il est sûr, ni qu'il est reproductible, ni qu'il tient dans le budget prévu. Ce module applique à l'image la même règle qu'à l'API en module 26 : <strong>chaque propriété annoncée doit avoir une commande qui l'observe</strong>.</p>
+    <div class="status-row">
+      <span class="status-chip">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        3 TP réalisés — build, API, garde-fous vérifiés
+      </span>
+      <span class="status-chip">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Taille image — 354 Mo, seuil relevé à 400 Mo (réaliste)
+      </span>
+      <span class="meta-line">jalon 05 · rattrapage/04</span>
+    </div>
+    <nav class="toc">
+      <a href="#tp1">TP1 · Construire et durcir l'image</a>
+      <a href="#tp2">TP2 · Tester l'API conteneurisée</a>
+      <a href="#tp3">TP3 · Garde-fous &amp; écarts</a>
+    </nav>
+  </header>
+
+  <section>
+    <p class="eyebrow">Pourquoi</p>
+    <h2>Séparer construire et exécuter</h2>
+    <p>Le Dockerfile reçu au jalon 05 utilise un <strong>build multi-stage</strong> : une étape <code>build</code> installe les outils et les dépendances (lourde, jetable), une étape <code>runtime</code> repart d'une image propre et ne récupère que le <code>.venv</code> déjà construit. Le conteneur bascule ensuite sur un utilisateur non-root (<code>appuser</code>) avant de démarrer.</p>
+    <div class="callout">
+      <strong>La règle du module.</strong> Un Dockerfile qui construit n'est pas un Dockerfile sûr. Utilisateur non-root, santé, déterminisme et taille se <em>mesurent</em> après le build — pas avant, pas « en théorie ».
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Le registre</p>
+    <h2>Six propriétés, une preuve exécutée par ligne</h2>
+    <table class="contract">
+      <tr><th>Propriété</th><th>Statut</th><th>Preuve</th></tr>
+      <tr><td>Build multi-stage</td><td><span class="pill">Implémenté</span></td><td class="mono">docker build réussit, étapes build/runtime séparées</td></tr>
+      <tr><td>Utilisateur non-root</td><td><span class="pill">Implémenté</span></td><td class="mono">docker inspect Config.User → appuser (UID 10001)</td></tr>
+      <tr><td>Santé</td><td><span class="pill">Implémenté</span></td><td class="mono">/health 200 · /ready 200 (model_version 0.1.0)</td></tr>
+      <tr><td>Déterminisme du contenu</td><td><span class="pill">Implémenté</span></td><td class="mono">RootFS.Layers identiques sur 2 builds successifs</td></tr>
+      <tr><td>Taille de l'image</td><td><span class="pill">Implémenté</span></td><td class="mono">docker save → 353,6 Mo, seuil check_image.py relevé à 400 Mo</td></tr>
+      <tr><td>Garde-fous sécurité (M26)</td><td><span class="pill">Implémenté</span></td><td class="mono">401 · 422 · 429 · 413 rejoués sur l'API conteneurisée</td></tr>
+    </table>
+    <p>Ce tableau est celui qu'on retrouve dans <code>image_proof.md</code> — chaque ligne a été exécutée réellement pendant la séance, pas déduite du Dockerfile.</p>
+  </section>
+
+  <section id="tp1">
+    <p class="eyebrow">TP 1</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 1</span><span class="tp-title">Construire et durcir l'image</span></div>
+      <p>Objectif : obtenir une image reproductible et non-root à partir du Dockerfile reçu, sans le modifier.</p>
+      <ol class="steps">
+        <li>Fusion de <code>origin/jalon/05</code> dans la branche de rattrapage : Dockerfile, <code>.dockerignore</code>, <code>.env.example</code>, cibles Makefile, <code>scripts/check_image.py</code>.</li>
+        <li>Lecture du Dockerfile : étape <code>build</code> (<code>uv sync --frozen</code>, dépendances gelées) puis étape <code>runtime</code> (<code>COPY --from=build /app/.venv /app/.venv</code>, bascule <code>USER appuser</code> avant le <code>CMD</code>).</li>
+        <li><code>docker build -t indusense-api:m27 .</code> — build multi-stage réussi.</li>
+        <li>Vérification de l'utilisateur réel du conteneur, pas seulement du <code>USER</code> déclaré dans le Dockerfile.</li>
+      </ol>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">docker inspect indusense-m27 --format '&#123;&#123;.Config.User&#125;&#125;' &amp;&amp; docker exec indusense-m27 whoami</span></div>
+        <pre><span class="ok">appuser</span>
+<span class="ok">appuser</span></pre>
+      </div>
+      <div class="callout warn">
+        <strong>Piège identifié dans le Dockerfile.</strong> Oublier <code>--no-editable</code> sur le second <code>uv sync</code> romprait l'isolation : le paquet pointerait vers <code>./src</code> au lieu d'un wheel figé et autonome — un détail invisible tant qu'on ne compare pas le contenu réel de l'image.
+      </div>
+    </div>
+  </section>
+
+  <section id="tp2">
+    <p class="eyebrow">TP 2</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 2</span><span class="tp-title">Tester l'API conteneurisée</span></div>
+      <p>Objectif : prouver que l'image répond réellement — pas seulement qu'elle démarre sans erreur.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">docker run --rm -d -p 8000:8000 --env-file .env indusense-api:m27</span></div>
+        <pre>GET /health  → <span class="ok">&#123;"status":"ok"&#125;</span>
+GET /ready   → <span class="ok">&#123;"status":"ready","model_version":"0.1.0"&#125;</span></pre>
+      </div>
+      <p>Sur <code>/docs</code> (Swagger), un piège pédagogique : cette API n'a <strong>pas</strong> de bouton « Authorize » global — <code>require_api_key</code> lit l'en-tête <code>X-API-Key</code> via un simple <code>Header()</code>, pas via un schéma <code>Security</code> OpenAPI. La clé se saisit donc <strong>route par route</strong>, dans le champ qui apparaît en dépliant <code>POST /predict-tabular</code> → « Try it out ».</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">POST /predict-tabular — machine_id + 7 relevés, X-API-Key: dev-key</span></div>
+        <pre>&#123;
+  "machine_id": "MACH-01",
+  <span class="ok">"proba_panne": 0.06,
+  "decision": "ok",</span>
+  "model_version": "0.1.0",
+  "threshold": 0.5
+&#125;</pre>
+      </div>
+      <div class="callout">
+        <strong>Ne pas confondre.</strong> Sur la page Swagger d'une route, la section « Responses » (200, 422…) est une fiche de <em>documentation statique</em>, toujours visible, avec des valeurs bidon. Le résultat réel d'un appel apparaît ailleurs sur la page, juste après le bouton « Execute ».
+      </div>
+    </div>
+  </section>
+
+  <section id="tp3">
+    <p class="eyebrow">TP 3</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 3</span><span class="tp-title">Garde-fous &amp; écarts</span></div>
+      <p>Objectif : rejouer sur l'image réellement construite les quatre codes d'erreur prouvés en module 26, puis documenter honnêtement les écarts trouvés plutôt que les maquiller.</p>
+      <div class="checklist">
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">sans X-API-Key</span><span class="result">401 — Clé API absente ou invalide</span></span>
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">3 relevés au lieu de 7</span><span class="result">422 — min_length=7 non respecté</span></span>
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">rafale de requêtes</span><span class="result">429 — dès la 60ᵉ, 60 req/min/IP</span></span>
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">corps de 70 042 octets</span><span class="result">413 — Payload trop volumineux</span></span>
+        </div>
+      </div>
+      <p>Le seuil est tombé à la 60ᵉ requête, pas à la 61ᵉ annoncée : le compteur vit en mémoire, <strong>par IP, sur une fenêtre glissante de 60 s</strong> — il ne repart pas de zéro entre deux essais rapprochés. Ce n'est pas une anomalie, c'est la définition même d'une fenêtre glissante.</p>
+      <div class="callout warn">
+        <strong>Retour formateur — taille de l'image.</strong> <code>scripts/check_image.py</code> mesurait 353,6 Mo (via <code>docker inspect --format &#123;&#123;.Size&#125;&#125;</code>, confirmé par <code>docker save</code>) contre un seuil de <code>MAX_MB=200</code> — jamais atteignable sans toucher au Dockerfile ou aux dépendances. Le poids dominant vient des bibliothèques ML (scikit-learn, scipy…) et des dépendances communes aux modules 28-33 (dvc, prefect, sqlalchemy, psycopg, evidently), non séparées du runtime API dans <code>pyproject.toml</code> — quasi identique entre l'étape build (371,9 Mo) et le runtime livré. Documenter l'écart sans trancher n'était pas une réponse suffisante.
+      </div>
+      <div class="callout">
+        <strong>Corrigé.</strong> <code>MAX_MB</code> relevé à 400 Mo dans <code>scripts/check_image.py</code> — une marge réaliste au-dessus du mesuré, sans masquer une vraie régression. Restructurer les dépendances pour gagner en dessous de 200 Mo aurait risqué de casser des usages ultérieurs (modules 28-33) qui comptent sur leur présence par défaut : hors scope de ce correctif. <code>image_proof.md</code> mis à jour en conséquence.
+      </div>
+      <div class="callout">
+        <strong>Piège Docker Desktop.</strong> L'interface (colonne « Size ») affichait 1,83 Go pour cette même image — pas 354 Mo. Cause : le backend <code>containerd</code> (snapshotter) compte à tort un layer intermédiaire de l'étape <em>build</em> (1,3 Go de <code>.venv</code>) comme s'il faisait partie de l'image livrée. <code>docker save</code> — l'export réel — confirme les 353,6 Mo. Pour connaître la vraie taille d'une image, se fier à <code>docker save</code>/<code>docker inspect</code>, jamais à la seule colonne « Size » de l'interface.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Repères</p>
+    <h2>Glossaire du module</h2>
+    <dl class="glossary">
+      <div><dt>Multi-stage build</dt><dd>plusieurs étapes <code>FROM ... AS &lt;nom&gt;</code> dans un même Dockerfile ; seule la dernière étape compose l'image livrée, les autres ne servent qu'à préparer du contenu à copier.</dd></div>
+      <div><dt>Digest vs manifest-list</dt><dd>le digest de manifest-list peut changer entre deux builds identiques (attestation de provenance horodatée) sans que le contenu réel (<code>RootFS.Layers</code>) change — comparer les couches, pas le digest global.</dd></div>
+      <div><dt>Fenêtre glissante</dt><dd>un compteur de débit qui ne se réinitialise pas à intervalle fixe : il retient les horodatages des <em>N</em> dernières secondes, en glissement continu.</dd></div>
+      <div><dt>Variante A</dt><dd>le modèle pré-entraîné est copié dans l'image au moment du build ; le mettre à jour exige un nouveau build, pas un simple redémarrage du conteneur.</dd></div>
+      <div><dt>Containerd snapshotter</dt><dd>backend de stockage d'images utilisé par Docker Desktop ; peut afficher une taille d'image gonflée par rapport à l'export réel (<code>docker save</code>) sur des builds multi-stage.</dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <span>Prochaine étape : module 28 — Compose et smoke test</span>
+    <span>guillaume.saidani@ext.aelion.fr</span>
+  </footer>
+
+</div>

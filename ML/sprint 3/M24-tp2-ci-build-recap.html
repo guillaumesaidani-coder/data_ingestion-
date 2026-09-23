@@ -1,0 +1,213 @@
+<title>Job Build & Wheel CI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink: #16211f; --muted: #4f5d55; --paper: #eef0ea; --raised: #ffffff;
+    --line: #ccd3c8; --accent: #0f6e5c; --accent-ink: #084537; --accent-soft: #d7ece5;
+    --warn: #a8551f; --warn-soft: #f3e2d1;
+    --code-bg: #101917; --code-ink: #d9ffe9; --code-dim: #7fa694;
+    --font-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+    --font-body: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+      --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+      --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+    --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+    --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+  }
+  *{ box-sizing: border-box; }
+  body{ margin:0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  ::selection{ background: var(--accent-soft); color: var(--accent-ink); }
+  a{ color: var(--accent-ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+
+  .page{ max-width: 760px; margin: 0 auto; padding: clamp(28px,6vw,64px) 24px 96px; }
+
+  .eyebrow{ font-family: var(--font-display); font-weight:600; font-size:.78rem; letter-spacing:.11em; text-transform:uppercase; color: var(--accent-ink); display:flex; align-items:center; gap:.6em; }
+  .eyebrow::before{ content:""; width:20px; height:2px; background: var(--accent); display:inline-block; }
+
+  header.masthead{ border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:40px; }
+  .breadcrumb{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); margin:0 0 18px; }
+  .breadcrumb span{ color: var(--ink); }
+  h1{ font-family: var(--font-display); font-weight:700; font-size: clamp(2rem,5vw,2.7rem); line-height:1.06; letter-spacing:-.01em; margin:0 0 12px; text-wrap: balance; }
+  .lede{ font-size:1.08rem; color: var(--muted); max-width:58ch; margin:0 0 20px; }
+  .status-row{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+  .status-chip{ display:inline-flex; align-items:center; gap:8px; font-family: var(--font-display); font-weight:600; font-size:.82rem; letter-spacing:.03em; padding:7px 14px 7px 10px; border-radius:999px; background: var(--accent-soft); color: var(--accent-ink); }
+  .status-chip svg{ width:15px; height:15px; flex:none; }
+  .meta-line{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); }
+
+  section{ margin:52px 0; }
+  section > h2{ font-family: var(--font-body); font-weight:600; font-style:italic; font-size:1.5rem; margin:8px 0 16px; text-wrap: balance; }
+  section > p{ max-width:66ch; }
+  section > p + p{ margin-top:1em; }
+
+  .callout{ border-left:3px solid var(--accent); background: var(--accent-soft); color: var(--ink); padding:14px 18px; border-radius:4px; font-size:.96rem; margin:20px 0; }
+  .callout strong{ font-family: var(--font-display); font-weight:600; }
+
+  .terminal{ background: var(--code-bg); border-radius:8px; overflow:hidden; margin:20px 0; box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+  .terminal-bar{ display:flex; align-items:center; gap:8px; padding:9px 14px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .terminal-bar .dot{ width:8px; height:8px; border-radius:50%; background: var(--code-dim); opacity:.6; }
+  .terminal-bar .label{ font-family: var(--font-mono); font-size:.76rem; color: var(--code-dim); margin-left:6px; }
+  .terminal pre{ margin:0; padding:16px; overflow-x:auto; font-family: var(--font-mono); font-size:.85rem; line-height:1.55; color: var(--code-ink); }
+  .terminal .ok{ color:#8fe8bd; }
+
+  .compare{ display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:20px 0; }
+  @media (max-width:620px){ .compare{ grid-template-columns:1fr; } }
+  .compare figure{ margin:0; }
+  .compare figcaption{ font-family: var(--font-display); font-weight:600; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color: var(--muted); margin-bottom:8px; }
+  .compare.before figcaption{ color: var(--warn); }
+  .compare.after figcaption{ color: var(--accent-ink); }
+  .compare pre{ margin:0; background: var(--raised); border:1px solid var(--line); border-radius:8px; padding:14px; font-family: var(--font-mono); font-size:.78rem; line-height:1.55; overflow-x:auto; }
+  .compare .added{ color: var(--accent-ink); }
+
+  code{ font-family: var(--font-mono); font-size:.88em; background: var(--accent-soft); color: var(--accent-ink); padding:.1em .35em; border-radius:4px; }
+
+  .flow{ display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:20px 0; font-family: var(--font-mono); font-size:.86rem; }
+  .flow .node{ background: var(--raised); border:1px solid var(--line); border-radius:8px; padding:10px 14px; }
+  .flow .node.job{ border-color: var(--accent); color: var(--accent-ink); font-weight:600; }
+  .flow .arrow{ color: var(--muted); font-size:1.1rem; }
+
+  .steps{ margin:16px 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:14px; }
+  .steps li{ display:flex; gap:14px; align-items:flex-start; }
+  .steps .n{ font-family: var(--font-mono); font-size:.78rem; color: var(--accent-ink); background: var(--accent-soft); border-radius:50%; width:22px; height:22px; flex:none; display:flex; align-items:center; justify-content:center; margin-top:2px; }
+
+  dl.glossary{ margin:16px 0; }
+  dl.glossary div{ display:grid; grid-template-columns:160px 1fr; gap:16px; padding:12px 0; border-bottom:1px solid var(--line); }
+  @media (max-width:560px){ dl.glossary div{ grid-template-columns:1fr; gap:4px; } }
+  dl.glossary dt{ font-family: var(--font-display); font-weight:600; font-size:.86rem; color: var(--accent-ink); }
+  dl.glossary dd{ margin:0; color: var(--ink); }
+
+  footer{ margin-top:64px; padding-top:24px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; font-family: var(--font-mono); font-size:.8rem; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto !important; } }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="breadcrumb">CISIA · Sprint 3 · J1 après-midi · <span>Module 24 — TP2</span></p>
+    <h1>Job <code style="font-size:1em">build</code> : compiler et publier le wheel</h1>
+    <p class="lede">La CI ne fait pas que vérifier le code — elle peut aussi fabriquer le livrable final et le rendre téléchargeable, sans jamais quitter GitHub.</p>
+    <div class="status-row">
+      <span class="status-chip">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        TP validé — wheel construit localement
+      </span>
+      <span class="meta-line">jalon 02 · branche guillaume-saidani</span>
+    </div>
+  </header>
+
+  <section>
+    <p class="eyebrow">Pourquoi</p>
+    <h2>Deux jobs, deux responsabilités</h2>
+    <p><code>.github/workflows/ci.yml</code> n'avait qu'un job, <code>quality</code> : installer, lint, formater, tester. Ce TP en ajoute un second, <code>build</code>, dont le seul rôle est de fabriquer le paquet installable (le <em>wheel</em>) et de le rendre disponible en téléchargement depuis le run GitHub Actions.</p>
+    <p>Séparer les deux sert un objectif précis : <strong>ne jamais construire un livrable à partir d'un code qui n'a pas passé les vérifications</strong>. C'est ce que fait la clé <code>needs: quality</code> :</p>
+    <div class="flow">
+      <span class="node job">quality</span>
+      <span class="arrow">→ si vert →</span>
+      <span class="node job">build</span>
+      <span class="arrow">→</span>
+      <span class="node">wheel téléchargeable</span>
+    </div>
+    <div class="callout">
+      <strong>Fail fast.</strong> Si <code>quality</code> échoue, <code>build</code> ne démarre même pas — pas de calcul gaspillé à empaqueter un code cassé.
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Le diff</p>
+    <h2>Ce qui a été ajouté</h2>
+    <div class="compare">
+      <figure class="before">
+        <figcaption>Avant — un seul job</figcaption>
+        <pre>jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: astral-sh/setup-uv@v3
+      - name: Install
+        run: uv sync --extra dev
+      - name: Lint
+        run: uv run ruff check .
+      - name: Format
+        run: uv run black --check .
+      - name: Tests
+        run: uv run pytest -q</pre>
+      </figure>
+      <figure class="after">
+        <figcaption>Après — job build ajouté</figcaption>
+        <pre>  <span class="added">build:
+    needs: quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - name: Build wheel
+        run: uv build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: indusense-wheel
+          path: dist/*.whl</span></pre>
+      </figure>
+    </div>
+    <div class="callout warn">
+      <strong>Retour formateur.</strong> Ce diff ajoute le job <code>build</code>, mais laisse le job <code>quality</code> tel quel : <code>uv sync --extra dev</code> et les trois <code>uv run ruff/black/pytest</code> ci-dessus tournent <strong>sans</strong> <code>--frozen</code> — la CI peut donc installer une résolution différente de <code>uv.lock</code> committé au lieu de l'installer exactement. Corrigé depuis : <code>uv sync --extra dev --frozen</code>, puis <code>uv run --frozen ruff check .</code> / <code>uv run --frozen black --check .</code> / <code>uv run --frozen pytest -q</code>. Vérifié en local : sync frozen, les trois commandes frozen, et <code>uv build</code> tous verts.
+    </div>
+    <div class="callout">
+      <strong>Preuve encore attendue.</strong> Le guide demande aussi un run GitHub Actions réel, rouge puis vert (lien ou capture). Les correctifs ci-dessus sont poussés sur <code>industrialisation/jalon-02</code>, mais aucune pull request n'a encore été ouverte pour déclencher et observer ce run — cette preuve reste à faire.
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Étape par étape</p>
+    <h2>Ce que fait chaque ligne du job <code style="font-size:1em">build</code></h2>
+    <ol class="steps">
+      <li><span class="n">1</span><span><code>needs: quality</code> — attend que le job <code>quality</code> se termine avec succès avant de démarrer.</span></li>
+      <li><span class="n">2</span><span><code>actions/checkout@v4</code> — récupère le code du dépôt sur cette nouvelle VM (chaque job a sa propre machine jetable, même dans le même run).</span></li>
+      <li><span class="n">3</span><span><code>astral-sh/setup-uv@v3</code> — installe <code>uv</code>, sans repasser par <code>setup-python</code> : <code>uv build</code> gère lui-même l'environnement de build.</span></li>
+      <li><span class="n">4</span><span><code>uv build</code> — lit <code>pyproject.toml</code>, produit une distribution source (<code>.tar.gz</code>) et un <em>wheel</em> (<code>.whl</code>) dans <code>dist/</code>.</span></li>
+      <li><span class="n">5</span><span><code>actions/upload-artifact@v4</code> — copie <code>dist/*.whl</code> hors de la VM jetable avant qu'elle ne soit détruite, sous le nom <code>indusense-wheel</code>, téléchargeable depuis la page du run.</span></li>
+    </ol>
+  </section>
+
+  <section>
+    <p class="eyebrow">Vérification locale</p>
+    <h2>Rejouer ce que ferait la CI</h2>
+    <p>Avant de compter sur GitHub Actions, on reproduit l'étape critique en local — si <code>uv build</code> échoue sur ta machine, il échouera aussi sur la VM Ubuntu :</p>
+    <div class="terminal">
+      <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv build</span></div>
+      <pre>Building source distribution...
+Building wheel from source distribution...
+<span class="ok">Successfully built dist\indusense_sprint3_starter-0.1.0.tar.gz</span>
+<span class="ok">Successfully built dist\indusense_sprint3_starter-0.1.0-py3-none-any.whl</span></pre>
+    </div>
+    <p>Le fichier produit correspond exactement au motif <code>dist/*.whl</code> attendu par l'étape <code>Upload artifact</code>. <code>dist/</code> reste listé dans <code>.gitignore</code> — ce build local ne pollue pas <code>git status</code>, aucun nettoyage à faire.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Repères</p>
+    <h2>Vocabulaire du job</h2>
+    <dl class="glossary">
+      <div><dt>Wheel (<code>.whl</code>)</dt><dd>Le format binaire installable par <code>pip</code>/<code>uv</code> — ce que reçoit un utilisateur final du package, sans avoir besoin des sources.</dd></div>
+      <div><dt>Source distribution (<code>.tar.gz</code>)</dt><dd>Une archive du code source du package, à partir de laquelle un wheel peut être reconstruit.</dd></div>
+      <div><dt>Artifact GitHub Actions</dt><dd>Un fichier produit pendant un run, conservé et téléchargeable depuis la page de ce run — distinct des artefacts métier du projet (<code>artifacts/models/</code>).</dd></div>
+      <div><dt><code>needs:</code></dt><dd>Déclare une dépendance entre jobs — le job qui la porte attend que tous les jobs listés se terminent en succès.</dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <span>Prochaine étape : versioning des données et du modèle avec DVC</span>
+    <span>guillaume.saidani@ext.aelion.fr</span>
+  </footer>
+
+</div>

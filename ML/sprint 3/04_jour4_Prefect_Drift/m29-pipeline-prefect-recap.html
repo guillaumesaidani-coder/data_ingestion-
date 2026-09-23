@@ -1,0 +1,253 @@
+<title>Pipeline Prefect — rejouable sans jamais dupliquer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink: #16211f; --muted: #4f5d55; --paper: #eef0ea; --raised: #ffffff;
+    --line: #ccd3c8; --accent: #0f6e5c; --accent-ink: #084537; --accent-soft: #d7ece5;
+    --warn: #a8551f; --warn-soft: #f3e2d1;
+    --code-bg: #101917; --code-ink: #d9ffe9; --code-dim: #7fa694;
+    --font-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+    --font-body: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+      --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+      --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+    --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+    --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+  }
+  *{ box-sizing: border-box; }
+  body{ margin:0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  ::selection{ background: var(--accent-soft); color: var(--accent-ink); }
+  a{ color: var(--accent-ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+
+  .page{ max-width: 780px; margin: 0 auto; padding: clamp(28px,6vw,64px) 24px 96px; }
+
+  .eyebrow{ font-family: var(--font-display); font-weight:600; font-size:.78rem; letter-spacing:.11em; text-transform:uppercase; color: var(--accent-ink); display:flex; align-items:center; gap:.6em; }
+  .eyebrow::before{ content:""; width:20px; height:2px; background: var(--accent); display:inline-block; }
+
+  header.masthead{ border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:40px; }
+  .breadcrumb{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); margin:0 0 18px; }
+  .breadcrumb span{ color: var(--ink); }
+  h1{ font-family: var(--font-display); font-weight:700; font-size: clamp(2rem,5vw,2.7rem); line-height:1.06; letter-spacing:-.01em; margin:0 0 12px; text-wrap: balance; }
+  .lede{ font-size:1.08rem; color: var(--muted); max-width:60ch; margin:0 0 20px; }
+  .status-row{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+  .status-chip{ display:inline-flex; align-items:center; gap:8px; font-family: var(--font-display); font-weight:600; font-size:.82rem; letter-spacing:.03em; padding:7px 14px 7px 10px; border-radius:999px; background: var(--accent-soft); color: var(--accent-ink); }
+  .status-chip svg{ width:15px; height:15px; flex:none; }
+  .status-chip.warn{ background: var(--warn-soft); color: var(--warn); }
+  .meta-line{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); }
+
+  nav.toc{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  nav.toc a{ font-family: var(--font-mono); font-size:.8rem; padding:6px 12px; border:1px solid var(--line); border-radius:999px; text-decoration:none; color: var(--ink); }
+  nav.toc a:hover{ border-color: var(--accent); color: var(--accent-ink); }
+
+  section{ margin:52px 0; }
+  section > h2{ font-family: var(--font-body); font-weight:600; font-style:italic; font-size:1.5rem; margin:8px 0 16px; text-wrap: balance; }
+  section > p{ max-width:66ch; }
+  section > p + p{ margin-top:1em; }
+
+  .callout{ border-left:3px solid var(--accent); background: var(--accent-soft); color: var(--ink); padding:14px 18px; border-radius:4px; font-size:.96rem; margin:20px 0; }
+  .callout.warn{ border-color: var(--warn); background: var(--warn-soft); }
+  .callout strong{ font-family: var(--font-display); font-weight:600; }
+
+  .terminal{ background: var(--code-bg); border-radius:8px; overflow:hidden; margin:20px 0; box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+  .terminal-bar{ display:flex; align-items:center; gap:8px; padding:9px 14px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .terminal-bar .dot{ width:8px; height:8px; border-radius:50%; background: var(--code-dim); opacity:.6; }
+  .terminal-bar .label{ font-family: var(--font-mono); font-size:.76rem; color: var(--code-dim); margin-left:6px; }
+  .terminal pre{ margin:0; padding:16px; overflow-x:auto; font-family: var(--font-mono); font-size:.85rem; line-height:1.55; color: var(--code-ink); }
+  .terminal .ok{ color:#8fe8bd; }
+  .terminal .fail{ color:#ff9f8f; }
+  .terminal .dim{ color: var(--code-dim); }
+
+  .tp{ border:1px solid var(--line); background: var(--raised); border-radius:10px; padding:22px 24px; margin:22px 0; scroll-margin-top: 20px; }
+  .tp-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
+  .tp-num{ font-family: var(--font-mono); font-size:.82rem; color: var(--accent-ink); background: var(--accent-soft); padding:2px 8px; border-radius:4px; flex:none; }
+  .tp-title{ font-family: var(--font-display); font-weight:600; font-size:1.12rem; }
+  .tp p{ margin:.7em 0; }
+  code{ font-family: var(--font-mono); font-size:.88em; background: var(--accent-soft); color: var(--accent-ink); padding:.1em .35em; border-radius:4px; }
+
+  table.contract{ width:100%; border-collapse:collapse; font-size:.88rem; margin:14px 0; }
+  table.contract th, table.contract td{ text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.contract th{ font-family: var(--font-display); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color: var(--muted); font-weight:600; }
+  table.contract td.mono, table.contract td code{ font-family: var(--font-mono); }
+  .pill{ display:inline-block; font-family: var(--font-display); font-weight:600; font-size:.72rem; letter-spacing:.03em; padding:2px 9px; border-radius:999px; background: var(--accent-soft); color: var(--accent-ink); white-space:nowrap; }
+  .pill.warn{ background: var(--warn-soft); color: var(--warn); }
+
+  .flow-steps{ display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin:20px 0; font-family: var(--font-mono); font-size:.82rem; }
+  .flow-steps .step{ background: var(--raised); border:1px solid var(--line); border-radius:8px; padding:10px 14px; }
+  .flow-steps .step strong{ display:block; font-family: var(--font-display); font-size:.9rem; color: var(--accent-ink); margin-bottom:2px; }
+  .flow-steps .arrow{ color: var(--muted); }
+
+  .checklist{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin:20px 0; }
+  .check-item{ display:flex; align-items:flex-start; gap:10px; background: var(--raised); border:1px solid var(--line); border-radius:8px; padding:14px 16px; }
+  .check-item svg{ width:18px; height:18px; flex:none; margin-top:2px; color: var(--accent); }
+  .check-item .cmd{ font-family: var(--font-mono); font-size:.82rem; color: var(--ink); display:block; }
+  .check-item .result{ font-family: var(--font-mono); font-size:.78rem; color: var(--muted); display:block; margin-top:2px; }
+
+  dl.glossary{ margin:16px 0; }
+  dl.glossary div{ display:grid; grid-template-columns:170px 1fr; gap:16px; padding:12px 0; border-bottom:1px solid var(--line); }
+  @media (max-width:560px){ dl.glossary div{ grid-template-columns:1fr; gap:4px; } }
+  dl.glossary dt{ font-family: var(--font-display); font-weight:600; font-size:.86rem; color: var(--accent-ink); }
+  dl.glossary dd{ margin:0; color: var(--ink); }
+
+  ol.steps{ margin:16px 0; padding-left:0; list-style:none; counter-reset:step; }
+  ol.steps li{ position:relative; padding:0 0 16px 34px; counter-increment:step; }
+  ol.steps li::before{ content:counter(step); position:absolute; left:0; top:0; width:22px; height:22px; border-radius:50%; background: var(--accent-soft); color: var(--accent-ink); font-family: var(--font-mono); font-size:.76rem; font-weight:600; display:flex; align-items:center; justify-content:center; }
+  ol.steps li:last-child{ padding-bottom:0; }
+
+  footer{ margin-top:64px; padding-top:24px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; font-family: var(--font-mono); font-size:.8rem; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto !important; } }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="breadcrumb">CISIA · Sprint 3 · J4 matin · <span>Module 29 — Orchestration Prefect &amp; idempotence</span></p>
+    <h1>Rejouer le pipeline ne doit jamais l'abîmer</h1>
+    <p class="lede">Un script qu'on relance à la main pose toujours la même question anxiogène : « si je le relance, est-ce que ça va dupliquer quelque chose ? ». Ce module transforme le script d'entraînement/prédiction en <strong>flow Prefect</strong> — des étapes nommées, une reprise qui évite de refaire un travail déjà fait, et un stockage qui <em>remplace</em> au lieu d'<em>ajouter</em>.</p>
+    <div class="status-row">
+      <span class="status-chip">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Flow lancé 2 fois de suite — 4 lignes en base, toujours 4
+      </span>
+      <span class="meta-line">jalon 07 · checkpoint M29</span>
+    </div>
+    <nav class="toc">
+      <a href="#tp1">TP1 · Découper en tasks/flow</a>
+      <a href="#tp2">TP2 · Cache &amp; reprise</a>
+      <a href="#tp3">TP3 · Prouver l'idempotence</a>
+      <a href="#glossaire">Glossaire</a>
+    </nav>
+  </header>
+
+  <section>
+    <p class="eyebrow">Pourquoi</p>
+    <h2>Un script n'a pas de mémoire ; un flow, si</h2>
+    <p><code>uv run indusense train</code> puis <code>predict</code> à la main ne sait rien de ses propres exécutions passées. Chaque relance réentraîne le modèle même si rien n'a changé, et chaque prédiction écrite quelque part s'ajoute à la précédente sans vérifier si elle existe déjà. Sur un pipeline qui tourne en boucle (cron, retry après panne réseau, reprise après un plantage), ça veut dire : du calcul gâché, et une base qui grossit à l'infini avec des doublons.</p>
+    <div class="callout">
+      <strong>La règle du module.</strong> Un <em>flow</em> Prefect découpe le travail en <em>tasks</em> : chacune peut être <strong>mise en cache</strong> (rejouée depuis un résultat déjà connu, sans recalcul) ou <strong>reprise</strong> (sautée si son effet existe déjà). La dernière étape — écrire les résultats — doit en plus être <strong>idempotente</strong> : rejouée deux fois sur les mêmes données, elle produit le même état, jamais un état doublé.
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Le registre</p>
+    <h2>Six preuves, un seul statut par ligne</h2>
+    <table class="contract">
+      <tr><th>Contrôle</th><th>Statut</th><th>Preuve</th></tr>
+      <tr><td>Décomposition tasks/flow</td><td><span class="pill">Implémenté</span></td><td class="mono">5 tasks Prefect assemblées dans <code>@flow indusense_pipeline</code></td></tr>
+      <tr><td>Run nommé</td><td><span class="pill">Implémenté</span></td><td class="mono">indusense-pipeline-raw-20260902-101008</td></tr>
+      <tr><td>Cache sur l'ingestion</td><td><span class="pill">Implémenté</span></td><td class="mono">2ᵉ exécution → Cached(type=COMPLETED)</td></tr>
+      <tr><td>Reprise sur l'entraînement</td><td><span class="pill">Implémenté</span></td><td class="mono">modèle existant réutilisé, pas de réentraînement</td></tr>
+      <tr><td>Idempotence du stockage</td><td><span class="pill">Implémenté</span></td><td class="mono">rows_in_db=4 puis 4 après un 2ᵉ passage</td></tr>
+      <tr><td>Non-régression</td><td><span class="pill">Implémenté</span></td><td class="mono">pytest -q → 26 passed, 5 skipped</td></tr>
+    </table>
+    <p>Ce tableau reprend le registre de <code>pipeline_proof.md</code> — la trace de preuve du checkpoint M29.</p>
+  </section>
+
+  <section id="tp1">
+    <p class="eyebrow">TP 1</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 1</span><span class="tp-title">Découper le script en tasks, assembler le flow, nommer le run</span></div>
+      <p>Objectif : remplacer l'enchaînement manuel <code>build_gold → train → predict</code> par cinq fonctions décorées <code>@task</code>, appelées depuis une fonction <code>@flow</code>. Chaque task apparaît individuellement dans les logs, avec son propre statut.</p>
+      <div class="flow-steps">
+        <div class="step"><strong>build-gold-dataset</strong>ingestion + jointure + features</div>
+        <span class="arrow">→</span>
+        <div class="step"><strong>ensure-model</strong>entraîne ou réutilise</div>
+        <span class="arrow">→</span>
+        <div class="step"><strong>predict-latest</strong>score la dernière mesure</div>
+        <span class="arrow">→</span>
+        <div class="step"><strong>store-predictions</strong>upsert SQLite</div>
+      </div>
+      <p>Le nom du run n'est pas laissé au hasard : une fonction <code>_flow_run_name()</code> lit les paramètres réels de l'exécution (<code>data_dir</code>) et compose un nom lisible avec l'horodatage — utile pour retrouver un run précis dans les logs sans deviner lequel a tourné quand.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv run --frozen python flows/pipeline.py</span></div>
+        <pre>Flow run 'indusense-pipeline-raw-20260902-100732' - Beginning flow run
+Task run 'build-gold-dataset-f91' - Finished in state Completed()
+Task run 'ensure-model-211'      - Finished in state Completed()
+Task run 'predict-latest-d03'    - Finished in state Completed()
+Task run 'store-predictions-c6a' - Finished in state Completed()
+Flow run 'indusense-pipeline-raw-20260902-100732' - <span class="ok">Finished in state Completed()</span>
+Pipeline termine : {'rows_scored': 4, 'rows_in_db': 4, 'db_path': 'artifacts\\predictions.db'}</pre>
+      </div>
+      <div class="callout warn">
+        <strong>Piège rencontré.</strong> <code>uv run python flows/pipeline.py</code> (sans <code>--frozen</code>) reste bloqué sans rien afficher dans un environnement sans accès réseau sortant : uv tente de re-résoudre le lock avant de lancer quoi que ce soit. <code>--frozen</code> force l'utilisation stricte de <code>uv.lock</code> et démarre instantanément.
+      </div>
+    </div>
+  </section>
+
+  <section id="tp2">
+    <p class="eyebrow">TP 2</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 2</span><span class="tp-title">Cache sur l'ingestion, reprise sur l'entraînement</span></div>
+      <p>Objectif : ne pas relire ni rejoindre les trois fichiers source, ni réentraîner un modèle, si rien de pertinent n'a changé depuis la dernière exécution — même dans un <strong>nouveau process</strong> (la preuve doit survivre à la fermeture du terminal).</p>
+      <ol class="steps">
+        <li><strong>Clé de cache</strong> — <code>_sources_cache_key()</code> calcule une empreinte SHA-256 à partir de la date de modification et de la taille des 3 fichiers source, plus <code>window_hours</code>. Tant que cette empreinte ne change pas, Prefect renvoie le résultat déjà connu au lieu de relancer <code>build_gold_dataset</code>.</li>
+        <li><strong>Reprise sur le modèle</strong> — <code>ensure_model</code> commence par vérifier <code>model_path.exists()</code> : si un modèle est déjà là et que <code>retrain=False</code>, il est réutilisé tel quel, sans passer par <code>RandomForestClassifier.fit()</code>.</li>
+      </ol>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">2ᵉ lancement, process frais, mêmes fichiers source</span></div>
+        <pre>Task run 'build-gold-dataset-422' - <span class="ok">Finished in state Cached(type=COMPLETED)</span>
+Task run 'ensure-model-22e'       - Reprise : modele existant reutilise -> artifacts\models\rf.joblib
+Task run 'ensure-model-22e'       - Finished in state Completed()</pre>
+      </div>
+      <p>Ces deux lignes sont la preuve directe : <code>Cached</code> signifie que l'ingestion n'a pas été rejouée du tout, et le message « Reprise » confirme que l'entraînement a été sauté volontairement, pas oublié.</p>
+    </div>
+  </section>
+
+  <section id="tp3">
+    <p class="eyebrow">TP 3</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 3</span><span class="tp-title">Prouver qu'un second passage ne duplique rien</span></div>
+      <p>Objectif : la dernière task, <code>store-predictions</code>, écrit dans une base SQLite. Rejouer le flow deux fois sur les mêmes données doit laisser le même nombre de lignes — pas le double.</p>
+      <p><strong>Mécanisme :</strong> chaque ligne est identifiée par la clé composite <code>(machine, observed_at)</code>. L'écriture utilise <code>INSERT ... ON CONFLICT(machine, observed_at) DO UPDATE</code> : si la clé existe déjà, la ligne est <em>mise à jour</em> (nouveau score, nouvel horodatage) au lieu d'être ajoutée.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv run --frozen python scripts/demo_prefect_idempotence.py</span></div>
+        <pre>1er passage : rows_scored=4 rows_in_db=4
+2e  passage : rows_scored=4 rows_in_db=4
+<span class="ok">OK idempotence : 4 lignes stables apres 2 passages</span> (...\indusense-preuve-ck2omwul\predictions.db)</pre>
+      </div>
+      <div class="checklist">
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">base neuve à chaque lancement du script</span><span class="result">jamais une base déjà remplie, sinon la preuve serait truquée</span></span>
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">comptage indépendant</span><span class="result">SELECT COUNT(*), pas seulement la valeur renvoyée par le flow</span></span>
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">échec explicite</span><span class="result">le script sort en erreur (code 1) si les comptes divergent</span></span>
+        </div>
+      </div>
+      <div class="callout warn">
+        <strong>Piège rencontré, corrigé pour de vrai.</strong> Le premier essai ouvrait la connexion SQLite avec <code>with sqlite3.connect(...) as conn:</code> — ce context manager ne fait que committer/annuler la transaction, il ne <strong>ferme pas</strong> la connexion. Sous Windows, le fichier restait verrouillé et le nettoyage du dossier temporaire échouait avec <code>PermissionError</code>. Correction : <code>with closing(sqlite3.connect(...)) as conn:</code>, qui garantit la fermeture réelle.
+      </div>
+    </div>
+  </section>
+
+  <section id="glossaire">
+    <p class="eyebrow">Repères</p>
+    <h2>Glossaire du module</h2>
+    <dl class="glossary">
+      <div><dt>Task</dt><dd>une fonction Python décorée <code>@task</code> : une unité de travail que Prefect peut suivre, mettre en cache et relancer indépendamment des autres.</dd></div>
+      <div><dt>Flow</dt><dd>la fonction <code>@flow</code> qui orchestre l'appel aux tasks dans l'ordre ; chaque appel du flow est un <em>flow run</em>, identifiable par son nom.</dd></div>
+      <div><dt>Cache key</dt><dd>une empreinte calculée à partir des entrées d'une task ; une empreinte identique permet à Prefect de renvoyer le résultat déjà connu sans réexécuter la task.</dd></div>
+      <div><dt>Reprise</dt><dd>sauter une étape dont l'effet (fichier, modèle) existe déjà sur disque, vérifié explicitement dans le code de la task — complémentaire du cache Prefect.</dd></div>
+      <div><dt>Idempotence</dt><dd>propriété d'une opération qu'on peut répéter sans changer le résultat au-delà du premier appel — ici, un état stable en base plutôt qu'une croissance à chaque relance.</dd></div>
+      <div><dt>Upsert</dt><dd><code>INSERT ... ON CONFLICT ... DO UPDATE</code> : insère si la clé n'existe pas, met à jour sinon — le mécanisme SQL qui rend le stockage idempotent.</dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <span>Prochaine étape : jalon 07 (masqué) — M30, base Postgres via Docker Compose</span>
+    <span>guillaume.saidani@ext.aelion.fr</span>
+  </footer>
+
+</div>

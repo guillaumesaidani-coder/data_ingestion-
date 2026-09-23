@@ -1,0 +1,267 @@
+<title>Compose & observabilité — 4 services, une seule règle de démarrage</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink: #16211f; --muted: #4f5d55; --paper: #eef0ea; --raised: #ffffff;
+    --line: #ccd3c8; --accent: #0f6e5c; --accent-ink: #084537; --accent-soft: #d7ece5;
+    --warn: #a8551f; --warn-soft: #f3e2d1;
+    --code-bg: #101917; --code-ink: #d9ffe9; --code-dim: #7fa694;
+    --font-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+    --font-body: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+      --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+      --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+    --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+    --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+  }
+  *{ box-sizing: border-box; }
+  body{ margin:0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  ::selection{ background: var(--accent-soft); color: var(--accent-ink); }
+  a{ color: var(--accent-ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+
+  .page{ max-width: 780px; margin: 0 auto; padding: clamp(28px,6vw,64px) 24px 96px; }
+
+  .eyebrow{ font-family: var(--font-display); font-weight:600; font-size:.78rem; letter-spacing:.11em; text-transform:uppercase; color: var(--accent-ink); display:flex; align-items:center; gap:.6em; }
+  .eyebrow::before{ content:""; width:20px; height:2px; background: var(--accent); display:inline-block; }
+
+  header.masthead{ border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:40px; }
+  .breadcrumb{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); margin:0 0 18px; }
+  .breadcrumb span{ color: var(--ink); }
+  h1{ font-family: var(--font-display); font-weight:700; font-size: clamp(2rem,5vw,2.7rem); line-height:1.06; letter-spacing:-.01em; margin:0 0 12px; text-wrap: balance; }
+  .lede{ font-size:1.08rem; color: var(--muted); max-width:60ch; margin:0 0 20px; }
+  .status-row{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+  .status-chip{ display:inline-flex; align-items:center; gap:8px; font-family: var(--font-display); font-weight:600; font-size:.82rem; letter-spacing:.03em; padding:7px 14px 7px 10px; border-radius:999px; background: var(--accent-soft); color: var(--accent-ink); }
+  .status-chip svg{ width:15px; height:15px; flex:none; }
+  .status-chip.warn{ background: var(--warn-soft); color: var(--warn); }
+  .meta-line{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); }
+
+  nav.toc{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  nav.toc a{ font-family: var(--font-mono); font-size:.8rem; padding:6px 12px; border:1px solid var(--line); border-radius:999px; text-decoration:none; color: var(--ink); }
+  nav.toc a:hover{ border-color: var(--accent); color: var(--accent-ink); }
+
+  section{ margin:52px 0; }
+  section > h2{ font-family: var(--font-body); font-weight:600; font-style:italic; font-size:1.5rem; margin:8px 0 16px; text-wrap: balance; }
+  section > p{ max-width:66ch; }
+  section > p + p{ margin-top:1em; }
+
+  .callout{ border-left:3px solid var(--accent); background: var(--accent-soft); color: var(--ink); padding:14px 18px; border-radius:4px; font-size:.96rem; margin:20px 0; }
+  .callout.warn{ border-color: var(--warn); background: var(--warn-soft); }
+  .callout strong{ font-family: var(--font-display); font-weight:600; }
+
+  .terminal{ background: var(--code-bg); border-radius:8px; overflow:hidden; margin:20px 0; box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+  .terminal-bar{ display:flex; align-items:center; gap:8px; padding:9px 14px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .terminal-bar .dot{ width:8px; height:8px; border-radius:50%; background: var(--code-dim); opacity:.6; }
+  .terminal-bar .label{ font-family: var(--font-mono); font-size:.76rem; color: var(--code-dim); margin-left:6px; }
+  .terminal pre{ margin:0; padding:16px; overflow-x:auto; font-family: var(--font-mono); font-size:.85rem; line-height:1.55; color: var(--code-ink); }
+  .terminal .ok{ color:#8fe8bd; }
+  .terminal .fail{ color:#ff9f8f; }
+  .terminal .dim{ color: var(--code-dim); }
+
+  .tp{ border:1px solid var(--line); background: var(--raised); border-radius:10px; padding:22px 24px; margin:22px 0; scroll-margin-top: 20px; }
+  .tp-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
+  .tp-num{ font-family: var(--font-mono); font-size:.82rem; color: var(--accent-ink); background: var(--accent-soft); padding:2px 8px; border-radius:4px; flex:none; }
+  .tp-title{ font-family: var(--font-display); font-weight:600; font-size:1.12rem; }
+  .tp p{ margin:.7em 0; }
+  code{ font-family: var(--font-mono); font-size:.88em; background: var(--accent-soft); color: var(--accent-ink); padding:.1em .35em; border-radius:4px; }
+
+  table.contract{ width:100%; border-collapse:collapse; font-size:.88rem; margin:14px 0; }
+  table.contract th, table.contract td{ text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.contract th{ font-family: var(--font-display); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color: var(--muted); font-weight:600; }
+  table.contract td.mono, table.contract td code{ font-family: var(--font-mono); }
+  .pill{ display:inline-block; font-family: var(--font-display); font-weight:600; font-size:.72rem; letter-spacing:.03em; padding:2px 9px; border-radius:999px; background: var(--accent-soft); color: var(--accent-ink); white-space:nowrap; }
+  .pill.warn{ background: var(--warn-soft); color: var(--warn); }
+
+  .checklist{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin:20px 0; }
+  .check-item{ display:flex; align-items:flex-start; gap:10px; background: var(--raised); border:1px solid var(--line); border-radius:8px; padding:14px 16px; }
+  .check-item svg{ width:18px; height:18px; flex:none; margin-top:2px; color: var(--accent); }
+  .check-item .cmd{ font-family: var(--font-mono); font-size:.82rem; color: var(--ink); display:block; }
+  .check-item .result{ font-family: var(--font-mono); font-size:.78rem; color: var(--muted); display:block; margin-top:2px; }
+
+  dl.glossary{ margin:16px 0; }
+  dl.glossary div{ display:grid; grid-template-columns:170px 1fr; gap:16px; padding:12px 0; border-bottom:1px solid var(--line); }
+  @media (max-width:560px){ dl.glossary div{ grid-template-columns:1fr; gap:4px; } }
+  dl.glossary dt{ font-family: var(--font-display); font-weight:600; font-size:.86rem; color: var(--accent-ink); }
+  dl.glossary dd{ margin:0; color: var(--ink); }
+
+  ol.steps{ margin:16px 0; padding-left:0; list-style:none; counter-reset:step; }
+  ol.steps li{ position:relative; padding:0 0 16px 34px; counter-increment:step; }
+  ol.steps li::before{ content:counter(step); position:absolute; left:0; top:0; width:22px; height:22px; border-radius:50%; background: var(--accent-soft); color: var(--accent-ink); font-family: var(--font-mono); font-size:.76rem; font-weight:600; display:flex; align-items:center; justify-content:center; }
+  ol.steps li:last-child{ padding-bottom:0; }
+
+  footer{ margin-top:64px; padding-top:24px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; font-family: var(--font-mono); font-size:.8rem; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto !important; } }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="breadcrumb">CISIA · Sprint 3 · J3 après-midi · <span>Module 28 — Compose & observabilité</span></p>
+    <h1>Quatre services, une seule règle : prêt avant de dépendre</h1>
+    <p class="lede">Un conteneur qui a <em>démarré</em> n'est pas un conteneur <em>prêt</em>. Ce module fait tenir cette distinction dans un fichier exécutable : l'API n'a le droit de démarrer que si PostgreSQL est <code>healthy</code>, Prometheus que si l'API l'est, Grafana que si Prometheus l'est. Trois TP, une stack qui ne court jamais au démarrage.</p>
+    <div class="status-row">
+      <span class="status-chip">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        3 TP réalisés — 5 tests verts contre la stack réelle
+      </span>
+      <span class="meta-line">jalon 06 · checkpoint M28</span>
+    </div>
+    <nav class="toc">
+      <a href="#tp1">TP1 · Écrire le Compose</a>
+      <a href="#tp2">TP2 · Prouver l'ordre de démarrage</a>
+      <a href="#tp3">TP3 · Smoke test & down</a>
+    </nav>
+  </header>
+
+  <section>
+    <p class="eyebrow">Pourquoi</p>
+    <h2>La race condition classique : démarré ≠ prêt</h2>
+    <p><code>depends_on</code> sans condition ne fait attendre que le <strong>lancement</strong> du conteneur amont, pas sa disponibilité applicative. Sans plus de précision, Prometheus peut démarrer son premier scrape avant que l'API ait fini de charger son modèle — et Grafana s'ouvrir sur une source de données encore vide.</p>
+    <div class="callout">
+      <strong>La règle du module.</strong> <code>condition: service_healthy</code> fait attendre le <em>HEALTHCHECK</em> du service amont, pas seulement son démarrage. Ça n'existe que si un HEALTHCHECK est défini — les images officielles Prometheus et Grafana n'en fournissent pas nativement, il faut donc l'écrire soi-même.
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Le registre</p>
+    <h2>Trois preuves, un seul statut par ligne</h2>
+    <table class="contract">
+      <tr><th>Contrôle</th><th>Statut</th><th>Preuve</th></tr>
+      <tr><td>Config Compose valide</td><td><span class="pill">Implémenté</span></td><td class="mono">docker compose config -q → aucune erreur</td></tr>
+      <tr><td>Readiness gating (db → api → prometheus → grafana)</td><td><span class="pill">Implémenté</span></td><td class="mono">logs up : Healthy avant Starting suivant, à chaque maillon</td></tr>
+      <tr><td>Scrape Prometheus réussi</td><td><span class="pill">Implémenté</span></td><td class="mono">/api/v1/targets → health="up"</td></tr>
+      <tr><td>Smoke test automatisé</td><td><span class="pill">Implémenté</span></td><td class="mono">pytest tests/test_smoke_compose.py → 5 passed</td></tr>
+    </table>
+    <p>Ce tableau reprend, mot pour mot, le registre de <code>compose_proof.md</code> — la trace de preuve du checkpoint M28.</p>
+  </section>
+
+  <section id="tp1">
+    <p class="eyebrow">TP 1</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 1</span><span class="tp-title">Écrire le Compose : 4 services, healthcheck, volumes</span></div>
+      <p>Objectif : orchestrer <code>db</code> (<code>postgres:16</code>), <code>api</code> (build local depuis le <code>Dockerfile</code> du jalon 05), <code>prometheus:v3.1.0</code> et <code>grafana:11.4.0</code> dans un seul <code>compose.yaml</code>, sans écrire de code applicatif.</p>
+      <ol class="steps">
+        <li><strong>db</strong> — <code>postgres:16</code>, healthcheck <code>pg_isready -U postgres</code> (interroge le serveur lui-même, pas juste le port TCP), volume nommé <code>pgdata</code>.</li>
+        <li><strong>api</strong> — réutilise le <code>HEALTHCHECK</code> déjà défini dans le <code>Dockerfile</code> (<code>GET /health</code>) : rien à ajouter côté Compose. Reçoit <code>INDUSENSE_DB_URL</code>, construite via le nom de service <code>db</code> (résolution DNS interne à Compose).</li>
+        <li><strong>prometheus</strong> — l'image officielle (busybox minimal) n'a pas de <code>HEALTHCHECK</code> natif ; on en écrit un avec <code>wget --spider</code> contre l'endpoint de readiness de Prometheus lui-même, <code>/-/ready</code>.</li>
+        <li><strong>grafana</strong> — même logique, contre <code>/api/health</code>.</li>
+        <li><strong>volumes nommés</strong> — <code>pgdata</code>, <code>prometheus_data</code> et <code>grafana_data</code> survivent à un <code>down</code> sans <code>-v</code> : pas besoin de réinitialiser la base ni de retélécharger l'historique à chaque redémarrage.</li>
+      </ol>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">docker compose config -q</span></div>
+        <pre><span class="dim"># aucune sortie = configuration valide</span></pre>
+      </div>
+      <div class="callout warn">
+        <strong>Piège à éviter.</strong> Un service sans <code>HEALTHCHECK</code> ne peut pas être la cible d'un <code>condition: service_healthy</code> — Compose refuserait de démarrer, ou pire, retomberait silencieusement sur un simple <code>service_started</code> selon la version. Le HEALTHCHECK n'est pas cosmétique : c'est la condition elle-même.
+      </div>
+      <div class="callout">
+        <strong>Retour formateur.</strong> La version publiée ne déclarait que 3 services (<code>api</code>, <code>prometheus</code>, <code>grafana</code>) — le guide attend aussi <code>db</code> (<code>postgres:16</code>) avec son healthcheck, sa dépendance <code>service_healthy</code> côté <code>api</code>, <code>INDUSENSE_DB_URL</code> et le volume <code>pgdata</code>. Ajouté : <code>db</code> ouvre désormais la chaîne de gating, avant même <code>api</code>.
+      </div>
+    </div>
+  </section>
+
+  <section id="tp2">
+    <p class="eyebrow">TP 2</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 2</span><span class="tp-title">Prouver l'ordre réel de démarrage</span></div>
+      <p>Objectif : ne pas se contenter de lire <code>depends_on</code> dans le fichier — observer, dans les événements réels de <code>docker compose up</code>, que l'ordre est respecté.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">docker compose up -d --build</span></div>
+        <pre> Container db-1 Starting
+ Container db-1 Started
+ Container db-1 Waiting
+ <span class="ok">Container db-1 Healthy</span>
+ Container api-1 Starting               <span class="dim"># seulement maintenant</span>
+ Container api-1 Started
+ Container api-1 Waiting
+ <span class="ok">Container api-1 Healthy</span>
+ Container prometheus-1 Starting        <span class="dim"># seulement maintenant</span>
+ Container prometheus-1 Started
+ Container prometheus-1 Waiting
+ <span class="ok">Container prometheus-1 Healthy</span>
+ Container grafana-1 Starting           <span class="dim"># seulement maintenant</span>
+ Container grafana-1 Started</pre>
+      </div>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">docker compose ps</span></div>
+        <pre>db           Up 47 seconds  <span class="ok">(healthy)</span>
+api          Up 40 seconds  <span class="ok">(healthy)</span>
+prometheus   Up 17 seconds  <span class="ok">(healthy)</span>
+grafana      Up 6 seconds   (health: starting)</pre>
+      </div>
+      <p>Le décalage entre <code>db</code> (47s), <code>api</code> (40s) et <code>prometheus</code> (17s) est la preuve elle-même : chaque service n'a commencé à exister <strong>qu'</strong>une fois le précédent devenu sain — <code>api</code> n'a attendu PostgreSQL que quelques secondes (déjà prêt), Prometheus a attendu que l'API charge son modèle.</p>
+    </div>
+  </section>
+
+  <section id="tp3">
+    <p class="eyebrow">TP 3</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 3</span><span class="tp-title">Smoke test automatisé, puis down propre</span></div>
+      <p>Objectif : remplacer la navigation manuelle (ouvrir 3 onglets, vérifier à l'œil) par un test qui frappe le réseau réel — pas un <code>TestClient</code> in-process — et qui échoue si l'orchestration régresse.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv run pytest tests/test_smoke_compose.py -q</span></div>
+        <pre>.....                                                                    [100%]
+<span class="ok">5 passed</span> in 0.32s</pre>
+      </div>
+      <div class="checklist">
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">GET /health</span><span class="result">200 — liveness API</span></span>
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">GET /ready</span><span class="result">200 — modèle chargé</span></span>
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">GET /-/ready</span><span class="result">200 — readiness Prometheus</span></span>
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">GET /api/health</span><span class="result">200 — Grafana database ok</span></span>
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">/api/v1/targets</span><span class="result">health="up" pour indusense-api</span></span>
+        </div>
+      </div>
+      <div class="callout warn">
+        <strong>Piège rencontré, corrigé pour de vrai.</strong> Juste après le démarrage, la cible Prometheus affiche encore <code>unknown</code> — le premier scrape (<code>scrape_interval: 15s</code>) n'a pas eu le temps de jouer. Un simple <code>GET</code> une fois passerait à côté : le test retente sur le <strong>contenu</strong> jusqu'à observer <code>up</code>, pas seulement sur le code HTTP 200.
+      </div>
+      <p>À l'inverse, quand la stack n'est <strong>pas</strong> lancée, chaque test se <code>SKIP</code> dès le premier <code>ConnectionError</code> — pas d'échec, pas d'attente de 60s : <code>uv run pytest -q</code> reste vert en local sans Docker.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">docker compose down</span></div>
+        <pre> Container grafana-1 Removed
+ Container prometheus-1 Removed
+ Container api-1 Removed
+ Container db-1 Removed
+ Network ..._default Removed
+<span class="dim"># pgdata, prometheus_data et grafana_data survivent (down sans -v)</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Repères</p>
+    <h2>Glossaire du module</h2>
+    <dl class="glossary">
+      <div><dt>Liveness</dt><dd>« le processus tourne-t-il ? » — <code>/health</code>, reste toujours ouvert, sinon un orchestrateur redémarre en boucle un service qui n'a juste pas fini de charger.</dd></div>
+      <div><dt>Readiness</dt><dd>« le service peut-il servir du trafic maintenant ? » — <code>/ready</code>, <code>/-/ready</code>, <code>/api/health</code> : peut échouer sans justifier un redémarrage.</dd></div>
+      <div><dt>service_healthy</dt><dd>condition <code>depends_on</code> qui attend le HEALTHCHECK du service amont, à distinguer de <code>service_started</code> qui n'attend que le lancement du processus.</dd></div>
+      <div><dt>Target scrape</dt><dd>dans Prometheus, une source à interroger périodiquement (<code>scrape_configs</code>) ; son état (<code>up</code>/<code>down</code>/<code>unknown</code>) est visible sur <code>/targets</code>.</dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <span>Prochaine étape : jalon 07 (masqué) — M29-M30, Prefect &amp; idempotence, mar. 01/09</span>
+    <span>guillaume.saidani@ext.aelion.fr</span>
+  </footer>
+
+</div>

@@ -1,0 +1,236 @@
+<title>Sécurité & menaces — 4 contrôles prouvés, 1 planifié</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink: #16211f; --muted: #4f5d55; --paper: #eef0ea; --raised: #ffffff;
+    --line: #ccd3c8; --accent: #0f6e5c; --accent-ink: #084537; --accent-soft: #d7ece5;
+    --warn: #a8551f; --warn-soft: #f3e2d1;
+    --code-bg: #101917; --code-ink: #d9ffe9; --code-dim: #7fa694;
+    --font-display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif;
+    --font-body: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+      --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+      --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink: #e7efe9; --muted: #9fb2a7; --paper: #0f1613; --raised: #161f1b;
+    --line: #29352f; --accent: #52d3af; --accent-ink: #bdf3dd; --accent-soft: #17332b;
+    --warn: #f0a35f; --warn-soft: #37281a; --code-bg: #0a0f0d; --code-ink: #baffd9; --code-dim: #5c7d6d;
+  }
+  *{ box-sizing: border-box; }
+  body{ margin:0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  ::selection{ background: var(--accent-soft); color: var(--accent-ink); }
+  a{ color: var(--accent-ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+
+  .page{ max-width: 780px; margin: 0 auto; padding: clamp(28px,6vw,64px) 24px 96px; }
+
+  .eyebrow{ font-family: var(--font-display); font-weight:600; font-size:.78rem; letter-spacing:.11em; text-transform:uppercase; color: var(--accent-ink); display:flex; align-items:center; gap:.6em; }
+  .eyebrow::before{ content:""; width:20px; height:2px; background: var(--accent); display:inline-block; }
+
+  header.masthead{ border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:40px; }
+  .breadcrumb{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); margin:0 0 18px; }
+  .breadcrumb span{ color: var(--ink); }
+  h1{ font-family: var(--font-display); font-weight:700; font-size: clamp(2rem,5vw,2.7rem); line-height:1.06; letter-spacing:-.01em; margin:0 0 12px; text-wrap: balance; }
+  .lede{ font-size:1.08rem; color: var(--muted); max-width:60ch; margin:0 0 20px; }
+  .status-row{ display:flex; flex-wrap:wrap; align-items:center; gap:12px; }
+  .status-chip{ display:inline-flex; align-items:center; gap:8px; font-family: var(--font-display); font-weight:600; font-size:.82rem; letter-spacing:.03em; padding:7px 14px 7px 10px; border-radius:999px; background: var(--accent-soft); color: var(--accent-ink); }
+  .status-chip svg{ width:15px; height:15px; flex:none; }
+  .status-chip.warn{ background: var(--warn-soft); color: var(--warn); }
+  .meta-line{ font-family: var(--font-mono); font-size:.82rem; color: var(--muted); }
+
+  nav.toc{ display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+  nav.toc a{ font-family: var(--font-mono); font-size:.8rem; padding:6px 12px; border:1px solid var(--line); border-radius:999px; text-decoration:none; color: var(--ink); }
+  nav.toc a:hover{ border-color: var(--accent); color: var(--accent-ink); }
+
+  section{ margin:52px 0; }
+  section > h2{ font-family: var(--font-body); font-weight:600; font-style:italic; font-size:1.5rem; margin:8px 0 16px; text-wrap: balance; }
+  section > p{ max-width:66ch; }
+  section > p + p{ margin-top:1em; }
+
+  .callout{ border-left:3px solid var(--accent); background: var(--accent-soft); color: var(--ink); padding:14px 18px; border-radius:4px; font-size:.96rem; margin:20px 0; }
+  .callout.warn{ border-color: var(--warn); background: var(--warn-soft); }
+  .callout strong{ font-family: var(--font-display); font-weight:600; }
+
+  .terminal{ background: var(--code-bg); border-radius:8px; overflow:hidden; margin:20px 0; box-shadow: 0 1px 0 rgba(0,0,0,.2); }
+  .terminal-bar{ display:flex; align-items:center; gap:8px; padding:9px 14px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .terminal-bar .dot{ width:8px; height:8px; border-radius:50%; background: var(--code-dim); opacity:.6; }
+  .terminal-bar .label{ font-family: var(--font-mono); font-size:.76rem; color: var(--code-dim); margin-left:6px; }
+  .terminal pre{ margin:0; padding:16px; overflow-x:auto; font-family: var(--font-mono); font-size:.85rem; line-height:1.55; color: var(--code-ink); }
+  .terminal .ok{ color:#8fe8bd; }
+  .terminal .fail{ color:#ff9f8f; }
+  .terminal .dim{ color: var(--code-dim); }
+
+  .tp{ border:1px solid var(--line); background: var(--raised); border-radius:10px; padding:22px 24px; margin:22px 0; scroll-margin-top: 20px; }
+  .tp-head{ display:flex; align-items:baseline; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
+  .tp-num{ font-family: var(--font-mono); font-size:.82rem; color: var(--accent-ink); background: var(--accent-soft); padding:2px 8px; border-radius:4px; flex:none; }
+  .tp-title{ font-family: var(--font-display); font-weight:600; font-size:1.12rem; }
+  .tp p{ margin:.7em 0; }
+  code{ font-family: var(--font-mono); font-size:.88em; background: var(--accent-soft); color: var(--accent-ink); padding:.1em .35em; border-radius:4px; }
+
+  table.contract{ width:100%; border-collapse:collapse; font-size:.88rem; margin:14px 0; }
+  table.contract th, table.contract td{ text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.contract th{ font-family: var(--font-display); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color: var(--muted); font-weight:600; }
+  table.contract td.mono, table.contract td code{ font-family: var(--font-mono); }
+  .pill{ display:inline-block; font-family: var(--font-display); font-weight:600; font-size:.72rem; letter-spacing:.03em; padding:2px 9px; border-radius:999px; background: var(--accent-soft); color: var(--accent-ink); white-space:nowrap; }
+  .pill.warn{ background: var(--warn-soft); color: var(--warn); }
+
+  .checklist{ display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin:20px 0; }
+  .check-item{ display:flex; align-items:flex-start; gap:10px; background: var(--raised); border:1px solid var(--line); border-radius:8px; padding:14px 16px; }
+  .check-item svg{ width:18px; height:18px; flex:none; margin-top:2px; color: var(--accent); }
+  .check-item .cmd{ font-family: var(--font-mono); font-size:.82rem; color: var(--ink); display:block; }
+  .check-item .result{ font-family: var(--font-mono); font-size:.78rem; color: var(--muted); display:block; margin-top:2px; }
+
+  dl.glossary{ margin:16px 0; }
+  dl.glossary div{ display:grid; grid-template-columns:170px 1fr; gap:16px; padding:12px 0; border-bottom:1px solid var(--line); }
+  @media (max-width:560px){ dl.glossary div{ grid-template-columns:1fr; gap:4px; } }
+  dl.glossary dt{ font-family: var(--font-display); font-weight:600; font-size:.86rem; color: var(--accent-ink); }
+  dl.glossary dd{ margin:0; color: var(--ink); }
+
+  ol.steps{ margin:16px 0; padding-left:0; list-style:none; counter-reset:step; }
+  ol.steps li{ position:relative; padding:0 0 16px 34px; counter-increment:step; }
+  ol.steps li::before{ content:counter(step); position:absolute; left:0; top:0; width:22px; height:22px; border-radius:50%; background: var(--accent-soft); color: var(--accent-ink); font-family: var(--font-mono); font-size:.76rem; font-weight:600; display:flex; align-items:center; justify-content:center; }
+  ol.steps li:last-child{ padding-bottom:0; }
+
+  footer{ margin-top:64px; padding-top:24px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; font-family: var(--font-mono); font-size:.8rem; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto !important; } }
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="breadcrumb">CISIA · Sprint 3 · J2 après-midi · <span>Module 26 — Sécurité & menaces</span></p>
+    <h1>Quatre contrôles prouvés, un cinquième assumé</h1>
+    <p class="lede">Une API exposée sur le réseau n'est pas sécurisée parce qu'on l'a « pensée » sécurisée : elle l'est parce que chaque contrôle a un code HTTP observable et un test qui le prouve. Ce module fait exactement cette distinction — <strong>priorisé ≠ implémenté</strong>.</p>
+    <div class="status-row">
+      <span class="status-chip">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        3 TP réalisés — 11 tests verts
+      </span>
+      <span class="status-chip warn">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M10 6v5M10 14h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.6"/></svg>
+        Audit logging — Planifié v0
+      </span>
+      <span class="meta-line">jalon 04 · rattrapage/04</span>
+    </div>
+    <nav class="toc">
+      <a href="#tp1">TP1 · Attack tree</a>
+      <a href="#tp2">TP2 · Durcir sans casser</a>
+      <a href="#tp3">TP3 · Preuve complémentaire</a>
+    </nav>
+  </header>
+
+  <section>
+    <p class="eyebrow">Pourquoi</p>
+    <h2>Penser comme un attaquant, avec STRIDE</h2>
+    <p>STRIDE découpe les menaces en six familles : <strong>S</strong>poofing (usurpation), <strong>T</strong>ampering (altération), <strong>R</strong>epudiation (déni d'action), <strong>I</strong>nformation disclosure (fuite), <strong>D</strong>enial of service, <strong>E</strong>levation of privilege. L'intérêt n'est pas la liste elle-même, mais l'exercice : pour chaque famille, existe-t-il une preuve — pas une intention — que le risque est couvert ?</p>
+    <div class="callout">
+      <strong>La règle du module.</strong> Un contrôle « documenté » ou « prévu » n'est pas un contrôle implémenté. Seul un code HTTP observé par un test compte comme preuve. Sur <code>/predict-tabular</code>, quatre familles STRIDE ont une preuve automatisée ; une seule (Repudiation → traçabilité) reste <span class="pill warn">Planifié v0</span>.
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Le registre</p>
+    <h2>Cinq contrôles, un seul statut par ligne</h2>
+    <table class="contract">
+      <tr><th>Contrôle</th><th>Statut</th><th>Preuve</th></tr>
+      <tr><td>Auth</td><td><span class="pill">Implémenté</span></td><td class="mono">401 sans clé / clé invalide</td></tr>
+      <tr><td>Validation</td><td><span class="pill">Implémenté</span></td><td class="mono">422 payload invalide / historique &lt; 7</td></tr>
+      <tr><td>Rate limit</td><td><span class="pill">Implémenté</span></td><td class="mono">429 au 61ᵉ appel / 60 req/min/IP</td></tr>
+      <tr><td>Taille payload</td><td><span class="pill">Implémenté</span></td><td class="mono">413 &gt; 64 Ko · 400 si Content-Length illisible</td></tr>
+      <tr><td>Audit logging</td><td><span class="pill warn">Planifié v0</span></td><td class="mono">aucun événement structuré — X-Request-ID ≠ audit</td></tr>
+    </table>
+    <p>Ce tableau est celui qu'on retrouve, mot pour mot, dans <code>security_controls.md</code> — le fichier que le script de preuve finale relit pour vérifier <strong>4 × Implémenté + 1 × Planifié v0</strong>, ni plus ni moins.</p>
+  </section>
+
+  <section id="tp1">
+    <p class="eyebrow">TP 1</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 1</span><span class="tp-title">Attack tree & contrôles testables</span></div>
+      <p>Objectif : transformer STRIDE en deux livrables concrets, sans écrire une ligne de code applicatif.</p>
+      <ol class="steps">
+        <li><strong><code>threat_model.md</code></strong> — pour chaque famille STRIDE, un exemple concret sur <code>/predict-tabular</code> et le contrôle actuel qui y répond (ou son absence assumée). Le pipeline réel est décrit dans l'ordre exécuté : clé API → rate limit → validation Pydantic → chargement du modèle.</li>
+        <li><strong><code>security_controls.md</code></strong> — le registre à cinq lignes ci-dessus, avec pour chaque contrôle : statut, preuve actuelle, risque résiduel, action suivante.</li>
+        <li>La contrainte du registre : <strong>exactement</strong> quatre lignes <code>Implémenté</code> et une ligne <code>Planifié v0</code> (audit logging) — jamais l'inverse, jamais un chiffre approché.</li>
+      </ol>
+      <div class="callout warn">
+        <strong>Piège à éviter.</strong> Écrire « Audit logging : Implémenté » parce que <code>X-Request-ID</code> existe déjà serait faux : ce middleware corrèle des lignes de log entre elles, il ne prouve ni qui a appelé quoi, ni quand, de façon structurée et durable.
+      </div>
+    </div>
+  </section>
+
+  <section id="tp2">
+    <p class="eyebrow">TP 2</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 2</span><span class="tp-title">Durcir sans casser</span></div>
+      <p>Objectif : prouver que les quatre contrôles « Implémenté » tiennent réellement leurs codes, et que <code>/health</code> reste ouvert (c'est la sonde de liveness d'un orchestrateur — la protéger casserait le monitoring).</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv run pytest tests/test_api.py tests/test_security.py -q</span></div>
+        <pre>...........                                                              [100%]
+<span class="ok">11 passed</span>, 1 warning in 1.7s</pre>
+      </div>
+      <div class="checklist">
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">sans clé API</span><span class="result">401 — require_api_key</span></span>
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">payload invalide</span><span class="result">422 — Pydantic + normalize_machine_id</span></span>
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">61ᵉ appel / IP / 60s</span><span class="result">429 — rate_limit_dependency</span></span>
+        </div>
+        <div class="check-item">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span><span class="cmd">corps &gt; 64 Ko</span><span class="result">413 — limit_body_size</span></span>
+        </div>
+      </div>
+      <p>Un détail volontaire : le test direct appelle <code>rate_limit</code> 60 fois puis vérifie que le 61ᵉ échoue — c'est une <strong>limite exacte</strong>, testable de façon déterministe, contrairement à une rafale HTTP réelle qui doit seulement contenir « au moins un 429 ».</p>
+    </div>
+  </section>
+
+  <section id="tp3">
+    <p class="eyebrow">TP 3</p>
+    <div class="tp">
+      <div class="tp-head"><span class="tp-num">TP 3</span><span class="tp-title">Preuve complémentaire — non-divulgation dans les logs</span></div>
+      <p>Deux preuves étaient possibles ; celle-ci choisit la <strong>non-divulgation</strong> : un client envoie une clé API et un <code>machine_id</code> volontairement identifiables comme des marqueurs de test, et le test capture tout ce que <code>loguru</code> écrit pendant la requête.</p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">tests/test_security.py::test_no_secret_or_payload_leak_in_logs</span></div>
+        <pre>captured = []
+logger.add(captured.append, level="TRACE")
+client.post("/predict-tabular",
+            headers={"X-API-Key": secret_value},
+            json={"machine_id": payload_marker, "readings": []})
+
+<span class="ok">assert secret_value not in logs_text</span>
+<span class="ok">assert payload_marker not in logs_text</span>  <span class="dim"># PASS</span></pre>
+      </div>
+      <div class="callout">
+        <strong>Ce que ce test prouve — et ne prouve pas.</strong> Il confirme qu'aucune clé ni aucune donnée du payload ne fuite dans les journaux actuels. Il <strong>ne prouve pas</strong> qu'un audit logging existe : sans événement structuré (horodatage, request_id, route, code retour) écrit quelque part, la traçabilité en cas d'incident reste absente. D'où le statut <span class="pill warn">Planifié v0</span>, inchangé.
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Repères</p>
+    <h2>Glossaire du module</h2>
+    <dl class="glossary">
+      <div><dt>STRIDE</dt><dd>six familles de menaces (usurpation, altération, déni d'action, fuite, déni de service, élévation de privilège) — un canevas pour ne rien oublier, pas une checklist de conformité.</dd></div>
+      <div><dt>Adversarial</dt><dd>une entrée délibérément truquée pour tromper le modèle ou son pipeline, distincte d'une simple donnée invalide.</dd></div>
+      <div><dt>Moindre privilège</dt><dd>n'accorder à un client (ou un service) que le strict nécessaire — ici, une clé API unique, tout-ou-rien, sans granularité de rôle.</dd></div>
+      <div><dt>Planifié v0</dt><dd>un contrôle dont le besoin est identifié et le contrat futur défini, mais sans code ni test aujourd'hui — un statut honnête, pas un contrôle dégradé.</dd></div>
+    </dl>
+  </section>
+
+  <footer>
+    <span>Prochaine étape : module 27 — conteneurisation (Dockerfile, non-root)</span>
+    <span>guillaume.saidani@ext.aelion.fr</span>
+  </footer>
+
+</div>

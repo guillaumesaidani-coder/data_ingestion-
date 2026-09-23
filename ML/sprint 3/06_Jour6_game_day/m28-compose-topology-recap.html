@@ -1,0 +1,578 @@
+<title>InduSense Compose Topology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f8f7;
+    --surface:#ffffff;
+    --surface-2:#eef2f0;
+    --ink:#16211d;
+    --ink-dim:#55645d;
+    --line:#ccd6d0;
+    --accent:#276b57;
+    --accent-soft:#dbeee7;
+    --accent-ink:#0f4a3a;
+    --host:#9a5a1f;
+    --host-soft:#f3e6d6;
+    --host-ink:#7a4517;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#101513;
+      --surface:#171f1c;
+      --surface-2:#1e2926;
+      --ink:#e7efec;
+      --ink-dim:#9db0a8;
+      --line:#2c3a35;
+      --accent:#5fcaa8;
+      --accent-soft:#1d3931;
+      --accent-ink:#bdf0dd;
+      --host:#e0a25c;
+      --host-soft:#3a2a17;
+      --host-ink:#f0c08e;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#101513;
+    --surface:#171f1c;
+    --surface-2:#1e2926;
+    --ink:#e7efec;
+    --ink-dim:#9db0a8;
+    --line:#2c3a35;
+    --accent:#5fcaa8;
+    --accent-soft:#1d3931;
+    --accent-ink:#bdf0dd;
+    --host:#e0a25c;
+    --host-soft:#3a2a17;
+    --host-ink:#f0c08e;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    padding:48px 24px 64px;
+  }
+  main{
+    max-width:920px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    gap:36px;
+  }
+  header{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:24px;
+  }
+  .eyebrow{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:12px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--accent-ink);
+    background:var(--accent-soft);
+    display:inline-block;
+    width:fit-content;
+    padding:3px 9px;
+    border-radius:4px;
+  }
+  h1{
+    margin:0;
+    font-size:clamp(24px,3.4vw,32px);
+    font-weight:700;
+    text-wrap:balance;
+    letter-spacing:-.01em;
+  }
+  header p{
+    margin:0;
+    max-width:62ch;
+    color:var(--ink-dim);
+    font-size:15px;
+    line-height:1.55;
+  }
+
+  figure{margin:0;display:flex;flex-direction:column;gap:14px;}
+  .diagram-frame{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:8px;
+  }
+  svg{display:block;width:100%;height:auto;}
+  figcaption{
+    font-size:13px;
+    color:var(--ink-dim);
+    line-height:1.6;
+    max-width:70ch;
+  }
+  figcaption b{color:var(--ink);font-weight:600;}
+  figcaption .host-dot, figcaption .accent-dot{
+    display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;
+  }
+  figcaption .host-dot{background:var(--host);}
+  figcaption .accent-dot{background:var(--accent);}
+
+  .svg-name{font-family:"IBM Plex Mono", ui-monospace, monospace;font-weight:700;fill:var(--ink);}
+  .svg-sub{font-family:"IBM Plex Mono", ui-monospace, monospace;fill:var(--ink-dim);}
+  .svg-role{font-family:"IBM Plex Sans", sans-serif;fill:var(--ink-dim);letter-spacing:.04em;}
+  .svg-port{font-family:"IBM Plex Mono", ui-monospace, monospace;font-weight:600;fill:var(--accent-ink);}
+  .svg-port-dim{font-family:"IBM Plex Mono", ui-monospace, monospace;fill:var(--ink-dim);}
+  .svg-label{font-family:"IBM Plex Mono", ui-monospace, monospace;fill:var(--ink-dim);}
+  .svg-hostlabel{font-family:"IBM Plex Mono", ui-monospace, monospace;fill:var(--host-ink);}
+  .svg-boundary-label{font-family:"IBM Plex Mono", ui-monospace, monospace;fill:var(--accent-ink);letter-spacing:.06em;}
+  .svg-step{font-family:"IBM Plex Mono", ui-monospace, monospace;fill:var(--ink-dim);}
+
+  section.ref{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  section.ref h2{
+    margin:0;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+  }
+  .table-wrap{
+    overflow-x:auto;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:var(--surface);
+  }
+  table{
+    border-collapse:collapse;
+    width:100%;
+    min-width:640px;
+    font-size:13.5px;
+  }
+  th,td{
+    text-align:left;
+    padding:10px 14px;
+    border-bottom:1px solid var(--line);
+    white-space:nowrap;
+  }
+  thead th{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:11px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    background:var(--surface-2);
+  }
+  tbody tr:last-child td{border-bottom:none;}
+  td.svc{font-family:"IBM Plex Mono", ui-monospace, monospace;font-weight:600;}
+  td.dim{color:var(--ink-dim);font-family:"IBM Plex Mono", ui-monospace, monospace;font-size:13px;}
+  td.prose{color:var(--ink);font-size:13.5px;white-space:normal;line-height:1.5;}
+  td.prose.why{color:var(--ink-dim);}
+  .reco{
+    display:inline-block;font-family:"IBM Plex Mono", ui-monospace, monospace;font-size:11.5px;
+    font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;
+  }
+  .reco.yes{color:var(--accent-ink);background:var(--accent-soft);}
+  .reco.depends{color:var(--ink-dim);background:var(--surface-2);}
+  .reco.optional{color:var(--host-ink);background:var(--host-soft);}
+
+  .practice-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+  }
+  @media (max-width:720px){ .practice-grid{grid-template-columns:1fr;} }
+  .practice-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .practice-card h3{
+    margin:0;
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:13px;
+    font-weight:700;
+    color:var(--ink);
+  }
+  .practice-card ul{
+    margin:0;
+    padding-left:18px;
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+  }
+  .practice-card li{
+    font-size:13px;
+    color:var(--ink-dim);
+    line-height:1.5;
+  }
+  .practice-card.cross{
+    grid-column:1 / -1;
+    background:var(--surface-2);
+    border-style:dashed;
+  }
+
+  .k8s-cols{
+    display:grid;
+    grid-template-columns:1.3fr 1fr;
+    gap:20px;
+  }
+  @media (max-width:720px){ .k8s-cols{grid-template-columns:1fr;} }
+  .k8s-benefits{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .k8s-benefits .item{
+    display:flex;
+    gap:10px;
+    align-items:baseline;
+  }
+  .k8s-benefits .item::before{
+    content:"";
+    width:6px;height:6px;border-radius:50%;
+    background:var(--accent);
+    flex:none;
+    transform:translateY(-3px);
+  }
+  .k8s-benefits b{font-size:13.5px;color:var(--ink);}
+  .k8s-benefits span.detail{font-size:13px;color:var(--ink-dim);}
+  .k8s-cost{
+    background:var(--host-soft);
+    border:1px solid var(--host);
+    border-radius:10px;
+    padding:16px 18px;
+    font-size:13px;
+    color:var(--ink);
+    line-height:1.6;
+    align-self:start;
+  }
+  .k8s-cost b{color:var(--host-ink);}
+  .k8s-threshold{
+    background:var(--accent-soft);
+    border:1px solid var(--accent);
+    border-radius:10px;
+    padding:14px 18px;
+    font-size:13px;
+    color:var(--ink);
+    line-height:1.6;
+  }
+  .k8s-threshold b{color:var(--accent-ink);}
+
+  .run-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .run-card h3{
+    margin:0;
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:13px;
+    font-weight:700;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .run-card h3 .tag{
+    font-size:10px;
+    font-weight:600;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:var(--host-ink);
+    background:var(--host-soft);
+    border-radius:20px;
+    padding:2px 8px;
+  }
+  .cmd{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:12.5px;
+    background:var(--surface-2);
+    color:var(--ink);
+    border-radius:6px;
+    padding:9px 12px;
+    overflow-x:auto;
+    white-space:pre;
+  }
+  .cmd .cmt{color:var(--ink-dim);}
+  .run-card p{
+    margin:0;
+    font-size:13px;
+    color:var(--ink-dim);
+    line-height:1.55;
+  }
+  .run-card p code{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-size:12px;
+    background:var(--surface-2);
+    padding:1px 4px;
+    border-radius:3px;
+  }
+  .run-summary{
+    font-size:13px;
+    color:var(--ink-dim);
+    line-height:1.6;
+  }
+  .run-summary b{color:var(--ink);font-weight:600;}
+
+  footer{
+    border-top:1px solid var(--line);
+    padding-top:20px;
+    font-size:13px;
+    color:var(--ink-dim);
+    line-height:1.6;
+  }
+  footer b{color:var(--ink);font-weight:600;}
+</style>
+
+<main>
+  <header>
+    <span class="eyebrow">compose.yaml · module 28</span>
+    <h1>InduSense — topologie des services Compose</h1>
+    <p>Les quatre services démarrent dans l'ordre imposé par <code>depends_on: condition: service_healthy</code> : chaque flèche part du service consommateur vers celui dont il attend l'état <em>healthy</em>. L'exporteur de drift tourne hors de ce réseau, sur l'hôte.</p>
+  </header>
+
+  <figure>
+    <div class="diagram-frame">
+      <svg viewBox="0 0 1000 590" role="img" aria-label="Quatre services db, api, prometheus, grafana dans le réseau Docker Compose, chacun attendant l'état healthy du précédent ; l'exporteur de drift tourne à part sur l'hôte et est scrappé par Prometheus via host.docker.internal.">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--ink-dim)"></path>
+          </marker>
+          <marker id="arrow-host" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="var(--host)"></path>
+          </marker>
+        </defs>
+
+        <!-- compose network boundary -->
+        <rect x="40" y="64" width="920" height="232" rx="14" fill="var(--accent-soft)" fill-opacity="0.35" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="6 5"></rect>
+        <text x="64" y="90" class="svg-boundary-label" font-size="11.5">RÉSEAU DOCKER COMPOSE (bridge par défaut)</text>
+
+        <!-- db -->
+        <g>
+          <rect x="72" y="120" width="168" height="130" rx="10" fill="var(--surface)" stroke="var(--line)" stroke-width="1.4"></rect>
+          <circle cx="86" cy="134" r="11" fill="none" stroke="var(--ink-dim)" stroke-width="1.2"></circle>
+          <text x="86" y="138" class="svg-step" font-size="10.5" text-anchor="middle">1</text>
+          <text x="156" y="156" class="svg-name" font-size="16" text-anchor="middle">db</text>
+          <text x="156" y="176" class="svg-sub" font-size="11.5" text-anchor="middle">postgres:16</text>
+          <text x="156" y="200" class="svg-role" font-size="10.5" text-anchor="middle">STOCKAGE RELATIONNEL</text>
+          <text x="156" y="228" class="svg-port-dim" font-size="11.5" text-anchor="middle">interne :5432</text>
+        </g>
+
+        <!-- api -->
+        <g>
+          <rect x="300" y="120" width="168" height="130" rx="10" fill="var(--surface)" stroke="var(--line)" stroke-width="1.4"></rect>
+          <circle cx="314" cy="134" r="11" fill="none" stroke="var(--ink-dim)" stroke-width="1.2"></circle>
+          <text x="314" y="138" class="svg-step" font-size="10.5" text-anchor="middle">2</text>
+          <text x="384" y="156" class="svg-name" font-size="16" text-anchor="middle">api</text>
+          <text x="384" y="176" class="svg-sub" font-size="11.5" text-anchor="middle">build: . (Dockerfile)</text>
+          <text x="384" y="200" class="svg-role" font-size="10.5" text-anchor="middle">APPLICATION INDUSENSE</text>
+          <text x="384" y="228" class="svg-port" font-size="11.5" text-anchor="middle">↦ localhost:8000</text>
+        </g>
+
+        <!-- prometheus -->
+        <g>
+          <rect x="528" y="120" width="168" height="130" rx="10" fill="var(--surface)" stroke="var(--line)" stroke-width="1.4"></rect>
+          <circle cx="542" cy="134" r="11" fill="none" stroke="var(--ink-dim)" stroke-width="1.2"></circle>
+          <text x="542" y="138" class="svg-step" font-size="10.5" text-anchor="middle">3</text>
+          <text x="612" y="156" class="svg-name" font-size="16" text-anchor="middle">prometheus</text>
+          <text x="612" y="176" class="svg-sub" font-size="11.5" text-anchor="middle">prom/prometheus:v3.1.0</text>
+          <text x="612" y="200" class="svg-role" font-size="10.5" text-anchor="middle">COLLECTE DES MÉTRIQUES</text>
+          <text x="612" y="228" class="svg-port" font-size="11.5" text-anchor="middle">↦ localhost:9090</text>
+        </g>
+
+        <!-- grafana -->
+        <g>
+          <rect x="756" y="120" width="168" height="130" rx="10" fill="var(--surface)" stroke="var(--line)" stroke-width="1.4"></rect>
+          <circle cx="770" cy="134" r="11" fill="none" stroke="var(--ink-dim)" stroke-width="1.2"></circle>
+          <text x="770" y="138" class="svg-step" font-size="10.5" text-anchor="middle">4</text>
+          <text x="840" y="156" class="svg-name" font-size="16" text-anchor="middle">grafana</text>
+          <text x="840" y="176" class="svg-sub" font-size="11.5" text-anchor="middle">grafana/grafana:11.4.0</text>
+          <text x="840" y="200" class="svg-role" font-size="10.5" text-anchor="middle">TABLEAUX DE BORD</text>
+          <text x="840" y="228" class="svg-port" font-size="11.5" text-anchor="middle">↦ localhost:3000</text>
+        </g>
+
+        <!-- arrow api -> db -->
+        <line x1="300" y1="185" x2="244" y2="185" stroke="var(--ink-dim)" stroke-width="1.4" marker-end="url(#arrow)"></line>
+        <text x="270" y="168" class="svg-label" font-size="10" text-anchor="middle">psycopg</text>
+        <text x="270" y="179" class="svg-label" font-size="10" text-anchor="middle">:5432</text>
+
+        <!-- arrow prometheus -> api -->
+        <line x1="528" y1="185" x2="472" y2="185" stroke="var(--ink-dim)" stroke-width="1.4" marker-end="url(#arrow)"></line>
+        <text x="498" y="168" class="svg-label" font-size="10" text-anchor="middle">scrape</text>
+        <text x="498" y="179" class="svg-label" font-size="10" text-anchor="middle">:8000</text>
+
+        <!-- arrow grafana -> prometheus -->
+        <line x1="756" y1="185" x2="700" y2="185" stroke="var(--ink-dim)" stroke-width="1.4" marker-end="url(#arrow)"></line>
+        <text x="726" y="168" class="svg-label" font-size="10" text-anchor="middle">PromQL</text>
+        <text x="726" y="179" class="svg-label" font-size="10" text-anchor="middle">:9090</text>
+
+        <!-- exporter box, outside the compose network -->
+        <rect x="522" y="420" width="180" height="112" rx="10" fill="var(--host-soft)" stroke="var(--host)" stroke-width="1.6"></rect>
+        <text x="612" y="450" class="svg-hostlabel" font-size="15" font-weight="700" text-anchor="middle">drift exporter</text>
+        <text x="612" y="470" class="svg-sub" font-size="10.5" text-anchor="middle">export_drift_metrics.py</text>
+        <text x="612" y="490" class="svg-hostlabel" font-size="11" text-anchor="middle">processus hôte · :9109</text>
+        <text x="612" y="510" class="svg-role" font-size="10" text-anchor="middle">HORS RÉSEAU COMPOSE</text>
+
+        <!-- arrow prometheus -> exporter, crossing the boundary -->
+        <line x1="612" y1="250" x2="612" y2="414" stroke="var(--host)" stroke-width="1.6" marker-end="url(#arrow-host)"></line>
+        <text x="624" y="345" class="svg-hostlabel" font-size="10.5" text-anchor="start">scrape :9109</text>
+        <text x="624" y="359" class="svg-hostlabel" font-size="10.5" text-anchor="start">via host.docker.internal</text>
+      </svg>
+    </div>
+    <figcaption>
+      <span class="accent-dot"></span><b>Réseau Compose (pointillés teal)</b> — les quatre services déclarés dans <code>compose.yaml</code> ; les chiffres 1→4 dans chaque boîte donnent l'ordre de démarrage réel (chaque flèche part du consommateur vers le service dont il attend l'état <em>healthy</em>). <span class="host-dot"></span><b>Exporteur de drift (ambre)</b> — lancé à la main sur l'hôte, hors du réseau Compose ; Prometheus le scrape quand même via <code>extra_hosts: host.docker.internal</code>.
+    </figcaption>
+  </figure>
+
+  <section class="ref">
+    <h2>Détail par service</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Service</th><th>Image / build</th><th>Port publié</th><th>depends_on</th><th>Healthcheck</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="svc">db</td><td class="dim">postgres:16</td><td class="dim">— (interne 5432)</td><td class="dim">—</td><td class="dim">pg_isready -U postgres</td></tr>
+          <tr><td class="svc">api</td><td class="dim">build: . (Dockerfile)</td><td class="dim">8000</td><td class="dim">db (healthy)</td><td class="dim">GET /health</td></tr>
+          <tr><td class="svc">prometheus</td><td class="dim">prom/prometheus:v3.1.0</td><td class="dim">9090</td><td class="dim">api (healthy)</td><td class="dim">GET /-/ready</td></tr>
+          <tr><td class="svc">grafana</td><td class="dim">grafana/grafana:11.4.0</td><td class="dim">3000</td><td class="dim">prometheus (healthy)</td><td class="dim">GET /api/health</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="ref">
+    <h2>Hors Compose : comment tournent-ils en formation ?</h2>
+    <p class="run-summary">Aucun des trois n'est vraiment « déployé » — ce sont des exécutions manuelles, locales.</p>
+    <div class="practice-grid">
+      <div class="run-card">
+        <h3>drift exporter <span class="tag">foreground</span></h3>
+        <div class="cmd">uv run python scripts/export_drift_metrics.py</div>
+        <p>Lancé à la main dans un terminal, gardé ouvert (« terminal 1 » du TP). Pas de démon, pas de service système — rien ne redémarre si le terminal se ferme.</p>
+      </div>
+      <div class="run-card">
+        <h3>Prefect <span class="tag">ephemeral</span></h3>
+        <div class="cmd">uv run --frozen python flows/pipeline.py
+
+<span class="cmt"># ou, en conteneur jetable :</span>
+docker compose run --rm --no-deps \
+  api python -m indusense.flows.predict_flow</div>
+        <p>Deux façons, aucune n'est un vrai déploiement Prefect (ni serveur, ni agent, ni UI). Le second cas utilise l'image <code>api</code> du compose mais pas comme service persistant — juste un <code>run</code> ponctuel. Et <code>PREFECT_PROFILE=ephemeral</code> est explicitement fixé (<code>GUIDE_MULTIPLATEFORME_APPRENANT.md:398</code>) : aucun serveur Prefect, état local jetable.</p>
+      </div>
+      <div class="run-card">
+        <h3>MLflow <span class="tag">pas de serveur</span></h3>
+        <div class="cmd">uv run python scripts/demo_versioning.py</div>
+        <p>Encore plus minimal : pas de serveur du tout. <code>mlflow.db</code> (SQLite) et <code>mlruns/</code> à la racine sont juste le backend de tracking local par défaut, créés par ce script — le seul du repo à utiliser réellement MLflow.</p>
+      </div>
+    </div>
+    <p class="run-summary">Bref : cohérent avec un repo de formation — ce sont des exécutions pédagogiques ponctuelles, pas des services en production.</p>
+  </section>
+
+  <section class="ref">
+    <h2>Bonnes pratiques — faut-il les conteneuriser ?</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Composant</th><th>En production</th><th>Pourquoi</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="svc">drift exporter</td>
+            <td><span class="reco yes">oui, à conteneuriser</span></td>
+            <td class="prose why">un service compose de plus, scrapé par son nom de service interne — pas par <code>host.docker.internal</code>, qui est un hack de dev/pédagogie. Le laisser sur l'hôte casse la reproductibilité et le déploiement.</td>
+          </tr>
+          <tr>
+            <td class="svc">Prefect</td>
+            <td><span class="reco depends">selon l'usage</span></td>
+            <td class="prose why">en local/dev, un agent Prefect peut tourner en conteneur dans le compose ; en prod on utilise plutôt Prefect Cloud ou un déploiement séparé (k8s, service managé) — pas forcément le même compose applicatif.</td>
+          </tr>
+          <tr>
+            <td class="svc">MLflow</td>
+            <td><span class="reco optional">optionnel</span></td>
+            <td class="prose why">généralement un service à part, souvent mutualisé entre plusieurs projets avec son propre stockage d'artefacts. L'ajouter à ce compose serait acceptable, mais pas obligatoire.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="ref">
+    <h2>Bonnes pratiques détaillées, par composant</h2>
+    <div class="practice-grid">
+      <div class="practice-card">
+        <h3>drift exporter</h3>
+        <ul>
+          <li>Conteneurisé, service interne sans port publié, scrapé par nom de service — pas de port exposé à l'hôte.</li>
+          <li><code>restart: unless-stopped</code> + healthcheck, comme les autres services.</li>
+          <li>Modèle pull (Gauge + <code>/metrics</code>) adapté à un process long-lived ; pour un batch court, préférer un Pushgateway plutôt qu'un serveur HTTP à maintenir vivant.</li>
+          <li>Chemins et seuils via variables d'environnement, jamais en dur.</li>
+        </ul>
+      </div>
+      <div class="practice-card">
+        <h3>Prefect</h3>
+        <ul>
+          <li>Sortir du profil <code>ephemeral</code> : un vrai serveur (auto-hébergé ou Prefect Cloud) avec backend Postgres, pas SQLite local.</li>
+          <li>Déploiements déclarés (<code>prefect deploy</code> / <code>prefect.yaml</code>), versionnés, avec schedule ou trigger explicite — pas un script lancé à la main.</li>
+          <li>Un ou plusieurs <em>workers</em> dans un work pool dédié, conteneurisés, scalables indépendamment de l'API.</li>
+          <li>Secrets (DB, clés d'API) via Prefect Blocks ou un vault, jamais en variables inline.</li>
+        </ul>
+      </div>
+      <div class="practice-card">
+        <h3>MLflow</h3>
+        <ul>
+          <li>Serveur de tracking centralisé (<code>mlflow server</code>) mutualisé entre projets — pas un <code>mlruns/</code> local par repo.</li>
+          <li>Metadata sur une vraie base (Postgres), artefacts sur un stockage objet (S3/GCS/Azure Blob), jamais le disque local du conteneur.</li>
+          <li>Derrière une auth / reverse proxy.</li>
+          <li>Gouvernance des transitions du Model Registry (staging → production).</li>
+        </ul>
+      </div>
+      <div class="practice-card cross">
+        <h3>Transverses, aux trois</h3>
+        <ul>
+          <li>Infra as code (compose ou k8s versionné + CI/CD qui build et pousse les images) — pas de <code>docker compose up --build</code> manuel sur un poste.</li>
+          <li>Limites CPU/mémoire par service, logs sur stdout, secrets hors du dépôt (vault / secret manager).</li>
+          <li>Sauvegardes pour tout ce qui est stateful (bases, stockage d'artefacts, volumes Prometheus/Grafana).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="ref">
+    <h2>Ce qu'apporterait Kubernetes, en prod réelle</h2>
+    <div class="k8s-cols">
+      <div class="k8s-benefits">
+        <div class="item"><span><b>Scaling &amp; auto-scaling</b> — <span class="detail">répliquer <code>api</code> selon la charge (HPA), impossible nativement en Compose.</span></span></div>
+        <div class="item"><span><b>Self-healing</b> — <span class="detail">un pod qui plante est relancé automatiquement, un nœud qui tombe fait migrer les pods ailleurs.</span></span></div>
+        <div class="item"><span><b>Rolling updates / rollback</b> — <span class="detail">déploiement progressif sans coupure, retour arrière en une commande.</span></span></div>
+        <div class="item"><span><b>Bin packing multi-machines</b> — <span class="detail">Compose reste sur un seul hôte ; k8s répartit la charge sur un cluster.</span></span></div>
+        <div class="item"><span><b>Service discovery + load balancing natifs</b> — <span class="detail">un <code>Service</code> équilibre entre plusieurs replicas, pas une instance unique par service.</span></span></div>
+        <div class="item"><span><b>Secrets/config déclaratifs</b> — <span class="detail"><code>Secret</code> / <code>ConfigMap</code> avec RBAC et rotation, plutôt qu'un <code>.env</code> en clair.</span></span></div>
+        <div class="item"><span><b>Ingress/TLS centralisé</b> — <span class="detail">un contrôleur d'entrée gère certificats et routage pour tous les services.</span></span></div>
+        <div class="item"><span><b>Écosystème d'opérateurs</b> — <span class="detail">Prefect (workers en <code>Deployment</code> scalable), kube-prometheus-stack, opérateur Postgres avec failover, etc.</span></span></div>
+      </div>
+      <div class="k8s-cost">
+        <b>Le coût en face :</b> complexité opérationnelle largement supérieure — etcd, control plane, réseau CNI, RBAC, manifests ou Helm. Se justifie à partir de plusieurs nœuds, d'une charge variable, ou de plusieurs environnements (dev/staging/prod) à répliquer proprement.
+      </div>
+    </div>
+    <div class="k8s-threshold">
+      <b>Pour InduSense aujourd'hui :</b> stack mono-nœud, Compose reste largement suffisant. Kubernetes deviendrait pertinent si le projet passait en multi-instances avec disponibilité exigée.
+    </div>
+  </section>
+
+  <footer>
+    <b>Hors Compose :</b> l'exporteur de drift (module 31-32, terminal séparé), les flows Prefect et le tracking MLflow tournent en dehors de cette stack — voir <code>docs/TP_drift.md</code>. C'est un choix pédagogique par module, pas une recommandation de production : voir les sections ci-dessus.
+  </footer>
+</main>
