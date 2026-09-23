@@ -1,0 +1,13 @@
+groups:
+  - name: indusense-drift
+    rules:
+      - alert: IndusenseDriftPSIEleve
+        expr: indusense_drift_psi > 0.25
+        labels:
+          severity: majeure
+        annotations:
+          summary: "PSI > 0.25 sur {{ $labels.feature }} (référence {{ $labels.reference }})"
+          description: >-
+            Voir docs/runbook.md : isoler la feature, vérifier le rappel du modèle,
+            exclure un changement de régime (référence alternative) avant toute
+            action sur le modèle.
