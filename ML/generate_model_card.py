@@ -14,43 +14,26 @@ Usage:
 from __future__ import annotations
 
 import json
+import sys
 import warnings
 from pathlib import Path
 
 warnings.filterwarnings("ignore")
 
-import pandas as pd
-from sqlalchemy import create_engine
-from sqlalchemy.engine import URL
-from sklearn.impute import SimpleImputer
-from sklearn.pipeline import Pipeline
-from sklearn.metrics import (
-    average_precision_score, roc_auc_score, f1_score,
-    confusion_matrix, precision_score, recall_score,
-)
-from xgboost import XGBClassifier
+sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
+
 from codecarbon import EmissionsTracker
 import mlflow
 
 from huggingface_hub import ModelCard, ModelCardData
 from huggingface_hub.repocard_data import EvalResult
 
-RANDOM_STATE = 42
+from indusense.config import get_engine
+from indusense.modeling.dataset import load_gold_dataset
+from indusense.modeling.train import B11_PARAMS, train_and_evaluate
+
 ARTIFACTS_DIR = Path("artifacts")
 ARTIFACTS_DIR.mkdir(exist_ok=True)
-
-BEST_PARAMS_BASE = {
-    "n_estimators":     287,
-    "max_depth":        9,
-    "learning_rate":    0.02887139049912187,
-    "subsample":        0.8252019146348859,
-    "colsample_bytree": 0.5736306798333981,
-    "min_child_weight": 11,
-    "reg_alpha":        0.01918528344873483,
-    "reg_lambda":       0.6228756133555158,
-    "random_state":     RANDOM_STATE,
-    "verbosity":        0,
-}
 
 LINEAGE = [
     {"model": "B5 (TP7)",       "note": "Baseline LogReg/RF/XGBoost, comparaison initiale"},
@@ -64,38 +47,14 @@ LINEAGE = [
 
 
 def load_data():
-    url = URL.create(
-        drivername="postgresql+psycopg2",
-        username="indusense_user",
-        password="ThEP@ssW0rd",
-        host="localhost", port=5432, database="indusense_db",
-    )
-    engine = create_engine(url)
-    df = pd.read_sql(
-        "SELECT * FROM gold_machine_hourly_feature ORDER BY machine_id, window_start",
-        engine,
-    )
+    gold = load_gold_dataset(get_engine())
+    n_machines = gold.trainval_df["machine_id"].nunique()
 
-    target = "label_failure_next_24h"
-    leakage_cols = [
-        "machine_id", "ingestion_batch_id", "window_start", "window_end", "split_set",
-        "label_failure_next_6h", "label_failure_next_12h", "label_failure_next_48h",
-        target, "feature_row_id",
-    ]
-    feature_cols = [c for c in df.columns if c not in leakage_cols]
-
-    trainval_df = df[df["split_set"].isin(["train", "validation"])].copy()
-    test_df = df[df["split_set"] == "test"].copy()
-
-    X_tv, y_tv = trainval_df[feature_cols], trainval_df[target]
-    X_test, y_test = test_df[feature_cols], test_df[target]
-    n_machines = trainval_df["machine_id"].nunique()
-
-    return X_tv, y_tv, X_test, y_test, feature_cols, n_machines
+    return gold.X_tv, gold.y_tv, gold.X_test, gold.y_test, gold.feature_cols, n_machines
 
 
 def refit_and_measure(X_tv, y_tv, X_test, y_test, spw_global):
-    best_params = {**BEST_PARAMS_BASE, "scale_pos_weight": spw_global}
+    best_params = {**B11_PARAMS, "scale_pos_weight": spw_global}
 
     tracker = EmissionsTracker(
         project_name="ml_b11_gkf_refit",
@@ -105,32 +64,10 @@ def refit_and_measure(X_tv, y_tv, X_test, y_test, spw_global):
         save_to_file=True,
     )
     tracker.start()
-
-    pipe = Pipeline([
-        ("imputer", SimpleImputer(strategy="median")),
-        ("model", XGBClassifier(**best_params)),
-    ])
-    pipe.fit(X_tv, y_tv)
-
+    _, metrics = train_and_evaluate(X_tv, y_tv, X_test, y_test, best_params)
     emissions_kg = tracker.stop()
     carbon_data = tracker.final_emissions_data
 
-    y_prob_test = pipe.predict_proba(X_test)[:, 1]
-    y_pred_test = pipe.predict(X_test)
-    y_prob_tv = pipe.predict_proba(X_tv)[:, 1]
-
-    tn, fp, fn, tp = confusion_matrix(y_test, y_pred_test).ravel()
-
-    metrics = {
-        "pr_auc_train":   round(float(average_precision_score(y_tv, y_prob_tv)), 4),
-        "pr_auc_test":    round(float(average_precision_score(y_test, y_prob_test)), 4),
-        "roc_auc_test":   round(float(roc_auc_score(y_test, y_prob_test)), 4),
-        "f1_test":        round(float(f1_score(y_test, y_pred_test, zero_division=0)), 4),
-        "precision_test": round(float(precision_score(y_test, y_pred_test, zero_division=0)), 4),
-        "recall_test":    round(float(recall_score(y_test, y_pred_test, zero_division=0)), 4),
-        "tp": int(tp), "tn": int(tn), "fp": int(fp), "fn": int(fn),
-        "threshold": 0.5,
-    }
     return best_params, metrics, emissions_kg, carbon_data
 
 

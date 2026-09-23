@@ -90,6 +90,25 @@ class BronzeIncident(Base):
     parse_ok_reason        = Column(String,  nullable=False, server_default="")
 
 
+class BronzeMaintenance(Base):
+    __tablename__ = "bronze_maintenance"
+
+    id                     = Column(Integer, primary_key=True, autoincrement=True)
+    ingestion_batch_id     = Column(UUID(as_uuid=True),
+                                    ForeignKey("ingestion_batch.ingestion_batch_id"))
+    maintenance_id         = Column(Integer)
+    machine_id             = Column(String)
+    maintenance_at         = Column(String)
+    maintenance_type       = Column(String)   # proactive | reactive
+    action_type            = Column(String)
+    component              = Column(String)
+    description            = Column(String)
+    related_incident_id    = Column(String)
+    duration_hours         = Column(Float)
+    parse_ok                = Column(Boolean, nullable=False, server_default="true")
+    parse_ok_reason         = Column(String,  nullable=False, server_default="")
+
+
 class SilverSensorReading(Base):
     __tablename__ = "silver_sensor_reading"
 
@@ -122,6 +141,22 @@ class SilverIncident(Base):
     is_label_event     = Column(Boolean, nullable=False, server_default="false")
 
 
+class SilverMaintenance(Base):
+    __tablename__ = "silver_maintenance"
+
+    silver_maintenance_id = Column(Integer, primary_key=True, autoincrement=True)
+    ingestion_batch_id     = Column(UUID(as_uuid=True),
+                                    ForeignKey("ingestion_batch.ingestion_batch_id"))
+    maintenance_code       = Column(String, unique=True)
+    machine_id             = Column(String)
+    performed_at            = Column(DateTime(timezone=True))
+    maintenance_type        = Column(String)   # proactive | reactive
+    action_type              = Column(String)
+    component                 = Column(String)
+    duration_hours            = Column(Float)
+    related_incident_code     = Column(String, nullable=True)
+
+
 class GoldMachineHourlyFeature(Base):
     __tablename__ = "gold_machine_hourly_feature"
 
@@ -151,8 +186,10 @@ class GoldMachineHourlyFeature(Base):
     pressure_max_6h   = Column(Float)
     pressure_std_6h   = Column(Float)
     voltage_mean_6h   = Column(Float)
+    voltage_max_6h    = Column(Float)
     voltage_std_6h    = Column(Float)
     rotation_mean_6h  = Column(Float)
+    rotation_max_6h   = Column(Float)
     rotation_std_6h   = Column(Float)
 
     # --- Rolling 12h ---
@@ -163,8 +200,10 @@ class GoldMachineHourlyFeature(Base):
     pressure_max_12h  = Column(Float)
     pressure_std_12h  = Column(Float)
     voltage_mean_12h  = Column(Float)
+    voltage_max_12h   = Column(Float)
     voltage_std_12h   = Column(Float)
     rotation_mean_12h = Column(Float)
+    rotation_max_12h  = Column(Float)
     rotation_std_12h  = Column(Float)
 
     # --- Rolling 24h ---
@@ -175,8 +214,10 @@ class GoldMachineHourlyFeature(Base):
     pressure_max_24h  = Column(Float)
     pressure_std_24h  = Column(Float)
     voltage_mean_24h  = Column(Float)
+    voltage_max_24h   = Column(Float)
     voltage_std_24h   = Column(Float)
     rotation_mean_24h = Column(Float)
+    rotation_max_24h  = Column(Float)
     rotation_std_24h  = Column(Float)
 
     # --- Tendances (delta et trend) ---
@@ -201,6 +242,7 @@ class GoldMachineHourlyFeature(Base):
 
     # --- Production ---
     pieces_produced_sum_24h = Column(Integer)
+    capacity_utilization_pct = Column(Float)
 
     # --- Incidents lookback ---
     incident_count_prev_24h        = Column(Integer)
@@ -219,8 +261,18 @@ class GoldMachineHourlyFeature(Base):
     type_arret_urgence_count_prev_24h     = Column(Integer)
     type_defaut_qualite_count_prev_24h    = Column(Integer)
 
+    # --- Maintenance lookback ---
+    days_since_last_maintenance    = Column(Float)
+    maintenance_count_prev_30d     = Column(Integer)
+
     # --- Labels multi-horizons ---
     label_failure_next_6h  = Column(Boolean)
     label_failure_next_12h = Column(Boolean)
     label_failure_next_24h = Column(Boolean)
     label_failure_next_48h = Column(Boolean)
+
+    # --- Compte brut d'incidents futurs (avant seuillage booleen) ---
+    future_incident_count_6h  = Column(Integer)
+    future_incident_count_12h = Column(Integer)
+    future_incident_count_24h = Column(Integer)
+    future_incident_count_48h = Column(Integer)
