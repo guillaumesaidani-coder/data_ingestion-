@@ -17,7 +17,7 @@ model-index:
       type: indusense-gold-machine-hourly
     metrics:
     - type: pr_auc
-      value: 0.8799
+      value: 0.8945
       name: PR-AUC (average precision, test chronologique)
 ---
 
@@ -33,7 +33,7 @@ Classifieur XGBoost prédisant le risque de panne d'une machine industrielle dan
 
 <!-- Provide a longer summary of what this model is. -->
 
-Entraîné sur 112,996 observations horaires (15 machines, 69 features), évalué en validation croisée GroupKFold (une machine exclue par fold, pour ne jamais évaluer sur une machine vue à l'entraînement) et sur un jeu de test chronologiquement postérieur. Hyperparamètres optimisés par Optuna (TPE, 30 essais) sur l'objectif GroupKFold — voir `TP11.ipynb`.
+Entraîné sur 112,996 observations horaires (15 machines, 78 features), évalué en validation croisée GroupKFold (une machine exclue par fold, pour ne jamais évaluer sur une machine vue à l'entraînement) et sur un jeu de test chronologiquement postérieur. Hyperparamètres optimisés par Optuna (TPE, 30 essais) sur l'objectif GroupKFold — voir `TP11.ipynb`.
 
 - **Developed by:** Guillaume Saïdani
 - **Funded by [optional]:** [More Information Needed]
@@ -83,7 +83,7 @@ Alimentation d'un tableau de bord de maintenance prédictive classant les machin
 - **Performance très hétérogène par machine** : PR-AUC en validation croisée GroupKFold va de 0.39 (MACH-07) à 1.00 (MACH-11, MACH-15) — écart-type ±0.19 autour d'une moyenne de 0.78. Un score agrégé unique masque des machines où le modèle est nettement moins fiable.
 - **Sur-ajustement structurel** : PR-AUC train = 1.000 contre ~0.78 en CV — piloté à 63% par une seule feature (`incident_max_severity_prev_24h`, diagnostic TP9/TP10). Persiste malgré une régularisation poussée (`reg_lambda`, `min_child_weight` élevés) ; qualifié de structurel, pas résolu par les hyperparamètres seuls.
 - **Historique de fuite de données** : une version antérieure (B7, TP8) incluait `feature_row_id`, un identifiant séquentiel corrélé à l'ordre temporel, qui gonflait le PR-AUC de +0.111. Corrigé depuis TP8b — retiré explicitement des colonnes de fuite — mais signale la fragilité du pipeline de features aux fuites indirectes.
-- **Rappel modéré au seuil par défaut** : 87.8% de rappel, 89 pannes non détectées sur 727 au seuil 0.5 — un seuil plus bas augmenterait le rappel au prix de plus de fausses alertes (arbitrage non refait ici pour B11).
+- **Rappel modéré au seuil par défaut** : 91.1% de rappel, 65 pannes non détectées sur 727 au seuil 0.5 — un seuil plus bas augmenterait le rappel au prix de plus de fausses alertes (arbitrage non refait ici pour B11).
 - **Tentative de normalisation par machine infructueuse** : une normalisation z-score par machine a dégradé la généralisation en GroupKFold (TP10) — confirme que XGBoost est déjà insensible à l'échelle des features, ne pas réintroduire cette étape.
 
 ### Recommendations
@@ -113,7 +113,7 @@ proba = model.predict_proba(X_imputed)[:, 1]  # risque de panne à 24h
 
 <!-- This should link to a Dataset Card, perhaps with a short stub of information on what the training data is all about as well as documentation related to data pre-processing or additional filtering. -->
 
-Table `gold_machine_hourly_feature` (PostgreSQL, base indusense_db) — 112,996 observations horaires (entraînement + validation), 15 machines, 69 features (rolling 6h/12h/24h télémétrie + historique incidents agrégé 24h/7j). Split chronologique (quantiles 0.70/0.85 sur `window_start`), pas de KFold aléatoire (fuite temporelle sinon).
+Table `gold_machine_hourly_feature` (PostgreSQL, base indusense_db) — 112,996 observations horaires (entraînement + validation), 15 machines, 78 features (rolling 6h/12h/24h télémétrie + historique incidents agrégé 24h/7j). Split chronologique (quantiles 0.70/0.85 sur `window_start`), pas de KFold aléatoire (fuite temporelle sinon).
 
 ### Training Procedure
 
@@ -132,7 +132,7 @@ Imputation des valeurs manquantes par médiane (`SimpleImputer`), aucune normali
 
 <!-- This section provides information about throughput, start/end time, checkpoint size if relevant, etc. -->
 
-4.7s pour un ré-entraînement complet sur 112,996 lignes (poste de travail local, CPU)
+5.9s pour un ré-entraînement complet sur 112,996 lignes (poste de travail local, CPU)
 
 ## Evaluation
 
@@ -160,11 +160,11 @@ PR-AUC (average precision — préférée à l'accuracy vu le déséquilibre de 
 
 ### Results
 
-PR-AUC train=0.9997 · PR-AUC test=0.8799 · ROC-AUC test=0.9949 · F1 test=0.7586 · TP=638 TN=18900 FP=317 FN=89 · Précision=66.8% · Rappel=87.8%
+PR-AUC train=0.9998 · PR-AUC test=0.8945 · ROC-AUC test=0.9957 · F1 test=0.8054 · TP=662 TN=18962 FP=255 FN=65 · Précision=72.2% · Rappel=91.1%
 
 #### Summary
 
-PR-AUC test 0.88 sur un problème fortement déséquilibré (scale_pos_weight=27) — signal réel mais hétérogène selon les machines (voir limites). Écart train/CV important : le modèle généralise moins bien qu'il ne le suggère sur ses propres données d'entraînement.
+PR-AUC test 0.89 sur un problème fortement déséquilibré (scale_pos_weight=27) — signal réel mais hétérogène selon les machines (voir limites). Écart train/CV important : le modèle généralise moins bien qu'il ne le suggère sur ses propres données d'entraînement.
 
 ## Model Examination [optional]
 
@@ -179,10 +179,10 @@ Non réalisé — SHAP (TreeExplainer) recommandé en prochaine étape pour iden
 Carbon emissions can be estimated using the [Machine Learning Impact calculator](https://mlco2.github.io/impact#compute) presented in [Lacoste et al. (2019)](https://arxiv.org/abs/1910.09700).
 
 - **Hardware Type:** Intel Core i7-12700H (CPU) — entraînement XGBoost, pas de GPU requis
-- **Hours used:** 0.0013 h (ré-entraînement complet mesuré ci-dessus)
+- **Hours used:** 0.0016 h (ré-entraînement complet mesuré ci-dessus)
 - **Cloud Provider:** Aucun — poste de travail local
 - **Compute Region:** France (FRA)
-- **Carbon Emitted:** 0.0025 gCO2eq (0.045 Wh) — mesure CodeCarbon de ce ré-entraînement
+- **Carbon Emitted:** 0.0033 gCO2eq (0.060 Wh) — mesure CodeCarbon de ce ré-entraînement
 
 ## Technical Specifications [optional]
 
