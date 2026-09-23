@@ -1,0 +1,67 @@
+{
+  "feature_cols": [
+    "secteur",
+    "pays",
+    "taille_entreprise",
+    "plan",
+    "anciennete_mois",
+    "sieges_souscrits",
+    "utilisateurs_actifs",
+    "taux_adoption_pct",
+    "connexions_30j",
+    "heures_usage_30j",
+    "fonctionnalites_total",
+    "fonctionnalites_utilisees",
+    "nb_integrations",
+    "derniere_connexion_jours",
+    "tickets_support_90j",
+    "delai_reponse_support_h",
+    "csat",
+    "retards_paiement_12m",
+    "revenu_mensuel_recurrent_eur",
+    "prix_mensuel_par_siege_eur",
+    "fonctionnalites_incluses",
+    "sla_reponse_h",
+    "quota_stockage_go",
+    "support_dedie"
+  ],
+  "categorical_features": [
+    "secteur",
+    "pays",
+    "taille_entreprise",
+    "plan",
+    "support_dedie"
+  ],
+  "numeric_features": [
+    "anciennete_mois",
+    "sieges_souscrits",
+    "utilisateurs_actifs",
+    "taux_adoption_pct",
+    "connexions_30j",
+    "heures_usage_30j",
+    "fonctionnalites_total",
+    "fonctionnalites_utilisees",
+    "nb_integrations",
+    "derniere_connexion_jours",
+    "tickets_support_90j",
+    "delai_reponse_support_h",
+    "csat",
+    "retards_paiement_12m",
+    "revenu_mensuel_recurrent_eur",
+    "prix_mensuel_par_siege_eur",
+    "fonctionnalites_incluses",
+    "sla_reponse_h",
+    "quota_stockage_go"
+  ],
+  "churn": {
+    "roc_auc": 0.8803,
+    "pr_auc": 0.7615,
+    "seuil_decision": 0.44
+  },
+  "clv": {
+    "mae_eur": 33441.55,
+    "r2": 0.7293,
+    "clv_p25": 2477.5,
+    "clv_p75": 46443.75
+  }
+}

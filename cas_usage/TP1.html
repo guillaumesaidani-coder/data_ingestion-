@@ -1,0 +1,375 @@
+<title>TP1 — Cadrage du cas d'usage churn SaaS</title>
+<style>
+  /* ── Tokens — thème indigo/corail, cas d'usage churn ── */
+  :root {
+    --bg:        #f6f5fb;
+    --surface:   #ffffff;
+    --surface2:  #ece9f7;
+    --border:    #dcd6ef;
+    --accent:    #4338ca;
+    --accent2:   #6366f1;
+    --ok:        #059669;
+    --warn:      #d97706;
+    --danger:    #dc2626;
+    --info:      #0284c7;
+    --text:      #1e1b3a;
+    --muted:     #5c5680;
+    --code-bg:   #17142c;
+    --code-text: #c7c2f0;
+    --tag-bg:    #e0e7ff;
+    --tag-text:  #3730a3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:        #100e1e;
+      --surface:   #171429;
+      --surface2:  #1f1b35;
+      --border:    #322c52;
+      --accent:    #a5b4fc;
+      --accent2:   #818cf8;
+      --ok:        #34d399;
+      --warn:      #fbbf24;
+      --danger:    #f87171;
+      --info:      #38bdf8;
+      --text:      #e6e3f7;
+      --muted:     #a49dc9;
+      --code-bg:   #0d0b1a;
+      --code-text: #c7c2f0;
+      --tag-bg:    #2c2760;
+      --tag-text:  #c7c2f0;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:#f6f5fb; --surface:#ffffff; --surface2:#ece9f7; --border:#dcd6ef;
+    --accent:#4338ca; --accent2:#6366f1; --ok:#059669; --warn:#d97706;
+    --danger:#dc2626; --info:#0284c7; --text:#1e1b3a; --muted:#5c5680;
+    --code-bg:#17142c; --code-text:#c7c2f0; --tag-bg:#e0e7ff; --tag-text:#3730a3;
+  }
+  :root[data-theme="dark"] {
+    --bg:#100e1e; --surface:#171429; --surface2:#1f1b35; --border:#322c52;
+    --accent:#a5b4fc; --accent2:#818cf8; --ok:#34d399; --warn:#fbbf24;
+    --danger:#f87171; --info:#38bdf8; --text:#e6e3f7; --muted:#a49dc9;
+    --code-bg:#0d0b1a; --code-text:#c7c2f0; --tag-bg:#2c2760; --tag-text:#c7c2f0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.7;
+    padding: 0 1rem 4rem;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .page { max-width: 900px; margin: 0 auto; }
+
+  .page-header { border-bottom: 2px solid var(--accent); padding: 2.5rem 0 1.5rem; margin-bottom: 2rem; }
+  .eyebrow { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: .5rem; }
+  .page-header h1 { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.2; text-wrap: balance; color: var(--text); }
+  .page-header p { margin-top: .75rem; color: var(--muted); font-size: .95rem; }
+  .prereq { display: inline-flex; align-items: center; gap: .4rem; background: var(--tag-bg); color: var(--tag-text); font-size: .78rem; font-weight: 600; letter-spacing: .04em; padding: .25rem .75rem; border-radius: 999px; margin-top: .75rem; }
+
+  .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .75rem; margin-bottom: 1.5rem; }
+  .overview-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: .9rem 1rem; }
+  .overview-card .label { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: .3rem; }
+  .overview-card .value { font-size: .95rem; font-weight: 600; color: var(--text); }
+  .overview-card .sub { font-size: .8rem; color: var(--muted); margin-top: .15rem; }
+
+  .section { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+  .section-title { font-family: Georgia, serif; font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; display: flex; align-items: baseline; gap: .6rem; }
+  .section-num { font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+
+  .callout { border-radius: 6px; padding: .9rem 1.1rem; margin: 1rem 0; font-size: .9rem; border-left: 3px solid; }
+  .callout.info  { background: #e0f2fe; border-color: var(--info);   color: #0c4a6e; }
+  .callout.warn  { background: #fef9c3; border-color: var(--warn);   color: #78350f; }
+  .callout.ok    { background: #d1fae5; border-color: var(--ok);     color: #064e3b; }
+  .callout.theory{ background: var(--tag-bg); border-color: var(--accent); color: var(--tag-text); }
+  @media (prefers-color-scheme: dark) {
+    .callout.info  { background: #0c2a3d; color: #7dd3fc; }
+    .callout.warn  { background: #2d1e00; color: #fde68a; }
+    .callout.ok    { background: #052e16; color: #6ee7b7; }
+    .callout.theory{ background: var(--tag-bg); color: var(--tag-text); }
+  }
+  :root[data-theme="dark"] .callout.info  { background:#0c2a3d; color:#7dd3fc; }
+  :root[data-theme="dark"] .callout.warn  { background:#2d1e00; color:#fde68a; }
+  :root[data-theme="dark"] .callout.ok    { background:#052e16; color:#6ee7b7; }
+  :root[data-theme="light"] .callout.info { background:#e0f2fe; color:#0c4a6e; }
+  :root[data-theme="light"] .callout.warn { background:#fef9c3; color:#78350f; }
+  :root[data-theme="light"] .callout.ok   { background:#d1fae5; color:#064e3b; }
+
+  pre { background: var(--code-bg); border-radius: 6px; padding: 1.1rem 1.25rem; overflow-x: auto; margin: 1rem 0; font-size: .82rem; line-height: 1.6; }
+  code { font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; color: var(--code-text); }
+  p code, li code, td code { background: var(--surface2); color: var(--accent); padding: .1em .35em; border-radius: 3px; font-size: .85em; }
+
+  .tbl-wrap { overflow-x: auto; margin: 1rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; font-variant-numeric: tabular-nums; }
+  th { background: var(--surface2); font-weight: 600; text-align: left; padding: .55rem .9rem; border-bottom: 2px solid var(--border); font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  td { padding: .5rem .9rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  tr.risk td { background: #fee2e2; }
+  :root[data-theme="dark"] tr.risk td { background: #2d0a0a; }
+  tr.target td { background: var(--tag-bg); }
+
+  .badge { display: inline-block; padding: .15em .55em; border-radius: 4px; font-size: .78rem; font-weight: 700; letter-spacing: .03em; }
+  .badge-ok      { background: #d1fae5; color: #065f46; }
+  .badge-warn    { background: #fef3c7; color: #92400e; }
+  .badge-danger  { background: #fee2e2; color: #991b1b; }
+  .badge-info    { background: #e0f2fe; color: #0c4a6e; }
+  @media (prefers-color-scheme: dark) {
+    .badge-ok    { background:#052e16; color:#6ee7b7; }
+    .badge-warn  { background:#2d1e00; color:#fde68a; }
+    .badge-danger{ background:#2d0a0a; color:#fca5a5; }
+    .badge-info  { background:#0c2a3d; color:#7dd3fc; }
+  }
+
+  .files-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin: 1rem 0; }
+  @media (max-width: 700px) { .files-row { grid-template-columns: 1fr; } }
+  .file-card { border: 1px solid var(--border); border-top: 3px solid var(--accent2); border-radius: 6px; padding: .9rem 1rem; background: var(--surface2); }
+  .file-card code { font-size: .8rem; font-weight: 700; color: var(--accent); }
+  .file-card .dims { font-size: .82rem; color: var(--muted); margin-top: .3rem; }
+
+  ul, ol { padding-left: 1.4rem; }
+  li { margin-bottom: .3rem; }
+  p { margin-bottom: .8rem; }
+  p:last-child { margin-bottom: 0; }
+  h3 { font-family: Georgia, serif; font-size: 1.05rem; font-weight: 700; margin: 1.25rem 0 .5rem; color: var(--text); }
+  h4 { font-size: .9rem; font-weight: 600; margin: .9rem 0 .3rem; color: var(--text); }
+
+  .journal { background: var(--surface2); border-left: 3px solid var(--accent2); border-radius: 0 6px 6px 0; padding: 1rem 1.25rem; margin: 1rem 0; font-size: .88rem; }
+  .journal .jlabel { font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: .5rem; }
+
+  .summary { background: #1e1a3d; color: #fff; border-radius: 8px; padding: 1.6rem 2rem; margin-top: 1rem; }
+  .summary-title { font-size: .65rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent2); margin-bottom: 1rem; }
+  .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .6rem; }
+  .sum-item { background: rgba(255,255,255,.08); border-radius: 5px; padding: .65rem .85rem; font-size: .83rem; }
+  .sum-item strong { display: block; color: var(--accent2); font-size: .78rem; margin-bottom: .2rem; }
+
+  @media (max-width: 640px) {
+    .section { padding: 1.25rem 1rem; }
+    .page-header { padding: 1.5rem 0 1rem; }
+    .summary-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="page">
+
+  <header class="page-header">
+    <p class="eyebrow">Cas d'usage 01 — Certification IA · Résiliation client SaaS (churn)</p>
+    <h1>TP1 — Comprendre à qui on parle et de quoi on dispose</h1>
+    <p>Cadrage métier, inventaire des données et premières questions de gouvernance —
+       avant la moindre ligne de nettoyage ou de modélisation.</p>
+    <span class="prereq">🎯 Compétences visées : C1 (jeu de données pertinent), amorce C2 (risques éthiques)</span>
+  </header>
+
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="label">Cible principale</div>
+      <div class="value">churn (classification)</div>
+      <div class="sub">Le client résilie (1) ou renouvelle (0)</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Cible secondaire</div>
+      <div class="value">CLV (régression)</div>
+      <div class="sub">Jamais en feature du modèle churn</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Données confirmées</div>
+      <div class="value">5 035 × 29</div>
+      <div class="sub">Conforme au dictionnaire de l'énoncé</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Principe directeur</div>
+      <div class="value">Aide à la décision</div>
+      <div class="sub">Aucune action automatique sans humain</div>
+    </div>
+  </div>
+
+  <!-- §1 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§1</span> Cadrage métier et cas d'usage</div>
+
+    <p>Un éditeur SaaS B2B vend des abonnements à des entreprises clientes — revenus
+    récurrents (MRR) selon le plan, le nombre de licences et le niveau d'usage. Le
+    <strong>churn</strong> est la résiliation à l'échéance : elle coûte le revenu du
+    mois suivant, et toute la valeur future du client.</p>
+
+    <div class="callout theory">
+      <strong>Deux questions complémentaires, deux modèles.</strong>
+      <table style="margin-top:.6rem">
+        <tr><td style="border:none;padding:.2rem 0"><em>« Ce client va-t-il partir ? »</em></td><td style="border:none;padding:.2rem 0">→ classification (churn)</td></tr>
+        <tr><td style="border:none;padding:.2rem 0"><em>« Que perdrait-on s'il partait ? »</em></td><td style="border:none;padding:.2rem 0">→ régression (CLV)</td></tr>
+      </table>
+    </div>
+
+    <div class="callout warn">
+      <strong>Règle non négociable.</strong> La CLV enrichit la priorisation (risque
+      élevé <em>et</em> forte CLV = urgence maximale) mais ne doit <strong>jamais</strong>
+      servir de variable explicative au modèle de churn — biais méthodologique proche
+      d'une fuite de données. À vérifier explicitement en TP3 et TP8.
+    </div>
+
+    <h3>Ce que le modèle doit produire</h3>
+    <ol>
+      <li>Un score de risque de churn par client</li>
+      <li>Les facteurs explicatifs du risque</li>
+      <li>Une priorisation combinant risque et CLV</li>
+      <li>Une recommandation d'action de rétention</li>
+    </ol>
+
+    <h3>Signaux disponibles → actions de rétention</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Signal détecté</th><th>Action envisageable</th></tr></thead>
+        <tbody>
+          <tr><td>Faible taux d'adoption</td><td>Formation, démonstration personnalisée</td></tr>
+          <tr><td>Peu d'utilisateurs actifs</td><td>Accompagnement au déploiement</td></tr>
+          <tr><td>Dernière connexion ancienne</td><td>Contact rapide, comprendre les difficultés</td></tr>
+          <tr><td>Nombreux tickets support</td><td>Priorisation des incidents, suivi renforcé</td></tr>
+          <tr><td>CSAT faible</td><td>Entretien personnalisé, plan d'action</td></tr>
+          <tr><td>Retards de paiement</td><td>Nouvel échéancier, offre adaptée</td></tr>
+          <tr><td>Fonctionnalités peu exploitées</td><td>Présentation des usages avancés</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="journal">
+      <div class="jlabel">Journal de bord [C1]</div>
+      Le modèle ne remplace pas la décision humaine : il priorise les comptes pour que
+      les équipes Customer Success agissent. Cette distinction encadrera tous les choix
+      ultérieurs — pas de rejet/downgrade automatique, seuil pensé comme déclencheur
+      d'alerte, pas comme sentence.
+    </div>
+  </section>
+
+  <!-- §2 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§2</span> Données : disponibilité, gouvernance et alternatives</div>
+
+    <div class="files-row">
+      <div class="file-card">
+        <code>churn_saas_complet.csv</code>
+        <div class="dims">5 035 lignes × 29 colonnes</div>
+      </div>
+      <div class="file-card">
+        <code>churn_saas_echantillon.csv</code>
+        <div class="dims">50 lignes × 29 colonnes</div>
+      </div>
+      <div class="file-card">
+        <code>catalogue_plans.csv</code>
+        <div class="dims">4 lignes × 6 colonnes</div>
+      </div>
+    </div>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Plan</th><th>Prix/siège (€)</th><th>Fonctionnalités</th><th>SLA (h)</th><th>Stockage (Go)</th><th>Support dédié</th></tr></thead>
+        <tbody>
+          <tr><td>Starter</td><td>12</td><td>8</td><td>24</td><td>10</td><td>Non</td></tr>
+          <tr><td>Pro</td><td>25</td><td>16</td><td>12</td><td>100</td><td>Non</td></tr>
+          <tr><td>Business</td><td>45</td><td>26</td><td>6</td><td>500</td><td>Oui</td></tr>
+          <tr><td>Enterprise</td><td>80</td><td>40</td><td>3</td><td>2000</td><td>Oui</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Dictionnaire de données — lecture par rôle</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Variable(s)</th><th>Rôle</th></tr></thead>
+        <tbody>
+          <tr><td><code>client_id</code></td><td>Identifiant — exclu de toute feature</td></tr>
+          <tr><td>secteur, pays, taille_entreprise, plan</td><td>Segmentation contractuelle</td></tr>
+          <tr><td>adoption, connexions, heures d'usage, intégrations</td><td>Engagement produit</td></tr>
+          <tr><td>tickets, délai réponse, CSAT</td><td>Expérience support</td></tr>
+          <tr><td>retards paiement, MRR</td><td>Santé financière du compte</td></tr>
+          <tr class="risk"><td>couleur_theme_interface, code_datacenter, groupe_experimentation</td><td><strong>Suspects — leurres probables</strong> (à vérifier TP3)</td></tr>
+          <tr class="risk"><td>sante_compte_fin_periode</td><td><strong>Suspect — piège de fuite</strong> (calculé en fin de période, à vérifier TP3)</td></tr>
+          <tr class="target"><td>valeur_vie_client_eur</td><td><strong>Cible secondaire</strong> (régression)</td></tr>
+          <tr class="target"><td>churn</td><td><strong>Cible principale</strong> (classification)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>D'où viendraient ces données en pratique ?</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Donnée</th><th>Système source typique</th></tr></thead>
+        <tbody>
+          <tr><td>Usage, connexions, adoption</td><td>Analytics produit (Mixpanel, Amplitude)</td></tr>
+          <tr><td>Tickets, délai, CSAT</td><td>Support (Zendesk, Intercom)</td></tr>
+          <tr><td>Facturation, retards, MRR</td><td>Facturation / CRM (Stripe...)</td></tr>
+          <tr><td>Secteur, taille, plan</td><td>CRM commercial</td></tr>
+          <tr><td>Commentaire CSM</td><td>CRM / outil Customer Success</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:.85rem;color:var(--muted)">Alternative si une source manque : à défaut de CSAT temps réel, un proxy possible est le volume/ton des tickets support ; à défaut de dernière connexion, les logs d'authentification agrégés côté infra.</p>
+  </section>
+
+  <!-- §3 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§3</span> Enjeux éthiques, sociétaux et conformité (amorce)</div>
+
+    <h3>Données personnelles (RGPD)</h3>
+    <p><code>client_id</code> est un identifiant de compte, pas une donnée nominative.
+    Point de vigilance : <code>commentaire_csm</code> est un champ texte libre — risque
+    a priori plus élevé.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Vérification</th><th>Résultat</th></tr></thead>
+        <tbody>
+          <tr><td>Taux de remplissage</td><td>2 245 / 5 035 (44.6%)</td></tr>
+          <tr><td>Contenu observé</td><td>Notes templatées ("Client insatisfait, risque de départ.", "Faible adoption des sièges.") — aucun nom identifié</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout ok">
+      Risque RGPD immédiat limité sur cet échantillon — à revérifier systématiquement
+      (recherche de motifs nominatifs) en TP2, pas définitivement clos ici.
+    </div>
+
+    <h3>Biais potentiels</h3>
+    <p>Les variables <code>secteur</code>, <code>pays</code>, <code>taille_entreprise</code>
+    segmentent des <strong>entreprises</strong>, pas des individus — le risque n'est pas
+    une discrimination interdite, mais un <strong>biais de priorisation commerciale</strong> :
+    si le modèle finit par prioriser systématiquement les gros comptes (forte CLV) au
+    détriment de PME à risque réel, il renforce une logique business déjà existante
+    plutôt que de la corriger. À documenter, pas à "corriger" artificiellement.</p>
+
+    <h3>Conséquences d'une erreur</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Erreur</th><th>Conséquence</th><th>Gravité</th></tr></thead>
+        <tbody>
+          <tr><td>Faux négatif</td><td>Perte de revenu silencieuse, aucune action déclenchée</td><td><span class="badge badge-danger">Élevée</span></td></tr>
+          <tr><td>Faux positif</td><td>Sollicitation inutile, coût de temps CS</td><td><span class="badge badge-warn">Modérée</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Cette asymétrie guidera le choix du <strong>seuil de décision</strong> en TP6 —
+    pas une valeur par défaut arbitraire (0.5).</p>
+
+    <div class="callout theory">
+      <strong>Principe retenu.</strong> Le modèle reste un outil d'aide à la décision :
+      aucune action automatique (résiliation, downgrade, blocage) sans validation
+      humaine par un Customer Success Manager.
+    </div>
+  </section>
+
+  <div class="summary">
+    <div class="summary-title">Journal de bord — Synthèse TP1</div>
+    <div class="summary-grid">
+      <div class="sum-item"><strong>Confirmé</strong>3 fichiers cohérents avec l'énoncé · CLV actée comme cible strictement séparée</div>
+      <div class="sum-item"><strong>Suspects identifiés</strong>1 piège de fuite + 3 leurres probables — pas encore exclus, à confirmer TP3</div>
+      <div class="sum-item"><strong>Éthique</strong>Risque RGPD limité (vérifié) · asymétrie FN/FP posée pour TP6</div>
+      <div class="sum-item"><strong>Prochaine étape</strong>TP2 — nettoyage : dates multi-formats, nombres en texte, valeurs manquantes</div>
+    </div>
+  </div>
+
+</div>

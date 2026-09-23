@@ -1,0 +1,1127 @@
+<title>Explications méthodologiques — Cas d'usage churn SaaS</title>
+<style>
+  /* ── Tokens — thème sauge/ardoise, journal méthodologique transversal ── */
+  :root {
+    --bg:        #f5f8f6;
+    --surface:   #ffffff;
+    --surface2:  #e9f1ec;
+    --border:    #d3e2d9;
+    --accent:    #0f766e;
+    --accent2:   #14b8a6;
+    --ok:        #059669;
+    --warn:      #d97706;
+    --danger:    #dc2626;
+    --info:      #0284c7;
+    --text:      #142420;
+    --muted:     #52685e;
+    --code-bg:   #0f1f1b;
+    --code-text: #a7e8d8;
+    --tag-bg:    #ccfbf1;
+    --tag-text:  #115e59;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:        #0a1512;
+      --surface:   #0f1e1a;
+      --surface2:  #142822;
+      --border:    #22392f;
+      --accent:    #5eead4;
+      --accent2:   #2dd4bf;
+      --ok:        #34d399;
+      --warn:      #fbbf24;
+      --danger:    #f87171;
+      --info:      #38bdf8;
+      --text:      #e2f3ec;
+      --muted:     #8fae9f;
+      --code-bg:   #081410;
+      --code-text: #a7e8d8;
+      --tag-bg:    #113c34;
+      --tag-text:  #5eead4;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:#f5f8f6; --surface:#ffffff; --surface2:#e9f1ec; --border:#d3e2d9;
+    --accent:#0f766e; --accent2:#14b8a6; --ok:#059669; --warn:#d97706;
+    --danger:#dc2626; --info:#0284c7; --text:#142420; --muted:#52685e;
+    --code-bg:#0f1f1b; --code-text:#a7e8d8; --tag-bg:#ccfbf1; --tag-text:#115e59;
+  }
+  :root[data-theme="dark"] {
+    --bg:#0a1512; --surface:#0f1e1a; --surface2:#142822; --border:#22392f;
+    --accent:#5eead4; --accent2:#2dd4bf; --ok:#34d399; --warn:#fbbf24;
+    --danger:#f87171; --info:#38bdf8; --text:#e2f3ec; --muted:#8fae9f;
+    --code-bg:#081410; --code-text:#a7e8d8; --tag-bg:#113c34; --tag-text:#5eead4;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.7;
+    padding: 0 1rem 4rem;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .page { max-width: 900px; margin: 0 auto; }
+
+  .page-header { border-bottom: 2px solid var(--accent); padding: 2.5rem 0 1.5rem; margin-bottom: 2rem; }
+  .eyebrow { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: .5rem; }
+  .page-header h1 { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 700; line-height: 1.2; text-wrap: balance; color: var(--text); }
+  .page-header p { margin-top: .75rem; color: var(--muted); font-size: .95rem; }
+  .prereq { display: inline-flex; align-items: center; gap: .4rem; background: var(--tag-bg); color: var(--tag-text); font-size: .78rem; font-weight: 600; letter-spacing: .04em; padding: .25rem .75rem; border-radius: 999px; margin-top: .75rem; }
+
+  /* ── Sommaire ── */
+  .toc { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem 1.5rem; margin-bottom: 2rem; }
+  .toc-title { font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: .7rem; }
+  .toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+  .toc li { counter-increment: toc; margin-bottom: .4rem; font-size: .9rem; }
+  .toc li a { display: flex; gap: .6rem; color: var(--text); }
+  .toc li a::before { content: counter(toc); flex-shrink: 0; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--accent); color: var(--surface); font-size: .72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .toc li a:hover { text-decoration: underline; }
+  .toc .toc-tag { margin-left: auto; font-size: .72rem; color: var(--muted); font-weight: 600; }
+
+  /* ── Entrées ── */
+  .entry { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; scroll-margin-top: 1.5rem; }
+  .entry-header { display: flex; align-items: baseline; gap: .6rem; flex-wrap: wrap; margin-bottom: .3rem; }
+  .entry-num { font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .entry-tag { font-size: .72rem; font-weight: 600; background: var(--tag-bg); color: var(--tag-text); padding: .1rem .55rem; border-radius: 999px; }
+  .entry-title { font-family: Georgia, serif; font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; }
+
+  .question-block { background: var(--surface2); border-radius: 6px; padding: .9rem 1.1rem; margin: 0 0 1.1rem; font-style: italic; font-size: .95rem; color: var(--text); }
+  .question-block strong { font-style: normal; color: var(--accent); display: block; font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; font-style: normal; margin-bottom: .4rem; }
+
+  .callout { border-radius: 6px; padding: .9rem 1.1rem; margin: 1rem 0; font-size: .9rem; border-left: 3px solid; }
+  .callout.info  { background: #e0f2fe; border-color: var(--info);   color: #0c4a6e; }
+  .callout.warn  { background: #fef9c3; border-color: var(--warn);   color: #78350f; }
+  .callout.ok    { background: #d1fae5; border-color: var(--ok);     color: #064e3b; }
+  .callout.theory{ background: var(--tag-bg); border-color: var(--accent); color: var(--tag-text); }
+  .callout.danger{ background: #fee2e2; border-color: var(--danger); color: #991b1b; }
+  @media (prefers-color-scheme: dark) {
+    .callout.info  { background: #0c2a3d; color: #7dd3fc; }
+    .callout.warn  { background: #2d1e00; color: #fde68a; }
+    .callout.ok    { background: #052e16; color: #6ee7b7; }
+    .callout.theory{ background: var(--tag-bg); color: var(--tag-text); }
+    .callout.danger{ background: #2d0a0a; color: #fca5a5; }
+  }
+  :root[data-theme="dark"] .callout.info  { background:#0c2a3d; color:#7dd3fc; }
+  :root[data-theme="dark"] .callout.warn  { background:#2d1e00; color:#fde68a; }
+  :root[data-theme="dark"] .callout.ok    { background:#052e16; color:#6ee7b7; }
+  :root[data-theme="dark"] .callout.danger{ background:#2d0a0a; color:#fca5a5; }
+  :root[data-theme="light"] .callout.info { background:#e0f2fe; color:#0c4a6e; }
+  :root[data-theme="light"] .callout.warn { background:#fef9c3; color:#78350f; }
+  :root[data-theme="light"] .callout.ok   { background:#d1fae5; color:#064e3b; }
+  :root[data-theme="light"] .callout.danger{ background:#fee2e2; color:#991b1b; }
+
+  pre { background: var(--code-bg); border-radius: 6px; padding: 1.1rem 1.25rem; overflow-x: auto; margin: 1rem 0; font-size: .82rem; line-height: 1.6; }
+  code { font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; color: var(--code-text); }
+  p code, li code, td code { background: var(--surface2); color: var(--accent); padding: .1em .35em; border-radius: 3px; font-size: .85em; }
+
+  .tbl-wrap { overflow-x: auto; margin: 1rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  th { background: var(--surface2); font-weight: 600; text-align: left; padding: .55rem .9rem; border-bottom: 2px solid var(--border); font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  td { padding: .5rem .9rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+
+  .compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border-radius: 6px; overflow: hidden; margin: 1rem 0; }
+  @media (max-width: 640px) { .compare-row { grid-template-columns: 1fr; } }
+  .compare-half { background: var(--surface2); padding: 1rem 1.1rem; }
+  .compare-half h4 { font-size: .82rem; font-weight: 700; letter-spacing: .03em; margin-bottom: .5rem; color: var(--accent); }
+  .compare-half p { font-size: .85rem; margin: 0; color: var(--muted); }
+
+  ul, ol { padding-left: 1.4rem; }
+  li { margin-bottom: .3rem; }
+  p { margin-bottom: .8rem; }
+  p:last-child { margin-bottom: 0; }
+  h3 { font-family: Georgia, serif; font-size: 1rem; font-weight: 700; margin: 1.2rem 0 .5rem; color: var(--text); }
+
+  .back-to-toc { display: inline-block; margin-top: 1rem; font-size: .78rem; color: var(--muted); }
+
+  @media (max-width: 640px) {
+    .entry { padding: 1.25rem 1rem; }
+    .page-header { padding: 1.5rem 0 1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="page">
+
+  <header class="page-header">
+    <p class="eyebrow">Cas d'usage 01 — Résiliation client SaaS (churn)</p>
+    <h1>Explications méthodologiques</h1>
+    <p>Le <em>pourquoi</em> derrière chaque choix de conception — documenté au fil du
+       projet, en complément des notebooks TP1, TP2... Chaque entrée répond à une
+       question posée pendant le travail, avec le raisonnement complet, pas seulement
+       la conclusion.</p>
+    <span class="prereq">📓 Journal vivant — complété au fur et à mesure des TP</span>
+  </header>
+
+  <div class="toc">
+    <div class="toc-title">Sommaire</div>
+    <ol>
+      <li><a href="#entry-1">Pourquoi deux modèles séparés (classification + régression) ? <span class="toc-tag">TP1</span></a></li>
+      <li><a href="#entry-2">Pourquoi une extraction par regex plutôt qu'une liste de symboles à retirer ? <span class="toc-tag">TP2</span></a></li>
+      <li><a href="#entry-3">Pourquoi normaliser secteur par mot-clé plutôt que réparer l'encodage ? <span class="toc-tag">TP2</span></a></li>
+      <li><a href="#entry-4">Pourquoi recalculer le MRR manquant plutôt que l'imputer par médiane ? <span class="toc-tag">TP2</span></a></li>
+      <li><a href="#entry-5">Pourquoi une base PostgreSQL séparée plutôt que réutiliser indusense_db ? <span class="toc-tag">TP2</span></a></li>
+      <li><a href="#entry-6">Pourquoi un AUC à une seule variable suffit à démontrer une fuite ? <span class="toc-tag">TP3</span></a></li>
+      <li><a href="#entry-7">Pourquoi le test du χ² plutôt qu'une simple comparaison visuelle des taux ? <span class="toc-tag">TP3</span></a></li>
+      <li><a href="#entry-8">Pourquoi une échelle logarithmique pour visualiser la CLV ? <span class="toc-tag">TP4</span></a></li>
+      <li><a href="#entry-9">Pourquoi une corrélation simple suffit ici, sans test statistique comme en TP3 ? <span class="toc-tag">TP4</span></a></li>
+      <li><a href="#entry-10">Pourquoi une baseline "stratified" plutôt que "most_frequent" ? <span class="toc-tag">TP5</span></a></li>
+      <li><a href="#entry-11">Pourquoi la régression logistique bat le Random Forest ici ? <span class="toc-tag">TP5</span></a></li>
+      <li><a href="#entry-12">Pourquoi écarter l'optimum de coût pur alors qu'il coûte 60x moins cher ? <span class="toc-tag">TP6</span></a></li>
+      <li><a href="#entry-13">Pourquoi la CLV réelle du client plutôt qu'une valeur moyenne pour chiffrer un faux négatif ? <span class="toc-tag">TP6</span></a></li>
+      <li><a href="#entry-14">Pourquoi deux méthodes (coefficients + permutation) plutôt qu'une seule ? <span class="toc-tag">TP7</span></a></li>
+      <li><a href="#entry-15">Pourquoi un modèle de contrôle séparé plutôt que garder les leurres dans le modèle final ? <span class="toc-tag">TP7</span></a></li>
+      <li><a href="#entry-16">Pourquoi Random Forest gagne ici alors que la régression logistique gagnait pour le churn ? <span class="toc-tag">TP8</span></a></li>
+      <li><a href="#entry-17">Pourquoi vérifier avec churn inclus alors qu'on sait déjà qu'il ne faut pas l'utiliser ? <span class="toc-tag">TP8</span></a></li>
+      <li><a href="#entry-18">Pourquoi recharger les modèles depuis le disque plutôt que faire confiance à l'objet en mémoire ? <span class="toc-tag">TP9</span></a></li>
+      <li><a href="#entry-19">Pourquoi une règle simple pour l'action recommandée plutôt qu'un modèle de plus ? <span class="toc-tag">TP9</span></a></li>
+      <li><a href="#entry-20">Pourquoi tester la sensibilité de l'hypothèse plutôt que présenter le ROI à 25% seul ? <span class="toc-tag">TP10</span></a></li>
+      <li><a href="#entry-21">Pourquoi remettre en question son propre résultat de dérive plutôt que le présenter tel quel ? <span class="toc-tag">TP10</span></a></li>
+      <li><a href="#entry-22">Pourquoi ré-assembler du code déjà validé produit-il encore de nouveaux bugs ? <span class="toc-tag">Final</span></a></li>
+    </ol>
+  </div>
+
+  <!-- Entrée 1 -->
+  <section class="entry" id="entry-1">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 1</span>
+      <span class="entry-tag">TP1 — Cadrage métier</span>
+    </div>
+    <div class="entry-title">Pourquoi deux modèles séparés (classification + régression) ?</div>
+
+    <div class="question-block">
+      <strong>Ce qui a été affirmé</strong>
+      « Deux questions complémentaires, deux modèles » — <em>« Ce client va-t-il
+      partir ? »</em> → classification (churn) ; <em>« Que perdrait-on s'il partait ? »</em>
+      → régression (CLV).
+    </div>
+
+    <h3>1. La nature de chaque cible l'impose, avant même de choisir un algorithme</h3>
+    <p>En apprentissage supervisé, le type de la <strong>cible</strong> détermine la
+    famille de problème — ce n'est pas un choix, c'est une conséquence directe du
+    dictionnaire de données :</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Cible</th><th>Type observé</th><th>Type de problème</th></tr></thead>
+        <tbody>
+          <tr><td><code>churn</code></td><td>Binaire — <code>{0, 1}</code></td><td>Classification</td></tr>
+          <tr><td><code>valeur_vie_client_eur</code></td><td>Numérique continue — 300 à 2 000 000 €</td><td>Régression</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Un modèle de classification apprend à séparer des <strong>catégories</strong>
+    (ici deux : reste / part) et produit une probabilité d'appartenance à chacune. Un
+    modèle de régression apprend à approcher une <strong>quantité continue</strong> et
+    produit un nombre directement comparable à la vraie valeur (ici, un montant en
+    euros). Les fonctions de perte, les métriques d'évaluation (AUC/PR-AUC d'un côté,
+    RMSE/MAE/R² de l'autre) et les algorithmes optimaux ne sont pas les mêmes — on ne
+    peut pas faire "un peu des deux" avec un seul modèle sans compromis sur les deux
+    fronts.</p>
+
+    <h3>2. Elles répondent à deux questions métier différentes, pas à une seule question à deux facettes</h3>
+    <div class="compare-row">
+      <div class="compare-half">
+        <h4>Churn — le risque</h4>
+        <p>Une probabilité entre 0 et 1. Répond à « faut-il s'inquiéter pour ce client
+        maintenant ? ». Ne dit rien sur l'enjeu financier si le risque se réalise.</p>
+      </div>
+      <div class="compare-half">
+        <h4>CLV — l'enjeu</h4>
+        <p>Un montant en euros. Répond à « combien ce client vaut-il ? ». Ne dit rien
+        sur la probabilité qu'il parte — un client à très forte CLV peut très bien être
+        fidèle.</p>
+      </div>
+    </div>
+    <p>Les deux informations se <strong>combinent</strong> après coup (risque élevé
+    <em>et</em> forte CLV = urgence maximale, cf. tableau de priorisation du TP1) — elles
+    ne se remplacent pas l'une l'autre. Un modèle unique qui tenterait de produire les
+    deux à la fois masquerait cette complémentarité au lieu de l'exploiter.</p>
+
+    <h3>3. Les séparer, structurellement, empêche une fuite méthodologique</h3>
+    <p>Si la CLV était injectée comme feature du modèle de churn (ou l'inverse), le
+    modèle apprendrait une partie de la réponse à partir d'une variable dérivée du même
+    phénomène économique qu'il cherche à prédire — proche, dans son mécanisme, d'une
+    fuite de données. Maintenir deux pipelines distincts (deux jeux de features, deux
+    entraînements, deux évaluations) rend cette règle <strong>vérifiable</strong> plutôt
+    que simplement déclarée : il suffit de constater que <code>valeur_vie_client_eur</code>
+    n'apparaît dans aucune liste de features du modèle churn, et réciproquement pour
+    <code>churn</code> côté modèle CLV.</p>
+
+    <div class="callout theory">
+      <strong>Ce que dit l'énoncé de la certification.</strong> La fiche projet
+      qualifie explicitement le problème comme « Apprentissage supervisé — classification
+      binaire (cible principale) + régression (cible secondaire) » — la séparation
+      n'est pas une interprétation de ma part, elle est spécifiée dès le cadrage du cas
+      d'usage.
+    </div>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 2 -->
+  <section class="entry" id="entry-2">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 2</span>
+      <span class="entry-tag">TP2 — Nettoyage</span>
+    </div>
+    <div class="entry-title">Pourquoi une extraction par regex plutôt qu'une liste de symboles à retirer ?</div>
+
+    <div class="question-block">
+      <strong>Ce qui s'est passé</strong>
+      Un premier nettoyage retirait seulement le suffixe <code>%</code> sur les
+      colonnes numériques textuelles. Résultat : le taux de valeurs manquantes de
+      <code>delai_reponse_support_h</code> est passé de 10% à 21.4%, et celui de
+      <code>revenu_mensuel_recurrent_eur</code> de 3% à 16.8% — sans qu'aucune erreur ne
+      s'affiche.
+    </div>
+
+    <h3>1. Le suffixe manquant ne provoque pas d'erreur — il produit un NaN silencieux</h3>
+    <p><code>pd.to_numeric("280.62 €", errors="coerce")</code> ne lève aucune exception :
+    il renvoie <code>NaN</code>, exactement comme pour une vraie valeur manquante. Le
+    code "fonctionne" du premier coup — c'est justement ce qui rend le bug dangereux, il
+    ne se signale pas de lui-même.</p>
+
+    <h3>2. Comment l'écart a été repéré</h3>
+    <p>Pas par relecture du code, mais par <strong>comparaison à une mesure déjà
+    établie</strong> : TP1 avait déjà inspecté les taux de NaN bruts (10% et 3%). Quand
+    TP2 a affiché 21.4% et 16.8% pour les mêmes colonnes après un traitement censé les
+    <em>réduire</em> ou les laisser stables, l'écart signalait un problème introduit par
+    le nettoyage lui-même, pas par les données.</p>
+
+    <div class="callout danger">
+      <strong>Le principe qui aurait dû être appliqué d'emblée.</strong> Toute étape de
+      nettoyage qui change un taux de valeurs manquantes doit expliquer pourquoi. Une
+      hausse inattendue n'est jamais anodine — c'est un signal à vérifier, pas un
+      détail à ignorer parce que le code ne plante pas.
+    </div>
+
+    <h3>3. Pourquoi une regex plutôt qu'ajouter "€" et "h" à la liste</h3>
+    <p>Ajouter les deux symboles manquants aurait corrigé ce cas précis, mais laisse la
+    même classe de bug ouverte pour le prochain symbole non anticipé. Extraire le
+    <strong>token numérique en tête de chaîne</strong> (<code>r"(-?\d+\.?\d*)"</code>)
+    inverse la logique : au lieu d'énumérer ce qu'il faut retirer, on décrit ce qu'on
+    veut garder — un nombre, quel que soit ce qui le suit.</p>
+
+    <pre><code># Fragile : suppose qu'on connaît tous les suffixes possibles
+cleaned = series.str.replace("%", "").str.replace(",", ".")
+
+# Robuste : ne dépend d'aucune liste de symboles
+cleaned = series.str.replace(",", ".", regex=False)
+numeric_token = cleaned.str.extract(r"(-?\d+\.?\d*)")[0]</code></pre>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 3 -->
+  <section class="entry" id="entry-3">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 3</span>
+      <span class="entry-tag">TP2 — Nettoyage</span>
+    </div>
+    <div class="entry-title">Pourquoi normaliser <code>secteur</code> par mot-clé plutôt que réparer l'encodage ?</div>
+
+    <div class="question-block">
+      <strong>Ce qui a été observé</strong>
+      Les valeurs accentuées de <code>secteur</code> (<em>Santé</em>, <em>Éducation</em>)
+      apparaissent corrompues de façon irrégulière : <code>SANT�</code>, <code>�ducation</code>,
+      <code>�DUCATION</code> — pas toujours de la même manière.
+    </div>
+
+    <h3>1. Pourquoi ne pas simplement corriger l'encodage de lecture</h3>
+    <p>Un problème d'encodage classique (fichier entier en Latin-1 lu comme UTF-8, par
+    exemple) se corrige en changeant le paramètre <code>encoding=</code> à la lecture.
+    Ici, la corruption est <strong>irrégulière</strong> — certaines valeurs sont
+    correctement encodées, d'autres non, dans la même colonne. Aucun choix
+    d'encodage de lecture unique ne peut réconcilier les deux à la fois : essayer
+    <code>latin-1</code> corrige certaines lignes et en casse d'autres qui étaient déjà
+    correctes en UTF-8 (vérifié empiriquement — voir la source de ce nettoyage).</p>
+
+    <h3>2. La bonne question n'est pas "comment réparer le texte" mais "que faut-il en tirer"</h3>
+    <p>L'objectif n'est pas de reconstituer la chaîne de caractères exacte, mais
+    d'obtenir une <strong>catégorie fiable</strong> pour le modèle. Une valeur comme
+    <code>SANT�</code> contient encore la sous-chaîne stable <code>"SANT"</code>, quelle
+    que soit la façon dont l'accent a été corrompu — cette sous-chaîne ASCII survit à
+    toutes les variantes de corruption observées.</p>
+
+    <pre><code>SECTOR_KEYWORDS = [
+    ("TECH", "Tech"), ("FINANC", "Finance"), ("COMMERC", "Commerce"),
+    ("SANT", "Santé"), ("INDUSTR", "Industrie"), ("PUBLIC", "Public"),
+    ("DUC", "Éducation"),
+]
+# "SANT" reconnaît Santé, SANTÉ, sant�, SANT�... quelle que soit la corruption</code></pre>
+
+    <h3>3. Le filet de sécurité : une catégorie "Inconnu" plutôt qu'un échec silencieux</h3>
+    <p>Si aucun mot-clé ne correspond, la valeur devient explicitement
+    <code>"Inconnu"</code> plutôt que de disparaître en <code>NaN</code> sans trace. Dans
+    ce jeu de données, ce cas ne s'est jamais produit (vérifié : 0 valeur retombée dans
+    "Inconnu" par défaut de reconnaissance) — mais la fonction reste sûre si un motif
+    nouveau apparaissait sur un futur import.</p>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 4 -->
+  <section class="entry" id="entry-4">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 4</span>
+      <span class="entry-tag">TP2 — Nettoyage</span>
+    </div>
+    <div class="entry-title">Pourquoi recalculer le MRR manquant plutôt que l'imputer par médiane ?</div>
+
+    <div class="question-block">
+      <strong>Le choix fait</strong>
+      Pour les 3% de lignes où <code>revenu_mensuel_recurrent_eur</code> est manquant, la
+      valeur est <strong>recalculée</strong> via <code>sieges_souscrits × prix_mensuel_par_siege_eur</code>
+      (issu du catalogue des plans), pas remplacée par la médiane globale.
+    </div>
+
+    <h3>Une médiane efface une information qu'on possède déjà</h3>
+    <p>Le MRR n'est pas une grandeur bruitée qu'il faut deviner statistiquement — c'est
+    un produit de deux quantités connues : le nombre de sièges souscrits par le client
+    (colonne présente, jamais manquante) et le prix par siège de son plan (catalogue,
+    toujours disponible après la jointure du §5). Utiliser une médiane globale
+    ignorerait cette relation et assignerait la même valeur à un client Starter à 3
+    sièges et un client Enterprise à 200 sièges.</p>
+
+    <h3>La règle générale que ce cas illustre</h3>
+    <p>Avant d'imputer une valeur manquante par une statistique globale (médiane,
+    moyenne, mode), vérifier si elle peut être <strong>recalculée exactement</strong> à
+    partir d'autres colonnes déjà présentes. Ce n'est possible ici que parce que le MRR
+    est structurellement déterminé par le plan et le nombre de sièges — ce ne serait pas
+    vrai pour une colonne comme <code>csat</code> (satisfaction déclarée), qui n'a pas
+    d'équivalent calculable et reste donc imputée par médiane.</p>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 5 -->
+  <section class="entry" id="entry-5">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 5</span>
+      <span class="entry-tag">TP2 — Infrastructure</span>
+    </div>
+    <div class="entry-title">Pourquoi une base PostgreSQL séparée plutôt que réutiliser <code>indusense_db</code> ?</div>
+
+    <div class="question-block">
+      <strong>Le choix fait</strong>
+      Les données nettoyées sont chargées dans une nouvelle base <code>churn_saas_db</code>
+      (table <code>clients_churn</code>) — pas dans <code>indusense_db</code>, la base
+      Postgres déjà utilisée par le projet <code>ML/</code> (maintenance prédictive).
+    </div>
+
+    <h3>Deux cas d'usage, deux projets, aucune donnée en commun</h3>
+    <p>Le projet <code>ML/</code> (maintenance prédictive) et ce cas d'usage (churn SaaS)
+    ne partagent ni schéma, ni entités métier, ni cycle de vie — une machine industrielle
+    et un client SaaS n'ont rien de commun à modéliser ensemble. Faire cohabiter les deux
+    dans <code>indusense_db</code> n'apporterait aucun bénéfice (pas de jointure
+    envisageable entre les deux) et introduirait un risque réel : un script mal ciblé sur
+    la mauvaise base pourrait écraser ou modifier les tables de l'autre projet.</p>
+
+    <h3>Le compromis accepté</h3>
+    <p>Une base séparée signifie une base de plus à gérer (créer, sauvegarder,
+    éventuellement nettoyer). Ce coût est jugé mineur face au bénéfice d'isolation — les
+    deux projets peuvent évoluer, être testés ou être supprimés indépendamment sans
+    risque d'effet de bord croisé.</p>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 6 -->
+  <section class="entry" id="entry-6">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 6</span>
+      <span class="entry-tag">TP3 — Fuite &amp; leurres</span>
+    </div>
+    <div class="entry-title">Pourquoi un AUC à une seule variable suffit à démontrer une fuite ?</div>
+
+    <div class="question-block">
+      <strong>Ce qui a été fait</strong>
+      Pour confirmer que <code>sante_compte_fin_periode</code> est un piège de fuite, on
+      calcule l'AUC d'un « classifieur » qui n'est rien d'autre que cette colonne seule,
+      sans entraîner aucun modèle — et on obtient 0.999.
+    </div>
+
+    <h3>1. L'AUC ne demande pas un modèle entraîné, juste un score ordonnable</h3>
+    <p>L'AUC mesure la capacité d'un <strong>score</strong> à ordonner correctement les
+    positifs avant les négatifs — que ce score sorte d'un modèle complexe ou soit
+    directement une colonne brute ne change rien au calcul. En passant la colonne
+    (inversée, puisqu'un score de santé bas signale un risque élevé) directement à
+    <code>roc_auc_score</code>, on mesure exactement le pouvoir séparateur de cette
+    variable seule — sans le bruit ni les choix arbitraires qu'introduirait
+    l'entraînement d'un modèle (hyperparamètres, algorithme, seed).</p>
+
+    <h3>2. Pourquoi ne pas simplement regarder la corrélation</h3>
+    <p>La corrélation point-bisériale (-0.881) confirme déjà une relation forte, mais
+    elle mesure une association <strong>linéaire</strong> avec la variable binaire — pas
+    directement la capacité de discrimination qui intéresse un classifieur. L'AUC est la
+    métrique que l'énoncé utilise pour juger un modèle de churn (§3.2 de l'énoncé) ; la
+    calculer aussi sur la variable brute permet une comparaison directe, sur la même
+    échelle, avec les AUC obtenues plus tard par de vrais modèles (TP5-TP6) — un AUC
+    "modèle complet" à peine supérieur à 0.999 confirmerait que le modèle n'apprend
+    rien de plus que cette seule variable.</p>
+
+    <div class="callout theory">
+      <strong>Le principe général.</strong> Avant d'accuser une variable de fuite,
+      mesurer son pouvoir prédictif <em>seule</em>, avec la même métrique que celle
+      utilisée pour juger le modèle final. Un score anormalement proche du score parfait
+      (1.0 pour l'AUC) sur une seule variable est le signal le plus direct qu'on peut
+      obtenir — bien plus convaincant qu'un graphique ou une intuition.
+    </div>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 7 -->
+  <section class="entry" id="entry-7">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 7</span>
+      <span class="entry-tag">TP3 — Fuite &amp; leurres</span>
+    </div>
+    <div class="entry-title">Pourquoi le test du χ² plutôt qu'une simple comparaison visuelle des taux ?</div>
+
+    <div class="question-block">
+      <strong>Ce qui a été fait</strong>
+      Pour les 4 variables suspectées d'être des leurres, un test du χ² d'indépendance
+      est calculé pour chacune, en plus du graphique des taux de churn par catégorie.
+    </div>
+
+    <h3>1. L'œil voit des écarts même là où il n'y en a pas</h3>
+    <p>Sur un graphique en barres, deux catégories avec 27% et 31% de churn
+    <em>semblent</em> différentes — l'œil ne sait pas si cet écart de 4 points est un
+    vrai effet ou juste le bruit d'échantillonnage attendu avec quelques centaines
+    d'observations par catégorie. Le χ² répond précisément à cette question : étant
+    donné la taille des groupes, un tel écart est-il surprenant si la variable était
+    réellement indépendante du churn ?</p>
+
+    <h3>2. Ce que mesure concrètement le test ici</h3>
+    <p>Pour chaque variable, on construit un tableau de contingence (catégorie × churn)
+    et on compare les effectifs observés à ceux qu'on attendrait sous indépendance
+    stricte. Un p-value de 0.966 pour <code>groupe_experimentation</code> (le bucket
+    A/B) signifie que les écarts observés entre "A", "B" et "control" sont exactement le
+    genre de variation aléatoire qu'on obtiendrait même si le bucket n'avait
+    <strong>aucun</strong> lien avec le churn — cohérent avec ce qu'on attend d'un
+    vrai test A/B, où l'assignation aux groupes est censée être aléatoire.</p>
+
+    <h3>3. Le graphique et le test ne se remplacent pas — ils se complètent</h3>
+    <p>Le graphique montre l'ampleur (à quel point les barres sont proches) ; le test
+    quantifie si cette proximité est statistiquement attendue ou non. Publier l'un sans
+    l'autre laisserait soit une impression visuelle non chiffrée, soit un chiffre
+    abstrait sans intuition de ce qu'il représente concrètement pour le métier.</p>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 8 -->
+  <section class="entry" id="entry-8">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 8</span>
+      <span class="entry-tag">TP4 — EDA</span>
+    </div>
+    <div class="entry-title">Pourquoi une échelle logarithmique pour visualiser la CLV ?</div>
+
+    <div class="question-block">
+      <strong>Ce qui a été fait</strong>
+      L'histogramme et le boxplot de <code>valeur_vie_client_eur</code> sont tracés en
+      échelle logarithmique plutôt qu'en échelle linéaire classique.
+    </div>
+
+    <h3>Le problème d'une échelle linéaire ici</h3>
+    <p>La CLV s'étend de 300€ à 2 000 000€ (dictionnaire de données, TP1) — un facteur
+    de près de 7000 entre le minimum et le maximum. Sur un histogramme linéaire, la
+    quasi-totalité des 5000 clients (ceux entre quelques centaines et quelques dizaines
+    de milliers d'euros) s'écraserait dans une poignée de barres proches de zéro, tandis
+    que les rares comptes à très forte valeur étireraient l'axe des x sur toute sa
+    largeur sans qu'aucun détail ne reste lisible pour la masse des clients "normaux".</p>
+
+    <h3>Ce que le logarithme corrige</h3>
+    <p>En passant à <code>log10</code>, un client à 1 000€ et un client à 10 000€ sont
+    séparés par la même distance visuelle qu'un client à 100 000€ et un client à
+    1 000 000€ — chaque <strong>multiplication</strong> par 10 occupe un espace égal sur
+    l'axe, au lieu que chaque addition de quelques milliers d'euros compte pour rien face
+    aux extrêmes. C'est la transformation standard pour toute variable économique à forte
+    asymétrie (revenus, tailles d'entreprise, CLV) — pas un choix arbitraire de mise en
+    forme.</p>
+
+    <div class="callout theory">
+      <strong>Point de vigilance.</strong> Une échelle log change la <em>lecture</em> du
+      graphique, pas les données sous-jacentes — la médiane par groupe (6 941€ vs
+      13 469€, calculée sur l'échelle réelle) reste la statistique de référence pour
+      comparer les groupes, le graphique log sert seulement à rendre la distribution
+      lisible.
+    </div>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 9 -->
+  <section class="entry" id="entry-9">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 9</span>
+      <span class="entry-tag">TP4 — EDA</span>
+    </div>
+    <div class="entry-title">Pourquoi une corrélation simple suffit ici, sans test statistique comme en TP3 ?</div>
+
+    <div class="question-block">
+      <strong>Ce qui diffère entre TP3 et TP4</strong>
+      En TP3, chaque leurre suspecté est validé par un test du χ² avec p-value. En TP4,
+      les corrélations avec le churn sont présentées sans test d'hypothèse formel
+      associé.
+    </div>
+
+    <h3>Les deux étapes répondent à des questions différentes</h3>
+    <p>Le TP3 devait trancher une question binaire et engageante : <em>exclure ou garder</em>
+    une variable de la modélisation. Une décision d'exclusion mérite une preuve
+    statistique explicite (le risque d'exclure à tort une variable utile, ou d'en garder
+    une inutile, justifie l'effort du test). Le TP4, lui, ne décide rien : il
+    <strong>explore</strong> et priorise visuellement quelles variables méritent d'être
+    creusées plus loin — aucune n'est éliminée sur la base de ce classement.</p>
+
+    <h3>Le risque d'un excès de rigueur à ce stade</h3>
+    <p>Calculer un test de significativité sur chacune des 14 corrélations numériques
+    poserait un problème de comparaisons multiples (plus on teste d'hypothèses, plus on
+    risque un faux positif par hasard) sans changer la décision prise à ce stade — aucune
+    de ces variables n'est candidate à l'exclusion. Ce même souci de rigueur reviendra
+    naturellement en TP7 (explicabilité), où l'importance des variables dans le modèle
+    entraîné sera confrontée à une lecture métier plus poussée.</p>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 10 -->
+  <section class="entry" id="entry-10">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 10</span>
+      <span class="entry-tag">TP5 — Modèles</span>
+    </div>
+    <div class="entry-title">Pourquoi une baseline "stratified" plutôt que "most_frequent" ?</div>
+
+    <div class="question-block">
+      <strong>Le choix fait</strong>
+      La baseline utilise <code>DummyClassifier(strategy="stratified")</code> — qui
+      tire aléatoirement 0 ou 1 en respectant les proportions du train (72/28) — plutôt
+      que <code>strategy="most_frequent"</code>, qui prédirait "0" pour tout le monde.
+    </div>
+
+    <h3>"most_frequent" rendrait certaines métriques non calculables</h3>
+    <p>Un classifieur qui prédit toujours la classe majoritaire obtient 72% d'accuracy
+    (trompeusement flatteur), mais ne produit <strong>jamais</strong> de prédiction
+    positive. Les métriques qui comptent les vrais positifs — F1, precision, rappel —
+    deviennent dégénérées (souvent 0 ou indéfinies), et l'AUC elle-même perd son sens
+    puisqu'il n'existe qu'un seul score constant à classer.</p>
+
+    <h3>"stratified" donne une référence pour chaque métrique du tableau</h3>
+    <p>En tirant aléatoirement selon les proportions réelles, ce classifieur produit de
+    vrais positifs et de vrais négatifs en proportion — permettant de calculer
+    ROC-AUC, PR-AUC et F1 avec des valeurs non triviales (0.513, 0.286, 0.300
+    respectivement). Ces trois chiffres servent de <strong>plancher</strong> commun,
+    directement comparable aux modèles réels sur les mêmes métriques — pas seulement
+    sur l'accuracy, qui aurait masqué le déséquilibre de classe documenté en TP4.</p>
+
+    <div class="callout theory">
+      <strong>Le principe général.</strong> Une baseline doit être choisie pour rester
+      comparable sur <em>toutes</em> les métriques qu'on prévoit de suivre — pas
+      seulement produire un chiffre facile à battre.
+    </div>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 11 -->
+  <section class="entry" id="entry-11">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 11</span>
+      <span class="entry-tag">TP5 — Modèles</span>
+    </div>
+    <div class="entry-title">Pourquoi la régression logistique bat le Random Forest ici ?</div>
+
+    <div class="question-block">
+      <strong>Le résultat observé</strong>
+      La régression logistique (PR-AUC 0.791) devance le Random Forest (PR-AUC 0.760),
+      alors qu'un ensemble d'arbres est souvent présenté comme plus puissant qu'un
+      modèle linéaire.
+    </div>
+
+    <h3>Ce n'est pas une anomalie — c'est cohérent avec le TP4</h3>
+    <p>Un Random Forest apporte un avantage principalement quand le signal contient des
+    <strong>interactions non-linéaires</strong> (l'effet d'une variable dépend du niveau
+    d'une autre) ou des seuils brusques. Le TP4 montrait des corrélations
+    <em>monotones et modérées</em> (max 0.36, aucune ne dominant), sans indice visuel
+    d'un effet de seuil ou d'interaction marquée. Quand le signal est réellement de
+    nature additive, un modèle linéaire l'exploite directement, tandis qu'un ensemble
+    d'arbres dépense sa capacité à fragmenter l'espace des features sans gain
+    correspondant — et peut même perdre un peu de signal par variance
+    d'échantillonnage (arbres construits sur des sous-échantillons bootstrap).</p>
+
+    <h3>Pourquoi ne pas simplement forcer le Random Forest à gagner (tuning)</h3>
+    <p>Ce TP compare volontairement <strong>sans réglage fin des hyperparamètres</strong>
+    (objectif explicite du TP5). Optimiser spécifiquement le Random Forest pour qu'il
+    dépasse la régression logistique reviendrait à choisir le vainqueur après coup
+    plutôt qu'à comparer deux approches à égalité de traitement — biais de confirmation
+    que la structure même du TP (baseline avant tuning, tuning en TP6 si besoin) cherche
+    à éviter.</p>
+
+    <div class="callout theory">
+      <strong>Ce que ce résultat n'implique pas.</strong> Random Forest n'est pas
+      "moins bon" en général — il serait probablement meilleur sur un jeu de données
+      avec des interactions marquées (ex. un plan Enterprise change le sens de l'effet
+      du support). Ici, sur ce cas d'usage précis, un modèle plus simple suffit.
+    </div>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 12 -->
+  <section class="entry" id="entry-12">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 12</span>
+      <span class="entry-tag">TP6 — Seuil</span>
+    </div>
+    <div class="entry-title">Pourquoi écarter l'optimum de coût pur alors qu'il coûte 60x moins cher ?</div>
+
+    <div class="question-block">
+      <strong>Le résultat trouvé</strong>
+      Le seuil qui minimise strictement le coût métier total (CLV perdue + contacts
+      inutiles) est 0.06, pour un coût de 26 850€ — contre 1,62M€ au seuil par défaut
+      0.5. Ce seuil a pourtant été écarté au profit d'un seuil à 0.44, bien plus cher
+      (1,23M€).
+    </div>
+
+    <h3>Un chiffre optimal n'est pas automatiquement une solution</h3>
+    <p>À seuil 0.06, le modèle flague 817 comptes sur 1000 (81.7%) comme "à risque".
+    Une équipe Customer Success qui reçoit une liste de 82% de sa base entière comme
+    "prioritaire" n'a, de fait, plus de liste priorisée du tout — c'est l'équivalent
+    opérationnel de ne rien prédire. Le modèle mathématique a raison sur son propre
+    critère (minimiser un coût monétaire total) mais ce critère, seul, omettait une
+    contrainte réelle et non négociable : la capacité de traitement humaine.</p>
+
+    <h3>Pourquoi ce déséquilibre apparaît précisément ici</h3>
+    <p>Le coût d'un contact inutile (50€, fixe) est minuscule comparé à la CLV de
+    certains clients (jusqu'à 2 000 000€). Mathématiquement, rater <em>un seul</em>
+    client à très forte CLV coûte plus cher que des milliers de contacts inutiles
+    combinés — la fonction de coût pousse donc mécaniquement vers un seuil très bas,
+    dès qu'il existe ne serait-ce qu'une poignée de comptes à très forte valeur dans les
+    faux négatifs potentiels. Ce n'est pas un artefact de calcul : c'est la conséquence
+    directe et correcte de l'asymétrie des coûts choisis.</p>
+
+    <div class="callout danger">
+      <strong>La leçon générale.</strong> Optimiser une fonction de coût sans contrainte
+      opérationnelle explicite peut produire un optimum vrai sur le papier et inutile
+      sur le terrain. Toute optimisation métier doit inclure les contraintes de
+      capacité réelle (ici : combien de comptes une équipe CS peut traiter par mois),
+      pas seulement les coûts monétaires.
+    </div>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 13 -->
+  <section class="entry" id="entry-13">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 13</span>
+      <span class="entry-tag">TP6 — Seuil</span>
+    </div>
+    <div class="entry-title">Pourquoi la CLV réelle du client plutôt qu'une valeur moyenne pour chiffrer un faux négatif ?</div>
+
+    <div class="question-block">
+      <strong>Le choix fait</strong>
+      Le coût d'un faux négatif est calculé comme la somme des <code>valeur_vie_client_eur</code>
+      individuelles des clients manqués — pas comme (nombre de FN) × (CLV moyenne).
+    </div>
+
+    <h3>Une moyenne effacerait exactement ce que le TP1 a établi</h3>
+    <p>Le TP1 distinguait explicitement le risque de churn (uniforme dans son unité,
+    une probabilité) de la CLV (très variable, de 300€ à 2 000 000€, cf. TP4). Utiliser
+    une CLV moyenne pour chiffrer chaque faux négatif traiterait un client à 500€ et un
+    client à 500 000€ comme des pertes identiques — supprimant précisément
+    l'information que le tableau de priorisation du TP1 (risque × CLV) cherchait à
+    exploiter.</p>
+
+    <h3>Ce que la somme réelle capture que la moyenne ne peut pas</h3>
+    <p>En sommant les CLV réelles des faux négatifs à chaque seuil testé, le coût total
+    reflète <em>qui</em>, précisément, le modèle a manqué — pas seulement combien. Un
+    seuil qui rate un unique client à très forte valeur peut coûter plus cher qu'un
+    seuil qui en rate dix à faible valeur ; cette distinction n'existerait plus avec une
+    moyenne globale, et le seuil optimal calculé serait trompeur.</p>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 14 -->
+  <section class="entry" id="entry-14">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 14</span>
+      <span class="entry-tag">TP7 — Explicabilité</span>
+    </div>
+    <div class="entry-title">Pourquoi deux méthodes (coefficients + permutation) plutôt qu'une seule ?</div>
+
+    <div class="question-block">
+      <strong>Ce qui a été fait</strong>
+      Le TP7 calcule à la fois les coefficients bruts de la régression logistique et
+      l'importance par permutation — deux façons différentes de répondre à "quelle
+      variable compte le plus".
+    </div>
+
+    <h3>Les coefficients mesurent une chose différente de l'importance par permutation</h3>
+    <p>Un coefficient de régression logistique répond à : <em>« Si cette variable
+    augmente d'un écart-type, toutes les autres restant fixes, comment change le log-
+    odds de churn ? »</em> — une quantité interne au modèle, calculée sur le train.
+    L'importance par permutation répond à une question différente : <em>« Si on détruit
+    l'information portée par cette variable (en mélangeant ses valeurs), de combien la
+    performance <strong>réelle</strong> du modèle chute-t-elle sur des données jamais
+    vues ? »</em> — une mesure externe, sur le test set, qui ne dépend pas de la
+    paramétrisation interne du modèle.</p>
+
+    <h3>Ce que l'accord entre les deux apporte</h3>
+    <p>Les deux méthodes pourraient diverger — un coefficient élevé n'empêche pas
+    qu'une variable soit redondante avec une autre (colinéarité), auquel cas la
+    permutation de l'une seule ne dégraderait presque rien puisque l'information
+    survivrait via sa jumelle corrélée. Trouver que les deux classements
+    <strong>s'accordent</strong> (mêmes variables en tête dans les deux cas) élimine ce
+    risque de lecture trompeuse et donne une confiance plus robuste que n'importe
+    laquelle des deux méthodes prise seule.</p>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 15 -->
+  <section class="entry" id="entry-15">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 15</span>
+      <span class="entry-tag">TP7 — Explicabilité</span>
+    </div>
+    <div class="entry-title">Pourquoi un modèle de contrôle séparé plutôt que garder les leurres dans le modèle final ?</div>
+
+    <div class="question-block">
+      <strong>Le choix fait</strong>
+      Pour vérifier que les 4 leurres restent sans pouvoir prédictif, un second modèle
+      (« modèle de contrôle ») est entraîné avec ces variables réintégrées — le modèle
+      final (TP6, sans les leurres) n'est ni modifié ni réutilisé pour ce test.
+    </div>
+
+    <h3>Réutiliser le modèle final aurait mélangé deux objectifs</h3>
+    <p>Le modèle final est celui dont les métriques (AUC, seuil de décision) ont déjà
+    été figées et documentées en TP6. Y ajouter des variables, même pour un test, en
+    ferait un modèle différent — toute nouvelle métrique calculée dessus ne serait plus
+    comparable à ce qui est déjà rapporté, et remettrait en question la reproductibilité
+    déjà établie.</p>
+
+    <h3>Le modèle de contrôle est jetable par construction</h3>
+    <p>Son seul but est de répondre à une question ponctuelle — "où se classent les
+    leurres si on leur donne une chance ?" — pas de produire une prédiction utilisable.
+    Il n'est jamais sérialisé, jamais évalué sur ses propres métriques de performance,
+    et n'a pas vocation à survivre au-delà de cette vérification. Cette séparation rend
+    explicite qu'il s'agit d'une expérience de validation, pas d'une amélioration du
+    modèle de production.</p>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 16 -->
+  <section class="entry" id="entry-16">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 16</span>
+      <span class="entry-tag">TP8 — Régression CLV</span>
+    </div>
+    <div class="entry-title">Pourquoi Random Forest gagne ici alors que la régression logistique gagnait pour le churn ?</div>
+
+    <div class="question-block">
+      <strong>Le résultat observé</strong>
+      Pour le churn (TP5), la régression logistique battait le Random Forest. Pour la
+      CLV (TP8), c'est l'inverse : Random Forest (R²=0.729) domine nettement la
+      régression linéaire (R²=0.562).
+    </div>
+
+    <h3>Même principe qu'en TP5, appliqué à une situation opposée</h3>
+    <p>L'entrée 11 établissait la règle : un modèle linéaire gagne quand le signal est
+    additif et sans effet de seuil marqué : un ensemble d'arbres gagne quand il existe
+    des <strong>interactions</strong> ou des <strong>effets de seuil</strong> que la
+    linéarité ne peut pas capturer. La CLV présente exactement ce second profil : sa
+    distribution s'étend sur près de 4 ordres de grandeur (300€ à 2 000 000€, TP4), et
+    la relation avec le MRR, bien que forte, n'est linéaire qu'en échelle log — un
+    Random Forest, qui découpe l'espace des features en régions plutôt que d'ajuster
+    une pente unique, épouse naturellement ce genre de non-linéarité et d'hétérogénéité
+    d'échelle sans transformation préalable.</p>
+
+    <h3>Un signe supplémentaire : le plan comme rupture, pas comme gradient continu</h3>
+    <p>Le TP4 montrait un effet de <code>plan</code> en paliers nets (Starter, Pro,
+    Business, Enterprise) plutôt qu'un gradient continu. Un Random Forest peut apprendre
+    des règles du type <em>« si plan = Enterprise, la relation CLV/sièges change de
+    régime »</em> directement depuis les données ; un modèle linéaire, même en log,
+    doit approximer ces paliers avec une seule pente globale par variable catégorielle
+    encodée.</p>
+
+    <div class="callout theory">
+      <strong>La leçon transversale (TP5 + TP8).</strong> Il n'existe pas de famille de
+      modèle universellement supérieure — le bon choix dépend de la structure du signal
+      à apprendre, qui se lit dans l'EDA (TP4) avant même d'entraîner quoi que ce soit.
+      Comparer systématiquement au moins deux familles (TP5, TP8), plutôt que d'en
+      privilégier une par habitude, est ce qui permet de le constater au lieu de le
+      supposer.
+    </div>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 17 -->
+  <section class="entry" id="entry-17">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 17</span>
+      <span class="entry-tag">TP8 — Régression CLV</span>
+    </div>
+    <div class="entry-title">Pourquoi vérifier avec churn inclus alors qu'on sait déjà qu'il ne faut pas l'utiliser ?</div>
+
+    <div class="question-block">
+      <strong>Ce qui a été fait</strong>
+      Un modèle de contrôle est entraîné avec <code>churn</code> ajouté aux features,
+      en violation délibérée de la règle établie en TP1 — pour constater que le R² ne
+      change presque pas (-0.0009).
+    </div>
+
+    <h3>Une règle suivie n'est pas la même chose qu'une règle vérifiée</h3>
+    <p>Respecter la consigne du TP1 (« ne jamais utiliser churn comme feature du modèle
+    CLV ») suffit à produire un modèle conforme — mais ne dit rien sur <em>pourquoi</em>
+    cette règle est sans risque à appliquer ici. Deux issues étaient possibles en
+    ajoutant <code>churn</code> : soit un gain de performance notable (signe que la
+    règle a un coût réel, qu'il faudrait alors justifier plus fermement par l'éthique
+    seule), soit un gain nul (signe que la règle ne sacrifie rien).</p>
+
+    <h3>Ce que le résultat apporte à l'argumentaire</h3>
+    <p>Trouver un écart négligeable transforme un argument de principe ("c'est la
+    règle") en argument double : méthodologique <strong>et</strong> empirique. Si un
+    correcteur ou un client demande "combien perd-on à exclure churn ?", la réponse
+    n'est plus "rien, en théorie" mais "quasiment rien, mesuré à -0.0009 de R² sur ce
+    jeu de test précis" — une affirmation vérifiable, pas une simple déclaration
+    d'intention.</p>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 18 -->
+  <section class="entry" id="entry-18">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 18</span>
+      <span class="entry-tag">TP9 — Implémentation</span>
+    </div>
+    <div class="entry-title">Pourquoi recharger les modèles depuis le disque plutôt que faire confiance à l'objet en mémoire ?</div>
+
+    <div class="question-block">
+      <strong>Ce qui a été fait</strong>
+      Après <code>train_and_serialize.py</code>, le TP9 ne réutilise pas les objets
+      Python déjà entraînés dans le processus — il recharge
+      <code>model_churn.joblib</code> et <code>model_clv.joblib</code> depuis le
+      disque, dans un nouveau processus, avant de recomparer les métriques.
+    </div>
+
+    <h3>Ce qu'un objet en mémoire ne prouve pas</h3>
+    <p>Le modèle entraîné dans le script fonctionne forcément dans ce même script — ça
+    ne dit rien sur la sérialisation elle-même. <code>joblib.dump</code> peut échouer
+    silencieusement à capturer un état interne (un préprocesseur mal configuré, une
+    dépendance de version, un objet non picklable remplacé par un stub), et l'erreur
+    ne se manifesterait qu'au rechargement — précisément le moment que le modèle en
+    mémoire ne peut jamais tester lui-même.</p>
+
+    <h3>Le round-trip est le seul test qui compte pour un artefact de production</h3>
+    <p>La question qui importe n'est pas "le modèle entraîné fonctionne-t-il ?" mais
+    "le fichier <code>.joblib</code>, chargé demain, sur une autre machine, par un
+    autre processus, reproduit-il exactement ce qui a été validé aujourd'hui ?" — c'est
+    exactement le scénario qu'un job batch mensuel (TP9 §5) rejouera chaque mois. Ne
+    tester que l'objet en mémoire reviendrait à valider un pont en ne le testant que
+    pendant sa construction, jamais après l'avoir ouvert à la circulation.</p>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 19 -->
+  <section class="entry" id="entry-19">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 19</span>
+      <span class="entry-tag">TP9 — Implémentation</span>
+    </div>
+    <div class="entry-title">Pourquoi une règle simple pour l'action recommandée plutôt qu'un modèle de plus ?</div>
+
+    <div class="question-block">
+      <strong>Le choix fait</strong>
+      L'action recommandée (<code>_action_recommandee</code>) suit une chaîne de
+      conditions simples (si dernière connexion &gt; 30 jours → contacter ; sinon si
+      adoption &lt; 30% → former ; etc.) plutôt qu'un modèle entraîné sur des
+      historiques d'actions passées.
+    </div>
+
+    <h3>La donnée nécessaire pour entraîner ce modèle n'existe pas</h3>
+    <p>Un modèle qui recommande une action apprendrait normalement à partir de
+    l'historique <em>« quelle action a été prise, et a-t-elle fonctionné »</em> — une
+    donnée absente du jeu fourni (aucune colonne ne trace les actions passées des
+    équipes CS ni leur résultat). Inventer ce signal ou l'approximer serait plus risqué
+    que de s'appuyer sur une règle transparente et directement vérifiable.</p>
+
+    <h3>Une règle explicite reste plus utile ici qu'un modèle opaque</h3>
+    <p>La table du TP1 associe déjà chaque signal à une action précise (connexion
+    absente → contact ; faible adoption → formation...). Une règle qui applique
+    directement cette table, dans l'ordre du signal le plus grave au moins grave, est
+    <strong>immédiatement auditable</strong> par un Customer Success Manager — il peut
+    voir exactement pourquoi telle action est suggérée, sans avoir à interroger un
+    second modèle boîte noire en plus de celui du churn.</p>
+
+    <div class="callout theory">
+      <strong>Le principe général.</strong> Un modèle statistique ne se justifie que là
+      où le problème a une vraie composante prédictive à apprendre de données
+      existantes. Ici, la donnée manque et la logique métier est déjà connue et
+      énoncée (TP1) — une règle explicite est non seulement suffisante, elle est
+      préférable.
+    </div>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 20 -->
+  <section class="entry" id="entry-20">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 20</span>
+      <span class="entry-tag">TP10 — Impact</span>
+    </div>
+    <div class="entry-title">Pourquoi tester la sensibilité de l'hypothèse plutôt que présenter le ROI à 25% seul ?</div>
+
+    <div class="question-block">
+      <strong>Ce qui a été fait</strong>
+      Le ROI est recalculé pour une plage de taux de succès de rétention (5% à 50%),
+      pas seulement pour l'hypothèse retenue (25%) — avec le graphique complet montré,
+      pas juste le point à 25%.
+    </div>
+
+    <h3>Une hypothèse non mesurée est le point le plus fragile de tout le calcul</h3>
+    <p>Le taux de 25% n'est pas dérivé des données de ce projet — aucune trace
+    d'action de rétention passée n'existe pour le calibrer (constat du TP9). Présenter
+    un ROI unique (137x) sans dire à quel point ce chiffre dépend de l'hypothèse
+    reviendrait à masquer la partie la moins solide du raisonnement derrière la partie
+    la plus solide (les comptages TP/FN, eux, sont mesurés, pas supposés).</p>
+
+    <h3>Ce que la plage complète permet de dire, que le point unique ne permet pas</h3>
+    <p>Trouver que même l'extrémité pessimiste testée (5%) donne encore un ROI de 27x
+    transforme la conclusion de <em>« le modèle rapporte 137x, si l'hypothèse est
+    juste »</em> en <em>« le modèle rapporte plus qu'il ne coûte, quelle que soit
+    l'hypothèse dans une plage raisonnable »</em> — une affirmation beaucoup plus
+    difficile à contester, précisément parce qu'elle ne repose plus sur un seul
+    chiffre non vérifié.</p>
+
+    <div class="callout theory">
+      <strong>Le principe général.</strong> Toute conclusion qui repose sur un
+      paramètre non mesuré doit être accompagnée d'une analyse de sensibilité sur ce
+      paramètre — sans quoi la précision apparente du résultat final (un ROI à une
+      décimale) masque une incertitude bien plus grossière en amont.
+    </div>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 21 -->
+  <section class="entry" id="entry-21">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 21</span>
+      <span class="entry-tag">TP10 — Dérive</span>
+    </div>
+    <div class="entry-title">Pourquoi remettre en question son propre résultat de dérive plutôt que le présenter tel quel ?</div>
+
+    <div class="question-block">
+      <strong>Ce qui s'est passé</strong>
+      Un test statistique (Kolmogorov-Smirnov) trouve un écart hautement significatif
+      sur <code>nb_integrations</code> entre deux cohortes — un résultat qui aurait pu
+      être présenté directement comme une preuve de dérive. Il a été vérifié, puis
+      requalifié en artefact.
+    </div>
+
+    <h3>Un test statistique valide ne garantit pas une interprétation valide</h3>
+    <p>Le test KS répond correctement à la question qu'on lui a posée : "ces deux
+    distributions sont-elles différentes ?" — oui, avec une confiance très forte. Il ne
+    répond pas à la question qu'on voulait réellement poser : "le comportement des
+    nouveaux clients a-t-il changé ?". Entre les deux se glisse une hypothèse implicite
+    (le découpage par date de souscription isole bien un effet de nouveauté) qui s'est
+    révélée fausse une fois vérifiée par corrélation.</p>
+
+    <h3>Le réflexe qui a permis de l'attraper</h3>
+    <p>Face à un résultat inattendu ou spectaculaire (ici, une moyenne qui chute de
+    3.37 à 0.95), la question à se poser systématiquement est : <em>« quelle est
+    l'explication la plus simple et la moins intéressante, et puis-je l'écarter ? »</em>
+    — avant d'accepter l'explication la plus intéressante. Ici, l'explication ennuyeuse
+    (une corrélation mécanique avec l'ancienneté) s'est avérée être la bonne. C'est le
+    même réflexe qui a permis de repérer le piège de fuite du TP3 (AUC trop parfait) et
+    le bug de nettoyage du TP2 (taux de NaN qui augmente au lieu de baisser).</p>
+
+    <div class="callout theory">
+      <strong>Le coût de ne pas vérifier.</strong> Publier ce résultat sans le
+      requalifier aurait déclenché, en production, une fausse alerte de dérive — et
+      potentiellement un ré-entraînement inutile sur la base d'un artefact, plutôt que
+      sur un vrai changement de comportement des clients.
+    </div>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+  <!-- Entrée 22 -->
+  <section class="entry" id="entry-22">
+    <div class="entry-header">
+      <span class="entry-num">Entrée 22</span>
+      <span class="entry-tag">Final — Assemblage</span>
+    </div>
+    <div class="entry-title">Pourquoi ré-assembler du code déjà validé produit-il encore de nouveaux bugs ?</div>
+
+    <div class="question-block">
+      <strong>Ce qui s'est passé</strong>
+      L'assemblage du notebook certifiant final réutilise exclusivement du code déjà
+      exécuté avec succès dans TP1 à TP10. Trois exécutions successives ont pourtant
+      échoué, chacune sur une erreur différente, avant d'obtenir un run propre.
+    </div>
+
+    <h3>Recopier n'est pas rejouer</h3>
+    <p>Le code source de chaque section a été réécrit à la main plutôt que copié
+    littéralement — pour l'adapter au contexte du notebook unique (mêmes variables
+    réutilisées d'une section à l'autre, imports mutualisés, etc.). Cette réécriture,
+    même fidèle en intention, réintroduit les mêmes catégories d'erreurs qu'une première
+    écriture : un détail de typage oublié, une clé de dictionnaire mal recopiée, une
+    hypothèse de précision numérique qui ne tenait que par accident dans le code
+    d'origine.</p>
+
+    <h3>Les trois erreurs, et ce qu'elles révèlent</h3>
+    <ol>
+      <li><strong><code>jour_souscription</code> classée numérique.</strong> Le code de
+        contrôle du TP7 (permutation importance avec les 4 leurres) range les 4 leurres
+        entièrement dans les colonnes catégorielles. Le code réécrit ici les a scindés
+        en deux listes distinctes (catégorielles vs numériques) en supposant, à tort,
+        que <code>jour_souscription</code> était un entier — alors que c'est un nom de
+        jour en texte (<code>"samedi"</code>). Le <code>StandardScaler</code> a échoué
+        au premier <code>fit</code>.</li>
+      <li><strong><code>metadata["clv"]["mae"]</code> au lieu de <code>mae_eur</code>.</strong>
+        Une clé plausible mais inventée, jamais vérifiée contre le fichier
+        <code>metadata.json</code> réellement produit par <code>train_and_serialize.py</code>.</li>
+      <li><strong>Comparaison stricte de flottants non arrondis.</strong> Le round-trip
+        de sérialisation comparait un ROC-AUC recalculé en pleine précision à la valeur
+        arrondie à 4 décimales stockée dans les métadonnées — les deux s'affichaient
+        identiques (<code>0.8803</code>) mais l'égalité stricte échouait. Le TP9 arrondit
+        déjà les deux côtés avant de comparer ; le code réécrit ici avait perdu ce détail.</li>
+    </ol>
+
+    <h3>Pourquoi ça n'a pas été grave</h3>
+    <p>Les trois erreurs ont été détectées immédiatement, par l'exécution réelle du
+    notebook — jamais par relecture du code généré. C'est le même principe que celui
+    qui a produit les entrées 2, 11 et 21 : ne jamais déclarer un résultat correct sans
+    l'avoir vu s'exécuter. Chaque erreur a été comprise avant correction (en comparant au
+    code original validé du TP source, plutôt qu'en corrigeant à l'aveugle), pour éviter
+    d'en introduire une quatrième par-dessus.</p>
+
+    <div class="callout theory">
+      <strong>Le principe général.</strong> La confiance dans un bloc de code se
+      transmet à sa <em>copie exacte</em>, jamais à sa <em>réécriture</em> — même fidèle,
+      même par la même main. Toute réécriture, aussi mineure, retombe au niveau de
+      confiance d'un code neuf et doit être revalidée par exécution.
+    </div>
+
+    <a class="back-to-toc" href="#">↑ Retour au sommaire</a>
+  </section>
+
+</div>

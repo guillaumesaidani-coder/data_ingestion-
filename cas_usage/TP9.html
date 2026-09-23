@@ -1,0 +1,274 @@
+<title>TP9 — Implémentation, cas d'usage churn SaaS</title>
+<style>
+  /* ── Tokens — thème acier/ardoise, mise en production ── */
+  :root {
+    --bg:        #f4f6f8;
+    --surface:   #ffffff;
+    --surface2:  #e7ecf0;
+    --border:    #d1dbe2;
+    --accent:    #334155;
+    --accent2:   #64748b;
+    --ok:        #059669;
+    --warn:      #d97706;
+    --danger:    #dc2626;
+    --info:      #0284c7;
+    --text:      #17212b;
+    --muted:     #55677a;
+    --code-bg:   #12181f;
+    --code-text: #c3d0dc;
+    --tag-bg:    #e2e8f0;
+    --tag-text:  #334155;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:        #0c1116;
+      --surface:   #131a22;
+      --surface2:  #1a232c;
+      --border:    #2c3945;
+      --accent:    #94a3b8;
+      --accent2:   #64748b;
+      --ok:        #34d399;
+      --warn:      #fbbf24;
+      --danger:    #f87171;
+      --info:      #38bdf8;
+      --text:      #e4eaf0;
+      --muted:     #94a7b8;
+      --code-bg:   #090d12;
+      --code-text: #c3d0dc;
+      --tag-bg:    #263241;
+      --tag-text:  #cbd5e1;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:#f4f6f8; --surface:#ffffff; --surface2:#e7ecf0; --border:#d1dbe2;
+    --accent:#334155; --accent2:#64748b; --ok:#059669; --warn:#d97706;
+    --danger:#dc2626; --info:#0284c7; --text:#17212b; --muted:#55677a;
+    --code-bg:#12181f; --code-text:#c3d0dc; --tag-bg:#e2e8f0; --tag-text:#334155;
+  }
+  :root[data-theme="dark"] {
+    --bg:#0c1116; --surface:#131a22; --surface2:#1a232c; --border:#2c3945;
+    --accent:#94a3b8; --accent2:#64748b; --ok:#34d399; --warn:#fbbf24;
+    --danger:#f87171; --info:#38bdf8; --text:#e4eaf0; --muted:#94a7b8;
+    --code-bg:#090d12; --code-text:#c3d0dc; --tag-bg:#263241; --tag-text:#cbd5e1;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.7;
+    padding: 0 1rem 4rem;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .page { max-width: 940px; margin: 0 auto; }
+
+  .page-header { border-bottom: 2px solid var(--accent); padding: 2.5rem 0 1.5rem; margin-bottom: 2rem; }
+  .eyebrow { font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: .5rem; }
+  .page-header h1 { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.2; text-wrap: balance; color: var(--text); }
+  .page-header p { margin-top: .75rem; color: var(--muted); font-size: .95rem; }
+  .prereq { display: inline-flex; align-items: center; gap: .4rem; background: var(--tag-bg); color: var(--tag-text); font-size: .78rem; font-weight: 600; letter-spacing: .04em; padding: .25rem .75rem; border-radius: 999px; margin-top: .75rem; }
+
+  .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: .75rem; margin-bottom: 1.5rem; }
+  .overview-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: .9rem 1rem; }
+  .overview-card .label { font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: .3rem; }
+  .overview-card .value { font-size: .95rem; font-weight: 600; color: var(--text); }
+  .overview-card .sub { font-size: .8rem; color: var(--muted); margin-top: .15rem; }
+
+  .section { background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 1.75rem 2rem; margin-bottom: 1.5rem; }
+  .section-title { font-family: Georgia, serif; font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 1rem; display: flex; align-items: baseline; gap: .6rem; }
+  .section-num { font-size: .78rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+
+  .callout { border-radius: 6px; padding: .9rem 1.1rem; margin: 1rem 0; font-size: .9rem; border-left: 3px solid; }
+  .callout.info  { background: #e0f2fe; border-color: var(--info);   color: #0c4a6e; }
+  .callout.warn  { background: #fef9c3; border-color: var(--warn);   color: #78350f; }
+  .callout.ok    { background: #d1fae5; border-color: var(--ok);     color: #064e3b; }
+  .callout.theory{ background: var(--tag-bg); border-color: var(--accent); color: var(--tag-text); }
+  @media (prefers-color-scheme: dark) {
+    .callout.info  { background: #0c2a3d; color: #7dd3fc; }
+    .callout.warn  { background: #2d1e00; color: #fde68a; }
+    .callout.ok    { background: #052e16; color: #6ee7b7; }
+    .callout.theory{ background: var(--tag-bg); color: var(--tag-text); }
+  }
+  :root[data-theme="dark"] .callout.info  { background:#0c2a3d; color:#7dd3fc; }
+  :root[data-theme="dark"] .callout.warn  { background:#2d1e00; color:#fde68a; }
+  :root[data-theme="dark"] .callout.ok    { background:#052e16; color:#6ee7b7; }
+  :root[data-theme="light"] .callout.info { background:#e0f2fe; color:#0c4a6e; }
+  :root[data-theme="light"] .callout.warn { background:#fef9c3; color:#78350f; }
+  :root[data-theme="light"] .callout.ok   { background:#d1fae5; color:#064e3b; }
+
+  pre { background: var(--code-bg); border-radius: 6px; padding: 1.1rem 1.25rem; overflow-x: auto; margin: 1rem 0; font-size: .82rem; line-height: 1.6; }
+  code { font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; color: var(--code-text); }
+  p code, li code, td code { background: var(--surface2); color: var(--accent); padding: .1em .35em; border-radius: 3px; font-size: .85em; }
+
+  .tbl-wrap { overflow-x: auto; margin: 1rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: .85rem; font-variant-numeric: tabular-nums; }
+  th { background: var(--surface2); font-weight: 600; text-align: left; padding: .55rem .8rem; border-bottom: 2px solid var(--border); font-size: .74rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+  td { padding: .5rem .8rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+
+  .badge { display: inline-block; padding: .15em .55em; border-radius: 4px; font-size: .78rem; font-weight: 700; letter-spacing: .03em; }
+  .badge-ok      { background: #d1fae5; color: #065f46; }
+  .badge-warn    { background: #fef3c7; color: #92400e; }
+  .badge-danger  { background: #fee2e2; color: #991b1b; }
+  .badge-info    { background: #e0f2fe; color: #0c4a6e; }
+
+  .pipe-steps { display: flex; flex-direction: column; gap: .6rem; margin: 1rem 0; }
+  .pipe-step { display: flex; gap: .9rem; align-items: flex-start; }
+  .pipe-num { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--surface); display: flex; align-items: center; justify-content: center; font-size: .78rem; font-weight: 700; }
+  .pipe-body strong { font-size: .87rem; }
+  .pipe-body p { font-size: .82rem; margin: .1rem 0 0; color: var(--muted); }
+
+  ul, ol { padding-left: 1.4rem; }
+  li { margin-bottom: .3rem; }
+  p { margin-bottom: .8rem; }
+  p:last-child { margin-bottom: 0; }
+  h3 { font-family: Georgia, serif; font-size: 1.05rem; font-weight: 700; margin: 1.25rem 0 .5rem; color: var(--text); }
+
+  .summary { background: #151d26; color: #fff; border-radius: 8px; padding: 1.6rem 2rem; margin-top: 1rem; }
+  .summary-title { font-size: .65rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--accent2); margin-bottom: 1rem; }
+  .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .6rem; }
+  .sum-item { background: rgba(255,255,255,.08); border-radius: 5px; padding: .65rem .85rem; font-size: .83rem; }
+  .sum-item strong { display: block; color: var(--accent2); font-size: .78rem; margin-bottom: .2rem; }
+
+  @media (max-width: 640px) {
+    .section { padding: 1.25rem 1rem; }
+    .page-header { padding: 1.5rem 0 1rem; }
+    .summary-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="page">
+
+  <header class="page-header">
+    <p class="eyebrow">Cas d'usage 01 — Certification IA · Résiliation client SaaS (churn)</p>
+    <h1>TP9 — Rendre le modèle réellement utilisable</h1>
+    <p>Deux scripts, deux modèles sérialisés, une fonction de scoring qui va jusqu'à
+       l'action recommandée — pas seulement une probabilité.</p>
+    <span class="prereq">🎯 Compétences visées : C6 (implémenter), C7 (architecture cible)</span>
+  </header>
+
+  <div class="overview-grid">
+    <div class="overview-card">
+      <div class="label">Artefacts produits</div>
+      <div class="value">2 modèles .joblib</div>
+      <div class="sub">+ metadata.json</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Round-trip vérifié</div>
+      <div class="value">Identique à TP6/TP8</div>
+      <div class="sub">ROC-AUC 0.8803, PR-AUC 0.7615</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Scoring</div>
+      <div class="value">Risque + CLV + priorité</div>
+      <div class="sub">+ action recommandée concrète</div>
+    </div>
+    <div class="overview-card">
+      <div class="label">Architecture cible</div>
+      <div class="value">Batch mensuel</div>
+      <div class="sub">Pas de temps réel — non justifié</div>
+    </div>
+  </div>
+
+  <!-- §1 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§1</span> Entraînement et sérialisation</div>
+    <p><code>scripts/train_and_serialize.py</code> rejoue exactement les configurations
+    déjà validées (régression logistique TP5/TP6, Random Forest TP8) — aucune nouvelle
+    logique de modélisation, juste la production d'artefacts réutilisables.</p>
+    <pre><code>[2/3] Entraînement + sérialisation du modèle churn...
+  ROC-AUC=0.8803  PR-AUC=0.7615
+[3/3] Entraînement + sérialisation du modèle CLV...
+  MAE=33441.55€  R²=0.7293</code></pre>
+    <div class="callout warn">
+      <code>model_clv.joblib</code> pèse environ 107 Mo (forêt de 300 arbres) — à garder
+      hors du versionnement git si le projet est commité.
+    </div>
+  </section>
+
+  <!-- §2 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§2</span> Vérification : round-trip depuis le disque</div>
+    <p>Un artefact qu'on ne recharge jamais n'est pas vérifié. On recharge les modèles
+    <strong>depuis le disque</strong> et on recompare aux métriques déjà documentées.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Métrique</th><th>Rechargé</th><th>Attendu (TP6)</th><th>Identique</th></tr></thead>
+        <tbody>
+          <tr><td>ROC-AUC</td><td>0.8803</td><td>0.8803</td><td><span class="badge badge-ok">✓</span></td></tr>
+          <tr><td>PR-AUC</td><td>0.7615</td><td>0.7615</td><td><span class="badge badge-ok">✓</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- §3-4 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§3-4</span> Esquisse d'API de scoring</div>
+    <p><code>scripts/scoring.py</code> traduit une prédiction brute en information
+    actionnable : tier de risque, CLV, priorité (matrice risque × CLV, TP1) et action
+    recommandée (règle sur le signal dominant, TP7).</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Client</th><th>Risque</th><th>CLV</th><th>Priorité</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>CLI-002789</td><td>28.3% (Modéré)</td><td>94 730€ (Élevée)</td><td>Surveillance</td><td>Nouvel échéancier</td></tr>
+          <tr><td>CLI-003691</td><td>91.6% (Élevé)</td><td>5 655€ (Moyenne)</td><td>Élevée</td><td>Nouvel échéancier</td></tr>
+          <tr><td>CLI-004605</td><td>99.2% (Élevé)</td><td>3 159€ (Moyenne)</td><td>Élevée</td><td>Formation / démo</td></tr>
+          <tr><td>CLI-004445</td><td>8.7% (Faible)</td><td>8 553€ (Moyenne)</td><td>Faible</td><td>Suivi standard</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout info">
+      <strong>Exemple détaillé — CLI-002789.</strong> Risque modéré (28.3%) mais CLV
+      élevée (94 730€) → priorité <strong>Surveillance</strong>, pas "urgent" : le
+      risque n'est pas assez élevé pour justifier une action immédiate, mais la valeur
+      en jeu mérite un suivi. Le churn réel de ce client était 1 (parti) — un exemple
+      où la priorisation évite le sur-alarmisme sans ignorer le signal.
+    </div>
+  </section>
+
+  <!-- §5 -->
+  <section class="section">
+    <div class="section-title"><span class="section-num">§5</span> Architecture cible et contraintes</div>
+    <p><strong>Batch mensuel, pas de temps réel.</strong> Le churn se joue à l'échéance
+    contractuelle, pas à la minute.</p>
+
+    <pre><code>Entrepôt/BDD  ──►  Job batch mensuel  ──►  Table de sortie  ──►  Export vers CRM
+(usage,          scripts/scoring.py      scores_churn_clv       (consommé par
+support,         sur toute la base       (Postgres)             les CSM)
+facturation)</code></pre>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Contrainte</th><th>Réponse</th></tr></thead>
+        <tbody>
+          <tr><td>Fraîcheur des données</td><td>Suffisante à J-30 (cycle mensuel)</td></tr>
+          <tr><td>Latence</td><td>Non critique — batch de quelques minutes sur 5000 comptes</td></tr>
+          <tr><td>Intégration CRM</td><td>Export table/CSV, pas de nouvelle interface</td></tr>
+          <tr><td>Dérive des données</td><td>À surveiller dans le temps (TP10)</td></tr>
+          <tr><td>Reproductibilité</td><td>Script rejoue tout depuis la base — pas de notebook manuel</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="summary">
+    <div class="summary-title">Journal de bord — Synthèse TP9</div>
+    <div class="summary-grid">
+      <div class="sum-item"><strong>§1 — Scripts, pas notebook</strong>train_and_serialize.py produit les artefacts, ce notebook ne fait qu'appeler</div>
+      <div class="sum-item"><strong>§2 — Vérifié</strong>Round-trip depuis le disque, métriques identiques à TP6/TP8</div>
+      <div class="sum-item"><strong>§3-4 — Au-delà du score</strong>Priorité + action recommandée, pas juste une probabilité</div>
+      <div class="sum-item"><strong>Prochaine étape</strong>TP10 — impact métier en euros, monitoring et ré-entraînement</div>
+    </div>
+  </div>
+
+</div>
