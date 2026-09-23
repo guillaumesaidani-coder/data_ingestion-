@@ -1,0 +1,5 @@
+[core]
+    analytics = false
+    remote = dagshub
+['remote "dagshub"']
+    url = https://dagshub.com/guillaume.saidani/Indusense.dvc

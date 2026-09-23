@@ -1,0 +1,5 @@
+outs:
+- md5: 4fdae689a7f150fc78798e082a32c3ff
+  size: 106813770
+  hash: md5
+  path: model_clv.joblib

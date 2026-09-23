@@ -1,0 +1,10 @@
+# Caches Python
+__pycache__/
+*.pyc
+
+# Réglages locaux de Claude Code (propres à ce poste)
+.claude/settings.local.json
+
+# Fichiers temporaires / sauvegardes d'Office et d'éditeurs
+~$*
+*.bak
