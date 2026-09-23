@@ -10,6 +10,10 @@ import pytest
 import xgboost as xgb
 from conftest import B11_MODEL_ARTIFACT_DIR, B11_RUN_ID
 
+# Relit mlflow_tp7.db, base MLflow locale non versionnée dans Git (binaire,
+# change à chaque run) : absente d'un checkout CI brut.
+pytestmark = pytest.mark.requires_local_infra
+
 DOCUMENTED_METRICS = {
     "pr_auc_test": 0.8799,
     "roc_auc_test": 0.9949,

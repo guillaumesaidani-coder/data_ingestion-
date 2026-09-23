@@ -68,5 +68,5 @@ line-length = 100
 
 [tool.pytest.ini_options]
 markers = [
-    "requires_local_infra: needs the live Postgres (docker-db-1) and/or DVC-pulled data files ; not available in CI, run locally only (deselect with -m 'not requires_local_infra')",
+    "requires_local_infra: needs the live Postgres (docker-db-1), DVC-pulled data files and/or the local MLflow db (mlflow_tp7.db) ; not available in CI, run locally only (deselect with -m 'not requires_local_infra')",
 ]
