@@ -12,7 +12,9 @@ COPY src ./src
 # --no-editable : sans ca, le paquet installe pointerait vers ./src au lieu
 # d'un wheel fige et autonome dans .venv - l'etape runtime ne recopie pas
 # ./src, donc l'API ne demarrerait pas sans ce flag.
-RUN uv sync --frozen --no-editable
+# --no-dev : le groupe dev (dvc, streamlit, locust, pytest, black, ruff) est
+# installe par defaut par uv sync ; inutile a l'API, il gonflait l'image.
+RUN uv sync --frozen --no-editable --no-dev
 
 # ---- runtime : repart d'une image propre, non-root ---------------------
 FROM python:3.13-slim AS runtime

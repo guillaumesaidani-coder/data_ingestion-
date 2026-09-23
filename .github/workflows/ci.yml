@@ -44,3 +44,54 @@ jobs:
         with:
           name: indusense-wheel
           path: ML/dist/*.whl
+
+  # Publie l'image de l'API sur GitHub Container Registry (ghcr.io), taguée
+  # par le commit : on sait toujours quel code tourne dans quelle image.
+  # Uniquement sur un push vers main (pas sur les pull requests).
+  image:
+    needs: quality
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - name: Install
+        run: uv sync --frozen
+      - name: Pull model (DVC)
+        # Le Dockerfile COPY artifacts/models/model.joblib, piloté par DVC :
+        # absent du checkout, on le récupère sur DagsHub. Secrets à déclarer
+        # dans GitHub (Settings > Secrets and variables > Actions).
+        env:
+          DAGSHUB_USER: ${{ secrets.DAGSHUB_USER }}
+          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+        run: |
+          if [ -z "$DAGSHUB_TOKEN" ]; then
+            echo "::error::Secrets DAGSHUB_USER / DAGSHUB_TOKEN absents : impossible de récupérer model.joblib"
+            exit 1
+          fi
+          uv run --frozen dvc remote modify dagshub --local auth basic
+          uv run --frozen dvc remote modify dagshub --local user "$DAGSHUB_USER"
+          uv run --frozen dvc remote modify dagshub --local password "$DAGSHUB_TOKEN"
+          uv run --frozen dvc pull artifacts/models/model.joblib.dvc
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/indusense-api
+          tags: |
+            type=sha,format=short,prefix=
+            type=raw,value=latest
+      - uses: docker/build-push-action@v6
+        with:
+          context: ML
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
