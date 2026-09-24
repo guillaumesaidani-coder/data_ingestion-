@@ -8,7 +8,9 @@ v0 — ce fichier logue method/path/status/request_id à titre informatif,
 ce n'est pas un événement d'audit structuré et durable.
 
 Aucune nouvelle logique de prédiction : /predict-tabular appelle le
-pipeline sklearn déjà entraîné et testé (indusense.modeling), chargé
+pipeline sklearn déjà entraîné et testé (indusense.modeling) et délègue
+à indusense.scoring le choix des colonnes attendues (même implémentation
+que le scoring horaire et le backfill). Le modèle est chargé
 depuis le fichier produit par `indusense train -o ...` (versionné par
 DVC — artifacts/models/model.joblib.dvc).
 """
@@ -28,6 +30,7 @@ from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_
 from pydantic import BaseModel
 
 from indusense.config import get_api_key, get_model_path
+from indusense.scoring import model_feature_cols
 
 app = FastAPI(title="InduSense — API de maintenance prédictive")
 logger = logging.getLogger("indusense.api")
@@ -177,12 +180,7 @@ def predict_tabular(payload: PredictRequest):
     if not payload.features:
         raise HTTPException(status_code=422, detail="features ne peut pas être vide")
 
-    imputer = _model.named_steps.get("imputer")
-    expected_cols = (
-        list(imputer.feature_names_in_)
-        if imputer is not None and hasattr(imputer, "feature_names_in_")
-        else list(payload.features)
-    )
+    expected_cols = model_feature_cols(_model, list(payload.features))
 
     known = set(expected_cols) & set(payload.features)
     if not known:

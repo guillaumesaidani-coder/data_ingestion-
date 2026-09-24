@@ -1,9 +1,9 @@
 """Scoring d'un DataFrame de features avec le modèle b11-gkf (modules
 35-36) : logique partagée entre le scoring horaire
-(`flows.predict_flow.predict_latest`) et le backfill historique
-(`scripts/backfill_predictions.py`) — une seule implémentation de
-« quelles colonnes le modèle attend » et « comment figer une photo de
-features en JSON », pas deux qui pourraient diverger.
+(`flows.predict_flow.predict_latest`), le backfill historique
+(`scripts/backfill_predictions.py`) et l'API (`api.main.predict_tabular`)
+— une seule implémentation de « quelles colonnes le modèle attend » et
+« comment figer une photo de features en JSON », pas deux qui pourraient diverger.
 """
 
 import pandas as pd
