@@ -2,9 +2,10 @@
 
 Chaque fonction correspond à une section du notebook (mêmes noms de
 colonnes, même ordre de calcul). `build_gold_features()` les enchaîne
-dans l'ordre exact du notebook. L'écriture en base (TRUNCATE + to_sql,
-gestion d'ingestion_batch) reste dans TP6.ipynb : ce module ne fait que
-la transformation, pas l'I/O.
+dans l'ordre exact du notebook, `to_gold_rows()` met le résultat au
+format de la table (section 7). Ce module ne fait que la transformation :
+l'I/O (lecture Silver, ingestion_batch, TRUNCATE + écriture) vit dans
+`indusense.flows.etl_flow`.
 """
 
 import numpy as np
@@ -34,6 +35,64 @@ TYPE_COLS = [
     "type_alarme_capteur",
     "type_arret_urgence",
     "type_defaut_qualite",
+]
+
+# Colonnes écrites dans gold_machine_hourly_feature, dans l'ordre de TP6
+# (section 7) ; `ingestion_batch_id` est ajouté par l'étage d'écriture.
+GOLD_COLS = [
+    "machine_id",
+    "window_start",
+    "window_end",
+    "split_set",
+    # 1h
+    "temp_mean_1h",
+    "temp_max_1h",
+    "temp_std_1h",
+    "pressure_mean_1h",
+    "pressure_max_1h",
+    "pressure_std_1h",
+    "voltage_mean_1h",
+    "rotation_mean_1h",
+    "pieces_produced_sum_1h",
+    # 6h / 12h / 24h
+    *[
+        f"{pfx}_{stat}_{w}"
+        for w in ["6h", "12h", "24h"]
+        for pfx in ["temp", "pressure", "voltage", "rotation"]
+        for stat in ["mean", "max", "std"]
+    ],
+    # Tendances
+    *[
+        f"{pfx}_{t}"
+        for pfx in ["temp", "pressure", "voltage", "rotation"]
+        for t in ["delta_1h", "delta_3h", "trend_6h"]
+    ],
+    # Z-scores
+    "temp_zscore_24h",
+    "pressure_zscore_24h",
+    "temp_zscore_machine",
+    "pressure_zscore_machine",
+    # Production
+    "pieces_produced_sum_24h",
+    "capacity_utilization_pct",
+    # Incidents
+    "incident_count_prev_24h",
+    "incident_max_severity_prev_24h",
+    "incident_count_prev_7d",
+    "hours_since_last_incident",
+    *[f"{t}_count_prev_24h" for t in TYPE_COLS],
+    # Maintenance
+    "days_since_last_maintenance",
+    "maintenance_count_prev_30d",
+    # Labels puis compte brut d'incidents futurs (avant seuillage)
+    "label_failure_next_6h",
+    "label_failure_next_12h",
+    "label_failure_next_24h",
+    "label_failure_next_48h",
+    "future_incident_count_6h",
+    "future_incident_count_12h",
+    "future_incident_count_24h",
+    "future_incident_count_48h",
 ]
 
 HORIZONS = [
@@ -284,3 +343,12 @@ def build_gold_features(
     df = compute_maintenance_lookback_features(df, df_maint)
     df = compute_multi_horizon_labels(df, df_inc)
     return df
+
+
+def to_gold_rows(df: pd.DataFrame) -> pd.DataFrame:
+    """Sortie de `build_gold_features()` -> colonnes de la table Gold :
+    fenêtre [observed_at, observed_at + 1h), puis sélection de GOLD_COLS."""
+    df = df.copy()
+    df["window_start"] = df["observed_at"]
+    df["window_end"] = df["observed_at"] + pd.Timedelta(hours=1)
+    return df[GOLD_COLS]

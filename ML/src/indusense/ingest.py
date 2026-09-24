@@ -29,6 +29,7 @@ from indusense.data import hash_file
 BRONZE_TABLES = {
     "telemetry": "bronze_telemetry",
     "incidents": "bronze_incidents",
+    "maintenance": "bronze_maintenance",
 }
 
 

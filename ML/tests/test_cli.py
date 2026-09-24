@@ -27,6 +27,12 @@ def test_train_subcommand_output_is_optional():
     assert args.output is None
 
 
+def test_etl_subcommand_parses_and_routes():
+    parser = cli.build_parser()
+    args = parser.parse_args(["etl"])
+    assert args.func is cli.etl
+
+
 def test_predict_subcommand_requires_model_and_input():
     parser = cli.build_parser()
     with pytest.raises(SystemExit):

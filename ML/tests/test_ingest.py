@@ -46,6 +46,19 @@ CREATE TABLE bronze_telemetry (
     pieces_produced INTEGER,
     ingestion_batch_id TEXT
 );
+CREATE TABLE bronze_maintenance (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ingestion_batch_id TEXT,
+    maintenance_id INTEGER,
+    machine_id TEXT,
+    maintenance_at TEXT,
+    maintenance_type TEXT,
+    action_type TEXT,
+    component TEXT,
+    description TEXT,
+    related_incident_id TEXT,
+    duration_hours REAL
+);
 """
 
 
@@ -146,11 +159,41 @@ def test_find_batch_by_hash_ignores_unfinished_batches(tmp_path):
     assert find_batch_by_hash(engine, "telemetry", "same-hash") is None
 
 
+def test_ingest_terrain_batch_accepts_maintenance_source(tmp_path):
+    engine = _engine(tmp_path)
+    csv_path = tmp_path / "maintenance.csv"
+    pd.DataFrame(
+        {
+            "maintenance_id": [1, 2],
+            "machine_id": ["MACH-01", "MACH-02"],
+            "maintenance_at": ["2026-06-15 08:00:00"] * 2,
+            "maintenance_type": ["proactive", "reactive"],
+            "action_type": ["inspection", "remplacement"],
+            "component": ["pompe", "joint"],
+            "description": ["RAS", "fuite"],
+            "related_incident_id": [None, "INC-1"],
+            "duration_hours": [1.0, 2.5],
+        }
+    ).to_csv(csv_path, index=False)
+
+    batch_id = ingest_terrain_batch(engine, csv_path, "maintenance")
+    ingest_terrain_batch(engine, csv_path, "maintenance")  # rejeu : aucun doublon
+
+    with engine.connect() as conn:
+        n_rows = conn.execute(text("SELECT COUNT(*) FROM bronze_maintenance")).scalar()
+        source = conn.execute(
+            text("SELECT source_name FROM ingestion_batch WHERE ingestion_batch_id=:id"),
+            {"id": str(batch_id)},
+        ).scalar()
+    assert n_rows == 2
+    assert source == "maintenance"
+
+
 def test_ingest_terrain_batch_rejects_unknown_source(tmp_path):
     engine = _engine(tmp_path)
     csv_path = _terrain_csv(tmp_path)
     try:
-        ingest_terrain_batch(engine, csv_path, "maintenance")
+        ingest_terrain_batch(engine, csv_path, "gold")
         assert False, "devrait lever ValueError pour une source non geree"
     except ValueError as exc:
-        assert "maintenance" in str(exc)
+        assert "gold" in str(exc)

@@ -1,4 +1,4 @@
-"""Commandes `indusense train` / `indusense predict`.
+"""Commandes `indusense export-gold` / `etl` / `train` / `predict`.
 
 Fine couche d'orchestration au-dessus de indusense.modeling : charge les
 données, appelle train_and_evaluate() / un modèle sauvegardé, affiche ou
@@ -29,6 +29,15 @@ def export_gold(args: argparse.Namespace) -> None:
     print(f"Export : {out_path}")
     print(f"gold_md5 : {md5}")
     print(f"Suite : dvc add {out_path}")
+
+
+def etl(args: argparse.Namespace) -> None:
+    # Import local : Prefect n'est chargé que pour cette commande.
+    from indusense.flows.etl_flow import etl_flow
+
+    result = etl_flow()
+    for table, n_rows in result.items():
+        print(f"{table} : {n_rows} lignes")
 
 
 def train(args: argparse.Namespace) -> None:
@@ -96,6 +105,11 @@ def build_parser() -> argparse.ArgumentParser:
         "-o", "--output", default="data/gold/gold_dataset.csv", help="Chemin de sortie du CSV"
     )
     export_gold_parser.set_defaults(func=export_gold)
+
+    etl_parser = subparsers.add_parser(
+        "etl", help="Reconstruit Silver et Gold à partir du Bronze (flow Prefect indusense-etl)"
+    )
+    etl_parser.set_defaults(func=etl)
 
     train_parser = subparsers.add_parser(
         "train", help="Entraîne et évalue le modèle b11-gkf sur le Gold dataset"
