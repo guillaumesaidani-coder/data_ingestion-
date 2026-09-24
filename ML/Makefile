@@ -37,3 +37,22 @@ check-determinism:
 
 proof: build check-user check-size
 	@echo "Voir image_proof.md pour le registre complet des preuves."
+
+# ---- Stack unique (R1) : compose.yaml ------------------------------------
+
+.PHONY: stack-up stack-down stack-etl stack-migrate seed-dump
+
+stack-up:        ## Démarre la stack (base initialisée au 1er démarrage)
+	docker compose up -d --build
+
+stack-down:      ## Arrête la stack, en gardant les données
+	docker compose down
+
+stack-etl:       ## Reconstruit Silver + Gold dans la base de la stack
+	docker compose --profile jobs run --rm etl
+
+stack-migrate:   ## Applique les migrations alembic
+	docker compose --profile jobs run --rm migrate
+
+seed-dump:       ## Régénère docker/initdb depuis une base peuplée (puis dvc add)
+	uv run --frozen python scripts/build_seed_dump.py --container ml-db-1

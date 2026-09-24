@@ -1,3 +1,26 @@
+# Stack unique InduSense (recommandation R1) : une seule base, lue par
+# l'API, pgAdmin, Grafana (et Streamlit en local), initialisée
+# automatiquement au premier démarrage.
+#
+#   docker compose up -d --build                  # la stack
+#   docker compose --profile jobs run --rm etl    # reconstruire Silver + Gold
+#   docker compose --profile jobs run --rm migrate  # appliquer les migrations alembic
+#
+# Remplace Docker/docker-compose.yml (docker-db-1 + pgAdmin) : arrêter
+# cette ancienne stack avant (docker compose stop, dans Docker/), les deux
+# publient les ports 5432 et 8082.
+
+# Connexion à la base, partagée par api, etl et migrate.
+x-db-env: &db-env
+  DB_HOST: db
+  DB_USER: indusense_user
+  DB_PASSWORD: ThEP@ssW0rd
+  DB_NAME: indusense_db
+  DB_PORT: "5432"
+  # Mot de passe URL-encode (%40 = @) : ThEP@ssW0rd contient un @ litteral,
+  # que create_engine() interpreterait sinon comme separateur host.
+  PREDICTIONS_DB_URL: postgresql+psycopg2://indusense_user:ThEP%40ssW0rd@db:5432/indusense_db
+
 services:
   db:
     image: postgres:16
@@ -6,25 +29,30 @@ services:
       POSTGRES_USER: indusense_user
       POSTGRES_PASSWORD: ThEP@ssW0rd
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U indusense_user"]
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U indusense_user -d indusense_db"]
       interval: 5s
       timeout: 3s
       retries: 10
+      # -h 127.0.0.1 : pendant la restauration du seed, Postgres n'écoute
+      # que sur son socket local ; tester en TCP évite de se déclarer prêt
+      # avant la fin de l'initialisation.
+      start_period: 180s
+    ports:
+      # Publié : notebooks, flows et Streamlit lancés sur le PC utilisent
+      # localhost:5432 (ML/.env), comme avant avec docker-db-1.
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      # Joué une seule fois, sur un volume vide : dump de la base peuplée
+      # + table predictions (scripts/build_seed_dump.py, versionné par DVC).
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
 
   api:
     build: .
+    image: indusense-api:local
     environment:
+      <<: *db-env
       API_KEY: dev-local-key
-      DB_HOST: db
-      DB_USER: indusense_user
-      DB_PASSWORD: ThEP@ssW0rd
-      DB_NAME: indusense_db
-      DB_PORT: "5432"
-      # Mot de passe URL-encode (%40 = @) : ThEP@ssW0rd contient un @ litteral,
-      # que create_engine() interpreterait sinon comme separateur host.
-      PREDICTIONS_DB_URL: postgresql+psycopg2://indusense_user:ThEP%40ssW0rd@db:5432/indusense_db
     depends_on:
       db:
         condition: service_healthy
@@ -32,6 +60,21 @@ services:
       - "8010:8000"
     # HEALTHCHECK deja defini dans le Dockerfile (GET /health) : rien a
     # ajouter ici, c'est lui que service_healthy attendra plus bas.
+
+  pgadmin:
+    image: dpage/pgadmin4:6.15
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      # Serveur « InduSense » déjà déclaré : plus d'enregistrement à la main.
+      - ./docker/pgadmin/servers.json:/pgadmin4/servers.json:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8082:80"
 
   prometheus:
     image: prom/prometheus:v3.1.0
@@ -73,7 +116,44 @@ services:
       timeout: 3s
       retries: 10
 
+  # ---- Jobs ponctuels (profil « jobs ») : lancés à la demande, puis s'arrêtent.
+
+  etl:
+    image: indusense-api:local
+    profiles: ["jobs"]
+    environment: *db-env
+    command: ["python", "-m", "indusense.flows.etl_flow"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  migrate:
+    image: indusense-api:local
+    profiles: ["jobs"]
+    environment: *db-env
+    volumes:
+      # Les migrations vivent à la racine du dépôt, hors du contexte de
+      # build (ML/) : montées en lecture seule plutôt que copiées dans l'image.
+      - ../alembic:/app/alembic:ro
+      # alembic/env.py importe `models` (métadonnées SQLAlchemy du schéma).
+      - ./models.py:/app/models.py:ro
+    command:
+      - python
+      - -c
+      - |
+        from alembic import command
+        from alembic.config import Config
+        from indusense.config import get_db_url
+        cfg = Config()
+        cfg.set_main_option("script_location", "/app/alembic")
+        cfg.set_main_option("sqlalchemy.url", get_db_url().render_as_string(hide_password=False).replace("%", "%%"))
+        command.upgrade(cfg, "head")
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   pgdata:
+  pgadmin_data:
   prometheus_data:
   grafana_data:

@@ -1,3 +1,8 @@
+> **Remplacé par la stack unique `ML/compose.yaml`** (base Postgres initialisée
+> automatiquement + pgAdmin sur :8082). Ne pas lancer les deux en même temps :
+> elles publient toutes deux les ports 5432 et 8082. Les données de cette
+> ancienne stack restent dans le volume `pg-db-data`.
+
 # Docker database with GUI
 
 ## Customize Composition

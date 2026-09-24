@@ -1,0 +1,6 @@
+outs:
+- md5: 54405c04a12a126ca60efd9580776566.dir
+  size: 61417775
+  nfiles: 2
+  hash: md5
+  path: initdb

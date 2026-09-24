@@ -4,7 +4,8 @@ pas lancée, chaque test SKIP dès le premier ConnectionError — jamais
 d'échec, jamais d'attente de 60s : `uv run pytest -q` reste vert en local
 et en CI sans Docker Compose.
 
-Ports (voir compose.yaml) : 8010 (api), 9091 (prometheus), 3010 (grafana) —
+Ports (voir compose.yaml) : 8010 (api), 9091 (prometheus), 3010 (grafana),
+8082 (pgadmin) —
 remappés depuis 8000/9090/3000, déjà pris par une autre stack sur ce poste.
 """
 
@@ -67,3 +68,13 @@ def test_prometheus_scrapes_api_target_as_up():
         time.sleep(2)
 
     pytest.fail(f"Cible indusense-api jamais 'up' après 30s (dernier statut : {last_health})")
+
+
+PGADMIN_URL = os.getenv("SMOKE_PGADMIN_URL", "http://localhost:8082")
+
+
+def test_pgadmin_login_page():
+    # Stack unique (R1) : pgAdmin fait partie de compose.yaml, serveur
+    # « InduSense » provisionné par docker/pgadmin/servers.json.
+    resp = _get(f"{PGADMIN_URL}/login")
+    assert resp.status_code == 200
