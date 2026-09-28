@@ -8,7 +8,9 @@ génériques du gabarit) :
 1. Affiner une fausse alerte — la vérité terrain connue (§`scripts/
    simulate_feedback.py`) dit seulement « pas de panne dans les 24h »,
    jamais « capteur sain ». Un technicien tranche capteur défaillant /
-   maintenance préventive / vraie fausse alerte.
+   maintenance préventive / vraie fausse alerte. Une vraie fausse alerte
+   passe en FAUSSE_ALERTE_CONFIRMEE, pas FAUSSE_ALERTE : sinon la ligne
+   resterait dans la file d'attente et reviendrait indéfiniment en tête.
 2. Déclarer un incident non prédit — le retour le plus précieux
    (feuille de route §4) : sans ce bouton, les pannes manquées par le
    modèle ne sont jamais visibles dans les retours (mesuré dans
@@ -76,7 +78,7 @@ else:
 
     if st.button("Enregistrer la qualification", type="primary", key="valider_fausse_alerte"):
         statut = {
-            "Fausse alerte confirmée (machine saine)": "FAUSSE_ALERTE",
+            "Fausse alerte confirmée (machine saine)": "FAUSSE_ALERTE_CONFIRMEE",
             "Capteur défaillant": "CAPTEUR_DEFAILLANT",
             "Maintenance préventive effectuée": "MAINTENANCE_PREVENTIVE",
         }[choix]

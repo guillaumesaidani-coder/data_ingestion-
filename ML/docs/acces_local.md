@@ -1,0 +1,105 @@
+# Accès aux interfaces InduSense en local
+
+Aide-mémoire pour démarrer la stack sur son PC et se connecter à chaque interface
+depuis le navigateur.
+
+> ⚠️ **Valeurs de développement, pour le poste local uniquement.** Elles figurent
+> déjà dans `compose.yaml` et `.env.example`. Tout usage au-delà du PC (serveur,
+> démo en réseau) exige de les remplacer par de vrais secrets.
+
+## 1. Démarrer
+
+1. **Arrêter le PostgreSQL de Windows**, s'il tourne. Il occupe le port 5432 :
+   *Services* → `postgresql-x64-18` → **Arrêter**. Le passer en démarrage
+   **Manuel** évite de recommencer après chaque redémarrage du PC.
+2. **Lancer Docker Desktop.**
+3. Dans le dossier `ML/` :
+   ```
+   docker compose up -d --build
+   ```
+   Au tout premier démarrage, la base se remplit toute seule (environ 10 secondes).
+
+## 2. Les interfaces et leurs accès
+
+| Interface | Adresse | Identifiant | Mot de passe |
+|---|---|---|---|
+| **pgAdmin** : connexion à l'outil | http://localhost:8082 | `admin@example.com` | `admin` |
+| **pgAdmin** : ouverture du serveur « InduSense » | *(dans pgAdmin)* | `indusense_user` | `ThEP@ssW0rd` |
+| **API** (Swagger), bouton *Authorize* | http://localhost:8010/docs | — | clé `dev-local-key` |
+| **Grafana** | http://localhost:3010 | `admin` | `admin` |
+| **Prometheus** | http://localhost:9091 | aucun | — |
+| **MLflow** *(hors Docker, voir §4)* | http://127.0.0.1:5000 | aucun | — |
+| **Interface technicien** Streamlit *(hors Docker, voir §4)* | http://localhost:8501 | aucun | — |
+
+Pour se connecter à la base depuis un autre outil (DBeaver, script…) : hôte
+`localhost`, port `5432`, base `indusense_db`, utilisateur `indusense_user`, mot de
+passe `ThEP@ssW0rd`.
+
+## 3. pgAdmin : deux connexions successives
+
+pgAdmin demande **deux** identifiants différents, l'un après l'autre :
+
+1. **Page d'accueil de pgAdmin** : `admin@example.com` / `admin`.
+   Le champ attend une **adresse email** : `indusense_user` y est refusé.
+2. **Ouvrir la base** : à gauche, *Servers* → **InduSense** (déjà déclaré). Saisir
+   `ThEP@ssW0rd`, cocher **Save Password**.
+   Les tables sont dans *InduSense → Databases → indusense_db → Schemas → public → Tables*.
+
+Pour bien taper le mot de passe `ThEP@ssW0rd` : T, h minuscule, E et P majuscules,
+@, s s, W majuscule, 0 (le **chiffre** zéro), r d. Soit 11 caractères.
+
+## 4. Les outils lancés hors Docker
+
+Ils s'arrêtent quand on ferme le terminal ou VS Code. À relancer depuis `ML/` :
+
+| Outil | Commande | Utile pour |
+|---|---|---|
+| Interface technicien | `uv run --frozen streamlit run scripts/streamlit_review.py` | valider les alertes (le PostgreSQL de Windows doit être arrêté) |
+| MLflow | `uv run --frozen mlflow ui --backend-store-uri sqlite:///mlflow_tp7.db --port 5000` | l'historique des entraînements |
+| Exporteur de dérive | `uv run --frozen python scripts/export_drift_metrics.py` | le dashboard Grafana « dérive » |
+
+On ne lance que ceux dont on a besoin.
+
+### Un terminal par outil
+
+Chaque commande lance un serveur qui **reste actif** : le terminal est occupé tant
+que l'outil tourne (`Ctrl + C` ou fermer le terminal l'arrête). Il faut donc
+**un terminal par outil**.
+
+**Dans VS Code** : *Terminal → New Terminal*, taper `cd ML` puis la commande ; le
+bouton **+** du panneau terminal ouvre le terminal suivant. L'icône **Split** les
+affiche côte à côte.
+
+**Tout lancer d'un coup** : dans un seul terminal PowerShell, depuis `ML/`, chaque
+ligne ouvre une nouvelle fenêtre qui fait tourner son outil (fermer la fenêtre
+arrête l'outil) :
+
+```
+Start-Process powershell -ArgumentList '-NoExit','-Command','uv run --frozen streamlit run scripts/streamlit_review.py'
+Start-Process powershell -ArgumentList '-NoExit','-Command','uv run --frozen mlflow ui --backend-store-uri sqlite:///mlflow_tp7.db --port 5000'
+Start-Process powershell -ArgumentList '-NoExit','-Command','uv run --frozen python scripts/export_drift_metrics.py'
+```
+
+## 5. En cas de problème
+
+| Symptôme | Cause probable | Solution |
+|---|---|---|
+| pgAdmin : *« The email address is not valid »* | un nom d'utilisateur saisi à la place de l'email | utiliser `admin@example.com` |
+| pgAdmin refuse le bon mot de passe | compte verrouillé après 3 échecs | le déverrouiller (commande ci-dessous) |
+| Notebooks ou Streamlit : erreur `UnicodeDecodeError` à la connexion | le PostgreSQL de Windows répond sur le port 5432 | l'arrêter (§1, étape 1) |
+| Dashboard « dérive » vide dans Grafana | exporteur de dérive non lancé | le relancer (§4) |
+| Grafana propose de changer le mot de passe | premier accès | **Skip**, ou noter le nouveau mot de passe |
+
+Déverrouiller le compte pgAdmin :
+```
+docker exec ml-pgadmin-1 python3 -c "import sqlite3;c=sqlite3.connect('/var/lib/pgadmin/pgadmin4.db');c.execute('update user set locked=0, login_attempts=0');c.commit()"
+```
+
+## 6. Arrêter
+
+```
+docker compose down        # arrête la stack, garde les données
+```
+
+`docker compose down -v` supprime **aussi les données** : la base repartira du
+seed au prochain démarrage.

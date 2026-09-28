@@ -57,6 +57,7 @@ def _seed_db(tmp_path, monkeypatch):
 @pytest.mark.parametrize(
     "libelle_choix,statut_attendu",
     [
+        ("Fausse alerte confirmée (machine saine)", "FAUSSE_ALERTE_CONFIRMEE"),
         ("Capteur défaillant", "CAPTEUR_DEFAILLANT"),
         ("Maintenance préventive effectuée", "MAINTENANCE_PREVENTIVE"),
     ],
@@ -84,6 +85,19 @@ def test_refine_false_alarm_writes_reclassification(
         ).fetchone()
     assert row.review_status == statut_attendu
     assert row.reviewer_comment == "sonde temperature HS"
+
+
+def test_refined_false_alarm_leaves_the_queue(tmp_path, monkeypatch):
+    """Confirmer une fausse alerte la sort de la file : sans ça, la même
+    ligne FAUSSE_ALERTE revenait en tête à chaque rechargement."""
+    _seed_db(tmp_path, monkeypatch)
+
+    at = AppTest.from_file(SCRIPT)
+    at.run()
+    at.button(key="valider_fausse_alerte").click().run()
+    assert not at.exception
+
+    assert any("Plus aucune fausse alerte" in s.value for s in at.success)
 
 
 def test_declare_unpredicted_incident_writes_review(tmp_path, monkeypatch):

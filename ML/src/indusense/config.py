@@ -70,10 +70,15 @@ def get_model_version(path: Path | None = None) -> str:
 
 def get_predictions_db_url() -> str:
     """URL SQLAlchemy du stockage des prédictions (module 30) : une seule
-    URL, pas de branche if backend == "postgres". SQLite en local par
-    défaut ; `compose.yaml` la surcharge en Postgres pour le service api
-    (même base indusense_db que le Gold dataset)."""
-    default = f"sqlite:///{ML_DIR / 'artifacts' / 'predictions.db'}"
+    URL, pas de branche if backend == "postgres".
+
+    Par défaut, la base centrale (get_db_url(), même indusense_db que le
+    Gold) : un poste sans PREDICTIONS_DB_URL écrivait jusqu'ici en silence
+    dans artifacts/predictions.db, une base SQLite archivée que plus rien
+    ne lit (Streamlit, flows et seed divergeaient sans erreur).
+    PREDICTIONS_DB_URL reste la surcharge explicite (tests : SQLite
+    temporaire)."""
+    default = get_db_url().render_as_string(hide_password=False)
     return os.getenv("PREDICTIONS_DB_URL", default)
 
 

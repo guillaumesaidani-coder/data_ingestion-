@@ -40,7 +40,7 @@ proof: build check-user check-size
 
 # ---- Stack unique (R1) : compose.yaml ------------------------------------
 
-.PHONY: stack-up stack-down stack-etl stack-migrate seed-dump
+.PHONY: stack-up stack-down stack-reset stack-etl stack-migrate seed-dump seed-check
 
 stack-up:        ## Démarre la stack (base initialisée au 1er démarrage)
 	docker compose up -d --build
@@ -54,5 +54,11 @@ stack-etl:       ## Reconstruit Silver + Gold dans la base de la stack
 stack-migrate:   ## Applique les migrations alembic
 	docker compose --profile jobs run --rm migrate
 
-seed-dump:       ## Régénère docker/initdb depuis une base peuplée (puis dvc add)
+stack-reset: seed-check  ## Repart du seed (down -v), refusé si des verdicts n'y sont pas
+	docker compose down -v
+
+seed-dump:       ## Fige ml-db-1 dans docker/initdb (puis dvc add)
 	uv run --frozen python scripts/build_seed_dump.py --container ml-db-1
+
+seed-check:      ## Échoue si ml-db-1 contient des verdicts absents du seed
+	uv run --frozen python scripts/build_seed_dump.py --container ml-db-1 --check

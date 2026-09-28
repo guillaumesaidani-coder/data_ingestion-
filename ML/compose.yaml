@@ -1,6 +1,7 @@
 # Stack unique InduSense (recommandation R1) : une seule base, lue par
-# l'API, pgAdmin, Grafana (et Streamlit en local), initialisée
-# automatiquement au premier démarrage.
+# pgAdmin, les jobs (etl, migrate) et, depuis le PC, Streamlit et les
+# flows ; initialisée automatiquement au premier démarrage. L'API et
+# Grafana ne la lisent pas (modèle en mémoire, Prometheus).
 #
 #   docker compose up -d --build                  # la stack
 #   docker compose --profile jobs run --rm etl    # reconstruire Silver + Gold
@@ -17,9 +18,9 @@ x-db-env: &db-env
   DB_PASSWORD: ThEP@ssW0rd
   DB_NAME: indusense_db
   DB_PORT: "5432"
-  # Mot de passe URL-encode (%40 = @) : ThEP@ssW0rd contient un @ litteral,
-  # que create_engine() interpreterait sinon comme separateur host.
-  PREDICTIONS_DB_URL: postgresql+psycopg2://indusense_user:ThEP%40ssW0rd@db:5432/indusense_db
+  # Pas de PREDICTIONS_DB_URL : get_predictions_db_url() la dérive de DB_*
+  # (même base, mot de passe encodé par SQLAlchemy), plus de second
+  # exemplaire des identifiants à tenir à jour.
 
 services:
   db:
@@ -50,12 +51,11 @@ services:
   api:
     build: .
     image: indusense-api:local
+    # Ni identifiants ni dépendance sur db : l'API charge le modèle et
+    # répond, elle ne lit ni n'écrit la base (au 1er up, elle n'attend
+    # plus la restauration du seed pour démarrer).
     environment:
-      <<: *db-env
       API_KEY: dev-local-key
-    depends_on:
-      db:
-        condition: service_healthy
     ports:
       - "8010:8000"
     # HEALTHCHECK deja defini dans le Dockerfile (GET /health) : rien a
@@ -121,8 +121,18 @@ services:
   etl:
     image: indusense-api:local
     profiles: ["jobs"]
-    environment: *db-env
+    environment:
+      <<: *db-env
+      # Serveur Prefect éphémère : son 1er démarrage (création de la base
+      # sur un volume vide) dépasse le délai par défaut dans le conteneur.
+      PREFECT_SERVER_EPHEMERAL_STARTUP_TIMEOUT_SECONDS: "120"
     command: ["python", "-m", "indusense.flows.etl_flow"]
+    volumes:
+      # PREFECT_HOME (/app/data/.prefect, Dockerfile) : sans volume, la base
+      # Prefect de chaque run disparaît avec le conteneur (--rm) et le
+      # journal des flows lancés ici est perdu. /app/data appartient déjà
+      # à appuser dans l'image : le volume hérite de ces droits.
+      - prefect_jobs:/app/data
     depends_on:
       db:
         condition: service_healthy
@@ -157,3 +167,4 @@ volumes:
   pgadmin_data:
   prometheus_data:
   grafana_data:
+  prefect_jobs:
