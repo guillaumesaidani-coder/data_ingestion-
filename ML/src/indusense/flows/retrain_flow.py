@@ -11,10 +11,12 @@ aveugle.
    et la période proposée pour l'entraînement augmenté dépasse le seuil
    d'alerte (0.25, même convention que modules 31-34) — sans dérive
    mesurée, rien ne justifie de toucher au modèle.
-5. Nouveau lot terrain   : au moins un batch Gold (indusense.ingest,
-   `ingestion_batch.source_name='gold'`) a été ingéré depuis `cutoff` —
-   sans ça, les feux 3/4 rejoueraient les mêmes données déjà vues plutôt
-   que de vraies nouvelles mesures terrain.
+5. Nouveau lot terrain   : au moins un lot terrain Bronze (indusense.ingest,
+   `ingestion_batch.source_name` telemetry/incidents/maintenance) a été
+   ingéré depuis `cutoff` — sans ça, les feux 3/4 rejoueraient les mêmes
+   données déjà vues plutôt que de vraies nouvelles mesures terrain. Pas
+   les batches 'gold' : etl_flow en ouvre un à chaque exécution, même sans
+   aucune donnée nouvelle, et un simple rejeu de l'ETL ouvrait ce feu.
 
 `ensure_model(..., retrain=True)` existe depuis les modules 29-30 mais
 n'était jusqu'ici jamais piloté par un vrai critère : ce flow est ce
@@ -29,12 +31,13 @@ from prefect import flow, get_run_logger, task
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
-from sqlalchemy import text
+from sqlalchemy import bindparam, text
 
 from indusense.arbitration import CUTOFF, persist_arbitration, run_arbitration
 from indusense.config import get_engine, get_predictions_engine
 from indusense.data_quality import check_sensor_quality
 from indusense.drift import psi
+from indusense.ingest import BRONZE_TABLES
 from indusense.modeling.dataset import load_gold_dataset
 from indusense.predictions_store import CREATE_TABLE_SQL
 
@@ -78,12 +81,13 @@ def check_confirmed_failures_quota(reviews: pd.DataFrame) -> tuple[bool, str]:
     )
 
 
-def _load_ingestion_batches(engine, source_name: str = "gold") -> pd.DataFrame:
-    return pd.read_sql(
-        text("SELECT started_at, status FROM ingestion_batch WHERE source_name = :source_name"),
-        engine,
-        params={"source_name": source_name},
-    )
+def _load_ingestion_batches(engine, source_names=tuple(BRONZE_TABLES)) -> pd.DataFrame:
+    """Lots terrain (Bronze, append), pas les étages de l'ETL (silver_*,
+    gold) qui rouvrent une ligne à chaque reconstruction."""
+    query = text(
+        "SELECT started_at, status FROM ingestion_batch WHERE source_name IN :source_names"
+    ).bindparams(bindparam("source_names", expanding=True))
+    return pd.read_sql(query, engine, params={"source_names": list(source_names)})
 
 
 def check_data_quality(gold, cutoff: pd.Timestamp) -> tuple[bool, str]:
@@ -104,24 +108,26 @@ def check_drift_signal(gold, cutoff: pd.Timestamp) -> tuple[bool, str]:
 
 
 def check_new_terrain_batch(batches: pd.DataFrame, cutoff: pd.Timestamp) -> tuple[bool, str]:
-    """Vrai si au moins un batch Gold clos (indusense.ingest, via la même
+    """Vrai si au moins un lot terrain clos (indusense.ingest, via la même
     table `ingestion_batch` que TP4/TP5/TP6) a démarré depuis `cutoff` --
-    la preuve qu'un nouveau lot de données terrain a bien traversé Bronze ->
-    Silver -> Gold, pas seulement un rejeu de l'existant."""
+    la preuve qu'une nouvelle donnée est entrée en Bronze, pas seulement
+    un rejeu de l'ETL sur l'existant."""
     done = batches[batches["status"] == "done"].copy()
     done["started_at"] = pd.to_datetime(done["started_at"], utc=True)
     fresh = done[done["started_at"] >= cutoff]
     ok = not fresh.empty
     detail = (
-        f"{len(fresh)} lot(s) Gold ingéré(s) depuis {cutoff.date()}"
+        f"{len(fresh)} lot(s) terrain ingéré(s) depuis {cutoff.date()}"
         if ok
-        else f"aucun nouveau lot Gold depuis {cutoff.date()}"
+        else f"aucun nouveau lot terrain depuis {cutoff.date()}"
     )
     return ok, detail
 
 
 @task(name="verifier-conditions-reentrainement")
-def verifier_conditions_reentrainement(cutoff: pd.Timestamp = CUTOFF) -> tuple[bool, dict]:
+def verifier_conditions_reentrainement(
+    cutoff: pd.Timestamp = CUTOFF,
+) -> tuple[bool, dict]:
     logger = get_run_logger()
     engine = get_engine()
     gold = load_gold_dataset(engine)

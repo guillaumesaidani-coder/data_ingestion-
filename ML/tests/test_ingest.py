@@ -246,6 +246,37 @@ def test_ingest_terrain_batch_writes_rejected_rows_and_traces_them(tmp_path):
     ]
 
 
+def test_ingest_terrain_batch_failure_leaves_no_bronze_rows_and_replay_loads_once(
+    tmp_path, monkeypatch
+):
+    """Échec avant la clôture : aucune ligne Bronze orpheline (le batch
+    reste tracé en 'running'), et le rejeu du même fichier charge le lot
+    une seule fois -- pas de doublon qui passerait ensuite au Silver."""
+    from indusense import ingest
+
+    engine = _engine(tmp_path)
+    csv_path = _terrain_csv(tmp_path)
+
+    def boom(*args, **kwargs):
+        raise RuntimeError("coupure pendant la clôture")
+
+    monkeypatch.setattr(ingest, "_close_batch", boom)
+    try:
+        ingest_terrain_batch(engine, csv_path, "telemetry")
+        assert False, "l'échec de clôture devait remonter"
+    except RuntimeError:
+        pass
+
+    with engine.connect() as conn:
+        assert conn.execute(text("SELECT COUNT(*) FROM bronze_telemetry")).scalar() == 0
+        assert conn.execute(text("SELECT status FROM ingestion_batch")).scalar() == "running"
+
+    monkeypatch.undo()
+    ingest_terrain_batch(engine, csv_path, "telemetry")
+    with engine.connect() as conn:
+        assert conn.execute(text("SELECT COUNT(*) FROM bronze_telemetry")).scalar() == 3
+
+
 def test_ingest_terrain_batch_rejects_unknown_source(tmp_path):
     engine = _engine(tmp_path)
     csv_path = _terrain_csv(tmp_path)

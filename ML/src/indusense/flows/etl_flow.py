@@ -153,8 +153,8 @@ def rebuild_gold(engine: Engine) -> int:
 
     gold = to_gold_rows(build_gold_features(df_sensors, df_inc, df_maint, df_machine))
 
-    # Le batch 'gold' est aussi ce que lit le feu vert n°5 du réentraînement
-    # (flows.retrain_flow.check_new_terrain_batch).
+    # Trace de l'étage, rouverte à chaque exécution : ce n'est PAS un lot
+    # terrain (le feu vert n°5 de retrain_flow lit les lots Bronze).
     batch_id = open_batch(
         engine, "gold", "silver_sensor_reading + silver_incident + silver_maintenance"
     )

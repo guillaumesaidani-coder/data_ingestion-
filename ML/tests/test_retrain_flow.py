@@ -9,10 +9,12 @@ from types import SimpleNamespace
 
 import numpy as np
 import pandas as pd
+from sqlalchemy import create_engine, text
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from indusense.flows.retrain_flow import (
+    _load_ingestion_batches,
     check_confirmed_failures_quota,
     check_data_quality,
     check_drift_signal,
@@ -160,3 +162,35 @@ def test_new_terrain_batch_gate_handles_empty_history():
     ok, detail = check_new_terrain_batch(batches, pd.Timestamp("2026-06-01", tz="UTC"))
     assert not ok
     assert "aucun nouveau lot" in detail
+
+
+def test_new_terrain_batch_gate_ignores_etl_replays(tmp_path):
+    # etl_flow rouvre un batch 'gold' (et silver_*) à chaque exécution, même
+    # sans donnée nouvelle : seul un lot Bronze doit compter comme terrain.
+    engine = create_engine(f"sqlite:///{tmp_path / 'batches.db'}")
+    with engine.begin() as conn:
+        conn.execute(
+            text("CREATE TABLE ingestion_batch (source_name TEXT, started_at TEXT, status TEXT)")
+        )
+        conn.execute(
+            text(
+                "INSERT INTO ingestion_batch VALUES "
+                "('gold', '2026-09-24T00:00:00+00:00', 'done'), "
+                "('silver_telemetry', '2026-09-24T00:00:00+00:00', 'done'), "
+                "('telemetry', '2026-05-01T00:00:00+00:00', 'done')"
+            )
+        )
+    cutoff = pd.Timestamp("2026-06-01", tz="UTC")
+
+    ok, _ = check_new_terrain_batch(_load_ingestion_batches(engine), cutoff)
+    assert not ok
+
+    with engine.begin() as conn:
+        conn.execute(
+            text(
+                "INSERT INTO ingestion_batch VALUES ('incidents', '2026-09-25T00:00:00+00:00', 'done')"
+            )
+        )
+    ok, detail = check_new_terrain_batch(_load_ingestion_batches(engine), cutoff)
+    assert ok
+    assert "1 lot(s) terrain" in detail

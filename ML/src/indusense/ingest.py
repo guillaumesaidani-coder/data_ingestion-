@@ -26,7 +26,7 @@ from pathlib import Path
 
 import pandas as pd
 from sqlalchemy import text
-from sqlalchemy.engine import Engine
+from sqlalchemy.engine import Connection, Engine
 
 from indusense.data import hash_file
 from indusense.processing.bronze_validation import data_quality_rows, validate_bronze
@@ -74,21 +74,27 @@ def close_batch(
     """Clôture un batch (status='done'). Même requête que TP6.ipynb (section
     « Clôture batch »)."""
     with engine.begin() as conn:
-        conn.execute(
-            text(
-                "UPDATE ingestion_batch "
-                "SET finished_at=:finished_at, rows_read=:rows_read, rows_loaded=:rows_loaded, "
-                "rows_rejected=:rows_rejected, status='done' "
-                "WHERE ingestion_batch_id=:id"
-            ),
-            {
-                "finished_at": datetime.now(UTC).isoformat(),
-                "rows_read": rows_read,
-                "rows_loaded": rows_loaded,
-                "rows_rejected": rows_rejected,
-                "id": str(batch_id),
-            },
-        )
+        _close_batch(conn, batch_id, rows_read, rows_loaded, rows_rejected)
+
+
+def _close_batch(
+    conn: Connection, batch_id: uuid.UUID, rows_read: int, rows_loaded: int, rows_rejected: int
+) -> None:
+    conn.execute(
+        text(
+            "UPDATE ingestion_batch "
+            "SET finished_at=:finished_at, rows_read=:rows_read, rows_loaded=:rows_loaded, "
+            "rows_rejected=:rows_rejected, status='done' "
+            "WHERE ingestion_batch_id=:id"
+        ),
+        {
+            "finished_at": datetime.now(UTC).isoformat(),
+            "rows_read": rows_read,
+            "rows_loaded": rows_loaded,
+            "rows_rejected": rows_rejected,
+            "id": str(batch_id),
+        },
+    )
 
 
 def find_batch_by_hash(engine: Engine, source_name: str, content_hash: str) -> uuid.UUID | None:
@@ -126,16 +132,21 @@ def ingest_terrain_batch(engine: Engine, csv_path: Path, source_name: str) -> uu
     raw = pd.read_csv(csv_path, dtype=str)
     bronze = validate_bronze(raw, source_name)
 
+    # Ouvert dans sa propre transaction : la tentative reste tracée
+    # (status 'running') même si le chargement échoue.
     batch_id = open_batch(engine, source_name, csv_path.name, content_hash)
     bronze["ingestion_batch_id"] = str(batch_id)
-    bronze.to_sql(BRONZE_TABLES[source_name], engine, if_exists="append", index=False)
-
     issues = data_quality_rows(bronze, source_name, batch_id)
-    if issues:
-        pd.DataFrame(issues).to_sql("data_quality_issue", engine, if_exists="append", index=False)
-
     n_ok = int(bronze["parse_ok"].sum())
-    close_batch(
-        engine, batch_id, rows_read=len(bronze), rows_loaded=n_ok, rows_rejected=len(bronze) - n_ok
-    )
+
+    # Lignes Bronze, anomalies et clôture dans UNE transaction. Sinon un
+    # échec en cours de route laisse des lignes Bronze d'un batch jamais
+    # clos : find_batch_by_hash ne voit que les batches 'done', le rejeu du
+    # fichier les ajoute une 2e fois, et le Silver (qui lit tout le Bronze
+    # parse_ok) les reçoit en double.
+    with engine.begin() as conn:
+        bronze.to_sql(BRONZE_TABLES[source_name], conn, if_exists="append", index=False)
+        if issues:
+            pd.DataFrame(issues).to_sql("data_quality_issue", conn, if_exists="append", index=False)
+        _close_batch(conn, batch_id, len(bronze), n_ok, len(bronze) - n_ok)
     return batch_id
