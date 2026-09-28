@@ -32,6 +32,9 @@ artifacts/?*
 artifacts/models/?*
 !artifacts/models/metrics.json
 !artifacts/models/params.yaml
+# Certification du modèle servi (scripts/certify_model.py) : petit JSON lié
+# au model.joblib par model_version, copié dans l'image pour /ready.
+!artifacts/models/explication_certification.json
 !artifacts/models/*.dvc
 /telemetry.csv
 /releves_incidents_anonymised.csv

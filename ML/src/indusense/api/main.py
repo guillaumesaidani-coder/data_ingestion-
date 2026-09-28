@@ -1,5 +1,12 @@
 """API de scoring InduSense : /health, /ready, /predict-tabular.
 
+Explicabilité (indusense.explain) : `?explain=true` ajoute à la réponse le
+pourquoi du score (décision, facteurs de hausse et de baisse,
+avertissements) ; sans ce paramètre la réponse est inchangée. /ready
+refuse (503) un modèle non conforme à la base de connaissance : variable
+exclue parmi ses entrées, ou certification (scripts/certify_model.py)
+bloquante ou faite pour un autre fichier modèle.
+
 Module 25 (service) + module 26 (contrôles de sécurité — voir
 security_controls.md pour le registre et threat_model.md pour l'analyse
 STRIDE). Quatre contrôles prouvés par test : auth, validation, rate
@@ -15,6 +22,7 @@ depuis le fichier produit par `indusense train -o ...` (versionné par
 DVC — artifacts/models/model.joblib.dvc).
 """
 
+import json
 import logging
 import time
 import uuid
@@ -29,7 +37,13 @@ from fastapi.security import APIKeyHeader
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
 from pydantic import BaseModel
 
-from indusense.config import get_api_key, get_model_path
+from indusense.config import get_api_key, get_model_path, get_model_version
+from indusense.explain import (
+    controler_modele,
+    est_conforme,
+    expliquer,
+    variables_du_modele,
+)
 from indusense.scoring import model_feature_cols
 
 app = FastAPI(title="InduSense — API de maintenance prédictive")
@@ -40,6 +54,10 @@ _api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 # Chargé une fois au démarrage ; None si le fichier n'existe pas (ex. avant
 # le premier `indusense train`, ou dans un environnement qui ne l'a pas).
 _model = None
+# Certification du modèle chargé (explication_certification.json, à côté
+# du modèle) ; None si absente.
+_certification = None
+_model_version = None
 
 MAX_BODY_BYTES = 64 * 1024
 RATE_LIMIT_PER_MINUTE = 60
@@ -66,10 +84,36 @@ _http_request_duration_seconds = Histogram(
 def load_model(path: Path | None = None):
     """(Re)charge le modèle depuis disque. Retourne None si absent —
     ne lève jamais : c'est /ready qui traduit cette absence en 503."""
-    global _model
-    model_path = path or get_model_path()
-    _model = joblib.load(model_path) if Path(model_path).exists() else None
+    global _model, _certification, _model_version
+    model_path = Path(path or get_model_path())
+    _model = joblib.load(model_path) if model_path.exists() else None
+    _model_version = get_model_version(model_path) if _model is not None else None
+    cert_path = model_path.parent / "explication_certification.json"
+    _certification = (
+        json.loads(cert_path.read_text(encoding="utf-8")) if cert_path.exists() else None
+    )
     return _model
+
+
+def non_conformites() -> list[str]:
+    """Raisons de refuser de servir le modèle chargé. Sans données :
+    exclusions (liste des entrées du modèle) ; concentration et autres
+    mesures d'entraînement : lues dans la certification, si présente."""
+    constats = controler_modele(variables_du_modele(_model))
+    raisons = [f"{c['variable']} : {c['message']}" for c in constats if not est_conforme([c])]
+    if _certification is not None:
+        if _certification.get("model_version") != _model_version:
+            raisons.append(
+                f"certification faite pour le modèle {_certification.get('model_version')}, "
+                f"modèle chargé {_model_version} : relancer scripts/certify_model.py"
+            )
+        elif not _certification.get("conforme", False):
+            raisons += [
+                f"{c.get('variable') or c['controle']} : {c['message']}"
+                for c in _certification["constats"]
+                if c["gravite"] == "bloquant"
+            ]
+    return raisons
 
 
 load_model()
@@ -145,6 +189,7 @@ class PredictRequest(BaseModel):
 
 class PredictResponse(BaseModel):
     failure_proba_24h: float
+    explication: dict | None = None
 
 
 @app.get("/metrics")
@@ -162,18 +207,26 @@ def health():
 
 @app.get("/ready")
 def ready():
-    """Le service peut vraiment servir des prédictions : le modèle est chargé."""
+    """Le service peut vraiment servir des prédictions : le modèle est
+    chargé ET conforme à la base de connaissance."""
     if _model is None:
         raise HTTPException(status_code=503, detail="Modèle non chargé")
+    raisons = non_conformites()
+    if raisons:
+        raise HTTPException(
+            status_code=503,
+            detail={"message": "Modèle non conforme à la base de connaissance", "raisons": raisons},
+        )
     return {"status": "ready"}
 
 
 @app.post(
     "/predict-tabular",
     response_model=PredictResponse,
+    response_model_exclude_none=True,
     dependencies=[Depends(require_api_key), Depends(rate_limit_dependency)],
 )
-def predict_tabular(payload: PredictRequest):
+def predict_tabular(payload: PredictRequest, explain: bool = False):
     if _model is None:
         raise HTTPException(status_code=503, detail="Modèle non chargé")
 
@@ -191,4 +244,13 @@ def predict_tabular(payload: PredictRequest):
 
     row = pd.DataFrame([payload.features]).reindex(columns=expected_cols)
     proba = float(_model.predict_proba(row)[:, 1][0])
-    return PredictResponse(failure_proba_24h=proba)
+    if not explain:
+        return PredictResponse(failure_proba_24h=proba)
+
+    explication = expliquer(_model, row)
+    inconnues = sorted(set(payload.features) - set(expected_cols))
+    if inconnues:
+        explication["avertissements"].append(
+            f"Variables inconnues du modèle, ignorées : {', '.join(inconnues)}"
+        )
+    return PredictResponse(failure_proba_24h=proba, explication=explication)

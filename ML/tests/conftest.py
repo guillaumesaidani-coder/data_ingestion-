@@ -99,6 +99,9 @@ def fake_model(monkeypatch):
     )
     pipe.fit(X, y)
     monkeypatch.setattr(api_main, "_model", pipe)
+    # La certification éventuellement présente sur disque porte sur le vrai
+    # modèle, pas sur ce pipeline synthétique.
+    monkeypatch.setattr(api_main, "_certification", None)
     return pipe
 
 

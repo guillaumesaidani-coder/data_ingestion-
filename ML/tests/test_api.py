@@ -5,6 +5,7 @@ conftest.py, partagées avec tests/test_security.py.
 
 import uuid
 
+import pandas as pd
 from conftest import auth_headers
 
 
@@ -90,3 +91,82 @@ def test_response_has_generated_request_id(client):
 def test_response_echoes_client_request_id(client):
     resp = client.get("/health", headers={"X-Request-ID": "demo-trace-42"})
     assert resp.headers["X-Request-ID"] == "demo-trace-42"
+
+
+# ------------------------------------------------------------ explicabilité
+def test_predict_tabular_without_explain_is_unchanged(client, fake_model):
+    resp = client.post(
+        "/predict-tabular",
+        json={"features": {"temp_mean_24h": 1.5, "pressure_mean_24h": -0.5}},
+        headers=auth_headers(),
+    )
+    assert set(resp.json()) == {"failure_proba_24h"}
+
+
+def test_predict_tabular_explain_returns_why(client, fake_model):
+    resp = client.post(
+        "/predict-tabular?explain=true",
+        json={"features": {"temp_mean_24h": 1.5, "inconnue": 3.0}},
+        headers=auth_headers(),
+    )
+    assert resp.status_code == 200
+    explication = resp.json()["explication"]
+    assert explication["decision"]
+    assert {"facteurs_hausse", "facteurs_baisse", "avertissements"} <= set(explication)
+    avert = " ".join(explication["avertissements"])
+    assert "Pression moyenne sur 24 h : valeur manquante" in avert
+    assert "inconnue" in avert
+
+
+def test_ready_refuses_model_with_excluded_feature(client, fake_model, monkeypatch):
+    from sklearn.impute import SimpleImputer
+    from sklearn.pipeline import Pipeline
+    from xgboost import XGBClassifier
+
+    import indusense.api.main as api_main
+
+    X = pd.DataFrame(
+        {"temp_mean_24h": [1.0, 2.0, 3.0, 4.0], "future_incident_count_24h": [0, 1, 0, 1]}
+    )
+    pipe = Pipeline([("imputer", SimpleImputer()), ("model", XGBClassifier(n_estimators=2))]).fit(
+        X, [0, 1, 0, 1]
+    )
+    monkeypatch.setattr(api_main, "_model", pipe)
+    resp = client.get("/ready")
+    assert resp.status_code == 503
+    assert "future_incident_count_24h" in " ".join(resp.json()["detail"]["raisons"])
+
+
+def test_ready_refuses_certification_of_another_model(client, fake_model, monkeypatch):
+    import indusense.api.main as api_main
+
+    monkeypatch.setattr(api_main, "_model_version", "aaaaaaaaaaaa")
+    monkeypatch.setattr(
+        api_main,
+        "_certification",
+        {"model_version": "bbbbbbbbbbbb", "conforme": True, "constats": []},
+    )
+    assert client.get("/ready").status_code == 503
+
+
+def test_ready_refuses_blocking_certification(client, fake_model, monkeypatch):
+    import indusense.api.main as api_main
+
+    monkeypatch.setattr(api_main, "_model_version", "aaaaaaaaaaaa")
+    monkeypatch.setattr(
+        api_main,
+        "_certification",
+        {
+            "model_version": "aaaaaaaaaaaa",
+            "conforme": False,
+            "constats": [
+                {
+                    "controle": "concentration",
+                    "gravite": "bloquant",
+                    "variable": "x",
+                    "message": "83 %",
+                }
+            ],
+        },
+    )
+    assert client.get("/ready").status_code == 503

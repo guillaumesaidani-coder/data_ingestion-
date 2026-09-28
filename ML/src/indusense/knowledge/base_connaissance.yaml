@@ -1,0 +1,173 @@
+# Base de connaissance InduSense : ce que l'on sait du domaine AVANT de
+# regarder le modèle. Écrite à la main, versionnée par Git, livrée avec le
+# paquet (donc présente dans l'image de l'API).
+#
+# Elle sert deux fois (indusense.explain) :
+#   1. formuler les explications (libellés, unités, plages) ;
+#   2. contrôler le modèle (exclusions, couverture, sens, concentration).
+#
+# Règle d'or : `sens` vient du métier (physique de la machine, types
+# d'incident du référentiel), jamais de ce que le modèle a appris. Sinon
+# le contrôle de sens validerait toujours le modèle. `indetermine` quand
+# aucune hypothèse n'est défendable : pas de contrôle de sens pour eux.
+#
+# Plages : bornes physiques du contrat DAT §5.4 (indusense.data_quality),
+# appliquées aux moyennes et maximums ; absentes quand le contrat n'en
+# donne pas.
+
+familles:
+  temperature:
+    libelle: Température
+    justification: "Surchauffe = type d'incident du référentiel ; une machine qui chauffe ou dont la température varie se dégrade."
+  pression:
+    libelle: Pression
+    justification: "Baisse de pression = type d'incident, mais une surpression est aussi anormale ; seule l'instabilité (écart-type) a un sens défendable."
+  tension:
+    libelle: Tension
+    justification: "Surconsommation = type d'incident ; le niveau seul ne dit rien, l'instabilité si."
+  rotation:
+    libelle: Rotation
+    justification: "Vibration et bruit mécanique = types d'incident ; une rotation instable les précède."
+  production:
+    libelle: Production
+    justification: "Usage intensif (usure) ou machine à l'arrêt (déjà en panne) : les deux lectures se défendent."
+  incidents:
+    libelle: Historique d'incidents
+    justification: "Les pannes graves sont précédées d'incidents mineurs (précurseurs) ; plus l'historique récent est chargé, plus le risque monte."
+  maintenance:
+    libelle: Maintenance
+    justification: "Une machine longtemps sans maintenance s'use ; le nombre d'interventions récentes est ambigu (préventive ou corrective)."
+
+variables:
+  # --- Température (°C)
+  temp_mean_1h: {libelle: Température moyenne sur 1 h, unite: °C, famille: temperature, sens: hausse, plage: [-20, 200]}
+  temp_max_1h: {libelle: Température maximale sur 1 h, unite: °C, famille: temperature, sens: hausse, plage: [-20, 200]}
+  temp_std_1h: {libelle: Écart-type de température sur 1 h, unite: °C, famille: temperature, sens: hausse}
+  temp_mean_6h: {libelle: Température moyenne sur 6 h, unite: °C, famille: temperature, sens: hausse, plage: [-20, 200]}
+  temp_max_6h: {libelle: Température maximale sur 6 h, unite: °C, famille: temperature, sens: hausse, plage: [-20, 200]}
+  temp_std_6h: {libelle: Écart-type de température sur 6 h, unite: °C, famille: temperature, sens: hausse}
+  temp_mean_12h: {libelle: Température moyenne sur 12 h, unite: °C, famille: temperature, sens: hausse, plage: [-20, 200]}
+  temp_max_12h: {libelle: Température maximale sur 12 h, unite: °C, famille: temperature, sens: hausse, plage: [-20, 200]}
+  temp_std_12h: {libelle: Écart-type de température sur 12 h, unite: °C, famille: temperature, sens: hausse}
+  temp_mean_24h: {libelle: Température moyenne sur 24 h, unite: °C, famille: temperature, sens: hausse, plage: [-20, 200]}
+  temp_max_24h: {libelle: Température maximale sur 24 h, unite: °C, famille: temperature, sens: hausse, plage: [-20, 200]}
+  temp_std_24h: {libelle: Écart-type de température sur 24 h, unite: °C, famille: temperature, sens: hausse}
+  temp_delta_1h: {libelle: Variation de température sur 1 h, unite: °C, famille: temperature, sens: hausse}
+  temp_delta_3h: {libelle: Variation de température sur 3 h, unite: °C, famille: temperature, sens: hausse}
+  temp_trend_6h: {libelle: Tendance de température sur 6 h, unite: °C/h, famille: temperature, sens: hausse}
+  temp_zscore_24h: {libelle: Écart de température à la moyenne 24 h, unite: écarts-types, famille: temperature, sens: hausse}
+  temp_zscore_machine: {libelle: Écart de température au profil de la machine, unite: écarts-types, famille: temperature, sens: hausse}
+
+  # --- Pression (bar)
+  pressure_mean_1h: {libelle: Pression moyenne sur 1 h, unite: bar, famille: pression, sens: indetermine, plage: [0, 400]}
+  pressure_max_1h: {libelle: Pression maximale sur 1 h, unite: bar, famille: pression, sens: indetermine, plage: [0, 400]}
+  pressure_std_1h: {libelle: Écart-type de pression sur 1 h, unite: bar, famille: pression, sens: hausse}
+  pressure_mean_6h: {libelle: Pression moyenne sur 6 h, unite: bar, famille: pression, sens: indetermine, plage: [0, 400]}
+  pressure_max_6h: {libelle: Pression maximale sur 6 h, unite: bar, famille: pression, sens: indetermine, plage: [0, 400]}
+  pressure_std_6h: {libelle: Écart-type de pression sur 6 h, unite: bar, famille: pression, sens: hausse}
+  pressure_mean_12h: {libelle: Pression moyenne sur 12 h, unite: bar, famille: pression, sens: indetermine, plage: [0, 400]}
+  pressure_max_12h: {libelle: Pression maximale sur 12 h, unite: bar, famille: pression, sens: indetermine, plage: [0, 400]}
+  pressure_std_12h: {libelle: Écart-type de pression sur 12 h, unite: bar, famille: pression, sens: hausse}
+  pressure_mean_24h: {libelle: Pression moyenne sur 24 h, unite: bar, famille: pression, sens: indetermine, plage: [0, 400]}
+  pressure_max_24h: {libelle: Pression maximale sur 24 h, unite: bar, famille: pression, sens: indetermine, plage: [0, 400]}
+  pressure_std_24h: {libelle: Écart-type de pression sur 24 h, unite: bar, famille: pression, sens: hausse}
+  pressure_delta_1h: {libelle: Variation de pression sur 1 h, unite: bar, famille: pression, sens: indetermine}
+  pressure_delta_3h: {libelle: Variation de pression sur 3 h, unite: bar, famille: pression, sens: indetermine}
+  pressure_trend_6h: {libelle: Tendance de pression sur 6 h, unite: bar/h, famille: pression, sens: indetermine}
+  pressure_zscore_24h: {libelle: Écart de pression à la moyenne 24 h, unite: écarts-types, famille: pression, sens: indetermine}
+  pressure_zscore_machine: {libelle: Écart de pression au profil de la machine, unite: écarts-types, famille: pression, sens: indetermine}
+
+  # --- Tension (V)
+  voltage_mean_1h: {libelle: Tension moyenne sur 1 h, unite: V, famille: tension, sens: indetermine, plage: [0, 500]}
+  voltage_mean_6h: {libelle: Tension moyenne sur 6 h, unite: V, famille: tension, sens: indetermine, plage: [0, 500]}
+  voltage_max_6h: {libelle: Tension maximale sur 6 h, unite: V, famille: tension, sens: indetermine, plage: [0, 500]}
+  voltage_std_6h: {libelle: Écart-type de tension sur 6 h, unite: V, famille: tension, sens: hausse}
+  voltage_mean_12h: {libelle: Tension moyenne sur 12 h, unite: V, famille: tension, sens: indetermine, plage: [0, 500]}
+  voltage_max_12h: {libelle: Tension maximale sur 12 h, unite: V, famille: tension, sens: indetermine, plage: [0, 500]}
+  voltage_std_12h: {libelle: Écart-type de tension sur 12 h, unite: V, famille: tension, sens: hausse}
+  voltage_mean_24h: {libelle: Tension moyenne sur 24 h, unite: V, famille: tension, sens: indetermine, plage: [0, 500]}
+  voltage_max_24h: {libelle: Tension maximale sur 24 h, unite: V, famille: tension, sens: indetermine, plage: [0, 500]}
+  voltage_std_24h: {libelle: Écart-type de tension sur 24 h, unite: V, famille: tension, sens: hausse}
+  voltage_delta_1h: {libelle: Variation de tension sur 1 h, unite: V, famille: tension, sens: indetermine}
+  voltage_delta_3h: {libelle: Variation de tension sur 3 h, unite: V, famille: tension, sens: indetermine}
+  voltage_trend_6h: {libelle: Tendance de tension sur 6 h, unite: V/h, famille: tension, sens: indetermine}
+
+  # --- Rotation (tr/min)
+  rotation_mean_1h: {libelle: Rotation moyenne sur 1 h, unite: tr/min, famille: rotation, sens: indetermine, plage: [0, 5000]}
+  rotation_mean_6h: {libelle: Rotation moyenne sur 6 h, unite: tr/min, famille: rotation, sens: indetermine, plage: [0, 5000]}
+  rotation_max_6h: {libelle: Rotation maximale sur 6 h, unite: tr/min, famille: rotation, sens: indetermine, plage: [0, 5000]}
+  rotation_std_6h: {libelle: Écart-type de rotation sur 6 h, unite: tr/min, famille: rotation, sens: hausse}
+  rotation_mean_12h: {libelle: Rotation moyenne sur 12 h, unite: tr/min, famille: rotation, sens: indetermine, plage: [0, 5000]}
+  rotation_max_12h: {libelle: Rotation maximale sur 12 h, unite: tr/min, famille: rotation, sens: indetermine, plage: [0, 5000]}
+  rotation_std_12h: {libelle: Écart-type de rotation sur 12 h, unite: tr/min, famille: rotation, sens: hausse}
+  rotation_mean_24h: {libelle: Rotation moyenne sur 24 h, unite: tr/min, famille: rotation, sens: indetermine, plage: [0, 5000]}
+  rotation_max_24h: {libelle: Rotation maximale sur 24 h, unite: tr/min, famille: rotation, sens: indetermine, plage: [0, 5000]}
+  rotation_std_24h: {libelle: Écart-type de rotation sur 24 h, unite: tr/min, famille: rotation, sens: hausse}
+  rotation_delta_1h: {libelle: Variation de rotation sur 1 h, unite: tr/min, famille: rotation, sens: indetermine}
+  rotation_delta_3h: {libelle: Variation de rotation sur 3 h, unite: tr/min, famille: rotation, sens: indetermine}
+  rotation_trend_6h: {libelle: Tendance de rotation sur 6 h, unite: tr/min/h, famille: rotation, sens: indetermine}
+
+  # --- Production
+  pieces_produced_sum_1h: {libelle: Pièces produites sur 1 h, unite: pièces, famille: production, sens: indetermine}
+  pieces_produced_sum_24h: {libelle: Pièces produites sur 24 h, unite: pièces, famille: production, sens: indetermine}
+  capacity_utilization_pct: {libelle: Taux d'utilisation de la capacité, unite: '%', famille: production, sens: indetermine}
+
+  # --- Historique d'incidents (strictement passé : fenêtres [h-24h, h))
+  incident_count_prev_24h: {libelle: Incidents sur les 24 h précédentes, unite: incidents, famille: incidents, sens: hausse}
+  incident_max_severity_prev_24h: {libelle: Sévérité maximale des incidents sur 24 h, unite: /5, famille: incidents, sens: hausse, plage: [0, 5]}
+  incident_count_prev_7d: {libelle: Incidents sur les 7 jours précédents, unite: incidents, famille: incidents, sens: hausse}
+  hours_since_last_incident: {libelle: Heures depuis le dernier incident, unite: h, famille: incidents, sens: baisse}
+  type_surchauffe_count_prev_24h: {libelle: Incidents de surchauffe sur 24 h, unite: incidents, famille: incidents, sens: hausse}
+  type_baisse_pression_count_prev_24h: {libelle: Incidents de baisse de pression sur 24 h, unite: incidents, famille: incidents, sens: hausse}
+  type_vibration_count_prev_24h: {libelle: Incidents de vibration sur 24 h, unite: incidents, famille: incidents, sens: hausse}
+  type_bruit_mecanique_count_prev_24h: {libelle: Incidents de bruit mécanique sur 24 h, unite: incidents, famille: incidents, sens: hausse}
+  type_surconsommation_count_prev_24h: {libelle: Incidents de surconsommation sur 24 h, unite: incidents, famille: incidents, sens: hausse}
+  type_blocage_mecanique_count_prev_24h: {libelle: Incidents de blocage mécanique sur 24 h, unite: incidents, famille: incidents, sens: hausse}
+  type_alarme_capteur_count_prev_24h: {libelle: Alarmes capteur sur 24 h, unite: incidents, famille: incidents, sens: hausse}
+  type_arret_urgence_count_prev_24h: {libelle: Arrêts d'urgence sur 24 h, unite: incidents, famille: incidents, sens: hausse}
+  type_defaut_qualite_count_prev_24h: {libelle: Défauts qualité sur 24 h, unite: incidents, famille: incidents, sens: hausse}
+
+  # --- Maintenance
+  days_since_last_maintenance: {libelle: Jours depuis la dernière maintenance, unite: j, famille: maintenance, sens: hausse}
+  maintenance_count_prev_30d: {libelle: Maintenances sur les 30 jours précédents, unite: interventions, famille: maintenance, sens: indetermine}
+
+# Colonnes du Gold qui ne doivent JAMAIS entrer dans le modèle
+# (indusense.modeling.dataset.LEAKAGE_COLS). Une seule présente dans le
+# modèle = contrôle bloquant.
+exclusions:
+  machine_id: {categorie: identifiant, raison: "Le modèle apprendrait les machines, pas les mécanismes de panne (GroupKFold par machine)."}
+  ingestion_batch_id: {categorie: technique, raison: "Trace de chargement, sans lien avec l'état de la machine."}
+  feature_row_id: {categorie: technique, raison: "Clé technique de ligne."}
+  window_start: {categorie: identifiant, raison: "Horodatage ; le modèle apprendrait la période, pas la machine."}
+  window_end: {categorie: identifiant, raison: "Horodatage ; même raison que window_start."}
+  split_set: {categorie: technique, raison: "Étiquette de découpage train / validation / test."}
+  label_failure_next_24h: {categorie: cible, raison: "Cible du modèle."}
+  label_failure_next_6h: {categorie: cible, raison: "Cible d'un autre horizon, incluse dans la cible 24 h."}
+  label_failure_next_12h: {categorie: cible, raison: "Cible d'un autre horizon, incluse dans la cible 24 h."}
+  label_failure_next_48h: {categorie: cible, raison: "Cible d'un autre horizon, contient la cible 24 h."}
+  future_incident_count_6h: {categorie: fuite, raison: "Compte d'incidents futurs, équivalent de la cible."}
+  future_incident_count_12h: {categorie: fuite, raison: "Compte d'incidents futurs, équivalent de la cible."}
+  future_incident_count_24h: {categorie: fuite, raison: "Compte d'incidents futurs, la cible avant seuillage."}
+  future_incident_count_48h: {categorie: fuite, raison: "Compte d'incidents futurs, contient la cible."}
+
+# Règles de décision : ce que le système fait d'un score.
+regles:
+  seuil_alerte:
+    valeur: 0.5
+    texte: "Alerte si la probabilité de panne sous 24 h atteint le seuil (seuil d'entraînement et d'évaluation du modèle b11)."
+  validation_humaine:
+    texte: "Aucune action automatique ; chaque alerte est confirmée ou infirmée par un technicien (Streamlit, table predictions)."
+
+# Seuils et gravités des contrôles, fixés dans la base, jamais ajustés à
+# un résultat du modèle.
+controles:
+  part_max_une_variable: 0.5      # bloquant : au-delà, fuite probable
+  part_max_une_famille: 0.6       # avertissement : voir la note ci-dessous
+  correlation_sens_min: 0.1       # |rho| sous lequel un sens contraire n'est pas signalé
+  part_negligeable: 0.001         # information : variable qui ne pèse rien
+# Note sur part_max_une_famille : la promesse du produit est d'anticiper
+# une panne par les CAPTEURS. Si une famille non capteur (incidents,
+# maintenance) porte l'essentiel de l'explication, le modèle fait autre
+# chose que ce qui est promis. ATTENTION : ce seuil a été fixé après avoir
+# vu la répartition du modèle b11 (scripts/certify_model.py) ;
+# il doit être validé par le métier avant d'être considéré comme a priori.

@@ -25,6 +25,8 @@ RUN groupadd --system appgroup \
 
 COPY --from=build /app/.venv /app/.venv
 COPY artifacts/models/model.joblib /app/artifacts/models/model.joblib
+# Certification du modèle (scripts/certify_model.py) : lue par /ready.
+COPY artifacts/models/explication_certification.json /app/artifacts/models/explication_certification.json
 
 ENV PATH="/app/.venv/bin:${PATH}" \
     MODEL_PATH="/app/artifacts/models/model.joblib" \
