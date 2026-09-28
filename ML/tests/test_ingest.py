@@ -44,6 +44,8 @@ CREATE TABLE bronze_telemetry (
     voltage_mean_v REAL,
     rotation_mean_rpm REAL,
     pieces_produced INTEGER,
+    parse_ok BOOLEAN NOT NULL DEFAULT 1,
+    parse_ok_reason TEXT NOT NULL DEFAULT '',
     ingestion_batch_id TEXT
 );
 CREATE TABLE bronze_maintenance (
@@ -57,7 +59,18 @@ CREATE TABLE bronze_maintenance (
     component TEXT,
     description TEXT,
     related_incident_id TEXT,
-    duration_hours REAL
+    duration_hours REAL,
+    parse_ok BOOLEAN NOT NULL DEFAULT 1,
+    parse_ok_reason TEXT NOT NULL DEFAULT ''
+);
+CREATE TABLE data_quality_issue (
+    dq_issue_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ingestion_batch_id TEXT,
+    dataset_name TEXT,
+    rule_code TEXT,
+    severity TEXT,
+    entity_key TEXT,
+    details TEXT
 );
 """
 
@@ -187,6 +200,50 @@ def test_ingest_terrain_batch_accepts_maintenance_source(tmp_path):
         ).scalar()
     assert n_rows == 2
     assert source == "maintenance"
+
+
+def test_ingest_terrain_batch_writes_rejected_rows_and_traces_them(tmp_path):
+    """Une ligne invalide et un doublon horaire : écrits quand même en
+    Bronze (miroir du fichier), mais parse_ok=False, comptés dans
+    rows_rejected et tracés dans data_quality_issue."""
+    engine = _engine(tmp_path)
+    csv_path = tmp_path / "terrain_mixte.csv"
+    csv_path.write_text(
+        "machine_id,timestamp,temperature_c,pressure_bar,voltage_mean_v,rotation_mean_rpm,"
+        "pieces_produced\n"
+        "MACH-01,2026-06-15 00:00:00,48.0,195.0,228.0,1600.0,42\n"
+        "MACH-02,2026-06-15 00:00:00,abc,195.0,228.0,1600.0,42\n"
+        "MACH-03,2026-06-15 00:00:00,48.0,195.0,228.0,1600.0,42\n"
+        "MACH-03,2026-06-15 00:00:00,48.1,195.0,228.0,1600.0,42\n",
+        encoding="utf-8",
+    )
+
+    batch_id = ingest_terrain_batch(engine, csv_path, "telemetry")
+
+    with engine.connect() as conn:
+        flags = dict(
+            conn.execute(
+                text("SELECT machine_id, SUM(parse_ok) FROM bronze_telemetry GROUP BY machine_id")
+            ).fetchall()
+        )
+        batch = conn.execute(
+            text(
+                "SELECT rows_read, rows_loaded, rows_rejected FROM ingestion_batch "
+                "WHERE ingestion_batch_id=:id"
+            ),
+            {"id": str(batch_id)},
+        ).fetchone()
+        issues = conn.execute(
+            text("SELECT rule_code, severity FROM data_quality_issue ORDER BY rule_code")
+        ).fetchall()
+
+    assert flags == {"MACH-01": 1, "MACH-02": 0, "MACH-03": 0}
+    assert tuple(batch) == (4, 1, 3)
+    assert [tuple(i) for i in issues] == [
+        ("DOUBLON_HORAIRE", "WARNING"),
+        ("DOUBLON_HORAIRE", "WARNING"),
+        ("PYDANTIC_ERROR", "ERROR"),
+    ]
 
 
 def test_ingest_terrain_batch_rejects_unknown_source(tmp_path):

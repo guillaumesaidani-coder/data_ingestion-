@@ -14,6 +14,10 @@ d'injecter un nouveau lot pour challenger le modèle sans tout regénérer.
 d'un simple rejeu du même fichier -- même algorithme MD5 que
 `indusense.data.hash_file()`, pour rester cohérent avec le hash déjà
 utilisé côté export Gold (DVC/MLflow).
+
+Chaque ligne est validée comme dans TP4 (`processing.bronze_validation`) :
+une ligne invalide est quand même écrite, avec `parse_ok=False`, et
+tracée dans `data_quality_issue` -- le Silver ne la lira pas.
 """
 
 import uuid
@@ -25,6 +29,7 @@ from sqlalchemy import text
 from sqlalchemy.engine import Engine
 
 from indusense.data import hash_file
+from indusense.processing.bronze_validation import data_quality_rows, validate_bronze
 
 BRONZE_TABLES = {
     "telemetry": "bronze_telemetry",
@@ -116,9 +121,21 @@ def ingest_terrain_batch(engine: Engine, csv_path: Path, source_name: str) -> uu
     if existing is not None:
         return existing
 
-    df = pd.read_csv(csv_path)
+    # Lu en texte, comme TP4 : c'est Pydantic qui décide si "12,5" ou "abc"
+    # est un nombre, pas l'inférence de type de pandas.
+    raw = pd.read_csv(csv_path, dtype=str)
+    bronze = validate_bronze(raw, source_name)
+
     batch_id = open_batch(engine, source_name, csv_path.name, content_hash)
-    df["ingestion_batch_id"] = str(batch_id)
-    df.to_sql(BRONZE_TABLES[source_name], engine, if_exists="append", index=False)
-    close_batch(engine, batch_id, rows_read=len(df), rows_loaded=len(df))
+    bronze["ingestion_batch_id"] = str(batch_id)
+    bronze.to_sql(BRONZE_TABLES[source_name], engine, if_exists="append", index=False)
+
+    issues = data_quality_rows(bronze, source_name, batch_id)
+    if issues:
+        pd.DataFrame(issues).to_sql("data_quality_issue", engine, if_exists="append", index=False)
+
+    n_ok = int(bronze["parse_ok"].sum())
+    close_batch(
+        engine, batch_id, rows_read=len(bronze), rows_loaded=n_ok, rows_rejected=len(bronze) - n_ok
+    )
     return batch_id
