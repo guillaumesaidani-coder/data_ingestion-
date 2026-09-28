@@ -36,6 +36,7 @@ from indusense.processing.gold_features import build_gold_features, to_gold_rows
 from indusense.processing.silver_events import (
     build_silver_incidents,
     build_silver_maintenance,
+    unknown_operator_issues,
 )
 from indusense.processing.silver_sensor_reading import build_silver_sensor_readings
 
@@ -108,6 +109,15 @@ def rebuild_silver_incident(engine: Engine) -> int:
     replace_table(
         engine, "silver_incident", silver.assign(ingestion_batch_id=str(batch_id)), chunksize=500
     )
+    # operator_id NULL = perte de traçabilité, pas un rejet : l'incident
+    # reste au Silver (rows_loaded), l'anomalie est tracée en WARNING.
+    issues = unknown_operator_issues(silver, batch_id)
+    if issues:
+        pd.DataFrame(issues).to_sql("data_quality_issue", engine, if_exists="append", index=False)
+        logger.warning(
+            "silver_incident : %d incident(s) sans operator_id (opérateur inconnu du référentiel)",
+            len(issues),
+        )
     close_batch(
         engine,
         batch_id,

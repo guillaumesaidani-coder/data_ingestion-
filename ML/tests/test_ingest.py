@@ -21,6 +21,8 @@ from indusense.ingest import (
     ingest_terrain_batch,
     open_batch,
 )
+from indusense.processing.operators import badge_hash
+from indusense.processing.silver_events import build_silver_incidents
 
 SCHEMA_SQL = """
 CREATE TABLE ingestion_batch (
@@ -71,6 +73,36 @@ CREATE TABLE data_quality_issue (
     severity TEXT,
     entity_key TEXT,
     details TEXT
+);
+CREATE TABLE bronze_incidents (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    incident_id TEXT,
+    date TEXT,
+    time TEXT,
+    operator_name TEXT,
+    machine_id TEXT,
+    severity INTEGER,
+    operator_badge TEXT,
+    comment TEXT,
+    shift TEXT,
+    type_surchauffe INTEGER,
+    type_baisse_pression INTEGER,
+    type_vibration INTEGER,
+    type_bruit_mecanique INTEGER,
+    type_surconsommation INTEGER,
+    type_blocage_mecanique INTEGER,
+    type_alarme_capteur INTEGER,
+    type_arret_urgence INTEGER,
+    type_defaut_qualite INTEGER,
+    parse_ok BOOLEAN NOT NULL DEFAULT 1,
+    parse_ok_reason TEXT NOT NULL DEFAULT '',
+    ingestion_batch_id TEXT
+);
+CREATE TABLE operator (
+    operator_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    operator_key TEXT UNIQUE,
+    badge_hash TEXT,
+    is_active BOOLEAN NOT NULL DEFAULT 1
 );
 """
 
@@ -285,3 +317,88 @@ def test_ingest_terrain_batch_rejects_unknown_source(tmp_path):
         assert False, "devrait lever ValueError pour une source non geree"
     except ValueError as exc:
         assert "gold" in str(exc)
+
+
+INCIDENT_HEADER = (
+    "incident_id,date,time,operator_name,machine_id,severity,operator_badge,comment,shift,"
+    "type_surchauffe,type_baisse_pression,type_vibration,type_bruit_mecanique,"
+    "type_surconsommation,type_blocage_mecanique,type_alarme_capteur,type_arret_urgence,"
+    "type_defaut_qualite\n"
+)
+
+
+def _incidents_csv(tmp_path, name, *rows):
+    """rows : (incident_id, operator_name, operator_badge, severity)."""
+    path = tmp_path / name
+    lines = [
+        f"{inc},2026-06-15,10:00,{op},MACH-01,{sev},{badge},,matin,0,0,0,0,0,0,0,0,0\n"
+        for inc, op, badge, sev in rows
+    ]
+    path.write_text(INCIDENT_HEADER + "".join(lines), encoding="utf-8")
+    return path
+
+
+def _operators(engine) -> dict[str, str]:
+    with engine.connect() as conn:
+        return dict(conn.execute(text("SELECT operator_key, badge_hash FROM operator")).fetchall())
+
+
+def test_ingest_incidents_creates_unknown_operator_and_silver_resolves_it(tmp_path):
+    """Opérateur absent du référentiel : créé à l'ingestion, si bien que
+    le Silver (même jointure que etl_flow) lui trouve un operator_id."""
+    engine = _engine(tmp_path)
+    with engine.begin() as conn:
+        conn.execute(text("INSERT INTO operator (operator_key, badge_hash) VALUES ('alice', 'h')"))
+    csv_path = _incidents_csv(
+        tmp_path, "inc.csv", ("INC-1", "Alice", "B1", 3), ("INC-2", " Zoé Nouvelle ", "B9", 2)
+    )
+
+    ingest_terrain_batch(engine, csv_path, "incidents")
+
+    ops = _operators(engine)
+    assert set(ops) == {"alice", "zoé nouvelle"}
+    assert ops["zoé nouvelle"] == badge_hash("Zoé Nouvelle", "B9")
+    bronze = pd.read_sql(text("SELECT * FROM bronze_incidents WHERE parse_ok = 1"), engine)
+    operators = pd.read_sql(text("SELECT operator_id, operator_key FROM operator"), engine)
+    assert build_silver_incidents(bronze, operators)["operator_id"].notna().all()
+
+
+def test_ingest_incidents_replay_and_new_batch_do_not_duplicate_operators(tmp_path):
+    engine = _engine(tmp_path)
+    first = _incidents_csv(tmp_path, "j1.csv", ("INC-1", "Alice", "B1", 3))
+    second = _incidents_csv(tmp_path, "j2.csv", ("INC-2", "ALICE", "B1", 4))
+
+    ingest_terrain_batch(engine, first, "incidents")
+    ingest_terrain_batch(engine, first, "incidents")  # rejeu : batch réutilisé
+    ingest_terrain_batch(engine, second, "incidents")  # nouveau lot, même opérateur
+
+    with engine.connect() as conn:
+        assert conn.execute(text("SELECT COUNT(*) FROM operator")).scalar() == 1
+
+
+def test_ingest_incidents_skips_rejected_rows_and_empty_names(tmp_path):
+    """Ligne rejetée (sévérité 9) ou nom vide : aucun opérateur créé."""
+    engine = _engine(tmp_path)
+    csv_path = _incidents_csv(
+        tmp_path, "inc.csv", ("INC-1", "Alcie", "B1", 9), ("INC-2", "", "B2", 2)
+    )
+
+    ingest_terrain_batch(engine, csv_path, "incidents")
+
+    assert _operators(engine) == {}
+
+
+def test_ingest_incidents_reassigned_badge_updates_hash_missing_badge_keeps_it(tmp_path):
+    engine = _engine(tmp_path)
+    ingest_terrain_batch(
+        engine, _incidents_csv(tmp_path, "j1.csv", ("INC-1", "Alice", "B1", 3)), "incidents"
+    )
+    ingest_terrain_batch(
+        engine, _incidents_csv(tmp_path, "j2.csv", ("INC-2", "Alice", "B2", 3)), "incidents"
+    )
+    assert _operators(engine) == {"alice": badge_hash("Alice", "B2")}
+
+    ingest_terrain_batch(
+        engine, _incidents_csv(tmp_path, "j3.csv", ("INC-3", "Alice", "", 3)), "incidents"
+    )
+    assert _operators(engine) == {"alice": badge_hash("Alice", "B2")}

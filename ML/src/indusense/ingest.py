@@ -18,6 +18,10 @@ utilisé côté export Gold (DVC/MLflow).
 Chaque ligne est validée comme dans TP4 (`processing.bronze_validation`) :
 une ligne invalide est quand même écrite, avec `parse_ok=False`, et
 tracée dans `data_quality_issue` -- le Silver ne la lira pas.
+
+Un lot d'incidents met aussi à jour le référentiel `operator`
+(`processing.operators`, comme TP4 §4) : sans ça, un opérateur nouveau
+dans le lot resterait sans `operator_id` au Silver.
 """
 
 import uuid
@@ -30,6 +34,7 @@ from sqlalchemy.engine import Connection, Engine
 
 from indusense.data import hash_file
 from indusense.processing.bronze_validation import data_quality_rows, validate_bronze
+from indusense.processing.operators import UPSERT_OPERATOR_SQL, build_operators
 
 BRONZE_TABLES = {
     "telemetry": "bronze_telemetry",
@@ -138,6 +143,7 @@ def ingest_terrain_batch(engine: Engine, csv_path: Path, source_name: str) -> uu
     bronze["ingestion_batch_id"] = str(batch_id)
     issues = data_quality_rows(bronze, source_name, batch_id)
     n_ok = int(bronze["parse_ok"].sum())
+    operators = build_operators(bronze) if source_name == "incidents" else None
 
     # Lignes Bronze, anomalies et clôture dans UNE transaction. Sinon un
     # échec en cours de route laisse des lignes Bronze d'un batch jamais
@@ -148,5 +154,7 @@ def ingest_terrain_batch(engine: Engine, csv_path: Path, source_name: str) -> uu
         bronze.to_sql(BRONZE_TABLES[source_name], conn, if_exists="append", index=False)
         if issues:
             pd.DataFrame(issues).to_sql("data_quality_issue", conn, if_exists="append", index=False)
+        if operators is not None and not operators.empty:
+            conn.execute(text(UPSERT_OPERATOR_SQL), operators.to_dict("records"))
         _close_batch(conn, batch_id, len(bronze), n_ok, len(bronze) - n_ok)
     return batch_id

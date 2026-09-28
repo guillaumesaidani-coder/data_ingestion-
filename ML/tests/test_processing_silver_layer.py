@@ -18,6 +18,7 @@ from indusense.processing.silver_events import (
     SILVER_MAINTENANCE_COLUMNS,
     build_silver_incidents,
     build_silver_maintenance,
+    unknown_operator_issues,
 )
 from indusense.processing.silver_sensor_reading import (
     SILVER_SENSOR_COLUMNS,
@@ -161,6 +162,25 @@ def test_incidents_operator_is_resolved_by_normalized_name():
 
     assert silver.loc[silver["incident_code"] == "INC-1", "operator_id"].item() == 7
     assert pd.isna(silver.loc[silver["incident_code"] == "INC-2", "operator_id"].item())
+
+
+def test_unknown_operator_is_a_warning_not_a_rejection():
+    bronze = pd.DataFrame(
+        [
+            _incident("INC-1", operator_name="Alice"),
+            _incident("INC-2", operator_name="Bob"),
+            _incident("INC-3", operator_name=None),
+        ]
+    )
+    silver = build_silver_incidents(bronze, OPERATORS)
+    issues = unknown_operator_issues(silver, "batch-1")
+
+    assert len(silver) == 3  # les incidents restent au Silver
+    assert [i["entity_key"] for i in issues] == ["INC-2", "INC-3"]
+    assert {(i["rule_code"], i["severity"], i["dataset_name"]) for i in issues} == {
+        ("OPERATEUR_INCONNU", "WARNING", "silver_incident")
+    }
+    assert not any("Bob" in i["details"] for i in issues)  # pas de nom recopié
 
 
 def test_label_event_threshold_is_severity_4():

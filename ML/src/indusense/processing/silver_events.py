@@ -14,9 +14,11 @@ maintenance.
 
 import pandas as pd
 
+from indusense.processing.operators import operator_key
 from indusense.processing.silver_sensor_reading import normalize_machine_id
 
 LABEL_SEVERITY_MIN = 4  # TP5 §8b : incident critique => événement de label supervisé
+UNKNOWN_OPERATOR_RULE = "OPERATEUR_INCONNU"
 
 SILVER_INCIDENT_COLUMNS = [
     "incident_code",
@@ -45,14 +47,18 @@ def build_silver_incidents(bronze_incidents: pd.DataFrame, operators: pd.DataFra
     """Bronze incidents (lignes `parse_ok=True`) -> Silver : machine_id
     normalisé, `occurred_at` = date + time en UTC, `operator_id` retrouvé
     via `operator_key` (nom normalisé, table `operator` alimentée par
-    TP4), `is_label_event` si sévérité >= 4."""
+    TP4 et `indusense.ingest`), `is_label_event` si sévérité >= 4.
+
+    Jointure gauche : un nom absent du référentiel donne `operator_id`
+    NULL, l'incident reste au Silver -- voir `unknown_operator_issues`
+    pour rendre cette perte visible."""
     df = bronze_incidents.copy()
     df["machine_id"] = df["machine_id"].map(normalize_machine_id)
     df["occurred_at"] = pd.to_datetime(
         df["date"].str.strip() + " " + df["time"].str.strip(), errors="coerce"
     ).dt.tz_localize("UTC")
 
-    df["operator_key"] = df["operator_name"].str.strip().str.lower()
+    df["operator_key"] = operator_key(df["operator_name"])
     df = df.merge(operators[["operator_id", "operator_key"]], on="operator_key", how="left")
     df["operator_id"] = df["operator_id"].astype("Int64")
 
@@ -62,6 +68,26 @@ def build_silver_incidents(bronze_incidents: pd.DataFrame, operators: pd.DataFra
 
     df = df.drop_duplicates(subset=["incident_code"], keep="first")
     return df[SILVER_INCIDENT_COLUMNS].reset_index(drop=True)
+
+
+def unknown_operator_issues(silver_incidents: pd.DataFrame, batch_id) -> list[dict]:
+    """Une ligne `data_quality_issue` WARNING par incident Silver sans
+    `operator_id` : l'incident va quand même au Gold (avertissement, pas
+    rejet), mais « qui l'a signalé ? » n'a plus de réponse. Le nom n'est
+    pas recopié dans `details` : il reste dans le seul Bronze, retrouvable
+    par `entity_key`."""
+    missing = silver_incidents[silver_incidents["operator_id"].isna()]
+    return [
+        {
+            "ingestion_batch_id": str(batch_id),
+            "dataset_name": "silver_incident",
+            "rule_code": UNKNOWN_OPERATOR_RULE,
+            "severity": "WARNING",
+            "entity_key": code,
+            "details": "operator_id introuvable : nom vide ou absent du référentiel operator",
+        }
+        for code in missing["incident_code"]
+    ]
 
 
 def build_silver_maintenance(bronze_maintenance: pd.DataFrame) -> pd.DataFrame:
