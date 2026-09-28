@@ -11,3 +11,6 @@ __pycache__/
 
 # Sauvegardes automatiques de Jupyter
 .ipynb_checkpoints/
+
+# Livrables PowerPoint : gardés en local, jamais poussés sur GitHub
+livrables/

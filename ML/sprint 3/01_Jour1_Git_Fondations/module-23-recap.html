@@ -583,6 +583,21 @@ indusense = "indusense.cli:main"
   </section>
 
   <section>
+    <p class="eyebrow">Retour formateur</p>
+    <h2>Le correctif restait local, pas livré</h2>
+    <p>Preuve rejouée par le formateur sur un clone propre du <strong>dépôt de rendu</strong> (<code>industrialisation</code>, branche <code>jalon-01</code>) — pas sur cette branche de travail. Ce clone pointait encore sur <code>fca6866</code>, <strong>avant</strong> le retrait du pack : les mêmes 46 erreurs Ruff et 8 fichiers à reformater pour Black, confirmés à l'identique en rejouant la preuve en local sur ce commit.</p>
+    <div class="callout warn">
+      <strong>Cause.</strong> Le commit <code>6b36ca4</code> qui retire le pack existe depuis le 24/08 sur <code>guillaume-saidani</code>, mais n'avait jamais été poussé vers <code>industrialisation/jalon-01</code> — le dépôt réellement évalué par le formateur.
+    </div>
+    <p>Correctif : avancer <code>industrialisation/jalon-01</code> de <code>fca6866</code> à <code>6b36ca4</code> — un <em>fast-forward</em>, sans nouveau commit ni risque de conflit, puisque <code>6b36ca4</code> est déjà le commit suivant immédiat sur cette lignée.</p>
+    <div class="terminal">
+      <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">git push industrialisation 6b36ca4:jalon-01</span></div>
+      <pre><span class="dim">en attente — bloqué par la politique d'auto-exécution locale ; à rejouer manuellement</span></pre>
+    </div>
+    <p><code>clean_sensor_data</code> et son test, également signalés absents par le formateur, restent hors scope : l'exercice était explicitement facultatif.</p>
+  </section>
+
+  <section>
     <p class="eyebrow">Repères</p>
     <h2>À ne pas oublier</h2>
     <dl class="glossary">

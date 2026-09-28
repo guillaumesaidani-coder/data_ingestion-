@@ -252,6 +252,22 @@ Line:        2
   </section>
 
   <section>
+    <p class="eyebrow">Retour formateur</p>
+    <h2>Un vrai faux positif, cette fois dans un fichier livré</h2>
+    <p>La démo ci-dessus utilise un fichier jetable (<code>fuite_demo.txt</code>), jamais committé. Mais <code>pre-commit run --all-files</code> sur l'ensemble du dépôt bloquait réellement sur <code>FORMATION/GUIDE_MULTIPLATEFORME_APPRENANT.md</code> : gitleaks y détecte la même paire de clés AWS d'exemple (<code>AKIAIOSFODNN7EXAMPLE…</code>, documentation officielle AWS, jamais une clé active) — un fichier livré, pas un exercice.</p>
+    <div class="callout warn">
+      <strong>Pourquoi ce n'est pas la même chose.</strong> Retirer le fichier n'aurait aucun sens ici (guide multiplateforme réellement utile) ; désactiver gitleaks masquerait un vrai risque futur. La bonne réponse est un allowlist <strong>ciblé sur les deux valeurs exactes</strong>, pas sur le chemin du fichier — pour que gitleaks continue d'alerter si un vrai secret apparaît un jour au même endroit.
+    </div>
+    <p>Corrigé : nouveau <code>.gitleaks.toml</code> à la racine (<code>[extend] useDefault = true</code> + <code>[allowlist]</code> avec les deux regex exactes). Rejoué :</p>
+    <div class="terminal">
+      <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">uv run pre-commit run --all-files</span></div>
+      <pre>ruff.....................................................................<span class="ok">Passed</span>
+black....................................................................<span class="ok">Passed</span>
+Detect hardcoded secrets.................................................<span class="ok">Passed</span></pre>
+    </div>
+  </section>
+
+  <section>
     <p class="eyebrow">Repères</p>
     <h2>Local vs CI — même règles, deux moments</h2>
     <dl class="glossary">

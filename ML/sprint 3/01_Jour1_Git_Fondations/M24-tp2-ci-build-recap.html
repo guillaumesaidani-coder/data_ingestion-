@@ -160,6 +160,12 @@
           path: dist/*.whl</span></pre>
       </figure>
     </div>
+    <div class="callout warn">
+      <strong>Retour formateur.</strong> Ce diff ajoute le job <code>build</code>, mais laisse le job <code>quality</code> tel quel : <code>uv sync --extra dev</code> et les trois <code>uv run ruff/black/pytest</code> ci-dessus tournent <strong>sans</strong> <code>--frozen</code> — la CI peut donc installer une résolution différente de <code>uv.lock</code> committé au lieu de l'installer exactement. Corrigé depuis : <code>uv sync --extra dev --frozen</code>, puis <code>uv run --frozen ruff check .</code> / <code>uv run --frozen black --check .</code> / <code>uv run --frozen pytest -q</code>. Vérifié en local : sync frozen, les trois commandes frozen, et <code>uv build</code> tous verts.
+    </div>
+    <div class="callout">
+      <strong>Preuve encore attendue.</strong> Le guide demande aussi un run GitHub Actions réel, rouge puis vert (lien ou capture). Les correctifs ci-dessus sont poussés sur <code>industrialisation/jalon-02</code>, mais aucune pull request n'a encore été ouverte pour déclencher et observer ce run — cette preuve reste à faire.
+    </div>
   </section>
 
   <section>

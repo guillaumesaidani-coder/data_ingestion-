@@ -1,4 +1,4 @@
-<title>Compose & observabilité — 3 services, une seule règle de démarrage</title>
+<title>Compose & observabilité — 4 services, une seule règle de démarrage</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
   :root{
@@ -104,8 +104,8 @@
 
   <header class="masthead">
     <p class="breadcrumb">CISIA · Sprint 3 · J3 après-midi · <span>Module 28 — Compose & observabilité</span></p>
-    <h1>Trois services, une seule règle : prêt avant de dépendre</h1>
-    <p class="lede">Un conteneur qui a <em>démarré</em> n'est pas un conteneur <em>prêt</em>. Ce module fait tenir cette distinction dans un fichier exécutable : Prometheus n'a le droit de démarrer que si l'API est <code>healthy</code>, Grafana que si Prometheus l'est. Trois TP, une stack qui ne court jamais au démarrage.</p>
+    <h1>Quatre services, une seule règle : prêt avant de dépendre</h1>
+    <p class="lede">Un conteneur qui a <em>démarré</em> n'est pas un conteneur <em>prêt</em>. Ce module fait tenir cette distinction dans un fichier exécutable : l'API n'a le droit de démarrer que si PostgreSQL est <code>healthy</code>, Prometheus que si l'API l'est, Grafana que si Prometheus l'est. Trois TP, une stack qui ne court jamais au démarrage.</p>
     <div class="status-row">
       <span class="status-chip">
         <svg viewBox="0 0 20 20" fill="none"><path d="M4 10.5l4 4 8-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -135,7 +135,7 @@
     <table class="contract">
       <tr><th>Contrôle</th><th>Statut</th><th>Preuve</th></tr>
       <tr><td>Config Compose valide</td><td><span class="pill">Implémenté</span></td><td class="mono">docker compose config -q → aucune erreur</td></tr>
-      <tr><td>Readiness gating (api → prometheus → grafana)</td><td><span class="pill">Implémenté</span></td><td class="mono">logs up : Healthy avant Starting suivant</td></tr>
+      <tr><td>Readiness gating (db → api → prometheus → grafana)</td><td><span class="pill">Implémenté</span></td><td class="mono">logs up : Healthy avant Starting suivant, à chaque maillon</td></tr>
       <tr><td>Scrape Prometheus réussi</td><td><span class="pill">Implémenté</span></td><td class="mono">/api/v1/targets → health="up"</td></tr>
       <tr><td>Smoke test automatisé</td><td><span class="pill">Implémenté</span></td><td class="mono">pytest tests/test_smoke_compose.py → 5 passed</td></tr>
     </table>
@@ -145,13 +145,14 @@
   <section id="tp1">
     <p class="eyebrow">TP 1</p>
     <div class="tp">
-      <div class="tp-head"><span class="tp-num">TP 1</span><span class="tp-title">Écrire le Compose : 3 services, healthcheck, volumes</span></div>
-      <p>Objectif : orchestrer <code>api</code> (build local depuis le <code>Dockerfile</code> du jalon 05), <code>prometheus:v3.1.0</code> et <code>grafana:11.4.0</code> dans un seul <code>compose.yaml</code>, sans écrire de code applicatif.</p>
+      <div class="tp-head"><span class="tp-num">TP 1</span><span class="tp-title">Écrire le Compose : 4 services, healthcheck, volumes</span></div>
+      <p>Objectif : orchestrer <code>db</code> (<code>postgres:16</code>), <code>api</code> (build local depuis le <code>Dockerfile</code> du jalon 05), <code>prometheus:v3.1.0</code> et <code>grafana:11.4.0</code> dans un seul <code>compose.yaml</code>, sans écrire de code applicatif.</p>
       <ol class="steps">
-        <li><strong>api</strong> — réutilise le <code>HEALTHCHECK</code> déjà défini dans le <code>Dockerfile</code> (<code>GET /health</code>) : rien à ajouter côté Compose.</li>
+        <li><strong>db</strong> — <code>postgres:16</code>, healthcheck <code>pg_isready -U postgres</code> (interroge le serveur lui-même, pas juste le port TCP), volume nommé <code>pgdata</code>.</li>
+        <li><strong>api</strong> — réutilise le <code>HEALTHCHECK</code> déjà défini dans le <code>Dockerfile</code> (<code>GET /health</code>) : rien à ajouter côté Compose. Reçoit <code>INDUSENSE_DB_URL</code>, construite via le nom de service <code>db</code> (résolution DNS interne à Compose).</li>
         <li><strong>prometheus</strong> — l'image officielle (busybox minimal) n'a pas de <code>HEALTHCHECK</code> natif ; on en écrit un avec <code>wget --spider</code> contre l'endpoint de readiness de Prometheus lui-même, <code>/-/ready</code>.</li>
         <li><strong>grafana</strong> — même logique, contre <code>/api/health</code>.</li>
-        <li><strong>volumes nommés</strong> — <code>prometheus_data</code> et <code>grafana_data</code> survivent à un <code>down</code> sans <code>-v</code> : pas besoin de retélécharger l'historique à chaque redémarrage.</li>
+        <li><strong>volumes nommés</strong> — <code>pgdata</code>, <code>prometheus_data</code> et <code>grafana_data</code> survivent à un <code>down</code> sans <code>-v</code> : pas besoin de réinitialiser la base ni de retélécharger l'historique à chaque redémarrage.</li>
       </ol>
       <div class="terminal">
         <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">docker compose config -q</span></div>
@@ -159,6 +160,9 @@
       </div>
       <div class="callout warn">
         <strong>Piège à éviter.</strong> Un service sans <code>HEALTHCHECK</code> ne peut pas être la cible d'un <code>condition: service_healthy</code> — Compose refuserait de démarrer, ou pire, retomberait silencieusement sur un simple <code>service_started</code> selon la version. Le HEALTHCHECK n'est pas cosmétique : c'est la condition elle-même.
+      </div>
+      <div class="callout">
+        <strong>Retour formateur.</strong> La version publiée ne déclarait que 3 services (<code>api</code>, <code>prometheus</code>, <code>grafana</code>) — le guide attend aussi <code>db</code> (<code>postgres:16</code>) avec son healthcheck, sa dépendance <code>service_healthy</code> côté <code>api</code>, <code>INDUSENSE_DB_URL</code> et le volume <code>pgdata</code>. Ajouté : <code>db</code> ouvre désormais la chaîne de gating, avant même <code>api</code>.
       </div>
     </div>
   </section>
@@ -170,7 +174,11 @@
       <p>Objectif : ne pas se contenter de lire <code>depends_on</code> dans le fichier — observer, dans les événements réels de <code>docker compose up</code>, que l'ordre est respecté.</p>
       <div class="terminal">
         <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">docker compose up -d --build</span></div>
-        <pre> Container api-1 Starting
+        <pre> Container db-1 Starting
+ Container db-1 Started
+ Container db-1 Waiting
+ <span class="ok">Container db-1 Healthy</span>
+ Container api-1 Starting               <span class="dim"># seulement maintenant</span>
  Container api-1 Started
  Container api-1 Waiting
  <span class="ok">Container api-1 Healthy</span>
@@ -183,11 +191,12 @@
       </div>
       <div class="terminal">
         <div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="label">docker compose ps</span></div>
-        <pre>api          Up 41 seconds  <span class="ok">(healthy)</span>
-prometheus   Up 11 seconds  <span class="ok">(healthy)</span>
-grafana      Up 1 second    (health: starting)</pre>
+        <pre>db           Up 47 seconds  <span class="ok">(healthy)</span>
+api          Up 40 seconds  <span class="ok">(healthy)</span>
+prometheus   Up 17 seconds  <span class="ok">(healthy)</span>
+grafana      Up 6 seconds   (health: starting)</pre>
       </div>
-      <p>Le décalage entre <code>api</code> (41s) et <code>prometheus</code> (11s) est la preuve elle-même : Prometheus n'a commencé à exister <strong>que</strong> lorsque l'API est devenue saine, soit 30s après le début du build+démarrage de l'API.</p>
+      <p>Le décalage entre <code>db</code> (47s), <code>api</code> (40s) et <code>prometheus</code> (17s) est la preuve elle-même : chaque service n'a commencé à exister <strong>qu'</strong>une fois le précédent devenu sain — <code>api</code> n'a attendu PostgreSQL que quelques secondes (déjà prêt), Prometheus a attendu que l'API charge son modèle.</p>
     </div>
   </section>
 
@@ -232,8 +241,9 @@ grafana      Up 1 second    (health: starting)</pre>
         <pre> Container grafana-1 Removed
  Container prometheus-1 Removed
  Container api-1 Removed
+ Container db-1 Removed
  Network ..._default Removed
-<span class="dim"># prometheus_data et grafana_data survivent (down sans -v)</span></pre>
+<span class="dim"># pgdata, prometheus_data et grafana_data survivent (down sans -v)</span></pre>
       </div>
     </div>
   </section>
