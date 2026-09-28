@@ -108,7 +108,7 @@ dans le **vrai** conteneur `api`, pas seulement en local contre SQLite.
 | Contrôle | Statut | Preuve |
 |---|---|---|
 | Flow empaqueté | Implémenté | `src/indusense/flows/predict_flow.py` ; `flows/pipeline.py` n'est plus qu'une façade à 3 lignes |
-| Point d'entrée conteneur | Implémenté | `docker compose run --rm --no-deps api python -m indusense.flows.predict_flow` |
+| Point d'entrée conteneur | Implémenté | `docker compose --profile jobs run --rm predict` (avant le retrait des identifiants de l'API : `docker compose run --rm --no-deps api python -m indusense.flows.predict_flow`) |
 | Stockage portable | Implémenté | `predictions_store.py` réécrit en SQLAlchemy — même SQL upsert sur SQLite (local) et PostgreSQL (conteneur) |
 | Idempotence sur Postgres réel | Implémenté | `SELECT COUNT(*) FROM predictions` → 15 après 2 exécutions, vérifié via `docker compose exec db psql` (pas via la valeur renvoyée par le flow) |
 | Modèle embarqué réutilisé | Implémenté | `Reprise : modele existant reutilise -> /app/artifacts/models/model.joblib` |
@@ -185,6 +185,10 @@ commande a été réécrit par la conversion MSYS de Git Bash en
 C:/Users/Aelion/AppData/Local/Temp/prefect`) — résolu en fixant
 `PREFECT_HOME` directement dans le `Dockerfile` plutôt qu'en argument de
 commande, ce qui supprime le besoin de `MSYS_NO_PATHCONV=1` ici.
+
+Trace conservée telle qu'exécutée à l'époque. Aujourd'hui le service
+`api` n'a plus les identifiants de la base : la même exécution se lance
+par le job dédié, `docker compose --profile jobs run --rm predict`.
 
 ```
 docker compose run --rm --no-deps api python -m indusense.flows.predict_flow

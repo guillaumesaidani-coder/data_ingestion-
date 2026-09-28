@@ -23,7 +23,7 @@ Rejouer ce flow ne doit jamais dupliquer de travail ni de données :
   SQLite (local) ou PostgreSQL (conteneur, PREDICTIONS_DB_URL).
 
 Usage local : uv run --frozen python flows/pipeline.py
-Usage conteneur : docker compose run --rm --no-deps api python -m indusense.flows.predict_flow
+Usage conteneur : docker compose --profile jobs run --rm predict
 (`--frozen` évite qu'uv ne tente de re-résoudre le lock avant de démarrer —
 bloquant sans réseau sortant.)
 """

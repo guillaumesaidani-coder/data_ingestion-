@@ -1,10 +1,11 @@
 # Stack unique InduSense (recommandation R1) : une seule base, lue par
-# pgAdmin, les jobs (etl, migrate) et, depuis le PC, Streamlit et les
+# pgAdmin, les jobs (etl, predict, migrate) et, depuis le PC, Streamlit et les
 # flows ; initialisée automatiquement au premier démarrage. L'API et
 # Grafana ne la lisent pas (modèle en mémoire, Prometheus).
 #
 #   docker compose up -d --build                  # la stack
 #   docker compose --profile jobs run --rm etl    # reconstruire Silver + Gold
+#   docker compose --profile jobs run --rm predict  # scorer les dernières fenêtres
 #   docker compose --profile jobs run --rm migrate  # appliquer les migrations alembic
 #
 # Remplace Docker/docker-compose.yml (docker-db-1 + pgAdmin) : arrêter
@@ -21,6 +22,26 @@ x-db-env: &db-env
   # Pas de PREDICTIONS_DB_URL : get_predictions_db_url() la dérive de DB_*
   # (même base, mot de passe encodé par SQLAlchemy), plus de second
   # exemplaire des identifiants à tenir à jour.
+
+# Flow Prefect lancé en job : même image que l'API, identifiants de la base.
+x-flow-job: &flow-job
+  image: indusense-api:local
+  profiles: ["jobs"]
+  environment:
+    <<: *db-env
+    # Serveur Prefect éphémère : son 1er démarrage (création de la base
+    # sur un volume vide) dépasse le délai par défaut dans le conteneur.
+    PREFECT_SERVER_EPHEMERAL_STARTUP_TIMEOUT_SECONDS: "120"
+  volumes:
+    # /app/data : PREFECT_HOME (/app/data/.prefect, Dockerfile) et l'export
+    # data/gold/gold_dataset.csv de predict. Sans volume, la base Prefect
+    # de chaque run disparaît avec le conteneur (--rm) et le journal des
+    # flows lancés ici est perdu. /app/data appartient déjà à appuser dans
+    # l'image : le volume hérite de ces droits.
+    - prefect_jobs:/app/data
+  depends_on:
+    db:
+      condition: service_healthy
 
 services:
   db:
@@ -117,25 +138,16 @@ services:
       retries: 10
 
   # ---- Jobs ponctuels (profil « jobs ») : lancés à la demande, puis s'arrêtent.
+  # Les flows tournent dans ces jobs, pas dans le service api : l'API n'a
+  # ni identifiants ni dépendance sur la base.
 
   etl:
-    image: indusense-api:local
-    profiles: ["jobs"]
-    environment:
-      <<: *db-env
-      # Serveur Prefect éphémère : son 1er démarrage (création de la base
-      # sur un volume vide) dépasse le délai par défaut dans le conteneur.
-      PREFECT_SERVER_EPHEMERAL_STARTUP_TIMEOUT_SECONDS: "120"
+    <<: *flow-job
     command: ["python", "-m", "indusense.flows.etl_flow"]
-    volumes:
-      # PREFECT_HOME (/app/data/.prefect, Dockerfile) : sans volume, la base
-      # Prefect de chaque run disparaît avec le conteneur (--rm) et le
-      # journal des flows lancés ici est perdu. /app/data appartient déjà
-      # à appuser dans l'image : le volume hérite de ces droits.
-      - prefect_jobs:/app/data
-    depends_on:
-      db:
-        condition: service_healthy
+
+  predict:
+    <<: *flow-job
+    command: ["python", "-m", "indusense.flows.predict_flow"]
 
   migrate:
     image: indusense-api:local

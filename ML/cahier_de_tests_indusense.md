@@ -77,7 +77,7 @@ rempli du Gold InduSense — voir `guide_experimentation_indusense.md`
 | ID | Objectif | Étapes | Résultat attendu | Preuve |
 |---|---|---|---|---|
 | TC-PREFECT-01 | Flow exécutable localement | `uv run --frozen python flows/pipeline.py` | `Pipeline terminé : {'rows_scored': 15, 'rows_in_db': 15, ...}` | `pipeline_proof.md` |
-| TC-PREFECT-02 | Flow exécutable dans le conteneur | `docker compose run --rm --no-deps api python -m indusense.flows.predict_flow` | même résultat, contre Postgres réel | `pipeline_proof.md` |
+| TC-PREFECT-02 | Flow exécutable dans le conteneur | `docker compose --profile jobs run --rm predict` | même résultat, contre Postgres réel | `pipeline_proof.md` |
 | TC-PREFECT-03 | Idempotence | exécuter TC-PREFECT-01 deux fois de suite | `rows_in_db` identique aux deux passages (15), vérifié indépendamment via `psql`/`sqlite3` | `pipeline_proof.md` |
 | TC-PREFECT-04 | Reprise sans réentraînement | vérifier `mtime` de `model.joblib` avant/après le flow | inchangé (`ensure_model` réutilise le modèle existant) | `pipeline_proof.md` |
 

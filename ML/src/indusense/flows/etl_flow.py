@@ -21,7 +21,7 @@ les migrations alembic) : le test de bout en bout est marqué
 requires_local_infra ; les transformations sont testées sans base.
 
 Usage local : uv run --frozen indusense etl
-Usage conteneur : docker compose run --rm api python -m indusense.flows.etl_flow
+Usage conteneur : docker compose --profile jobs run --rm etl
 """
 
 import pandas as pd

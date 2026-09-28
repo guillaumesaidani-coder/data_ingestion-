@@ -216,7 +216,7 @@ de promouvoir un candidat marginal.
 ```bash
 uv run --frozen python flows/pipeline.py
 # ou, depuis le conteneur (image deja construite a l'etape 2) :
-docker compose run --rm --no-deps api python -m indusense.flows.predict_flow
+docker compose --profile jobs run --rm predict
 ```
 
 Idempotent : relancez-le, le nombre de lignes en base ne double jamais
