@@ -29,7 +29,12 @@ from huggingface_hub import ModelCard, ModelCardData
 from huggingface_hub.repocard_data import EvalResult
 
 from indusense.config import get_engine
-from indusense.modeling.dataset import load_gold_dataset
+from indusense.modeling.dataset import TARGET, load_gold_dataset
+from indusense.modeling.heterogeneity import (
+    leave_one_group_out_proba,
+    load_machine_reference,
+    pr_auc_by,
+)
 from indusense.modeling.train import B11_PARAMS, train_and_evaluate
 
 ARTIFACTS_DIR = Path("artifacts")
@@ -47,10 +52,12 @@ LINEAGE = [
 
 
 def load_data():
-    gold = load_gold_dataset(get_engine())
+    engine = get_engine()
+    gold = load_gold_dataset(engine)
+    machines = load_machine_reference(engine)
     n_machines = gold.trainval_df["machine_id"].nunique()
 
-    return gold.X_tv, gold.y_tv, gold.X_test, gold.y_test, gold.feature_cols, n_machines
+    return gold, machines, n_machines
 
 
 def refit_and_measure(X_tv, y_tv, X_test, y_test, spw_global):
@@ -64,11 +71,51 @@ def refit_and_measure(X_tv, y_tv, X_test, y_test, spw_global):
         save_to_file=True,
     )
     tracker.start()
-    _, metrics = train_and_evaluate(X_tv, y_tv, X_test, y_test, best_params)
+    pipe, metrics = train_and_evaluate(X_tv, y_tv, X_test, y_test, best_params)
     emissions_kg = tracker.stop()
     carbon_data = tracker.final_emissions_data
 
-    return best_params, metrics, emissions_kg, carbon_data
+    return pipe, best_params, metrics, emissions_kg, carbon_data
+
+
+def top_feature_share(pipe):
+    """Feature la plus importante du modèle réentraîné et sa part de
+    l'importance totale (l'imputer écarte les colonnes entièrement vides,
+    d'où get_feature_names_out plutôt que feature_names_in_)."""
+    importances = pipe.named_steps["model"].feature_importances_
+    names = pipe.named_steps["imputer"].get_feature_names_out()
+    i = int(importances.argmax())
+    return names[i], float(importances[i] / importances.sum())
+
+
+def measure_heterogeneity(gold, machines):
+    """PR-AUC par machine en validation croisée « une machine cachée »
+    (GroupKFold à un fold par machine) puis « un type de presse caché »,
+    sur train+validation, avec les hyperparamètres b11."""
+    df = gold.trainval_df.merge(machines, on="machine_id", how="left")
+    if df["machine_type"].isna().any():
+        missing = sorted(df.loc[df["machine_type"].isna(), "machine_id"].unique())
+        raise ValueError(f"Machines absentes de la table machine : {missing}")
+
+    by_machine = pr_auc_by(
+        df, TARGET,
+        leave_one_group_out_proba(df, gold.feature_cols, TARGET, "machine_id", B11_PARAMS),
+        "machine_id",
+    ).dropna()
+    by_machine_type_held_out = pr_auc_by(
+        df, TARGET,
+        leave_one_group_out_proba(df, gold.feature_cols, TARGET, "machine_type", B11_PARAMS),
+        "machine_id",
+    ).dropna()
+    machine_type = df.groupby("machine_id")["machine_type"].first()
+    return {
+        "by_machine": by_machine,
+        "mean": by_machine.mean(),
+        "std": by_machine.std(),
+        "type_held_out_mean": by_machine_type_held_out.mean(),
+        "type_held_out_drop": (by_machine - by_machine_type_held_out).dropna(),
+        "by_type": by_machine.groupby(machine_type).mean(),
+    }
 
 
 def find_mlflow_artifact():
@@ -93,7 +140,15 @@ def find_mlflow_artifact():
 
 
 def build_card(X_tv, X_test, y_test, feature_cols, n_machines, spw_global,
-               best_params, metrics, emissions_kg, carbon_data, mlflow_model_uri):
+               best_params, metrics, emissions_kg, carbon_data, mlflow_model_uri,
+               het, top_feature):
+    bm = het["by_machine"]
+    worst, best = bm.idxmin(), bm.idxmax()
+    drop = het["type_held_out_drop"]
+    worst_drop = drop.idxmax()
+    by_type = " · ".join(f"{t} {v:.2f}" for t, v in het["by_type"].items())
+    top_name, top_share = top_feature
+
     card_data = ModelCardData(
         model_name="indusense-xgb-maintenance-b11-gkf",
         license="other",
@@ -180,21 +235,28 @@ def build_card(X_tv, X_test, y_test, feature_cols, n_machines, spw_global,
         ),
         out_of_scope_use=(
             "- Arrêt automatique ou décision de maintenance sans validation humaine.\n"
-            "- Toute machine hors des 15 machines couvertes par l'entraînement, sans "
-            "ré-entraînement (les performances varient déjà fortement d'une machine "
-            "connue à l'autre, cf. limites).\n"
+            "- Toute machine d'un type de presse absent de l'entraînement, sans "
+            f"ré-entraînement : PR-AUC moyenne {het['mean']:.2f} quand seule la machine est "
+            f"inconnue, {het['type_held_out_mean']:.2f} quand tout son type l'est (cf. "
+            "limites). Une nouvelle machine d'un type déjà couvert reste dans le périmètre.\n"
             "- Interprétation de `predict_proba` comme une probabilité calibrée — "
             "aucune calibration (Platt/isotonic) n'a été appliquée.\n"
             "- Usage réglementaire ou de certification sécurité — aucune validation de ce type."
         ),
         bias_risks_limitations=(
-            "- **Performance très hétérogène par machine** : PR-AUC en validation croisée "
-            "GroupKFold va de 0.39 (MACH-07) à 1.00 (MACH-11, MACH-15) — écart-type "
-            "±0.19 autour d'une moyenne de 0.78. Un score agrégé unique masque des "
-            "machines où le modèle est nettement moins fiable.\n"
+            "- **Performance hétérogène par machine** : PR-AUC en validation croisée "
+            f"GroupKFold (une machine par fold) de {bm[worst]:.2f} ({worst}) à "
+            f"{bm[best]:.2f} ({best}) — écart-type ±{het['std']:.2f} autour d'une moyenne "
+            f"de {het['mean']:.2f}. Un score agrégé unique masque des machines où le "
+            "modèle est nettement moins fiable.\n"
+            "- **Types de presse différents, invisibles pour le modèle** : ni `machine_id` "
+            "ni le type (`machine.model`) ne sont des entrées. Moyenne par type (une machine "
+            f"cachée) : {by_type}. Quand tout un type est caché à l'entraînement, la "
+            f"PR-AUC moyenne passe de {het['mean']:.2f} à {het['type_held_out_mean']:.2f} "
+            f"(pire cas {worst_drop} : −{drop[worst_drop]:.2f}).\n"
             f"- **Sur-ajustement structurel** : PR-AUC train = {metrics['pr_auc_train']:.3f} "
-            "contre ~0.78 en CV — piloté à 63% par une seule feature "
-            "(`incident_max_severity_prev_24h`, diagnostic TP9/TP10). Persiste malgré une "
+            f"contre {het['mean']:.2f} en CV — {top_share:.0%} de l'importance sur une seule "
+            f"feature (`{top_name}`). Persiste malgré une "
             "régularisation poussée (`reg_lambda`, `min_child_weight` élevés) ; qualifié de "
             "structurel, pas résolu par les hyperparamètres seuls.\n"
             "- **Historique de fuite de données** : une version antérieure (B7, TP8) "
@@ -213,8 +275,9 @@ def build_card(X_tv, X_test, y_test, feature_cols, n_machines, spw_global,
         ),
         bias_recommendations=(
             "Ne jamais utiliser en décision automatique. Suivre la performance par machine "
-            "individuellement, pas seulement l'agrégat — une machine comme MACH-07 justifie "
-            "une vigilance humaine renforcée plutôt qu'une confiance dans le score. Calibrer "
+            f"et par type de presse, pas seulement l'agrégat — une machine comme {worst} "
+            "justifie une vigilance humaine renforcée plutôt qu'une confiance dans le score. "
+            "Ré-entraîner avant de scorer un nouveau type de presse. Calibrer "
             "les probabilités (Platt/isotonic) avant tout usage nécessitant un score "
             "interprétable comme une probabilité réelle. Recalibrer le seuil de décision "
             "selon le coût métier faux négatif vs faux positif avant déploiement."
@@ -232,7 +295,8 @@ def build_card(X_tv, X_test, y_test, feature_cols, n_machines, spw_global,
         training_regime=f"fp32, XGBoost gradient boosting, hyperparamètres Optuna (TPE, 30 essais, objectif GroupKFold(5)), scale_pos_weight={spw_global} (déséquilibre de classes)",
         speeds_sizes_times=f"{carbon_data.duration:.1f}s pour un ré-entraînement complet sur {len(X_tv):,} lignes (poste de travail local, CPU)",
         testing_data=f"Même table, partition test chronologiquement postérieure — {len(X_test):,} lignes, {int(y_test.sum())} pannes positives.",
-        testing_factors="Évaluation agrégée toutes machines confondues pour la métrique principale ; performance par machine disponible via validation croisée GroupKFold (hétérogénéité 0.39-1.00).",
+        testing_factors="Évaluation agrégée toutes machines confondues pour la métrique principale ; performance par machine disponible via validation croisée GroupKFold (hétérogénéité "
+                        f"{bm.min():.2f}-{bm.max():.2f}) et par type de presse (voir limites).",
         testing_metrics="PR-AUC (average precision — préférée à l'accuracy vu le déséquilibre de classe), ROC-AUC, F1, matrice de confusion au seuil 0.5.",
         results=(
             f"PR-AUC train={metrics['pr_auc_train']:.4f} · PR-AUC test={metrics['pr_auc_test']:.4f} · "
@@ -269,23 +333,30 @@ def build_card(X_tv, X_test, y_test, feature_cols, n_machines, spw_global,
 
 
 def main():
-    print("[1/4] Chargement des données (PostgreSQL, requête identique à TP11)...")
-    X_tv, y_tv, X_test, y_test, feature_cols, n_machines = load_data()
+    print("[1/5] Chargement des données (PostgreSQL, requête identique à TP11)...")
+    gold, machines, n_machines = load_data()
+    X_tv, y_tv, X_test, y_test = gold.X_tv, gold.y_tv, gold.X_test, gold.y_test
+    feature_cols = gold.feature_cols
     spw_global = round((y_tv == 0).sum() / (y_tv == 1).sum(), 2)
     print(f"  Train+val={len(X_tv):,}  Test={len(X_test):,}  Features={len(feature_cols)}  Machines={n_machines}")
 
-    print("[2/4] Ré-entraînement (hyperparamètres figés, Optuna TP11) + mesure CodeCarbon...")
-    best_params, metrics, emissions_kg, carbon_data = refit_and_measure(X_tv, y_tv, X_test, y_test, spw_global)
+    print("[2/5] Ré-entraînement (hyperparamètres figés, Optuna TP11) + mesure CodeCarbon...")
+    pipe, best_params, metrics, emissions_kg, carbon_data = refit_and_measure(X_tv, y_tv, X_test, y_test, spw_global)
     print(f"  PR-AUC test={metrics['pr_auc_test']}  ROC-AUC={metrics['roc_auc_test']}  F1={metrics['f1_test']}")
     print(f"  Émissions={emissions_kg*1000:.4f} gCO2eq")
 
-    print("[3/4] Recherche de l'artefact MLflow (loggé par DL/TP9.ipynb)...")
+    print("[3/5] Hétérogénéité : une machine cachée, puis un type de presse caché (~2 min)...")
+    het = measure_heterogeneity(gold, machines)
+    print(f"  PR-AUC CV machine={het['mean']:.4f} ±{het['std']:.4f}  type caché={het['type_held_out_mean']:.4f}")
+
+    print("[4/5] Recherche de l'artefact MLflow (loggé par DL/TP9.ipynb)...")
     _, mlflow_model_uri = find_mlflow_artifact()
     print(f"  {'Trouvé : ' + mlflow_model_uri if mlflow_model_uri else 'Aucun artefact trouvé — exécuter DL/TP9.ipynb'}")
 
-    print("[4/4] Génération de la model card (template Hugging Face officiel)...")
+    print("[5/5] Génération de la model card (template Hugging Face officiel)...")
     card = build_card(X_tv, X_test, y_test, feature_cols, n_machines, spw_global,
-                       best_params, metrics, emissions_kg, carbon_data, mlflow_model_uri)
+                       best_params, metrics, emissions_kg, carbon_data, mlflow_model_uri,
+                       het, top_feature_share(pipe))
     card.validate()
     card.save(ARTIFACTS_DIR / "model_card.md")
     print(f"  Model card sauvegardée : {ARTIFACTS_DIR / 'model_card.md'} ({len(str(card))} caractères)")
