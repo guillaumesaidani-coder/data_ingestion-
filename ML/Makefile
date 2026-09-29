@@ -46,6 +46,10 @@ proof: build check-user check-size
 # « -dirty » si l'arbre de travail a des modifications non commitées.
 export GIT_SHA := $(shell git describe --always --dirty 2>/dev/null)
 
+# Sous Windows, Python écrit dans la console en cp1252 par défaut : les
+# accents des scripts s'affichaient mal (« Seed � jour »).
+export PYTHONUTF8 := 1
+
 stack-up:        ## Démarre la stack (base initialisée au 1er démarrage)
 	docker compose up -d --build
 
@@ -65,7 +69,7 @@ stack-migrate:   ## Applique les migrations alembic
 	docker compose --profile jobs run --rm migrate
 
 stack-revision:  ## Compare le commit de l'image indusense-api:local au dépôt
-	@echo "dépôt : $(GIT_SHA)"
+	@echo "depot : $(GIT_SHA)"
 	@echo "image : $$(docker inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' indusense-api:local)"
 
 stack-reset: seed-check  ## Repart du seed (down -v), refusé si des verdicts n'y sont pas
