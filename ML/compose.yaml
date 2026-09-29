@@ -62,7 +62,9 @@ services:
     ports:
       # Publié : notebooks, flows et Streamlit lancés sur le PC utilisent
       # localhost:5432 (ML/.env), comme avant avec docker-db-1.
-      - "5432:5432"
+      # 127.0.0.1 seulement : le mot de passe de dev est dans le dépôt, la base
+      # ne doit pas être joignable depuis le réseau local.
+      - "127.0.0.1:5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       # Joué une seule fois, sur un volume vide : dump de la base peuplée
