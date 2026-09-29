@@ -7,6 +7,8 @@ tags:
 - xgboost
 - manufacturing
 - time-series-features
+model_version: f550cff24814
+certification: conforme
 model-index:
 - name: indusense-xgb-maintenance-b11-gkf
   results:
@@ -25,7 +27,7 @@ model-index:
 
 <!-- Provide a quick summary of what the model is/does. -->
 
-Classifieur XGBoost prédisant le risque de panne d'une machine industrielle dans les 24h à venir, à partir de features télémétrie (température, pression, tension, vitesse de rotation) et d'historique d'incidents agrégés sur des fenêtres glissantes 6h/12h/24h.
+Classifieur XGBoost qui estime le risque de panne (incident de sévérité ≥ 4) d'une machine dans les 24 h à venir. En pratique, il s'appuie surtout sur un précurseur : un incident de sévérité 3 déclaré dans les 24 h précédentes, qui précède 93% des pannes de l'entraînement. L'historique d'incidents porte 77% de sa décision ; la télémétrie pèse peu. Modèle servi : `f550cff24814`.
 
 ## Model Details
 
@@ -33,7 +35,9 @@ Classifieur XGBoost prédisant le risque de panne d'une machine industrielle dan
 
 <!-- Provide a longer summary of what this model is. -->
 
-Entraîné sur 112,996 observations horaires (15 machines, 78 features), évalué en validation croisée GroupKFold (une machine exclue par fold, pour ne jamais évaluer sur une machine vue à l'entraînement) et sur un jeu de test chronologiquement postérieur. Hyperparamètres optimisés par Optuna (TPE, 30 essais) sur l'objectif GroupKFold — voir `TP11.ipynb`.
+Fichier servi : `artifacts/models/model.joblib` (versionné par DVC), `model_version` `f550cff24814` = SHA-256 tronqué du fichier, le même que l'API, les prédictions et la certification. Métriques mesurées en scorant ce fichier, sans ré-entraînement.
+
+Entraîné sur 112,996 observations horaires (15 machines, 78 features). Cible : `label_failure_next_24h`, vraie si un incident de sévérité ≥ 4 survient sur la machine dans les 24 h suivantes. Taux de panne observé à l'entraînement : 35.6% après un incident de sévérité 3 dans les 24 h, 0.0% sans aucun incident. Recette évaluée en validation croisée GroupKFold (une machine exclue par fold) ; hyperparamètres optimisés par Optuna (TPE, 30 essais) — voir `TP11.ipynb`.
 
 - **Developed by:** Guillaume Saïdani
 - **Funded by [optional]:** [More Information Needed]
@@ -47,7 +51,7 @@ Entraîné sur 112,996 observations horaires (15 machines, 78 features), évalu�
 
 <!-- Provide the basic links for the model. -->
 
-- **Repository:** ML/ (ce dépôt) — TP11.ipynb (recherche HP) ; artefact persisté : MLflow `runs:/fa336bc0880b48bc849a4a6b1e6f412d/xgboost_b11_gkf` (store `ML/mlflow_tp7.db`, voir DL/TP9.ipynb)
+- **Repository:** ML/ (ce dépôt) — `indusense train -o artifacts/models/model.joblib` ; recherche d'hyperparamètres : TP11.ipynb ; certification : `scripts/certify_model.py`.
 - **Paper [optional]:** [More Information Needed]
 - **Demo [optional]:** [More Information Needed]
 
@@ -59,7 +63,7 @@ Entraîné sur 112,996 observations horaires (15 machines, 78 features), évalu�
 
 <!-- This section is for the model use without fine-tuning or plugging into a larger ecosystem/app. -->
 
-Scorer un enregistrement horaire machine (features télémétrie + historique incidents agrégé) et obtenir une probabilité de panne à 24h. Seuil de décision par défaut 0.5 (celui évalué ici) — à ajuster selon l'arbitrage rappel/précision métier avant tout déploiement (cf. TP8 §8 pour une démarche de calibration de seuil sur une version antérieure).
+Scorer un enregistrement horaire machine et obtenir un risque de panne à 24 h. Le score monte surtout après un incident de sévérité 3 déclaré : une panne sans ce précurseur est rarement détectée. Seuil de décision par défaut 0.5 (celui évalué ici) — à ajuster selon l'arbitrage rappel/précision métier.
 
 ### Downstream Use [optional]
 
@@ -72,7 +76,8 @@ Alimentation d'un tableau de bord de maintenance prédictive classant les machin
 <!-- This section addresses misuse, malicious use, and uses that the model will not work well for. -->
 
 - Arrêt automatique ou décision de maintenance sans validation humaine.
-- Toute machine hors des 15 machines couvertes par l'entraînement, sans ré-entraînement (les performances varient déjà fortement d'une machine connue à l'autre, cf. limites).
+- Toute machine d'un type de presse absent de l'entraînement, sans ré-entraînement : PR-AUC moyenne 0.87 quand seule la machine est inconnue, 0.81 quand tout son type l'est (cf. limites). Une nouvelle machine d'un type déjà couvert reste dans le périmètre.
+- Détection d'une dégradation visible seulement dans les capteurs : le modèle réagit surtout aux incidents déclarés.
 - Interprétation de `predict_proba` comme une probabilité calibrée — aucune calibration (Platt/isotonic) n'a été appliquée.
 - Usage réglementaire ou de certification sécurité — aucune validation de ce type.
 
@@ -80,31 +85,29 @@ Alimentation d'un tableau de bord de maintenance prédictive classant les machin
 
 <!-- This section is meant to convey both technical and sociotechnical limitations. -->
 
-- **Performance très hétérogène par machine** : PR-AUC en validation croisée GroupKFold va de 0.39 (MACH-07) à 1.00 (MACH-11, MACH-15) — écart-type ±0.19 autour d'une moyenne de 0.78. Un score agrégé unique masque des machines où le modèle est nettement moins fiable.
-- **Sur-ajustement structurel** : PR-AUC train = 1.000 contre ~0.78 en CV — piloté à 63% par une seule feature (`incident_max_severity_prev_24h`, diagnostic TP9/TP10). Persiste malgré une régularisation poussée (`reg_lambda`, `min_child_weight` élevés) ; qualifié de structurel, pas résolu par les hyperparamètres seuls.
+- **Dépendance à la saisie des incidents** : 93% des pannes de l'entraînement suivent un incident de sévérité 3 dans les 24 h. Un incident non saisi, ou saisi avec une autre sévérité, fait chuter le risque ; les pannes sans ce précurseur passent le plus souvent inaperçues.
+- **Performance hétérogène par machine** : PR-AUC en validation croisée GroupKFold (une machine par fold) de 0.60 (MACH-05) à 1.00 (MACH-15) — écart-type ±0.11 autour d'une moyenne de 0.87. Un score agrégé unique masque des machines où le modèle est nettement moins fiable.
+- **Types de presse différents, invisibles pour le modèle** : ni `machine_id` ni le type (`machine.model`) ne sont des entrées. Moyenne par type (une machine cachée) : InduPress-X1 0.85 · InduPress-X2 0.88 · InduPress-X3 0.87 · InduPress-Z1 0.84. Quand tout un type est caché à l'entraînement, la PR-AUC moyenne passe de 0.87 à 0.81 (pire cas MACH-11 : −0.23).
+- **Sur-ajustement structurel** : PR-AUC train = 1.000 contre 0.87 en CV — `incident_max_severity_prev_24h` porte à elle seule 32% de l'explication (SHAP, certification). Persiste malgré une régularisation poussée (`reg_lambda`, `min_child_weight` élevés) ; qualifié de structurel, pas résolu par les hyperparamètres seuls.
 - **Historique de fuite de données** : une version antérieure (B7, TP8) incluait `feature_row_id`, un identifiant séquentiel corrélé à l'ordre temporel, qui gonflait le PR-AUC de +0.111. Corrigé depuis TP8b — retiré explicitement des colonnes de fuite — mais signale la fragilité du pipeline de features aux fuites indirectes.
-- **Rappel modéré au seuil par défaut** : 91.1% de rappel, 65 pannes non détectées sur 727 au seuil 0.5 — un seuil plus bas augmenterait le rappel au prix de plus de fausses alertes (arbitrage non refait ici pour B11).
+- **Rappel au seuil par défaut** : 91.1% de rappel, 65 pannes non détectées sur 727 au seuil 0.5 — un seuil plus bas augmenterait le rappel au prix de plus de fausses alertes.
 - **Tentative de normalisation par machine infructueuse** : une normalisation z-score par machine a dégradé la généralisation en GroupKFold (TP10) — confirme que XGBoost est déjà insensible à l'échelle des features, ne pas réintroduire cette étape.
 
 ### Recommendations
 
 <!-- This section is meant to convey recommendations with respect to the bias, risk, and technical limitations. -->
 
-Ne jamais utiliser en décision automatique. Suivre la performance par machine individuellement, pas seulement l'agrégat — une machine comme MACH-07 justifie une vigilance humaine renforcée plutôt qu'une confiance dans le score. Calibrer les probabilités (Platt/isotonic) avant tout usage nécessitant un score interprétable comme une probabilité réelle. Recalibrer le seuil de décision selon le coût métier faux négatif vs faux positif avant déploiement.
+Ne jamais utiliser en décision automatique. Veiller à la saisie des incidents et de leur sévérité : c'est la première entrée du modèle. Suivre la performance par machine et par type de presse, pas seulement l'agrégat — une machine comme MACH-05 justifie une vigilance humaine renforcée plutôt qu'une confiance dans le score. Ré-entraîner avant de scorer un nouveau type de presse. Calibrer les probabilités (Platt/isotonic) avant tout usage nécessitant une probabilité réelle. Comparer le modèle à la règle « sévérité max 24 h = 3 » : il ne vaut que s'il fait mieux qu'elle.
 
 ## How to Get Started with the Model
 
 Use the code below to get started with the model.
 
 ```python
-# Artefact persisté dans MLflow (voir DL/TP9.ipynb) — rechargement direct
-import mlflow.xgboost
-mlflow.set_tracking_uri('sqlite:///mlflow_tp7.db')
-model = mlflow.xgboost.load_model('runs:/fa336bc0880b48bc849a4a6b1e6f412d/xgboost_b11_gkf')
-
-from sklearn.impute import SimpleImputer
-X_imputed = SimpleImputer(strategy='median').fit(X_train_val).transform(X_new)
-proba = model.predict_proba(X_imputed)[:, 1]  # risque de panne à 24h
+# Le fichier servi par l'API (dvc pull pour le récupérer)
+import joblib
+model = joblib.load('artifacts/models/model.joblib')  # imputer + XGBClassifier
+proba = model.predict_proba(X_new)[:, 1]  # risque de panne à 24h
 ```
 
 ## Training Details
@@ -132,7 +135,7 @@ Imputation des valeurs manquantes par médiane (`SimpleImputer`), aucune normali
 
 <!-- This section provides information about throughput, start/end time, checkpoint size if relevant, etc. -->
 
-5.9s pour un ré-entraînement complet sur 112,996 lignes (poste de travail local, CPU)
+Non mesuré pour ce modèle (voir Carbon Emitted)
 
 ## Evaluation
 
@@ -150,7 +153,7 @@ Même table, partition test chronologiquement postérieure — 19,944 lignes, 72
 
 <!-- These are the things the evaluation is disaggregating by, e.g., subpopulations or domains. -->
 
-Évaluation agrégée toutes machines confondues pour la métrique principale ; performance par machine disponible via validation croisée GroupKFold (hétérogénéité 0.39-1.00).
+Évaluation agrégée toutes machines confondues pour la métrique principale ; performance par machine disponible via validation croisée GroupKFold (hétérogénéité 0.60-1.00) et par type de presse (voir limites).
 
 #### Metrics
 
@@ -160,17 +163,38 @@ PR-AUC (average precision — préférée à l'accuracy vu le déséquilibre de 
 
 ### Results
 
-PR-AUC train=0.9998 · PR-AUC test=0.8945 · ROC-AUC test=0.9957 · F1 test=0.8054 · TP=662 TN=18962 FP=255 FN=65 · Précision=72.2% · Rappel=91.1%
+Modèle `f550cff24814` — PR-AUC train=0.9998 · PR-AUC test=0.8945 · ROC-AUC test=0.9957 · F1 test=0.8054 · TP=662 TN=18962 FP=255 FN=65 · Précision=72.2% · Rappel=91.1%
 
 #### Summary
 
-PR-AUC test 0.89 sur un problème fortement déséquilibré (scale_pos_weight=27) — signal réel mais hétérogène selon les machines (voir limites). Écart train/CV important : le modèle généralise moins bien qu'il ne le suggère sur ses propres données d'entraînement.
+PR-AUC test 0.89 sur un problème fortement déséquilibré (scale_pos_weight=27) — signal réel, porté surtout par l'historique d'incidents, et hétérogène selon les machines (voir limites). Écart train/CV important : le modèle généralise moins bien qu'il ne le suggère sur ses propres données d'entraînement.
 
 ## Model Examination [optional]
 
 <!-- Relevant interpretability work for the model goes here -->
 
-Non réalisé — SHAP (TreeExplainer) recommandé en prochaine étape pour identifier les features dominantes par machine (cf. b7_optimisation_explicabilite.md, hors périmètre ici).
+Certification du modèle `f550cff24814` (`scripts/certify_model.py`, 50,000 lignes d'entraînement) : **conforme**. Part de l'explication = moyenne des |contributions SHAP| (TreeSHAP exact d'XGBoost), rapportée au total.
+
+- Par famille : Historique d'incidents 77% · Maintenance 7% · Rotation 5% · Tension 4% · Température 3% · Production 2% · Pression 2%.
+- Variables les plus lourdes :
+  - `incident_max_severity_prev_24h` : 32.2%
+  - `incident_count_prev_7d` : 23.6%
+  - `incident_count_prev_24h` : 12.3%
+  - `hours_since_last_incident` : 7.6%
+  - `maintenance_count_prev_30d` : 3.3%
+  - `days_since_last_maintenance` : 3.3%
+- Constats de la certification :
+  - avertissement (informativite, `temp_std_1h`) : Variable vide dans tout l'entraînement : écartée par l'imputer, construite pour rien
+  - avertissement (informativite, `pressure_std_1h`) : Variable vide dans tout l'entraînement : écartée par l'imputer, construite pour rien
+  - avertissement (concentration_famille) : La famille « incidents » porte 77% de l'explication (max 60%)
+  - avertissement (sens, `temp_max_12h`) : Sens attendu : hausse du risque ; appris : baisse (corrélation valeur / contribution -0.60)
+  - avertissement (sens, `type_baisse_pression_count_prev_24h`) : Sens attendu : hausse du risque ; appris : baisse (corrélation valeur / contribution -0.14)
+  - avertissement (sens, `type_vibration_count_prev_24h`) : Sens attendu : hausse du risque ; appris : baisse (corrélation valeur / contribution -0.17)
+  - avertissement (sens, `type_surconsommation_count_prev_24h`) : Sens attendu : hausse du risque ; appris : baisse (corrélation valeur / contribution -0.12)
+  - avertissement (sens, `type_alarme_capteur_count_prev_24h`) : Sens attendu : hausse du risque ; appris : baisse (corrélation valeur / contribution -0.11)
+  - avertissement (sens, `type_defaut_qualite_count_prev_24h`) : Sens attendu : hausse du risque ; appris : baisse (corrélation valeur / contribution -0.22)
+
+Une contribution décrit ce que le modèle a appris, pas une cause physique.
 
 ## Environmental Impact
 
@@ -179,10 +203,10 @@ Non réalisé — SHAP (TreeExplainer) recommandé en prochaine étape pour iden
 Carbon emissions can be estimated using the [Machine Learning Impact calculator](https://mlco2.github.io/impact#compute) presented in [Lacoste et al. (2019)](https://arxiv.org/abs/1910.09700).
 
 - **Hardware Type:** Intel Core i7-12700H (CPU) — entraînement XGBoost, pas de GPU requis
-- **Hours used:** 0.0016 h (ré-entraînement complet mesuré ci-dessus)
+- **Hours used:** Non mesuré pour ce modèle (voir Carbon Emitted)
 - **Cloud Provider:** Aucun — poste de travail local
-- **Compute Region:** France (FRA)
-- **Carbon Emitted:** 0.0033 gCO2eq (0.060 Wh) — mesure CodeCarbon de ce ré-entraînement
+- **Compute Region:** Non mesuré pour ce modèle (voir Carbon Emitted)
+- **Carbon Emitted:** Non mesuré pour `f550cff24814` : la mesure CodeCarbon est prise par `indusense train` (fichier `training_emissions.json`), absente pour ce modèle entraîné avant cet ajout.
 
 ## Technical Specifications [optional]
 
@@ -192,7 +216,7 @@ XGBoost : n_estimators=287, max_depth=9, learning_rate=0.0289, objectif binaire 
 
 ### Compute Infrastructure
 
-Poste de travail local, connexion PostgreSQL directe. Artefact tracké et versionné dans MLflow (voir DL/TP9.ipynb) : runs:/fa336bc0880b48bc849a4a6b1e6f412d/xgboost_b11_gkf.
+Poste de travail local, connexion PostgreSQL directe. Modèle versionné par DVC (`artifacts/models/model.joblib.dvc`), identifié par `model_version` `f550cff24814`.
 
 #### Hardware
 

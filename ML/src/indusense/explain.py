@@ -187,6 +187,18 @@ def _constat(controle: str, gravite: str, message: str, variable: str | None = N
     return {"controle": controle, "gravite": gravite, "variable": variable, "message": message}
 
 
+def parts_par_famille(parts: dict[str, float], base: dict | None = None) -> dict[str, float]:
+    """Somme des parts d'explication par famille de la base (température,
+    incidents...), triée par part décroissante ; « hors base » pour une
+    variable non décrite. Partagé par la certification et la model card."""
+    decrites = (base or charger_base())["variables"]
+    familles: dict[str, float] = {}
+    for var, part in parts.items():
+        fam = decrites.get(var, {}).get("famille", "hors base")
+        familles[fam] = familles.get(fam, 0.0) + part
+    return dict(sorted(familles.items(), key=lambda kv: -kv[1]))
+
+
 def controler_modele(
     variables: list[str],
     base: dict | None = None,
@@ -247,11 +259,7 @@ def controler_modele(
                         var,
                     )
                 )
-        familles: dict[str, float] = {}
-        for var, part in parts.items():
-            fam = decrites.get(var, {}).get("famille", "hors base")
-            familles[fam] = familles.get(fam, 0.0) + part
-        for fam, part in familles.items():
+        for fam, part in parts_par_famille(parts, base).items():
             if part > seuils["part_max_une_famille"]:
                 constats.append(
                     _constat(

@@ -7,12 +7,13 @@ modules déjà testés.
 """
 
 import argparse
+import json
 from pathlib import Path
 
 import joblib
 import pandas as pd
 
-from indusense.config import get_engine
+from indusense.config import get_engine, get_model_version
 from indusense.data import export_gold_dataset, hash_file
 from indusense.modeling.dataset import load_gold_dataset
 from indusense.modeling.tracking import log_training_run, write_metrics_and_params
@@ -44,7 +45,16 @@ def train(args: argparse.Namespace) -> None:
     gold = load_gold_dataset(get_engine())
     params = {**B11_PARAMS, "scale_pos_weight": compute_scale_pos_weight(gold.y_tv)}
 
+    # Import local : CodeCarbon n'est chargé que pour l'entraînement.
+    from codecarbon import EmissionsTracker
+
+    tracker = EmissionsTracker(
+        project_name="indusense-train", measure_power_secs=1, log_level="error", save_to_file=False
+    )
+    tracker.start()
     pipe, metrics = train_and_evaluate(gold.X_tv, gold.y_tv, gold.X_test, gold.y_test, params)
+    emissions_kg = tracker.stop()
+    carbon = tracker.final_emissions_data
 
     print(
         f"PR-AUC train={metrics['pr_auc_train']}  PR-AUC test={metrics['pr_auc_test']}  "
@@ -75,6 +85,25 @@ def train(args: argparse.Namespace) -> None:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         joblib.dump(pipe, output_path)
         print(f"Modèle sauvegardé : {output_path}")
+        # Mesure rattachée au fichier produit : la model card ne la reprend
+        # que si model_version correspond au modèle qu'elle décrit.
+        emissions_path = output_path.parent / "training_emissions.json"
+        emissions_path.write_text(
+            json.dumps(
+                {
+                    "model_version": get_model_version(output_path),
+                    "emissions_g": round(emissions_kg * 1000, 4),
+                    "energy_wh": round(carbon.energy_consumed * 1000, 3),
+                    "duration_s": round(carbon.duration, 1),
+                    "country": f"{carbon.country_name} ({carbon.country_iso_code})",
+                },
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
+        print(f"Émissions de l'entraînement : {emissions_path}")
+        print("Suite : make model-card (certification puis model card de ce modèle)")
 
 
 def predict(args: argparse.Namespace) -> None:

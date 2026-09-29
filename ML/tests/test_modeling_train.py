@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 from indusense.modeling.train import (
     B11_PARAMS,
     compute_scale_pos_weight,
+    evaluate,
     train_and_evaluate,
 )
 
@@ -42,3 +43,17 @@ def test_train_and_evaluate_returns_pipeline_and_metrics_smoke():
     assert hasattr(pipe, "predict_proba")
     assert 0.0 <= metrics["pr_auc_test"] <= 1.0
     assert metrics["tp"] + metrics["tn"] + metrics["fp"] + metrics["fn"] == len(y_test)
+
+
+def test_evaluate_reproduces_train_and_evaluate_metrics():
+    # La model card mesure le modèle servi avec evaluate(), sans le
+    # ré-entraîner : mêmes métriques que celles écrites à l'entraînement.
+    rng = np.random.default_rng(0)
+    X = pd.DataFrame({"f1": rng.normal(size=200), "f2": rng.normal(size=200)})
+    y = pd.Series((X["f1"] > 0).astype(int))
+    X_tv, X_test, y_tv, y_test = X.iloc[:150], X.iloc[150:], y.iloc[:150], y.iloc[150:]
+    params = {"n_estimators": 10, "max_depth": 2, "random_state": 42, "verbosity": 0}
+
+    pipe, metrics = train_and_evaluate(X_tv, y_tv, X_test, y_test, params)
+
+    assert evaluate(pipe, X_tv, y_tv, X_test, y_test) == metrics

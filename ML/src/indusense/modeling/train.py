@@ -1,10 +1,9 @@
 """Entraînement + évaluation du modèle tabulaire retenu (b11-gkf).
 
 B11_PARAMS extrait de generate_model_card.py (BEST_PARAMS_BASE — figés
-depuis la recherche Optuna de TP11.ipynb). train_and_evaluate() extrait
-le coeur de generate_model_card.py::refit_and_measure() (fit + métriques),
-sans la mesure CodeCarbon qui est une préoccupation de reporting propre
-à ce script, pas à l'entraînement lui-même.
+depuis la recherche Optuna de TP11.ipynb). train_and_evaluate() = fit +
+evaluate() ; evaluate() seul mesure un modèle déjà entraîné (la model
+card décrit le modèle servi, elle ne ré-entraîne plus).
 """
 
 from sklearn.metrics import (
@@ -42,7 +41,12 @@ def compute_scale_pos_weight(y) -> float:
 def train_and_evaluate(X_tv, y_tv, X_test, y_test, params: dict) -> tuple[Pipeline, dict]:
     pipe = build_xgb_pipeline(params)
     pipe.fit(X_tv, y_tv)
+    return pipe, evaluate(pipe, X_tv, y_tv, X_test, y_test)
 
+
+def evaluate(pipe: Pipeline, X_tv, y_tv, X_test, y_test) -> dict:
+    """Métriques d'un modèle déjà entraîné (seuil 0,5). Sert aussi à
+    mesurer le modèle servi sans le ré-entraîner (model card)."""
     y_prob_test = pipe.predict_proba(X_test)[:, 1]
     y_pred_test = pipe.predict(X_test)
     y_prob_tv = pipe.predict_proba(X_tv)[:, 1]
@@ -62,4 +66,4 @@ def train_and_evaluate(X_tv, y_tv, X_test, y_test, params: dict) -> tuple[Pipeli
         "fn": int(fn),
         "threshold": 0.5,
     }
-    return pipe, metrics
+    return metrics

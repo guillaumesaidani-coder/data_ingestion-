@@ -36,7 +36,7 @@ KNOWN_LEAKAGE_COLS = {
 
 
 def test_generate_model_card_excludes_known_leakage_columns():
-    # load_data() renvoie (X_tv, y_tv, X_test, y_test, feature_cols, n_machines)
-    feature_cols = gmc.load_data()[4]
+    # load_data() renvoie (gold, machines, n_machines)
+    feature_cols = gmc.load_data()[0].feature_cols
     leaked = KNOWN_LEAKAGE_COLS & set(feature_cols)
     assert not leaked, f"Colonnes de fuite réintroduites dans feature_cols : {leaked}"

@@ -36,7 +36,7 @@ check-determinism:
 		&& echo "RootFS.Layers identiques"
 
 proof: build check-user check-size
-	@echo "Voir image_proof.md pour le registre complet des preuves."
+	@echo "Voir docs/07_preuves/image_proof.md pour le registre complet des preuves."
 
 # ---- Stack unique (R1) : compose.yaml ------------------------------------
 
@@ -62,3 +62,11 @@ seed-dump:       ## Fige ml-db-1 dans docker/initdb (puis dvc add)
 
 seed-check:      ## Échoue si ml-db-1 contient des verdicts absents du seed
 	uv run --frozen python scripts/build_seed_dump.py --container ml-db-1 --check
+
+# ---- Modèle servi : certification puis model card -------------------------
+
+.PHONY: model-card
+
+model-card:      ## Après tout changement de model.joblib : certifie, puis régénère la card
+	uv run --frozen python scripts/certify_model.py
+	uv run --frozen python generate_model_card.py

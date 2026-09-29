@@ -27,6 +27,7 @@ def main() -> int:
     )
     if result["status"] == "PROMU":
         print(f"Bascule effectuée -- ancien modèle sauvegardé -> {result['backup']}")
+        print("Suite obligatoire : make model-card (certification puis card du modèle)")
         return 0
     print("Bascule bloquée -- au moins une régression observée en fantôme, zéro tolérance à ce stade")
     return 1

@@ -15,6 +15,12 @@ wheels/
 # macOS
 .DS_Store
 
+# Obsidian (coffre = ML/) : seuls les réglages partagés sont versionnés
+# (liens Markdown standards, dossiers techniques exclus) ; l'espace de
+# travail et les préférences d'affichage restent propres à chaque poste.
+.obsidian/*
+!.obsidian/app.json
+
 # Données brutes (contiennent des données personnelles non anonymisées)
 releves_incidents.csv
 
@@ -35,6 +41,9 @@ artifacts/models/?*
 # Certification du modèle servi (scripts/certify_model.py) : petit JSON lié
 # au model.joblib par model_version, copié dans l'image pour /ready.
 !artifacts/models/explication_certification.json
+# Émissions CodeCarbon de l'entraînement (indusense train), liées au
+# model.joblib par model_version : reprises par la model card.
+!artifacts/models/training_emissions.json
 !artifacts/models/*.dvc
 /telemetry.csv
 /releves_incidents_anonymised.csv

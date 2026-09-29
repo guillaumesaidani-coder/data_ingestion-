@@ -26,6 +26,7 @@ from indusense.explain import (
     est_conforme,
     expliquer,
     logit,
+    parts_par_famille,
 )
 from indusense.modeling.dataset import LEAKAGE_COLS
 from indusense.processing.gold_features import GOLD_COLS
@@ -166,6 +167,13 @@ def test_sens_contraire_avertit_sauf_variable_negligeable():
     assert [(c["controle"], c["variable"]) for c in constats if c["controle"] == "sens"] == [
         ("sens", "temp_mean_24h")
     ]
+
+
+def test_parts_par_famille_somme_et_trie():
+    parts = {"incident_count_prev_24h": 0.5, "incident_count_prev_7d": 0.2, "temp_mean_24h": 0.3}
+    familles = parts_par_famille(parts)
+    assert list(familles) == ["incidents", "temperature"]
+    assert familles["incidents"] == pytest.approx(0.7)
 
 
 def test_certifier_detecte_la_variable_vide_et_mesure_les_parts(modele):
