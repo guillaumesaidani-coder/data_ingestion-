@@ -8,7 +8,7 @@ acceptés par l'affinité de type de SQLite sans erreur.
 Rejouer le flow deux fois sur les mêmes données laisse le même nombre de
 lignes, jamais le double — clé composite (machine_id, window_start).
 
-Module 35 (boucle HITL, plan_action_hitl_champion_challenger.md) : ajoute
+Module 35 (boucle HITL, docs/05_exploitation/plan_action_hitl_champion_challenger.md) : ajoute
 `model_version` (indusense.config.get_model_version) et `features_payload`
 (photo JSON des features au moment du scoring — jusqu'ici seule la
 probabilité était gardée, impossible de rejouer une fenêtre passée contre

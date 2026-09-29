@@ -1,4 +1,6 @@
-# Preuve — boucle HITL champion/challenger (plan_action_hitl_champion_challenger.md)
+# Preuve — boucle HITL champion/challenger
+
+Plan suivi : [plan_action_hitl_champion_challenger.md](../05_exploitation/plan_action_hitl_champion_challenger.md)
 
 ## M35 — Journal de prédiction versionné
 

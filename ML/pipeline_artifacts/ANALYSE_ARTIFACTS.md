@@ -71,4 +71,4 @@ Schéma de table cible : `GoldMachineHourlyFeature` dans `ML/models.py:160`.
 
 - **`run_log.md` sans code générateur** : aucune trace dans le repo (notebooks + `.py`) d'un script qui écrit/met à jour ce fichier — il est rédigé manuellement et n'a pas suivi les runs réels.
 - **`create_ingestion_dir()` dupliquée** entre TP1 et TP2 (copier-coller), pas de module utilitaire partagé.
-- **`gold_roadmap.md`** documente une architecture cible (`src/indusense/processing/ingestion.py`, `build_gold_from_telemetry()`, `indusense.db.gold_loader`) qui n'existe pas dans le code réel — le Gold est en fait produit par le notebook `TP6.ipynb` en SQL/pandas direct.
+- **[gold_roadmap.md](../docs/03_donnees/gold_roadmap.md)** documente une architecture cible (`src/indusense/processing/ingestion.py`, `build_gold_from_telemetry()`, `indusense.db.gold_loader`) qui n'existe pas dans le code réel — le Gold est en fait produit par le notebook `TP6.ipynb` en SQL/pandas direct.

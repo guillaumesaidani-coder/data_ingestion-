@@ -8,7 +8,7 @@ exclue parmi ses entrées, ou certification (scripts/certify_model.py)
 bloquante ou faite pour un autre fichier modèle.
 
 Module 25 (service) + module 26 (contrôles de sécurité — voir
-security_controls.md pour le registre et threat_model.md pour l'analyse
+docs/06_securite/security_controls.md pour le registre et docs/06_securite/threat_model.md pour l'analyse
 STRIDE). Quatre contrôles prouvés par test : auth, validation, rate
 limit, taille de payload. Le cinquième (audit logging) reste Planifié
 v0 — ce fichier logue method/path/status/request_id à titre informatif,
@@ -65,7 +65,7 @@ RATE_LIMIT_WINDOW_SECONDS = 60
 
 # IP -> horodatages des appels dans la fenêtre courante. En mémoire, par
 # process : suffisant pour une seule instance, pas pour un déploiement
-# multi-instance (cf. security_controls.md, risque résiduel du rate limit).
+# multi-instance (cf. docs/06_securite/security_controls.md, risque résiduel du rate limit).
 _rate_limit_state: dict[str, list[float]] = defaultdict(list)
 
 # Instrumentation Prometheus (module 28) : scrapée sur /metrics.

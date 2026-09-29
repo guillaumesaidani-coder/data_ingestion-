@@ -13,7 +13,7 @@ pour ne pas changer le hash des opérateurs déjà en base. Ce n'est PAS
 `processing.anonymization.anon()` (salé, `OP_ANON_…`), qui sert à
 produire le CSV anonymisé.
 
-Décisions (cadrage_operateurs_ingest.md §5) :
+Décisions (docs/02_architecture/cadrage_operateurs_ingest.md §5) :
 - Seules les lignes `parse_ok=True` créent un opérateur (TP4 prend
   toutes les lignes) : un nom issu d'une ligne rejetée n'est pas fiable.
   Sans effet sur releves_incidents.csv (0 ligne rejetée).

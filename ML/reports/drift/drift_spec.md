@@ -1,7 +1,7 @@
 # Spec de dérive InduSense — modules 31-34
 
 Document du data scientist, figé **avant** l'incident, à froid — à ne pas
-confondre avec `docs/runbook.md` (l'opérateur, pendant l'incident, sous
+confondre avec [runbook.md](../../docs/05_exploitation/runbook.md) (l'opérateur, pendant l'incident, sous
 pression). Chaque case de ce document a été mesurée en exécutant les
 scripts ci-dessous contre le vrai Gold (`gold_machine_hourly_feature`,
 15 machines, juin 2025 → juin 2026) et le vrai modèle de production

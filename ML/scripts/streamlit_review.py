@@ -1,6 +1,6 @@
 """Module 36 — interface de revue terrain (InduSense).
 
-Deux flux, adaptés du gabarit `feuille_de_route_mlops_indusense.md` à
+Deux flux, adaptés du gabarit `docs/01_cadrage/feuille_de_route_mlops_indusense.md` à
 nos vraies features (température/pression/vibration = nos colonnes
 `temp_mean_1h`/`pressure_mean_1h`/`rotation_mean_1h`, pas les libellés
 génériques du gabarit) :
@@ -14,7 +14,7 @@ génériques du gabarit) :
 2. Déclarer un incident non prédit — le retour le plus précieux
    (feuille de route §4) : sans ce bouton, les pannes manquées par le
    modèle ne sont jamais visibles dans les retours (mesuré dans
-   hitl_proof.md, module 36).
+   docs/07_preuves/hitl_proof.md, module 36).
 
 Usage : uv run --frozen streamlit run scripts/streamlit_review.py
 """

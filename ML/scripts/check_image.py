@@ -11,13 +11,13 @@ import argparse
 import subprocess
 import sys
 
-# Mesuré réellement (voir image_proof.md) avant de fixer ce seuil — jamais
+# Mesuré réellement (voir docs/07_preuves/image_proof.md) avant de fixer ce seuil — jamais
 # l'inverse : 690,9 Mo (docker inspect + docker save, confirmés identiques).
 # Notre projet embarque tout uv.lock (jupyter/matplotlib/mlflow/optuna/...
 # utiles aux notebooks et à l'entraînement, pas seulement à l'API) car ils
 # sont dans les dépendances de base, pas dans un groupe séparé — les isoler
 # casserait des notebooks qui comptent sur leur présence par défaut, hors
-# scope de ce correctif (voir image_proof.md).
+# scope de ce correctif (voir docs/07_preuves/image_proof.md).
 MAX_MB = 750
 
 

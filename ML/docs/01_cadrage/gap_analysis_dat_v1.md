@@ -21,7 +21,7 @@ conforme à ce même DAT, laissé actif sur la machine partagée.
 
 Conséquence concrète : notre exporteur devrait être **sur 9109**, et le
 port 9110 est réservé à un **exporteur Prefect que nous n'avons pas
-construit** (voir §4). Documenté dans `drift_proof.md` comme « piège
+construit** (voir §4). Documenté dans [drift_proof.md](../07_preuves/drift_proof.md) comme « piège
 Windows », alors que c'est en réalité un conflit de convention de port
 avec le corrigé officiel. À corriger si l'objectif est la conformité DAT
 (nécessite de coexister avec l'exporteur de référence — probablement le
@@ -141,7 +141,7 @@ architecturalement à l'opposé du modèle cible.
 
 Ce qu'on a de solidement construit et prouvé (modules 31-34) :
 PSI/KS réels, 2 références figées, 4 scénarios rejoués, `drift_spec.md`
-+ `docs/runbook.md`, exporteur Prometheus, alerte réellement
++ [runbook.md](../05_exploitation/runbook.md), exporteur Prometheus, alerte réellement
 déclenchée et observée `firing`, 2 dashboards Grafana provisionnés.
 
 Ce qui manque pour coller au DAT (chapitre 10) :

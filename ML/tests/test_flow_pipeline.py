@@ -4,7 +4,7 @@ marqué requires_local_infra comme test_etl_bronze_silver_gold.py, ne
 tourne pas en CI. scripts/demo_prefect_idempotence.py couvre le même
 scénario en local ; le conteneur (docker compose --profile jobs run --rm
 predict) le rejoue contre un vrai Postgres — voir
-pipeline_proof.md.
+docs/07_preuves/pipeline_proof.md.
 """
 
 import sys

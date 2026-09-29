@@ -1,6 +1,6 @@
 # Cadrage du retour sur investissement — InduSense 4.0
 
-> Complète [architecture_deploiement_indusense.md](architecture_deploiement_indusense.md) (coûts de déploiement par tranche, coût de fonctionnement d'un arrêt machine). Ici : comment on structure, formalise et négocie le ROI avec le client.
+> Complète [architecture_deploiement_indusense.md](../02_architecture/architecture_deploiement_indusense.md) (coûts de déploiement par tranche, coût de fonctionnement d'un arrêt machine). Ici : comment on structure, formalise et négocie le ROI avec le client.
 
 ## 1. Objectif du cadrage
 
@@ -25,8 +25,8 @@ ROI cumulé (année N) =
 | Poste | Nature | Référence |
 |---|---|---|
 | Développement (déjà engagé) | Coût sunk — modèle, pipeline, drift monitoring | Sprint 1-3 InduSense |
-| Déploiement par tranche | T1 pilote (10-15 k€), T2 généralisation (+3-6 k€), T3 multi-site (variable) | cf. architecture_deploiement_indusense.md §3 |
-| Fonctionnement (run) | Infra edge, supervision centrale, astreinte, ré-entraînement | cf. architecture_deploiement_indusense.md §4 |
+| Déploiement par tranche | T1 pilote (10-15 k€), T2 généralisation (+3-6 k€), T3 multi-site (variable) | cf. [architecture_deploiement_indusense.md](../02_architecture/architecture_deploiement_indusense.md) §3 |
+| Fonctionnement (run) | Infra edge, supervision centrale, astreinte, ré-entraînement | cf. [architecture_deploiement_indusense.md](../02_architecture/architecture_deploiement_indusense.md) §4 |
 | Ressource de suivi de déploiement | Côté éditeur (0,5 ETP indicatif) **et** côté client (intégration, coordination interne) | Souvent oublié côté client — à faire chiffrer par lui |
 
 ## 4. Coûts évités / gains — collecte de l'information Métier

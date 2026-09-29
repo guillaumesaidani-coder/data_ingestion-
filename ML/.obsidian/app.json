@@ -1,0 +1,18 @@
+{
+  "useMarkdownLinks": true,
+  "newLinkFormat": "relative",
+  "alwaysUpdateLinks": true,
+  "userIgnoreFilters": [
+    "__pycache__/",
+    "data/",
+    "dist/",
+    "mlruns/",
+    "docker/",
+    "grafana/",
+    "perf/",
+    "flows/",
+    "src/",
+    "tests/",
+    "scripts/"
+  ]
+}

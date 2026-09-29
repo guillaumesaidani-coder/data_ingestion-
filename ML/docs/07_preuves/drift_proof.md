@@ -15,7 +15,7 @@ mesuré sur nos vraies données.
 | Références figées | Implémenté | `reports/drift/reference_normale.csv` (2026-03), `reference_haute_charge.csv` (2025-09) |
 | 4 scénarios rejoués | Implémenté | `reports/drift/drift_spec.md` §7 — F1 réel, F2/F3 synthétiques documentés, F4 réel |
 | Spec figée | Implémenté | `reports/drift/drift_spec.md` |
-| Runbook | Implémenté | `docs/runbook.md`, alerte `IndusenseDriftPSIEleve` réellement déclenchée et observée |
+| Runbook | Implémenté | [runbook.md](../05_exploitation/runbook.md), alerte `IndusenseDriftPSIEleve` réellement déclenchée et observée |
 | Export Prometheus | Implémenté | `scripts/export_drift_metrics.py` — port 9110/metrics, 2/2 cibles Prometheus UP |
 | Dashboard Grafana | Implémenté | `grafana/dashboards/indusense_drift.json` (6 panneaux) + `indusense_slo.json` (4 panneaux), provisionnés automatiquement |
 | SLO | Implémenté | Basé sur les métriques réellement exposées (`indusense_http_requests_total`, `indusense_http_request_duration_seconds_bucket`, module 28) |
@@ -127,7 +127,7 @@ provisionnée (`GET /api/datasources`).
 
 ## Runbook joué pour de vrai
 
-`docs/runbook.md` a été suivi pas à pas sur l'alerte F2 réellement
+[runbook.md](../05_exploitation/runbook.md) a été suivi pas à pas sur l'alerte F2 réellement
 déclenchée ci-dessus : isoler la feature (seule `temp_mean_24h` dérive,
 les 7 autres restent sous 0,03), vérifier le rappel (0,89, dans la
 norme), exclure un changement de régime

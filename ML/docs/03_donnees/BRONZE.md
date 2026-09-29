@@ -27,7 +27,7 @@ telemetry.csv          releves_incidents.csv
 
 ## Partie 1 — Les données sources
 
-Avant de charger quoi que ce soit, regardons les fichiers sources. Relire le début du document `gold_roadmap.md` pour bien les comprendre.
+Avant de charger quoi que ce soit, regardons les fichiers sources. Relire le début du document [gold_roadmap.md](gold_roadmap.md) pour bien les comprendre.
 
 ### 1.1 `telemetry.csv` — mesures capteurs
 

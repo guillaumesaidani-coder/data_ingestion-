@@ -14,7 +14,7 @@ contrôle qui y répond aujourd'hui — ou l'absence assumée.
 ## Spoofing (usurpation)
 **Exemple** : un client sans autorisation se fait passer pour un consommateur légitime de l'API.
 **Contrôle** : clé statique `X-API-Key` (`require_api_key`) — `401` si absente ou invalide.
-**Limite assumée** : une seule clé pour tous les clients, pas d'identité par appelant (cf. `security_controls.md`).
+**Limite assumée** : une seule clé pour tous les clients, pas d'identité par appelant (cf. [security_controls.md](security_controls.md)).
 
 ## Tampering (altération)
 **Exemple** : un payload malformé, un champ du mauvais type, un dict de features vide envoyé pour forcer un comportement inattendu du modèle.
@@ -42,4 +42,4 @@ contrôle qui y répond aujourd'hui — ou l'absence assumée.
 4 familles sur 6 ont une preuve automatisée (test + code HTTP observé) :
 Spoofing, Tampering, Information disclosure, Denial of service (+ Elevation of
 privilege via la même dépendance d'auth). Repudiation reste ouverte,
-explicitement, en `Planifié v0` — voir `security_controls.md`.
+explicitement, en `Planifié v0` — voir [security_controls.md](security_controls.md).

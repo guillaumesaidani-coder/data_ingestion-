@@ -1,5 +1,5 @@
 """tests/test_security.py — module 26 : les 4 contrôles "Implémenté" du
-registre security_controls.md, chacun avec sa preuve (code HTTP observé).
+registre docs/06_securite/security_controls.md, chacun avec sa preuve (code HTTP observé).
 Le 5e contrôle (audit logging) reste "Planifié v0" : rien ici ne le teste
 comme fait, seulement que ce qui est déjà logué ne fuite pas de secret.
 """

@@ -3,7 +3,7 @@
 > **Objet** : cadrer un petit chantier, à traiter dans un chat dédié.
 > **Base** : dépôt au commit `ca34bf1` (branche `main`), package `ML/src/indusense/`.
 > **Origine** : écart repéré en extrayant la validation de TP4 vers
-> `processing/bronze_validation.py` (voir `cadrage_ruptures_package.md`,
+> `processing/bronze_validation.py` (voir [cadrage_ruptures_package.md](cadrage_ruptures_package.md),
 > rupture ①, point 2).
 
 ---
@@ -55,7 +55,7 @@ sur `operator`. Un nom absent du référentiel donne donc `operator_id = NULL`,
 
 ---
 
-## 3. Contraintes (reprises de `cadrage_ruptures_package.md` §2)
+## 3. Contraintes (reprises de [cadrage_ruptures_package.md](cadrage_ruptures_package.md) §2)
 
 - **Portabilité SQLite / PostgreSQL** : `ingest.py` tourne contre SQLite dans
   les tests. `INSERT ... ON CONFLICT (col) DO UPDATE` fonctionne sur les deux

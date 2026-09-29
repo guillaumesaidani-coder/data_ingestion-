@@ -139,7 +139,7 @@ notebooks.
    fournis, enregistrer via `upsert_predictions` avec `model_version` et
    `features_payload`. Renvoyer `model_version` dans la réponse.
 3. Documenter la décision (API « consultative » ou « source de vérité »)
-   dans `architecture_deploiement_indusense.md`.
+   dans [architecture_deploiement_indusense.md](architecture_deploiement_indusense.md).
 
 ### Critères d'acceptation
 - [ ] Une seule implémentation de « quelles colonnes le modèle attend ».

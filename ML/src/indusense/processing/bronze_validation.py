@@ -1,7 +1,7 @@
 """Validation Bronze des lots terrain (extrait de TP4.ipynb, sections 2,
 3 et 10).
 
-Le Bronze reste un miroir du fichier source (BRONZE.md) : une ligne
+Le Bronze reste un miroir du fichier source (docs/03_donnees/BRONZE.md) : une ligne
 invalide n'est ni corrigée ni supprimée, elle est écrite avec
 `parse_ok=False` et la raison du rejet (`parse_ok_reason`), puis tracée
 dans `data_quality_issue`. Le Silver ne lit que `parse_ok=True`.

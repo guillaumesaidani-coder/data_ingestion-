@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Modules 31-34 : rejoue une fenêtre de dérive contre une référence gelée
 avec le vrai modèle de production (b11-gkf, `artifacts/models/model.joblib`
-— pas un modèle de dérive séparé, voir pipeline_proof.md/M30 sur la reprise).
+— pas un modèle de dérive séparé, voir docs/07_preuves/pipeline_proof.md/M30 sur la reprise).
 
 Règle figée (reports/drift/drift_spec.md) : PSI calculé sur les bins de
 la référence, alerte si PSI > 0.25 sur au moins une feature, persistant

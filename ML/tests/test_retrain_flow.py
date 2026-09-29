@@ -1,6 +1,6 @@
 """Feux verts du cycle de réentraînement (module 38) : chaque fonction
 isolée de Prefect, testable sans base ni modèle réel — la preuve en
-conditions réelles (Prefect + vraies données) est dans hitl_proof.md.
+conditions réelles (Prefect + vraies données) est dans docs/07_preuves/hitl_proof.md.
 """
 
 import sys
