@@ -1,0 +1,61 @@
+2026-09-29 18:19:49,654 | INFO    | retrain | === Réentraînement tracé — journal logs\retrain_20260929T161949Z.log ===
+2026-09-29 18:19:49,664 | INFO    | retrain | Révision du code : dépôt local
+2026-09-29 18:19:49,665 | INFO    | retrain | CUTOFF arbitrage : 2026-06-01 00:00:00+00:00
+2026-09-29 18:19:49,673 | INFO    | retrain | Champion C:\Users\Moi\Desktop\TRAINING\py-init\ML\artifacts\models\model.joblib sha256=f550cff24814dd0f
+2026-09-29 18:19:49,674 | INFO    | retrain | Challenger précédent C:\Users\Moi\Desktop\TRAINING\py-init\ML\artifacts\models\challenger.joblib sha256=2bb5deac87290542
+2026-09-29 18:19:49,675 | INFO    | retrain | --- Étape 1 : cohérence de l'état ---
+2026-09-29 18:20:06,401 | INFO    | retrain | Gold CSV  (data\gold\gold_dataset.csv) :
+                n  pannes
+split_set                
+test        19944     727
+train       93079    3350
+validation  19917     668
+2026-09-29 18:20:06,409 | INFO    | retrain | Gold base (gold_machine_hourly_feature) :
+                n  pannes
+split_set                
+test        19944     727
+train       93079    3350
+validation  19917     668
+2026-09-29 18:20:06,415 | INFO    | retrain | Cohérence CSV/base : OK
+2026-09-29 18:20:08,603 | INFO    | retrain | Table predictions : 10 colonnes ['failure_proba_24h', 'features_payload', 'ground_truth', 'machine_id', 'model_version', 'review_status', 'reviewed_at', 'reviewer_comment', 'scored_at', 'window_start']
+2026-09-29 18:20:08,631 | INFO    | retrain |   review_status=A_VALIDER : 18962
+2026-09-29 18:20:08,632 | INFO    | retrain |   review_status=FAUSSE_ALERTE : 255
+2026-09-29 18:20:08,632 | INFO    | retrain |   review_status=INCIDENT_NON_PREDIT : 65
+2026-09-29 18:20:08,633 | INFO    | retrain |   review_status=PANNE_CONFIRMEE : 662
+2026-09-29 18:20:08,633 | INFO    | retrain | --- Étape 2 : cycle indusense-retrain-cycle (feux verts -> arbitrage) ---
+2026-09-29 18:20:12,868 | INFO    | prefect | Starting temporary server on http://127.0.0.1:8435
+See https://docs.prefect.io/v3/concepts/server#how-to-guides for more information on running a dedicated Prefect server.
+2026-09-29 18:20:24,161 | INFO    | prefect.flow_runs | Beginning flow run 'precious-rook' for flow 'indusense-retrain-cycle'
+2026-09-29 18:20:24,170 | INFO    | prefect.flow_runs | Code : révision dépôt local
+2026-09-29 18:20:40,348 | INFO    | prefect.task_runs | Feu vert '1_quota_validations' : OK -- 982 validations humaines (seuil 50)
+2026-09-29 18:20:40,350 | INFO    | prefect.task_runs | Feu vert '2_quota_pannes_confirmees' : OK -- 727 pannes confirmées/déclarées (seuil 10)
+2026-09-29 18:20:40,352 | INFO    | prefect.task_runs | Feu vert '3_qualite_donnees' : OK -- aucune valeur hors bornes
+2026-09-29 18:20:40,354 | INFO    | prefect.task_runs | Feu vert '4_derive' : OK -- PSI max temp_mean_24h=0.3841 (seuil 0.25)
+2026-09-29 18:20:40,355 | INFO    | prefect.task_runs | Feu vert '5_nouveau_lot_terrain' : OK -- 3 lot(s) terrain ingéré(s) depuis 2026-06-01
+2026-09-29 18:20:40,448 | INFO    | prefect.task_runs | Finished in state Completed()
+2026-09-29 18:20:40,450 | INFO    | prefect.flow_runs | 5 feux verts réunis -- lancement de l'arbitrage champion/challenger
+2026-09-29 18:21:09,372 | INFO    | prefect.flow_runs | Arbitrage terminé : décision=REJET_DU_MODELE_N (gains=10, régressions=6)
+2026-09-29 18:21:09,966 | INFO    | prefect.flow_runs | Finished in state Completed()
+2026-09-29 18:21:09,969 | INFO    | retrain | Statut du cycle : ARBITRE
+2026-09-29 18:21:09,970 | INFO    | retrain |   1_quota_validations : OK -- 982 validations humaines (seuil 50)
+2026-09-29 18:21:09,970 | INFO    | retrain |   2_quota_pannes_confirmees : OK -- 727 pannes confirmées/déclarées (seuil 10)
+2026-09-29 18:21:09,971 | INFO    | retrain |   3_qualite_donnees : OK -- aucune valeur hors bornes
+2026-09-29 18:21:09,971 | INFO    | retrain |   4_derive : OK -- PSI max temp_mean_24h=0.3841 (seuil 0.25)
+2026-09-29 18:21:09,972 | INFO    | retrain |   5_nouveau_lot_terrain : OK -- 3 lot(s) terrain ingéré(s) depuis 2026-06-01
+2026-09-29 18:21:09,972 | INFO    | retrain | --- Étape 3 : état après le cycle ---
+2026-09-29 18:21:09,985 | INFO    | retrain | Dernière ligne reports\hitl\arbitration_log.csv :
+horodatage                2026-09-29T16:21:09.367134+00:00
+n_train_augmente                                     17090
+n_pannes_augmentees                                    609
+n_arbitrage                                           2854
+gains                                                   10
+stables                                               2799
+regressions                                              6
+angles_morts                                            39
+rappel_champion_juin                                0.8814
+rappel_challenger_juin                              0.9153
+decision                                 REJET_DU_MODELE_N
+2026-09-29 18:21:09,988 | INFO    | retrain | Champion sha256=f550cff24814dd0f (inchangé)
+2026-09-29 18:21:09,998 | INFO    | retrain | Challenger sha256=279e1ffebf5792d9 (avant : 2bb5deac87290542)
+2026-09-29 18:21:09,999 | INFO    | retrain | === Fin — journal complet : C:\Users\Moi\Desktop\TRAINING\py-init\ML\logs\retrain_20260929T161949Z.log ===
+2026-09-29 18:21:10,113 | INFO    | prefect | Stopping temporary server on http://127.0.0.1:8435

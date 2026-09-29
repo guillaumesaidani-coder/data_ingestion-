@@ -1,0 +1,4 @@
+2026-09-29T18:32:11.722757+00:00 Contrôle de déterminisme : deux run_arbitration() sans persistance
+run 1 : {'gains': 10, 'stables': 2799, 'regressions': 6, 'angles_morts': 39, 'rappel_champion': 0.8814, 'rappel_challenger': 0.9153, 'decision': 'REJET_DU_MODELE_N'}
+run 2 : {'gains': 10, 'stables': 2799, 'regressions': 6, 'angles_morts': 39, 'rappel_champion': 0.8814, 'rappel_challenger': 0.9153, 'decision': 'REJET_DU_MODELE_N'}
+Déterministe : True
