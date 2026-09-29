@@ -37,7 +37,12 @@ from fastapi.security import APIKeyHeader
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
 from pydantic import BaseModel
 
-from indusense.config import get_api_key, get_model_path, get_model_version
+from indusense.config import (
+    get_api_key,
+    get_model_path,
+    get_model_version,
+    get_revision,
+)
 from indusense.explain import (
     controler_modele,
     est_conforme,
@@ -201,8 +206,9 @@ def metrics():
 @app.get("/health")
 def health():
     """Le processus tourne — ne dit rien du modèle. Pas d'authentification :
-    une sonde de liveness ne doit jamais dépendre d'une clé API."""
-    return {"status": "ok"}
+    une sonde de liveness ne doit jamais dépendre d'une clé API. Donne le
+    commit du code servi : une image en retard sur le dépôt se voit ici."""
+    return {"status": "ok", "revision": get_revision()}
 
 
 @app.get("/ready")

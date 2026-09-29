@@ -43,6 +43,7 @@ from indusense.config import (
     get_model_path,
     get_model_version,
     get_predictions_engine,
+    get_revision,
 )
 from indusense.data import export_gold_dataset
 from indusense.modeling.dataset import load_gold_dataset
@@ -161,6 +162,7 @@ def indusense_pipeline(
     predictions_engine=None,
     retrain: bool = False,
 ) -> dict:
+    get_run_logger().info("Code : révision %s", get_revision())
     gold_path = build_gold_dataset(gold_csv)
     model = ensure_model(model_path, retrain=retrain)
     latest = load_latest_features(gold_path)

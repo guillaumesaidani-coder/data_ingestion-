@@ -41,6 +41,13 @@ RUN mkdir -p /app/data /app/artifacts && chown -R appuser:appgroup /app/data /ap
 USER appuser
 EXPOSE 8000
 
+# Commit dont vient l'image (make stack-up, CI) : label OCI pour docker
+# inspect, variable lue par /health et les journaux des flows. En dernier :
+# changer de commit ne reconstruit que cette couche de métadonnées.
+ARG GIT_SHA=inconnue
+LABEL org.opencontainers.image.revision=$GIT_SHA
+ENV INDUSENSE_REVISION=$GIT_SHA
+
 # Pas de curl/wget dans python:3.13-slim (les ajouter grossirait l'image) :
 # la sonde utilise le stdlib deja present dans .venv.
 HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \

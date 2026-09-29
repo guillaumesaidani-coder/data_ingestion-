@@ -13,7 +13,15 @@ from conftest import auth_headers
 def test_health_returns_ok_without_auth(client):
     resp = client.get("/health")
     assert resp.status_code == 200
-    assert resp.json() == {"status": "ok"}
+    assert resp.json()["status"] == "ok"
+
+
+def test_health_reports_code_revision(client, monkeypatch):
+    # Une image en retard sur le dépôt se voit dans /health.
+    monkeypatch.setenv("INDUSENSE_REVISION", "abc1234")
+    assert client.get("/health").json()["revision"] == "abc1234"
+    monkeypatch.delenv("INDUSENSE_REVISION")
+    assert client.get("/health").json()["revision"] == "dépôt local"
 
 
 # --------------------------------------------------------------------- ready

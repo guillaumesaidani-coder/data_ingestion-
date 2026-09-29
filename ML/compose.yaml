@@ -23,9 +23,26 @@ x-db-env: &db-env
   # (même base, mot de passe encodé par SQLAlchemy), plus de second
   # exemplaire des identifiants à tenir à jour.
 
+# Une seule recette de build, pour l'API ET les jobs : `run --build` ne
+# reconstruit qu'un service qui déclare `build`. Sans elle, un job lancé
+# après un pull tournait sur une image ancienne sans le signaler.
+# GIT_SHA : commit inscrit dans l'image (label, /health, journaux des
+# flows). Fourni par le Makefile ; sans make :
+#   export GIT_SHA=$(git describe --always --dirty)
+# sinon l'image se déclare « inconnue ».
+x-build: &build
+  context: .
+  args:
+    GIT_SHA: ${GIT_SHA:-inconnue}
+
 # Flow Prefect lancé en job : même image que l'API, identifiants de la base.
 x-flow-job: &flow-job
+  build: *build
   image: indusense-api:local
+  # Reconstruit à chaque lancement, même par un `docker compose run` nu
+  # (sans --build ni make) : le cache Docker rend l'opération quasi
+  # gratuite si rien n'a changé, et un job ne tourne jamais sur l'ancien code.
+  pull_policy: build
   profiles: ["jobs"]
   environment:
     <<: *db-env
@@ -72,8 +89,9 @@ services:
       - ./docker/initdb:/docker-entrypoint-initdb.d:ro
 
   api:
-    build: .
+    build: *build
     image: indusense-api:local
+    pull_policy: build   # même règle que les jobs (x-flow-job)
     # Ni identifiants ni dépendance sur db : l'API charge le modèle et
     # répond, elle ne lit ni n'écrit la base (au 1er up, elle n'attend
     # plus la restauration du seed pour démarrer).
@@ -152,7 +170,9 @@ services:
     command: ["python", "-m", "indusense.flows.predict_flow"]
 
   migrate:
+    build: *build
     image: indusense-api:local
+    pull_policy: build
     profiles: ["jobs"]
     environment: *db-env
     volumes:

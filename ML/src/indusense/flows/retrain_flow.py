@@ -34,7 +34,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 from sqlalchemy import bindparam, text
 
 from indusense.arbitration import CUTOFF, persist_arbitration, run_arbitration
-from indusense.config import get_engine, get_predictions_engine
+from indusense.config import get_engine, get_predictions_engine, get_revision
 from indusense.data_quality import check_sensor_quality
 from indusense.drift import psi
 from indusense.ingest import BRONZE_TABLES
@@ -152,6 +152,7 @@ def verifier_conditions_reentrainement(
 @flow(name="indusense-retrain-cycle")
 def retrain_cycle(cutoff: pd.Timestamp = CUTOFF) -> dict:
     logger = get_run_logger()
+    logger.info("Code : révision %s", get_revision())
     tous_verts, gates = verifier_conditions_reentrainement(cutoff)
 
     if not tous_verts:

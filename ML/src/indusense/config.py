@@ -68,6 +68,13 @@ def get_model_version(path: Path | None = None) -> str:
     return digest[:12]
 
 
+def get_revision() -> str:
+    """Commit dont vient le code qui tourne : fixé au build de l'image
+    (INDUSENSE_REVISION, Dockerfile) ; hors conteneur, le code est celui
+    du dépôt."""
+    return os.getenv("INDUSENSE_REVISION", "dépôt local")
+
+
 def get_predictions_db_url() -> str:
     """URL SQLAlchemy du stockage des prédictions (module 30) : une seule
     URL, pas de branche if backend == "postgres".

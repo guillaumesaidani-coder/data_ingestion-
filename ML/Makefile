@@ -40,7 +40,11 @@ proof: build check-user check-size
 
 # ---- Stack unique (R1) : compose.yaml ------------------------------------
 
-.PHONY: stack-up stack-down stack-reset stack-etl stack-migrate seed-dump seed-check
+.PHONY: stack-up stack-down stack-reset stack-etl stack-predict stack-migrate stack-revision seed-dump seed-check
+
+# Commit du code embarqué dans l'image (build arg lu par compose.yaml) ;
+# « -dirty » si l'arbre de travail a des modifications non commitées.
+export GIT_SHA := $(shell git describe --always --dirty 2>/dev/null)
 
 stack-up:        ## Démarre la stack (base initialisée au 1er démarrage)
 	docker compose up -d --build
@@ -48,11 +52,21 @@ stack-up:        ## Démarre la stack (base initialisée au 1er démarrage)
 stack-down:      ## Arrête la stack, en gardant les données
 	docker compose down
 
+# Pas de --build ici : compose.yaml (pull_policy: build) reconstruit
+# l'image à chaque lancement, quelques secondes via le cache si rien n'a
+# changé. Un job ne tourne jamais sur l'ancien code, avec ou sans make.
 stack-etl:       ## Reconstruit Silver + Gold dans la base de la stack
 	docker compose --profile jobs run --rm etl
 
+stack-predict:   ## Score les dernières fenêtres et les enregistre en base
+	docker compose --profile jobs run --rm predict
+
 stack-migrate:   ## Applique les migrations alembic
 	docker compose --profile jobs run --rm migrate
+
+stack-revision:  ## Compare le commit de l'image indusense-api:local au dépôt
+	@echo "dépôt : $(GIT_SHA)"
+	@echo "image : $$(docker inspect --format '{{index .Config.Labels "org.opencontainers.image.revision"}}' indusense-api:local)"
 
 stack-reset: seed-check  ## Repart du seed (down -v), refusé si des verdicts n'y sont pas
 	docker compose down -v

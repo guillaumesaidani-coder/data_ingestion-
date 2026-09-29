@@ -30,7 +30,7 @@ from prefect.cache_policies import NO_CACHE
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
 
-from indusense.config import get_engine
+from indusense.config import get_engine, get_revision
 from indusense.ingest import close_batch, open_batch
 from indusense.processing.gold_features import build_gold_features, to_gold_rows
 from indusense.processing.silver_events import (
@@ -180,6 +180,7 @@ def rebuild_gold(engine: Engine) -> int:
 def etl_flow(engine: Engine | None = None) -> dict:
     """Bronze -> Silver (3 tables) -> Gold. Les trois Silver sont
     indépendants ; le Gold les lit tous les trois."""
+    get_run_logger().info("Code : révision %s", get_revision())
     engine = engine or get_engine()
     return {
         "silver_sensor_reading": rebuild_silver_sensor_reading(engine),
