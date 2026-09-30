@@ -1,0 +1,6 @@
+outs:
+- md5: 3b8e2325b08760a75ef623f723a8db2e.dir
+  size: 2220418
+  nfiles: 40
+  hash: md5
+  path: campagne_2
