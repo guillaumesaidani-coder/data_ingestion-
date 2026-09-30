@@ -7,7 +7,7 @@ tags:
 - xgboost
 - manufacturing
 - time-series-features
-model_version: f550cff24814
+model_version: ba0728eb82ac
 certification: conforme
 model-index:
 - name: indusense-xgb-maintenance-b11-gkf
@@ -27,7 +27,7 @@ model-index:
 
 <!-- Provide a quick summary of what the model is/does. -->
 
-Classifieur XGBoost qui estime le risque de panne (incident de sévérité ≥ 4) d'une machine dans les 24 h à venir. En pratique, il s'appuie surtout sur un précurseur : un incident de sévérité 3 déclaré dans les 24 h précédentes, qui précède 93% des pannes de l'entraînement. L'historique d'incidents porte 77% de sa décision ; la télémétrie pèse peu. Modèle servi : `f550cff24814`.
+Classifieur XGBoost qui estime le risque de panne (incident de sévérité ≥ 4) d'une machine dans les 24 h à venir. En pratique, il s'appuie surtout sur un précurseur : un incident de sévérité 3 déclaré dans les 24 h précédentes, qui précède 93% des pannes de l'entraînement. L'historique d'incidents porte 77% de sa décision ; la télémétrie pèse peu. Modèle servi : `ba0728eb82ac`.
 
 ## Model Details
 
@@ -35,7 +35,7 @@ Classifieur XGBoost qui estime le risque de panne (incident de sévérité ≥ 4
 
 <!-- Provide a longer summary of what this model is. -->
 
-Fichier servi : `artifacts/models/model.joblib` (versionné par DVC), `model_version` `f550cff24814` = SHA-256 tronqué du fichier, le même que l'API, les prédictions et la certification. Métriques mesurées en scorant ce fichier, sans ré-entraînement.
+Fichier servi : `artifacts/models/model.joblib` (versionné par DVC), `model_version` `ba0728eb82ac` = SHA-256 tronqué du fichier, le même que l'API, les prédictions et la certification. Métriques mesurées en scorant ce fichier, sans ré-entraînement.
 
 Entraîné sur 112,996 observations horaires (15 machines, 78 features). Cible : `label_failure_next_24h`, vraie si un incident de sévérité ≥ 4 survient sur la machine dans les 24 h suivantes. Taux de panne observé à l'entraînement : 35.6% après un incident de sévérité 3 dans les 24 h, 0.0% sans aucun incident. Recette évaluée en validation croisée GroupKFold (une machine exclue par fold) ; hyperparamètres optimisés par Optuna (TPE, 30 essais) — voir `TP11.ipynb`.
 
@@ -63,7 +63,7 @@ Entraîné sur 112,996 observations horaires (15 machines, 78 features). Cible :
 
 <!-- This section is for the model use without fine-tuning or plugging into a larger ecosystem/app. -->
 
-Scorer un enregistrement horaire machine et obtenir un risque de panne à 24 h. Le score monte surtout après un incident de sévérité 3 déclaré : une panne sans ce précurseur est rarement détectée. Seuil de décision par défaut 0.5 (celui évalué ici) — à ajuster selon l'arbitrage rappel/précision métier.
+Scorer un enregistrement horaire machine et obtenir un risque de panne à 24 h. Le score monte surtout après un incident de sévérité 3 déclaré : une panne sans ce précurseur est rarement détectée. Seuil de décision par défaut 0.301 (probabilité calibrée, équivalent exact du score brut 0.5) (celui évalué ici) — à ajuster selon l'arbitrage rappel/précision métier.
 
 ### Downstream Use [optional]
 
@@ -78,7 +78,6 @@ Alimentation d'un tableau de bord de maintenance prédictive classant les machin
 - Arrêt automatique ou décision de maintenance sans validation humaine.
 - Toute machine d'un type de presse absent de l'entraînement, sans ré-entraînement : PR-AUC moyenne 0.87 quand seule la machine est inconnue, 0.81 quand tout son type l'est (cf. limites). Une nouvelle machine d'un type déjà couvert reste dans le périmètre.
 - Détection d'une dégradation visible seulement dans les capteurs : le modèle réagit surtout aux incidents déclarés.
-- Interprétation de `predict_proba` comme une probabilité calibrée — aucune calibration (Platt/isotonic) n'a été appliquée.
 - Usage réglementaire ou de certification sécurité — aucune validation de ce type.
 
 ## Bias, Risks, and Limitations
@@ -90,14 +89,14 @@ Alimentation d'un tableau de bord de maintenance prédictive classant les machin
 - **Types de presse différents, invisibles pour le modèle** : ni `machine_id` ni le type (`machine.model`) ne sont des entrées. Moyenne par type (une machine cachée) : InduPress-X1 0.85 · InduPress-X2 0.88 · InduPress-X3 0.87 · InduPress-Z1 0.84. Quand tout un type est caché à l'entraînement, la PR-AUC moyenne passe de 0.87 à 0.81 (pire cas MACH-11 : −0.23).
 - **Sur-ajustement structurel** : PR-AUC train = 1.000 contre 0.87 en CV — `incident_max_severity_prev_24h` porte à elle seule 32% de l'explication (SHAP, certification). Persiste malgré une régularisation poussée (`reg_lambda`, `min_child_weight` élevés) ; qualifié de structurel, pas résolu par les hyperparamètres seuls.
 - **Historique de fuite de données** : une version antérieure (B7, TP8) incluait `feature_row_id`, un identifiant séquentiel corrélé à l'ordre temporel, qui gonflait le PR-AUC de +0.111. Corrigé depuis TP8b — retiré explicitement des colonnes de fuite — mais signale la fragilité du pipeline de features aux fuites indirectes.
-- **Rappel au seuil par défaut** : 91.1% de rappel, 65 pannes non détectées sur 727 au seuil 0.5 — un seuil plus bas augmenterait le rappel au prix de plus de fausses alertes.
+- **Rappel au seuil par défaut** : 91.1% de rappel, 65 pannes non détectées sur 727 au seuil 0.301 (probabilité calibrée, équivalent exact du score brut 0.5) — un seuil plus bas augmenterait le rappel au prix de plus de fausses alertes.
 - **Tentative de normalisation par machine infructueuse** : une normalisation z-score par machine a dégradé la généralisation en GroupKFold (TP10) — confirme que XGBoost est déjà insensible à l'échelle des features, ne pas réintroduire cette étape.
 
 ### Recommendations
 
 <!-- This section is meant to convey recommendations with respect to the bias, risk, and technical limitations. -->
 
-Ne jamais utiliser en décision automatique. Veiller à la saisie des incidents et de leur sévérité : c'est la première entrée du modèle. Suivre la performance par machine et par type de presse, pas seulement l'agrégat — une machine comme MACH-05 justifie une vigilance humaine renforcée plutôt qu'une confiance dans le score. Ré-entraîner avant de scorer un nouveau type de presse. Calibrer les probabilités (Platt/isotonic) avant tout usage nécessitant une probabilité réelle. Comparer le modèle à la règle « sévérité max 24 h = 3 » : il ne vaut que s'il fait mieux qu'elle.
+Ne jamais utiliser en décision automatique. Veiller à la saisie des incidents et de leur sévérité : c'est la première entrée du modèle. Suivre la performance par machine et par type de presse, pas seulement l'agrégat — une machine comme MACH-05 justifie une vigilance humaine renforcée plutôt qu'une confiance dans le score. Ré-entraîner avant de scorer un nouveau type de presse. Probabilités calibrées (Platt sur la marge, apprise en GroupKFold par machine) : revérifier la calibration sur le test après chaque réentraînement. Comparer le modèle à la règle « sévérité max 24 h = 3 » : il ne vaut que s'il fait mieux qu'elle.
 
 ## How to Get Started with the Model
 
@@ -108,6 +107,7 @@ Use the code below to get started with the model.
 import joblib
 model = joblib.load('artifacts/models/model.joblib')  # imputer + XGBClassifier
 proba = model.predict_proba(X_new)[:, 1]  # risque de panne à 24h
+alerte = proba >= model.threshold_  # seuil calibré porté par le modèle
 ```
 
 ## Training Details
@@ -159,11 +159,11 @@ Même table, partition test chronologiquement postérieure — 19,944 lignes, 72
 
 <!-- These are the evaluation metrics being used, ideally with a description of why. -->
 
-PR-AUC (average precision — préférée à l'accuracy vu le déséquilibre de classe), ROC-AUC, F1, matrice de confusion au seuil 0.5.
+PR-AUC (average precision — préférée à l'accuracy vu le déséquilibre de classe), ROC-AUC, F1, Brier score, matrice de confusion au seuil 0.301 (probabilité calibrée, équivalent exact du score brut 0.5).
 
 ### Results
 
-Modèle `f550cff24814` — PR-AUC train=0.9998 · PR-AUC test=0.8945 · ROC-AUC test=0.9957 · F1 test=0.8054 · TP=662 TN=18962 FP=255 FN=65 · Précision=72.2% · Rappel=91.1%
+Modèle `ba0728eb82ac` — PR-AUC train=0.9998 · PR-AUC test=0.8945 · ROC-AUC test=0.9957 · F1 test=0.8054 · Brier test=0.0099 · TP=662 TN=18962 FP=255 FN=65 · Précision=72.2% · Rappel=91.1%
 
 #### Summary
 
@@ -173,7 +173,7 @@ PR-AUC test 0.89 sur un problème fortement déséquilibré (scale_pos_weight=27
 
 <!-- Relevant interpretability work for the model goes here -->
 
-Certification du modèle `f550cff24814` (`scripts/certify_model.py`, 50,000 lignes d'entraînement) : **conforme**. Part de l'explication = moyenne des |contributions SHAP| (TreeSHAP exact d'XGBoost), rapportée au total.
+Certification du modèle `ba0728eb82ac` (`scripts/certify_model.py`, 50,000 lignes d'entraînement) : **conforme**. Part de l'explication = moyenne des |contributions SHAP| (TreeSHAP exact d'XGBoost), rapportée au total.
 
 - Par famille : Historique d'incidents 77% · Maintenance 7% · Rotation 5% · Tension 4% · Température 3% · Production 2% · Pression 2%.
 - Variables les plus lourdes :
@@ -206,7 +206,7 @@ Carbon emissions can be estimated using the [Machine Learning Impact calculator]
 - **Hours used:** Non mesuré pour ce modèle (voir Carbon Emitted)
 - **Cloud Provider:** Aucun — poste de travail local
 - **Compute Region:** Non mesuré pour ce modèle (voir Carbon Emitted)
-- **Carbon Emitted:** Non mesuré pour `f550cff24814` : la mesure CodeCarbon est prise par `indusense train` (fichier `training_emissions.json`), absente pour ce modèle entraîné avant cet ajout.
+- **Carbon Emitted:** Non mesuré pour `ba0728eb82ac` : la mesure CodeCarbon est prise par `indusense train` (fichier `training_emissions.json`), absente pour ce modèle entraîné avant cet ajout.
 
 ## Technical Specifications [optional]
 
@@ -216,7 +216,7 @@ XGBoost : n_estimators=287, max_depth=9, learning_rate=0.0289, objectif binaire 
 
 ### Compute Infrastructure
 
-Poste de travail local, connexion PostgreSQL directe. Modèle versionné par DVC (`artifacts/models/model.joblib.dvc`), identifié par `model_version` `f550cff24814`.
+Poste de travail local, connexion PostgreSQL directe. Modèle versionné par DVC (`artifacts/models/model.joblib.dvc`), identifié par `model_version` `ba0728eb82ac`.
 
 #### Hardware
 
