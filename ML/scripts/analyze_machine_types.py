@@ -13,9 +13,10 @@ lui coûte :
    - « machine cachée » : une machine par fold (son type reste vu) ;
    - « type caché »     : un type par fold (cas d'un nouveau modèle de presse) ;
    - « machine cachée + type + âge » : les mêmes folds, en ajoutant le
-     type (one-hot) et l'âge de la machine aux features.
+     type (one-hot) et l'âge de la machine aux features, ensemble puis
+     séparément (« + âge » seul, « + type » seul) pour isoler chacun.
 
-Environ 35 entraînements, 3 à 4 minutes sur CPU.
+Environ 65 entraînements, 6 à 7 minutes sur CPU.
 
 Usage :
     uv run --frozen python scripts/analyze_machine_types.py
@@ -140,6 +141,8 @@ def main():
     variants = {
         "machine_cachee": (feats, "machine_id"),
         "type_cache": (feats, "machine_type"),
+        "machine_cachee_age": (feats + ["machine_age_days"], "machine_id"),
+        "machine_cachee_type": (feats + list(type_cols.columns), "machine_id"),
         "machine_cachee_type_age": (feats_plus, "machine_id"),
     }
     cv = pd.DataFrame({"machine_type": tv.groupby("machine_id")["machine_type"].first()})
