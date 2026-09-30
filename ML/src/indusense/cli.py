@@ -52,13 +52,16 @@ def train(args: argparse.Namespace) -> None:
         project_name="indusense-train", measure_power_secs=1, log_level="error", save_to_file=False
     )
     tracker.start()
-    pipe, metrics = train_and_evaluate(gold.X_tv, gold.y_tv, gold.X_test, gold.y_test, params)
+    pipe, metrics = train_and_evaluate(
+        gold.X_tv, gold.y_tv, gold.X_test, gold.y_test, params, groups=gold.groups
+    )
     emissions_kg = tracker.stop()
     carbon = tracker.final_emissions_data
 
     print(
         f"PR-AUC train={metrics['pr_auc_train']}  PR-AUC test={metrics['pr_auc_test']}  "
-        f"ROC-AUC test={metrics['roc_auc_test']}  F1 test={metrics['f1_test']}"
+        f"ROC-AUC test={metrics['roc_auc_test']}  F1 test={metrics['f1_test']}  "
+        f"Brier test={metrics['brier_test']}  seuil calibré={metrics['threshold']}"
     )
 
     gold_md5 = hash_file(Path(args.gold_csv)) if args.gold_csv else None

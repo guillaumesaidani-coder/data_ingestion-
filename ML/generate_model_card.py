@@ -160,6 +160,9 @@ def build_card(gold, n_machines, model_path, model, version, certification, emis
     xgb_params = model.named_steps["model"].get_params()
     spw = xgb_params["scale_pos_weight"]
     n_features = len(model.named_steps["imputer"].feature_names_in_)
+    calibrated = hasattr(model, "calibration_")
+    seuil = (f"{metrics['threshold']:.3f} (probabilité calibrée, équivalent exact du score brut 0.5)"
+             if calibrated else "0.5")
 
     bm = het["by_machine"]
     worst, best = bm.idxmin(), bm.idxmax()
@@ -238,7 +241,7 @@ def build_card(gold, n_machines, model_path, model, version, certification, emis
             "Scorer un enregistrement horaire machine et obtenir un risque de panne à 24 h. "
             f"Le score monte surtout après un incident de sévérité {PRECURSOR_SEVERITY} déclaré : "
             "une panne sans ce précurseur est rarement détectée. Seuil de décision par défaut "
-            "0.5 (celui évalué ici) — à ajuster selon l'arbitrage rappel/précision métier."
+            f"{seuil} (celui évalué ici) — à ajuster selon l'arbitrage rappel/précision métier."
         ),
         downstream_use=(
             "Alimentation d'un tableau de bord de maintenance prédictive classant les "
@@ -253,9 +256,10 @@ def build_card(gold, n_machines, model_path, model, version, certification, emis
             "limites). Une nouvelle machine d'un type déjà couvert reste dans le périmètre.\n"
             "- Détection d'une dégradation visible seulement dans les capteurs : le modèle "
             "réagit surtout aux incidents déclarés.\n"
-            "- Interprétation de `predict_proba` comme une probabilité calibrée — "
-            "aucune calibration (Platt/isotonic) n'a été appliquée.\n"
-            "- Usage réglementaire ou de certification sécurité — aucune validation de ce type."
+            + ("" if calibrated else
+               "- Interprétation de `predict_proba` comme une probabilité calibrée — "
+               "aucune calibration (Platt/isotonic) n'a été appliquée.\n")
+            + "- Usage réglementaire ou de certification sécurité — aucune validation de ce type."
         ),
         bias_risks_limitations=(
             "- **Dépendance à la saisie des incidents** : "
@@ -285,7 +289,7 @@ def build_card(gold, n_machines, model_path, model, version, certification, emis
             "de features aux fuites indirectes.\n"
             f"- **Rappel au seuil par défaut** : {metrics['recall_test']:.1%} de "
             f"rappel, {metrics['fn']} pannes non détectées sur {metrics['fn']+metrics['tp']} "
-            "au seuil 0.5 — un seuil plus bas augmenterait le rappel au prix de plus de "
+            f"au seuil {seuil} — un seuil plus bas augmenterait le rappel au prix de plus de "
             "fausses alertes.\n"
             "- **Tentative de normalisation par machine infructueuse** : une normalisation "
             "z-score par machine a dégradé la généralisation en GroupKFold (TP10) — "
@@ -297,8 +301,13 @@ def build_card(gold, n_machines, model_path, model, version, certification, emis
             "de leur sévérité : c'est la première entrée du modèle. Suivre la performance par "
             f"machine et par type de presse, pas seulement l'agrégat — une machine comme {worst} "
             "justifie une vigilance humaine renforcée plutôt qu'une confiance dans le score. "
-            "Ré-entraîner avant de scorer un nouveau type de presse. Calibrer les probabilités "
-            "(Platt/isotonic) avant tout usage nécessitant une probabilité réelle. Comparer le "
+            "Ré-entraîner avant de scorer un nouveau type de presse. "
+            + ("Probabilités calibrées (Platt sur la marge, apprise en GroupKFold par machine) : "
+               "revérifier la calibration sur le test après chaque réentraînement. "
+               if calibrated else
+               "Calibrer les probabilités (Platt/isotonic) avant tout usage nécessitant une "
+               "probabilité réelle. ")
+            + "Comparer le "
             f"modèle à la règle « sévérité max 24 h = {PRECURSOR_SEVERITY} » : il ne vaut que "
             "s'il fait mieux qu'elle."
         ),
@@ -308,7 +317,9 @@ def build_card(gold, n_machines, model_path, model, version, certification, emis
             "import joblib\n"
             f"model = joblib.load('{model_path.as_posix()}')  # imputer + XGBClassifier\n"
             "proba = model.predict_proba(X_new)[:, 1]  # risque de panne à 24h\n"
-            "```"
+            + ("alerte = proba >= model.threshold_  # seuil calibré porté par le modèle\n"
+               if calibrated else "")
+            + "```"
         ),
         training_data=(
             f"Table `gold_machine_hourly_feature` (PostgreSQL, base indusense_db) — "
@@ -324,11 +335,12 @@ def build_card(gold, n_machines, model_path, model, version, certification, emis
         testing_data=f"Même table, partition test chronologiquement postérieure — {len(X_test):,} lignes, {int(y_test.sum())} pannes positives.",
         testing_factors="Évaluation agrégée toutes machines confondues pour la métrique principale ; performance par machine disponible via validation croisée GroupKFold (hétérogénéité "
                         f"{bm.min():.2f}-{bm.max():.2f}) et par type de presse (voir limites).",
-        testing_metrics="PR-AUC (average precision — préférée à l'accuracy vu le déséquilibre de classe), ROC-AUC, F1, matrice de confusion au seuil 0.5.",
+        testing_metrics=f"PR-AUC (average precision — préférée à l'accuracy vu le déséquilibre de classe), ROC-AUC, F1, Brier score, matrice de confusion au seuil {seuil}.",
         results=(
             f"Modèle `{version}` — "
             f"PR-AUC train={metrics['pr_auc_train']:.4f} · PR-AUC test={metrics['pr_auc_test']:.4f} · "
             f"ROC-AUC test={metrics['roc_auc_test']:.4f} · F1 test={metrics['f1_test']:.4f} · "
+            f"Brier test={metrics['brier_test']:.4f} · "
             f"TP={metrics['tp']} TN={metrics['tn']} FP={metrics['fp']} FN={metrics['fn']} · "
             f"Précision={metrics['precision_test']:.1%} · Rappel={metrics['recall_test']:.1%}"
         ),

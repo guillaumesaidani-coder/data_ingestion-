@@ -30,6 +30,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 from indusense.config import get_model_path
 from indusense.drift import drift_table
 from indusense.modeling.dataset import LEAKAGE_COLS, TARGET
+from indusense.modeling.pipeline import alert_threshold
 
 DRIFT_DIR = Path(__file__).resolve().parent.parent / "reports" / "drift"
 SUIVI_CSV = DRIFT_DIR / "suivi_fenetres.csv"
@@ -91,7 +92,7 @@ def main() -> int:
     X = window_df[feature_cols]
     y_true = window_df[TARGET]
     y_prob = model.predict_proba(X)[:, 1]
-    y_pred = (y_prob >= 0.5).astype(int)
+    y_pred = (y_prob >= alert_threshold(model)).astype(int)
     recall = float(recall_score(y_true, y_pred, zero_division=0))
     precision = float(precision_score(y_true, y_pred, zero_division=0))
     roc_auc = float(roc_auc_score(y_true, y_prob)) if y_true.nunique() > 1 else float("nan")

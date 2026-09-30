@@ -21,14 +21,14 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
+import joblib
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from indusense.config import get_engine, get_predictions_engine
+from indusense.config import get_engine, get_model_path, get_predictions_engine
+from indusense.modeling.pipeline import alert_threshold
 from indusense.predictions_store import review_prediction
-
-ALERT_THRESHOLD = 0.5
 
 
 def _load_pending_with_ground_truth(predictions_engine) -> pd.DataFrame:
@@ -68,8 +68,11 @@ def main() -> int:
         print("Aucune prédiction en attente de revue (A_VALIDER) — lancez backfill_predictions.py d'abord.")
         return 1
 
-    alerts = df[df["failure_proba_24h"] >= ALERT_THRESHOLD]
-    missed = df[(df["failure_proba_24h"] < ALERT_THRESHOLD) & (df["label_failure_next_24h"] == 1)]
+    # Probabilités écrites par backfill_predictions.py avec le modèle servi :
+    # même seuil que lui (0,5 brut, ou son équivalent calibré).
+    seuil = alert_threshold(joblib.load(get_model_path()))
+    alerts = df[df["failure_proba_24h"] >= seuil]
+    missed = df[(df["failure_proba_24h"] < seuil) & (df["label_failure_next_24h"] == 1)]
 
     reviewed_at = datetime.now(UTC).isoformat()
     n_confirmed = n_false_alert = 0

@@ -120,7 +120,9 @@ def expliquer(model, ligne: pd.DataFrame, base: dict | None = None, k: int = 3) 
     marge = float(contrib.sum())
     proba = float(model.predict_proba(ligne.reindex(columns=cols).iloc[[0]])[:, 1][0])
 
-    seuil = base["regles"]["seuil_alerte"]["valeur"]
+    # La base fixe la règle sur le score brut (0,5) ; un modèle calibré
+    # porte son équivalent sur l'échelle de la probabilité affichée.
+    seuil = getattr(model, "threshold_", base["regles"]["seuil_alerte"]["valeur"])
     if proba >= seuil:
         decision = (
             f"Alerte : probabilité de panne sous 24 h {_fmt(proba)} ≥ seuil {_fmt(seuil)}. "

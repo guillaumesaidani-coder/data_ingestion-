@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from indusense.config import get_engine, get_model_path, get_model_version, get_predictions_engine
 from indusense.modeling.dataset import load_gold_dataset
+from indusense.modeling.pipeline import alert_threshold
 from indusense.predictions_store import upsert_predictions
 from indusense.scoring import score_features
 
@@ -64,9 +65,10 @@ def main() -> None:
         total = upsert_predictions(engine, rows[i : i + CHUNK_SIZE])
         print(f"  {min(i + CHUNK_SIZE, len(rows))}/{len(rows)} lignes envoyées -> {total} en base")
 
-    n_alertes = sum(1 for p in proba if p >= 0.5)
+    seuil = alert_threshold(model)
+    n_alertes = sum(1 for p in proba if p >= seuil)
     print(f"Backfill terminé : {len(rows)} fenêtres scorées (modèle {model_version})")
-    print(f"  dont {n_alertes} alertes (proba >= 0.5) sur {len(rows)} ({n_alertes / len(rows):.1%})")
+    print(f"  dont {n_alertes} alertes (proba >= {seuil:.3f}) sur {len(rows)} ({n_alertes / len(rows):.1%})")
     print(f"  {total} lignes en base au total")
 
 

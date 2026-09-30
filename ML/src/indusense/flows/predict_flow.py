@@ -92,7 +92,9 @@ def ensure_model(model_path: Path | None = None, retrain: bool = False):
 
     gold = load_gold_dataset(get_engine())
     params = {**B11_PARAMS, "scale_pos_weight": compute_scale_pos_weight(gold.y_tv)}
-    pipe, metrics = train_and_evaluate(gold.X_tv, gold.y_tv, gold.X_test, gold.y_test, params)
+    pipe, metrics = train_and_evaluate(
+        gold.X_tv, gold.y_tv, gold.X_test, gold.y_test, params, groups=gold.groups
+    )
     model_path.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(pipe, model_path)
     logger.info(

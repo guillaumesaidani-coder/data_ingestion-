@@ -154,7 +154,7 @@ exclusions:
 regles:
   seuil_alerte:
     valeur: 0.5
-    texte: "Alerte si la probabilité de panne sous 24 h atteint le seuil (seuil d'entraînement et d'évaluation du modèle b11)."
+    texte: "Alerte si la probabilité de panne sous 24 h atteint le seuil (seuil d'entraînement et d'évaluation du modèle b11). La valeur porte sur le score brut ; un modèle calibré (CalibratedPipeline) applique son équivalent sur la probabilité calibrée (threshold_), les alertes levées sont les mêmes."
   validation_humaine:
     texte: "Aucune action automatique ; chaque alerte est confirmée ou infirmée par un technicien (Streamlit, table predictions)."
 

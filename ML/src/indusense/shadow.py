@@ -25,6 +25,7 @@ import pandas as pd
 from indusense.arbitration import CUTOFF, DEFAULT_CHALLENGER_PATH, arbitration_matrix
 from indusense.config import ML_DIR, get_engine, get_model_path
 from indusense.modeling.dataset import TARGET, load_gold_dataset
+from indusense.modeling.pipeline import predict_alert
 
 ACCEPTED_DECISIONS = {"ACCEPTATION_DIRECTE", "ACCEPTATION_SOUS_DEROGATION"}
 DEFAULT_ARBITRATION_LOG = ML_DIR / "reports" / "hitl" / "arbitration_log.csv"
@@ -45,8 +46,8 @@ def run_shadow_window(champion, challenger, X: pd.DataFrame, y_true) -> dict:
     Retourne la matrice gain/stabilité/régression/angle mort (module 37) —
     même grille de lecture que l'arbitrage, appliquée à l'observation
     fantôme plutôt qu'au premier jugement."""
-    champion_pred = (champion.predict_proba(X)[:, 1] >= 0.5).astype(int)
-    challenger_pred = (challenger.predict_proba(X)[:, 1] >= 0.5).astype(int)
+    champion_pred = predict_alert(champion, X)
+    challenger_pred = predict_alert(challenger, X)
     return arbitration_matrix(y_true.to_numpy(), champion_pred, challenger_pred)
 
 

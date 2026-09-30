@@ -22,6 +22,7 @@ from sklearn.metrics import recall_score
 
 from indusense.config import ML_DIR, get_engine, get_model_path, get_predictions_engine
 from indusense.modeling.dataset import TARGET, load_gold_dataset
+from indusense.modeling.pipeline import predict_alert
 from indusense.modeling.train import (
     B11_PARAMS,
     compute_scale_pos_weight,
@@ -80,7 +81,9 @@ def augmented_training_set(gold, predictions_engine, cutoff: pd.Timestamp = CUTO
     # deux au meme type produit un Series 'object' que sklearn refuse
     # (ValueError: unknown format is not supported).
     y_aug = pd.concat([gold.y_tv.astype(int), y_new], ignore_index=True)
-    return X_aug, y_aug, len(early), int(y_new.sum())
+    # machine de chaque ligne : folds de calibration du challenger
+    groups_aug = pd.concat([gold.groups, early["machine_id"]], ignore_index=True)
+    return X_aug, y_aug, groups_aug, len(early), int(y_new.sum())
 
 
 def run_arbitration(cutoff: pd.Timestamp = CUTOFF) -> dict:
@@ -90,21 +93,24 @@ def run_arbitration(cutoff: pd.Timestamp = CUTOFF) -> dict:
     gold = load_gold_dataset(get_engine())
     predictions_engine = get_predictions_engine()
 
-    X_aug, y_aug, n_new, n_new_failures = augmented_training_set(gold, predictions_engine, cutoff)
+    X_aug, y_aug, groups_aug, n_new, n_new_failures = augmented_training_set(
+        gold, predictions_engine, cutoff
+    )
 
     arbitrage_df = gold.test_df[gold.test_df["window_start"] >= cutoff].copy()
     X_arb, y_arb = arbitrage_df[gold.feature_cols], arbitrage_df[TARGET].astype(int)
 
     params = {**B11_PARAMS, "scale_pos_weight": compute_scale_pos_weight(y_aug)}
-    challenger_pipe, challenger_metrics = train_and_evaluate(X_aug, y_aug, X_arb, y_arb, params)
+    challenger_pipe, challenger_metrics = train_and_evaluate(
+        X_aug, y_aug, X_arb, y_arb, params, groups=groups_aug
+    )
 
     champion = joblib.load(get_model_path())
-    champion_proba = champion.predict_proba(X_arb)[:, 1]
-    challenger_proba = challenger_pipe.predict_proba(X_arb)[:, 1]
 
+    # chaque modèle à son propre seuil (0,5 brut ou son équivalent calibré)
     y_true = y_arb.to_numpy()
-    pred_champion = (champion_proba >= 0.5).astype(int)
-    pred_challenger = (challenger_proba >= 0.5).astype(int)
+    pred_champion = predict_alert(champion, X_arb)
+    pred_challenger = predict_alert(challenger_pipe, X_arb)
 
     matrix = arbitration_matrix(y_true, pred_champion, pred_challenger)
     decision = arbitration_decision(matrix["gains"], matrix["regressions"])
